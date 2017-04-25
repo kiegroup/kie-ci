@@ -1,0 +1,11 @@
+# Build files/dirs
+.gradle
+build/
+out/
+target/
+local/
+
+# IDE files/dirs
+*.iml
+.idea
+.DS_Store
