@@ -1,4 +1,4 @@
-package com.dslexample
+package org.kie.jenkins.jobdsl
 
 import groovy.io.FileType
 import hudson.model.Item
@@ -7,7 +7,6 @@ import javaposse.jobdsl.dsl.DslScriptLoader
 import javaposse.jobdsl.dsl.GeneratedItems
 import javaposse.jobdsl.dsl.GeneratedJob
 import javaposse.jobdsl.dsl.GeneratedView
-import javaposse.jobdsl.dsl.JobManagement
 import javaposse.jobdsl.plugin.JenkinsJobManagement
 import jenkins.model.Jenkins
 import org.junit.ClassRule
@@ -35,7 +34,8 @@ class JobScriptsSpec extends Specification {
     @Unroll
     void 'test DSL script #file.name'(File file) {
         given:
-        JobManagement jm = new JenkinsJobManagement(System.out, [:], new File('.'))
+        JenkinsJobManagement jm = new JenkinsJobManagement(System.out, [:], new File('.'))
+        jm.setFailOnMissingPlugin(true)
 
         when:
         GeneratedItems items = new DslScriptLoader(jm).runScript(file.text)

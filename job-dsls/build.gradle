@@ -43,12 +43,27 @@ dependencies {
     testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}"
     testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
     testCompile 'org.jenkins-ci.plugins:structs:1.2@jar'
-    //testCompile 'org.jenkins-ci.plugins:cloudbees-folder:5.0@jar'
+    testCompile "org.jenkins-ci.plugins:config-file-provider:2.15.7@jar"
+    testCompile 'org.jenkins-ci.plugins:credentials:2.1.13@jar'
 
-    // plugins to install in test instance
-    testPlugins 'org.jenkins-ci.plugins:ghprb:1.31.4'
+    // plugins to install in test instance (all plugins used by the DSL scripts needs to be specified)
+    // keep the alphabetical order
     testPlugins 'com.coravy.hudson.plugins.github:github:1.19.0'
-    //testPlugins 'org.jenkins-ci.plugins:cloudbees-folder:5.0'
+    testPlugins 'com.synopsys.jenkinsci:ownership:0.9.1'
+    testPlugins 'org.jenkins-ci.main:maven-plugin:2.15.1'
+    testPlugins 'org.jenkins-ci.plugins:ansicolor:0.5.0'
+    testPlugins 'org.jenkins-ci.plugins:build-timeout:1.18'
+    testPlugins 'org.jenkins-ci.plugins:config-file-provider:2.15.7'
+    testPlugins 'org.jenkins-ci.plugins:credentials:2.1.13'
+    testPlugins 'org.jenkins-ci.plugins:git:3.2.0'
+    testPlugins 'org.jenkins-ci.plugins:ghprb:1.31.4'
+    testPlugins 'org.jenkins-ci.plugins:script-security:1.27'
+    testPlugins 'org.jenkins-ci.plugins:timestamper:1.8.8'
+    testPlugins 'org.jenkins-ci.plugins:token-macro:2.1'
+    testPlugins 'org.jenkins-ci.plugins:xvnc:1.24'
+    testPlugins 'org.jvnet.hudson.plugins:checkstyle:3.48'
+    testPlugins 'org.jvnet.hudson.plugins:findbugs:4.70'
+    testPlugins 'org.jvnet.hudson.plugins:ircbot:2.27'
 }
 
 task resolveTestPlugins(type: Copy) {

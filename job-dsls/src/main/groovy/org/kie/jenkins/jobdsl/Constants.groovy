@@ -1,3 +1,4 @@
+package org.kie.jenkins.jobdsl
 /*
  * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
@@ -15,5 +16,4 @@
 
 class Constants {
     static final String MAVEN_VERSION="3.2.5"
-    static final String EAP7_DOWNLOAD_URL="7.0.5"
 }
