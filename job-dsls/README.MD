@@ -30,10 +30,10 @@ Manually create a job:
    * Use Gradle Wrapper: `true`
    * Tasks: `clean test`
 * Process Job DSLs
-   * DSL Scripts: `jobs/**/*Jobs.groovy`
-   * Additional classpath: `src/main/groovy`
+   * DSL Scripts: `job-dsls/jobs/**/*.groovy`
+   * Additional classpath: `job-dsls/src/main/groovy`
 * Publish JUnit test result report
-   * Test report XMLs: `build/test-results/**/*.xml`
+   * Test report XMLs: `job-dsls/build/test-results/**/*.xml`
 
 Note that starting with Job DSL 1.60 the "Additional classpath" setting is not available when
 [Job DSL script security](https://github.com/jenkinsci/job-dsl-plugin/wiki/Script-Security) is enabled.
