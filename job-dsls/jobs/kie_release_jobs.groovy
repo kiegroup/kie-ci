@@ -1,14 +1,14 @@
 //Define Variables
 
-def KIE_VERSION="7.0.x"
-def UF_VERSION="1.0.x"
-def DASH_VERSION="0.6.x"
+def KIE_VERSION="7.1.x"
+def UF_VERSION="1.1.x"
+def DASH_VERSION="0.7.x"
 def JAVADK="jdk1.8"
 def JDK="JDK1_8"
 def MAVEN="APACHE_MAVEN_3_2_5"
 def MVNHOME="${MAVEN}_HOME"
 def MVNOPTS="-Xms2g -Xmx3g"
-def KIE_MAIN_BRANCH="7.0.x"
+def KIE_MAIN_BRANCH="master"
 def ORGANIZATION="kiegroup"
 
 
