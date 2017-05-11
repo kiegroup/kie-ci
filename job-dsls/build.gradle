@@ -62,9 +62,15 @@ dependencies {
     testPlugins 'org.jenkins-ci.plugins:timestamper:1.8.8'
     testPlugins 'org.jenkins-ci.plugins:token-macro:2.1'
     testPlugins 'org.jenkins-ci.plugins:xvnc:1.24'
+    testPlugins 'org.jenkins-ci.plugins:ws-cleanup:0.32'
+    testPlugins 'org.jenkins-ci.plugins:envinject:2.0'
+    testPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26'
+    testPlugins 'org.jenkins-ci.plugins:nested-view:1.14'
+    testPlugins 'com.sonyericsson.hudson.plugins.rebuild:rebuild:1.25'
     testPlugins 'org.jvnet.hudson.plugins:checkstyle:3.48'
     testPlugins 'org.jvnet.hudson.plugins:findbugs:4.70'
     testPlugins 'org.jvnet.hudson.plugins:ircbot:2.27'
+    testPlugins 'org.jvnet.hudson.plugins:toolenv:1.0'
 }
 
 task resolveTestPlugins(type: Copy) {
