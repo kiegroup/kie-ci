@@ -4,7 +4,7 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
-        branch                 : "master",
+        branch                 : "7.0.x",
         timeoutMins            : 60,
         label                  : "rhel7 && mem8g",
         ghOrgUnit              : "kiegroup",
@@ -21,45 +21,47 @@ def final REPO_CONFIGS = [
                 label                  : "linux && mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=2",
                 ircNotificationChannels: ["#uberfire"],
-                downstreamRepos        : ["dashbuilder"]
+                downstreamRepos        : ["dashbuilder-0.6.x"],
+                branch                 : "1.0.x"
         ],
         "dashbuilder"               : [
                 ghOrgUnit              : "dashbuilder",
                 label                  : "linux && mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=2",
                 ircNotificationChannels: ["#dashbuilder"],
-                downstreamRepos        : ["droolsjbpm-build-bootstrap"]
+                downstreamRepos        : ["droolsjbpm-build-bootstrap-7.0.x"],
+                branch                 : "0.6.x"
         ],
         "droolsjbpm-build-bootstrap": [
                 timeoutMins            : 20,
                 label                  : "rhel7 && mem4g",
                 ircNotificationChannels: ["#logicabyss"],
-                downstreamRepos        : ["droolsjbpm-knowledge"]
+                downstreamRepos        : ["droolsjbpm-knowledge-7.0.x"]
         ],
         "droolsjbpm-knowledge"      : [
                 timeoutMins            : 40,
                 ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["drools"]
+                downstreamRepos        : ["drools-7.0.x"]
         ],
         "drools"                    : [
                 ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["optaplanner", "jbpm"],
+                downstreamRepos        : ["optaplanner-7.0.x", "jbpm-7.0.x"],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
         "optaplanner"               : [
                 ircNotificationChannels: ["#optaplanner-dev"],
-                downstreamRepos        : ["@optaplanner-wb"]
+                downstreamRepos        : ["@optaplanner-wb-7.0.x"]
         ],
         "jbpm"                      : [
                 timeoutMins            : 120,
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly10",
                 ircNotificationChannels: ["#jbpmdev"],
-                downstreamRepos        : ["droolsjbpm-integration"]
+                downstreamRepos        : ["droolsjbpm-integration-7.0.x"]
         ],
         "droolsjbpm-integration"    : [
                 timeoutMins            : 120,
                 ircNotificationChannels: ["#droolsdev", "#jbpmdev"],
-                downstreamRepos        : ["droolsjbpm-tools", "kie-uberfire-extensions"]
+                downstreamRepos        : ["droolsjbpm-tools-7.0.x", "kie-uberfire-extensions-7.0.x"]
         ],
         "droolsjbpm-tools"          : [
                 ircNotificationChannels: ["#logicabyss"],
@@ -68,50 +70,50 @@ def final REPO_CONFIGS = [
         "kie-uberfire-extensions"   : [
                 timeoutMins            : 40,
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["guvnor"]
+                downstreamRepos        : ["guvnor-7.0.x"]
         ],
         "guvnor"                    : [
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["kie-wb-playground"]
+                downstreamRepos        : ["kie-wb-playground-7.0.x"]
         ],
         "kie-wb-playground"         : [
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["kie-wb-common"]
+                downstreamRepos        : ["kie-wb-common-7.0.x"]
         ],
         "kie-wb-common"             : [
                 label                  : "rhel7 && mem16g",
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-form-modeler"]
+                downstreamRepos        : ["jbpm-form-modeler-7.0.x"]
         ],
         "jbpm-form-modeler"         : [
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["drools-wb"]
+                downstreamRepos        : ["drools-wb-7.0.x"]
         ],
         "drools-wb"                 : [
                 label                  : "rhel7 && mem16g",
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-designer", "optaplanner-wb"]
+                downstreamRepos        : ["jbpm-designer-7.0.x", "optaplanner-wb-7.0.x"]
         ],
         "optaplanner-wb"            : [
                 label                  : "rhel7 && mem16g",
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-wb"]
+                downstreamRepos        : ["jbpm-wb-7.0.x"]
         ],
         "jbpm-designer"             : [
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=1",
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-wb"]
+                downstreamRepos        : ["jbpm-wb-7.0.x"]
         ],
         "jbpm-wb"                   : [
                 label                  : "rhel7 && mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=1",
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["kie-wb-distributions", "kie-docs"]
+                downstreamRepos        : ["kie-wb-distributions-7.0.x", "kie-docs-7.0.x"]
         ],
         "kie-docs"                  : [
                 ircNotificationChannels: ["#logicabyss"],
                 artifactsToArchive     : ["**/generated-docs/**"],
-                downstreamRepos        : ["kie-wb-distributions"]
+                downstreamRepos        : ["kie-wb-distributions-7.0.x"]
         ],
         "kie-wb-distributions"      : [
                 timeoutMins            : 120,
