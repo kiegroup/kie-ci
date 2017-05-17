@@ -16,7 +16,8 @@ def final DEFAULTS = [
                 "container.profile"                  : "wildfly10",
                 "integration-tests"                  : "true",
                 "maven.test.failure.ignore"          : "true",
-                "maven.test.redirectTestOutputToFile": "true"
+                "maven.test.redirectTestOutputToFile": "true",
+                "gwt.compiler.localWorkers"          : 1
         ],
         artifactsToArchive     : [
                 "**/target/testStatusListener*",
