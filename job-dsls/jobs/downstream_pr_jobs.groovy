@@ -154,7 +154,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
             configure { project ->
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
-                    mvnArgLine(get("downstreamMvnGoals") + get("downstreamMvnProps").collect { k, v -> "-D$k=$v" }.join(" "))
+                    mvnArgLine(get("downstreamMvnGoals") + " " + get("downstreamMvnProps").collect { k, v -> "-D$k=$v" }.join(" "))
                 }
             }
         }
