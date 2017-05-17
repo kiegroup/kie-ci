@@ -142,18 +142,11 @@ for (repoConfig in REPO_CONFIGS) {
             configure { project ->
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.UpstreamReposBuilder' {
                 }
-            }
-            maven {
-                mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
-                mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
-                goals("-e -fae -nsu -B -T1C clean install")
-                properties([
-                        "full"     : "true",
-                        "skipTests": "true"
-                ])
-
-            }
-            configure { project ->
+                project / 'builders' << 'hudson.tasks.Maven' {
+                    mavenName("apache-maven-${Constants.MAVEN_VERSION}")
+                    jvmOptions("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
+                    targets("-e -fae -nsu -B -T1C clean install -Dfull -DskipTests")
+                }
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
                     mvnArgLine(get("downstreamMvnGoals") + " " + get("downstreamMvnProps").collect { k, v -> "-D$k=$v" }.join(" "))
                 }
