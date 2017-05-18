@@ -22,11 +22,14 @@ def final DEFAULTS = [
         artifactsToArchive     : [
                 "**/target/testStatusListener*",
                 "**/target/screenshots/**",
-                "**/target/kie-wb-*.war",
-                "**/target/kie-drools-wb-*.war",
+                "**/target/kie-wb*wildfly*.war",
+                "**/target/kie-wb*eap*.war",
+                "**/target/kie-wb*tomcat*.war",
+                "**/target/kie-drools-wb*wildfly*.war",
+                "**/target/kie-drools-wb*eap*.war",
+                "**/target/kie-drools-wb*tomcat*.war"
         ]
 ]
-
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
         "uberfire"                  : [
