@@ -20,7 +20,7 @@ def final REPO_CONFIGS = [
                 ghOrgUnit              : "appformer",
                 label                  : "linux && mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=2",
-                ircNotificationChannels: ["#uberfire"],
+                ircNotificationChannels: ["#appformer"],
                 downstreamRepos        : ["dashbuilder"]
         ],
         "dashbuilder"               : [
