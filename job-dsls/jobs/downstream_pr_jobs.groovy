@@ -9,7 +9,7 @@ def final DEFAULTS = [
         branch                 : "master",
         timeoutMins            : 180,
         label                  : "rhel7 && mem16g",
-        downstreamMvnGoals     : "-e -nsu -fae -B -T1C -Pwildfly10 clean install",
+        downstreamMvnGoals     : "-e -nsu -fae -B -T1C -Pkie-wb,wildfly10 clean install",
         downstreamMvnProps     : [
                 "full"                               : "true",
                 "container"                          : "wildfly10",
