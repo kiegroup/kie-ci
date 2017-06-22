@@ -76,6 +76,7 @@ def final REPO_CONFIGS = [
         "kie-wb-distributions"      : [
                 label             : "linux && mem16g && gui-testing",
                 timeoutMins       : 120,
+                mvnGoals          : DEFAULTS["mvnGoals"] + " -Pkie-wb",
                 mvnProps          : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": 1,
                         "webdriver.firefox.bin"    : "/opt/tools/firefox-45esr/firefox-bin"
