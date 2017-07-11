@@ -60,27 +60,27 @@ sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie_copyBinarie
 """
 
 def ufDeploy="""
-sh \$WORKSPACE/scripts/uberfire/script/release/uf_createAnddeploy.sh
+sh \$WORKSPACE/scripts/uberfire/scripts/release/uf_createAndDeploy.sh
 """
 
 def ufPushTag="""
-sh \$WORKSPACE/scripts/uberfire/script/release/uf_pushTag.sh
+sh \$WORKSPACE/scripts/uberfire/scripts/release/uf_pushTag.sh
 """
 
 def ufUpdateVersion="""
-sh \$WORKSPACE/scripts/uberfire/script/release/uf_updateVersion.sh
+sh \$WORKSPACE/scripts/uberfire/scripts/release/uf_updateVersion.sh
 """
 
 def dashDeploy="""
-sh \$WORKSPACE/scripts/dashbuilder/script/release/dash_createAndDeploy.sh
+sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dash_createAndDeploy.sh
 """
 
 def dashPushTag="""
-sh \$WORKSPACE/scripts/dashbuilder/script/release/dash_pushTag.sh
+sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dash_pushTag.sh
 """
 
 def dashUpdateVersion="""
-sh \$WORKSPACE/scripts/dashbuilder/script/release/dash_updateVersion.sh
+sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dash_updateVersion.sh
 """
 
 
@@ -211,7 +211,7 @@ job("kie_${KIE_VERSION}_buildAndDeployLocally") {
 
 // ********************************************************************************
 
-job("kie_${KIE_VERSION}_copyArtifactsToNexus") {
+job("kie_${KIE_VERSION}_copyBinariesToNexus") {
 
     description("This job: <br> - copies binaries from local dir to Nexus <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
@@ -751,6 +751,7 @@ job("uf_${UF_VERSION}_release") {
             absolute(60)
         }
         timestamps()
+        preBuildCleanup()
         colorizeOutput()
         toolenv("${MAVEN}", "${JDK}")
     }
