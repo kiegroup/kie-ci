@@ -7,7 +7,7 @@ import org.kie.jenkins.jobdsl.Constants
 def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
         branch                 : "master",
-        timeoutMins            : 180,
+        timeoutMins            : 300,
         label                  : "rhel7 && mem16g",
         downstreamMvnGoals     : "-e -nsu -fae -B -T1C -Pkie-wb,wildfly10 clean install",
         downstreamMvnProps     : [
