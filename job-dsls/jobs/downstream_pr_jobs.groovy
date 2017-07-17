@@ -6,7 +6,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
-        branch                 : "master",
+        branch                 : "7.1.x",
         timeoutMins            : 300,
         label                  : "rhel7 && mem16g",
         downstreamMvnGoals     : "-e -nsu -fae -B -T1C -Pkie-wb,wildfly10 clean install",
@@ -34,9 +34,11 @@ def final DEFAULTS = [
 def final REPO_CONFIGS = [
         "uberfire"                  : [
                 ghOrgUnit: "appformer",
+                branch: "1.1.x"
         ],
         "dashbuilder"               : [
                 ghOrgUnit: "dashbuilder",
+                branch: "0.7.x"
         ],
         "droolsjbpm-build-bootstrap": [],
         "droolsjbpm-knowledge"      : [],
