@@ -4,20 +4,21 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
-        ghOrgUnit              : "kiegroup",
-        branch                 : "master",
-        timeoutMins            : 60,
-        label                  : "rhel7 && mem8g",
-        mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly10 clean install",
-        mvnProps               : [
+        ghOrgUnit                 : "kiegroup",
+        branch                    : "master",
+        timeoutMins               : 60,
+        label                     : "rhel7 && mem8g",
+        mvnGoals                  : "-e -nsu -fae -B -T1C -Pwildfly10 clean install",
+        mvnProps                  : [
                 "full"                     : "true",
                 "container"                : "wildfly10",
                 "container.profile"        : "wildfly10",
                 "integration-tests"        : "true",
                 "maven.test.failure.ignore": "true"],
-        ircNotificationChannels: [],
-        artifactsToArchive     : ["**/target/testStatusListener*"],
-        downstreamRepos        : []
+        ircNotificationChannels   : [],
+        artifactsToArchive        : ["**/target/testStatusListener*"],
+        autoExecuteDownstreamBuild: "true",
+        downstreamRepos           : []
 ]
 
 // override default config for specific repos (if needed)
@@ -37,7 +38,9 @@ def final REPO_CONFIGS = [
         "droolsjbpm-knowledge"      : [
                 label: "rhel7 && mem4g"
         ],
-        "drools"                    : [],
+        "drools"                    : [
+                "autoExecuteDownstreamBuild": "false"
+        ],
         "optaplanner"               : [],
         "jbpm"                      : [
                 timeoutMins: 120
@@ -45,7 +48,9 @@ def final REPO_CONFIGS = [
         "droolsjbpm-integration"    : [
                 timeoutMins: 120
         ],
-        "droolsjbpm-tools"          : [],
+        "droolsjbpm-tools"          : [
+                "autoExecuteDownstreamBuild": "false" // there is no downstream build for this repo
+        ],
         "kie-uberfire-extensions"   : [
                 label: "rhel7 && mem4g"
         ],
@@ -71,7 +76,8 @@ def final REPO_CONFIGS = [
                 label             : "rhel7 && mem4g",
                 artifactsToArchive: DEFAULTS["artifactsToArchive"] + [
                         "**/target/generated-docs/**"
-                ]
+                ],
+                "autoExecuteDownstreamBuild": "false" // there is no downstream build for this repo
         ],
         "kie-wb-distributions"      : [
                 label             : "linux && mem16g && gui-testing",
@@ -85,7 +91,8 @@ def final REPO_CONFIGS = [
                         "kie-wb-tests/kie-wb-tests-gui/target/screenshots/**",
                         "kie-wb/kie-wb-distribution-wars/target/kie-wb-*-wildfly10.war",
                         "kie-drools-wb/kie-drools-wb-distribution-wars/target/kie-drools-wb-*-wildfly10.war"
-                ]
+                ],
+                "autoExecuteDownstreamBuild": "false" // there is no downstream build for this repo
         ]
 ]
 
@@ -99,6 +106,7 @@ for (repoConfig in REPO_CONFIGS) {
 
     // jobs for master branch don't use the branch in the name
     String jobName = (repoBranch == "master") ? "$repo-pullrequests" : "$repo-pullrequests-$repoBranch"
+
     job(jobName) {
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
@@ -217,6 +225,16 @@ for (repoConfig in REPO_CONFIGS) {
                     'templateIds' {
                         'org.jenkinsci.plugins.emailext__template.TemplateId' {
                             'templateId'('emailext-template-1441717935622')
+                        }
+                    }
+                }
+            }
+            if (get("autoExecuteDownstreamBuild") == "true") {
+                String downstreamJobName = (repoBranch == "master") ? "$repo-downstream-pullrequests" : "$repo-downstream-pullrequests-$repoBranch"
+                downstreamParameterized {
+                    trigger(downstreamJobName) {
+                        parameters {
+                            currentBuild()
                         }
                     }
                 }
