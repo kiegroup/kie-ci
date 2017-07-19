@@ -144,14 +144,19 @@ for (repoConfig in REPO_CONFIGS) {
 
         steps {
             configure { project ->
-                project / "builders" << "org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder" {
-                    condition(class: "org.jenkins_ci.plugins.run_condition.core.CauseCondition") {
+                project / "builders" << "org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder" {
+                    runCondition(class: "org.jenkins_ci.plugins.run_condition.core.CauseCondition") {
                         buildCause("UPSTREAM_CAUSE")
                         exclusiveCause("false")
                     }
-                    buildStep(class: "com.cloudbees.jenkins.GitHubSetCommitStatusBuilder") {
-                        contextSource(class: "org.jenkinsci.plugins.github.status.sources.ManuallyEnteredCommitContextSource") {
-                            context(ghBuildContext)
+                    conditionalbuilders {
+                        "hudson.plugins.descriptionsetter.DescriptionSetterPublisher" {
+                            delegate.description("<a href=\"\${ghprbPullLink}\">PR #\${ghprbPullId}</a>: \${ghprbPullTitle}")
+                        }
+                        "com.cloudbees.jenkins.GitHubSetCommitStatusBuilder" {
+                            contextSource(class: "org.jenkinsci.plugins.github.status.sources.ManuallyEnteredCommitContextSource") {
+                                context(ghBuildContext)
+                            }
                         }
                     }
                     runner(class: "org.jenkins_ci.plugins.run_condition.BuildStepRunner\$Fail")
@@ -212,9 +217,7 @@ for (repoConfig in REPO_CONFIGS) {
                                     statusResultSource(class: "org.jenkinsci.plugins.github.status.sources.DefaultStatusResultSource")
                                     statusBackrefSource(class: "org.jenkinsci.plugins.github.status.sources.BuildRefBackrefSource")
                                 }
-                                "hudson.plugins.descriptionsetter.DescriptionSetterPublisher" {
-                                    delegate.description("<a href=\"\${ghprbPullLink}\">PR #\${ghprbPullId}</a>: \${ghprbPullTitle}")
-                                }
+
                             }
                         }
                     }
