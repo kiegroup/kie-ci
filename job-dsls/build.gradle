@@ -48,6 +48,7 @@ dependencies {
 
     // plugins to install in test instance (all plugins used by the DSL scripts needs to be specified)
     // keep the alphabetical order
+    testPlugins 'com.cloudbees.plugins:build-flow-plugin:0.20'
     testPlugins 'com.coravy.hudson.plugins.github:github:1.19.0'
     testPlugins 'com.sonyericsson.hudson.plugins.rebuild:rebuild:1.25'
     testPlugins 'com.synopsys.jenkinsci:ownership:0.9.1'
@@ -66,6 +67,7 @@ dependencies {
     testPlugins 'org.jenkins-ci.plugins:nested-view:1.14'
     testPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26'
     testPlugins 'org.jenkins-ci.plugins:script-security:1.27'
+    testPlugins 'org.jenkins-ci.plugins:throttle-concurrents:1.9.0'
     testPlugins 'org.jenkins-ci.plugins:timestamper:1.8.8'
     testPlugins 'org.jenkins-ci.plugins:token-macro:2.1'
     testPlugins 'org.jenkins-ci.plugins:ws-cleanup:0.32'

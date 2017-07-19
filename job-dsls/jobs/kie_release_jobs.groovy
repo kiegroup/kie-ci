@@ -1,8 +1,8 @@
 //Define Variables
 
-def KIE_VERSION="7.1.x"
-def UF_VERSION="1.1.x"
-def DASH_VERSION="0.7.x"
+def KIE_VERSION="7.2.x"
+def UF_VERSION="1.2.x"
+def DASH_VERSION="0.8.x"
 def JAVADK="jdk1.8"
 def JDK="JDK1_8"
 def MAVEN="APACHE_MAVEN_3_3_9"
