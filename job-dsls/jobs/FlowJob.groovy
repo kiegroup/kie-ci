@@ -40,7 +40,7 @@ ignore(UNSTABLE) {
     build("DashbuilderFor_kieAllBuild_${kieMainBranch}", dashbuilderVersion: "$dashbuilderVersion", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", dashbuilderBranch: "$dashbuilderBranch")
 }
 ignore(UNSTABLE) {
-    build("_kieAllBuild_${kieMainBranch}", kieVersion: "$kieVersion", dashbuilderVersion: "$dashbuilderVersion", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
+    build("kieAllBuild_${kieMainBranch}", kieVersion: "$kieVersion", dashbuilderVersion: "$dashbuilderVersion", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
 }
 
 
@@ -49,7 +49,7 @@ parallel (
             build("kieAllBuild_${kieMainBranch}_jbpmTestCoverageMatrix", kieVersion: "$kieVersion")
         },
         {
-            build("kieAllBuild_${kieMainBranch}_jbpmContainerTestMatrix", kieVersion: "$kieVersion")
+            build("kieAllBuild_${kieMainBranch}_jbpmTestContainerMatrix", kieVersion: "$kieVersion")
         },
         {
             build("kieAllBuild_${kieMainBranch}_kieWbTestsMatrix", kieVersion: "$kieVersion")
@@ -75,10 +75,10 @@ buildFlowJob("Trigger_kieAllBuild_${kieMainBranch}") {
 
     environmentVariables{
         groovy('''def date = new Date().format( 'yyyyMMdd-hhMMss' )
-def kieVersionPre = "7.1.0."
-def uberfireVersionPre = "1.1.0."
-def dashbuilderVersionPre = "0.7.0."
-def erraiVersionNewPre = "4.0.1."
+def kieVersionPre = "7.2.0."
+def uberfireVersionPre = "1.2.0."
+def dashbuilderVersionPre = "0.8.0."
+def erraiVersionNewPre = "4.0.2."
 return [kieVersion: kieVersionPre + date, uberfireVersion: uberfireVersionPre + date, dashbuilderVersion: dashbuilderVersionPre + date, erraiVersionNew:erraiVersionNewPre +date] ''')
     }
 
@@ -527,7 +527,7 @@ mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
 '''
 
-matrixJob("kieAllBuild_${kieMainBranch}_jbpmContainerTestMatrix") {
+matrixJob("kieAllBuild_${kieMainBranch}_jbpmTestContainerMatrix") {
     description("Version to test. Will be supplied by the parent job. Also used to donwload proper sources. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
@@ -768,8 +768,8 @@ listView("kieAllBuild ${kieMainBranch}"){
         name("UberfireFor_kieAllBuild_${kieMainBranch}")
         name("DashbuilderFor_kieAllBuild_${kieMainBranch}")
         name("kieAllBuild_${kieMainBranch}")
-        name("kieAllBuild_${kieMainBranch}_jbpmCoverageTestsMatrix")
-        name("kieAllBuild_${kieMainBranch}_jbpmContainerTestMatrix")
+        name("kieAllBuild_${kieMainBranch}_jbpmTestCoverageMatrix")
+        name("kieAllBuild_${kieMainBranch}_jbpmTestContainerMatrix")
         name("kieAllBuild_${kieMainBranch}_kieWbTestsMatrix")
         name("kieAllBuild_${kieMainBranch}_kieServerMatrix")
         }
