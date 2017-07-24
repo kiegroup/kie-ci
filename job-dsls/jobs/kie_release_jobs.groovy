@@ -44,7 +44,7 @@ sh \$WORKSPACE/droolsjbpm-build-bootstrap/script/release/kie_wbSmokeTestsMatrix.
 """
 
 def pushTags="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie_pushTags.sh
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie_pushTag.sh
 """
 
 def removeBranches="""
