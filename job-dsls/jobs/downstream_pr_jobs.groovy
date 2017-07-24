@@ -68,7 +68,6 @@ for (repoConfig in REPO_CONFIGS) {
 
     // jobs for master branch don't use the branch in the name
     String jobName = (repoBranch == "master") ? "$repo-downstream-pullrequests" : "$repo-downstream-pullrequests-$repoBranch"
-    String ghBuildContext = "Linux - full downstream"
     job(jobName) {
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
@@ -122,7 +121,7 @@ for (repoConfig in REPO_CONFIGS) {
                 whiteListTargetBranches([repoBranch])
                 extensions {
                     commitStatus {
-                        context(ghBuildContext)
+                        context('Linux - full downstream')
                         addTestResults(true)
                     }
 
@@ -144,31 +143,14 @@ for (repoConfig in REPO_CONFIGS) {
 
         steps {
             configure { project ->
-                project / "builders" << "org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder" {
-                    runCondition(class: "org.jenkins_ci.plugins.run_condition.core.CauseCondition") {
-                        buildCause("UPSTREAM_CAUSE")
-                        exclusiveCause("false")
-                    }
-                    conditionalbuilders {
-                        "hudson.plugins.descriptionsetter.DescriptionSetterPublisher" {
-                            delegate.description("<a href=\"\${ghprbPullLink}\">PR #\${ghprbPullId}</a>: \${ghprbPullTitle}")
-                        }
-                        "com.cloudbees.jenkins.GitHubSetCommitStatusBuilder" {
-                            contextSource(class: "org.jenkinsci.plugins.github.status.sources.ManuallyEnteredCommitContextSource") {
-                                context(ghBuildContext)
-                            }
-                        }
-                    }
-                    runner(class: "org.jenkins_ci.plugins.run_condition.BuildStepRunner\$Fail")
+                project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.UpstreamReposBuilder' {
                 }
-                project / "builders" << "org.kie.jenkinsci.plugins.kieprbuildshelper.UpstreamReposBuilder" {
-                }
-                project / "builders" << "hudson.tasks.Maven" {
+                project / 'builders' << 'hudson.tasks.Maven' {
                     mavenName("apache-maven-${Constants.MAVEN_VERSION}")
                     jvmOptions("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
                     targets("-e -fae -nsu -B -T1C clean install -Dfull -DskipTests")
                 }
-                project / "builders" << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
+                project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
                     mvnArgLine(get("downstreamMvnGoals") + " " + get("downstreamMvnProps").collect { k, v -> "-D$k=$v" }.join(" "))
                 }
             }
@@ -196,29 +178,6 @@ for (repoConfig in REPO_CONFIGS) {
                     'templateIds' {
                         'org.jenkinsci.plugins.emailext__template.TemplateId' {
                             'templateId'('emailext-template-1441717935622')
-                        }
-                    }
-                }
-                project / "publishers" << "org.jenkins__ci.plugins.flexible__publish.FlexiblePublisher" {
-                    publishers {
-                        "org.jenkins__ci.plugins.flexible__publish.ConditionalPublisher" {
-                            condition(class: "org.jenkins_ci.plugins.run_condition.core.CauseCondition") {
-                                buildCause("UPSTREAM_CAUSE")
-                                exclusiveCause("false")
-                            }
-                            publisherList {
-                                "org.jenkinsci.plugins.github.status.GitHubCommitStatusSetter" {
-                                    commitShaSource(class: "org.jenkinsci.plugins.github.status.sources.ManuallyEnteredShaSource") {
-                                        sha("\${ghprbActualCommit}")
-                                    }
-                                    contextSource(class: "org.jenkinsci.plugins.github.status.sources.ManuallyEnteredCommitContextSource") {
-                                        context(ghBuildContext)
-                                    }
-                                    statusResultSource(class: "org.jenkinsci.plugins.github.status.sources.DefaultStatusResultSource")
-                                    statusBackrefSource(class: "org.jenkinsci.plugins.github.status.sources.BuildRefBackrefSource")
-                                }
-
-                            }
                         }
                     }
                 }
