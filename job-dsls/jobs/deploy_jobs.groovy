@@ -4,7 +4,7 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
-        branch                 : "master",
+        branch                 : "6.5.x",
         timeoutMins            : 60,
         label                  : "rhel7 && mem8g",
         ghOrgUnit              : "kiegroup",
@@ -16,109 +16,136 @@ def final DEFAULTS = [
 
 // used to override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
-        "uberfire"                  : [
+        "uberfire"                     : [
                 ghOrgUnit              : "appformer",
+                branch                 : "0.9.x",
                 label                  : "linux && mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=2",
                 ircNotificationChannels: ["#appformer"],
-                downstreamRepos        : ["dashbuilder"]
+                downstreamRepos        : ["uberfire-extensions-0.9.x"]
         ],
-        "dashbuilder"               : [
+        "uberfire-extensions"          : [
+                ghOrgUnit              : "appformer",
+                branch                 : "0.9.x",
+                label                  : "linux && mem16g",
+                mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=2",
+                ircNotificationChannels: ["#appformer"],
+                downstreamRepos        : ["dashbuilder-0.5.x"]
+        ],
+        "dashbuilder"                  : [
                 ghOrgUnit              : "dashbuilder",
+                branch                 : "0.5.x",
                 label                  : "linux && mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=2",
                 ircNotificationChannels: ["#dashbuilder"],
-                downstreamRepos        : ["droolsjbpm-build-bootstrap"]
+                downstreamRepos        : ["droolsjbpm-build-bootstrap-6.5.x"]
         ],
-        "droolsjbpm-build-bootstrap": [
+        "droolsjbpm-build-bootstrap"   : [
                 timeoutMins            : 20,
                 label                  : "rhel7 && mem4g",
                 ircNotificationChannels: ["#logicabyss"],
-                downstreamRepos        : ["droolsjbpm-knowledge"]
+                downstreamRepos        : ["droolsjbpm-knowledge-6.5.x"]
         ],
-        "droolsjbpm-knowledge"      : [
+        "droolsjbpm-knowledge"         : [
                 timeoutMins            : 40,
                 ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["drools"]
+                downstreamRepos        : ["drools-6.5.x"]
         ],
-        "drools"                    : [
+        "drools"                       : [
                 ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["optaplanner", "jbpm"],
+                downstreamRepos        : ["optaplanner-6.5.x", "jbpm-6.5.x"],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
-        "optaplanner"               : [
+        "optaplanner"                  : [
                 ircNotificationChannels: ["#optaplanner-dev"],
-                downstreamRepos        : ["@optaplanner-wb"]
+                downstreamRepos        : ["droolsjbpm-integration-6.5.x", "optaplanner-wb-6.5.x"]
         ],
-        "jbpm"                      : [
+        "jbpm"                         : [
                 timeoutMins            : 120,
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly10",
                 ircNotificationChannels: ["#jbpmdev"],
-                downstreamRepos        : ["droolsjbpm-integration"]
+                downstreamRepos        : ["droolsjbpm-integration-6.5.x"]
         ],
-        "droolsjbpm-integration"    : [
+        "droolsjbpm-integration"       : [
                 timeoutMins            : 120,
                 ircNotificationChannels: ["#droolsdev", "#jbpmdev"],
-                downstreamRepos        : ["droolsjbpm-tools", "kie-uberfire-extensions"]
+                downstreamRepos        : ["droolsjbpm-tools-6.5.x", "kie-uberfire-extensions-6.5.x"]
         ],
-        "droolsjbpm-tools"          : [
+        "droolsjbpm-tools"             : [
                 ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : []
         ],
-        "kie-uberfire-extensions"   : [
+        "kie-uberfire-extensions"      : [
                 timeoutMins            : 40,
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["guvnor"]
+                downstreamRepos        : ["guvnor-6.5.x"]
         ],
-        "guvnor"                    : [
+        "guvnor"                       : [
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["kie-wb-playground"]
+                downstreamRepos        : ["kie-wb-common-6.5.x"]
         ],
-        "kie-wb-playground"         : [
-                ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["kie-wb-common"]
-        ],
-        "kie-wb-common"             : [
+        "kie-wb-common"                : [
                 label                  : "rhel7 && mem16g",
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-form-modeler"]
+                downstreamRepos        : ["jbpm-form-modeler-6.5.x"]
         ],
-        "jbpm-form-modeler"         : [
+        "jbpm-form-modeler"            : [
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["drools-wb"]
+                downstreamRepos        : ["drools-wb-6.5.x"]
         ],
-        "drools-wb"                 : [
+        "drools-wb"                    : [
                 label                  : "rhel7 && mem16g",
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-designer", "optaplanner-wb"]
+                downstreamRepos        : ["jbpm-designer-6.5.x"]
         ],
-        "optaplanner-wb"            : [
-                label                  : "rhel7 && mem16g",
-                ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-wb"]
-        ],
-        "jbpm-designer"             : [
+        "jbpm-designer"                : [
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=1",
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-wb"]
+                downstreamRepos        : ["jbpm-wb-6.5.x"]
         ],
-        "jbpm-wb"                   : [
+        "jbpm-wb"                      : [
                 label                  : "rhel7 && mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=1",
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["kie-wb-distributions", "kie-docs"]
+                downstreamRepos        : ["optaplanner-wb-6.5.x"]
         ],
-        "kie-docs"                  : [
+        "optaplanner-wb"               : [
+                label                  : "rhel7 && mem16g",
+                ircNotificationChannels: ["#guvnordev"],
+                downstreamRepos        : ["dashboard-builder-6.5.x"]
+        ],
+        "dashboard-builder"            : [
+                label                  : "rhel7 && mem8g",
+                ircNotificationChannels: ["#guvnordev"],
+                downstreamRepos        : ["jbpm-dashboard-6.5.x"]
+        ],
+        "jbpm-dashboard"               : [
+                label                  : "rhel7 && mem8g",
+                ircNotificationChannels: ["#guvnordev"],
+                downstreamRepos        : ["kie-wb-distributions-6.5.x, kie-docs-6.5.x"]
+        ],
+        "kie-docs"                     : [
                 ircNotificationChannels: ["#logicabyss"],
                 artifactsToArchive     : ["**/generated-docs/**"],
-                downstreamRepos        : ["kie-wb-distributions"]
+                downstreamRepos        : []
         ],
-        "kie-wb-distributions"      : [
+        "kie-wb-distributions"         : [
                 timeoutMins            : 120,
                 label                  : "rhel7 && mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=1 -Dwebdriver.firefox.bin=/opt/tools/firefox-38esr/firefox-bin -Pkie-wb,wildfly10",
                 ircNotificationChannels: ["#guvnordev"],
                 artifactsToArchive     : ["kie-wb-tests/kie-wb-tests-gui/target/screenshots/**"],
+                downstreamRepos        : ["droolsjbpm-build-distribution-6.5.x"]
+        ],
+        "droolsjbpm-build-distribution": [
+                label                  : "rhel7 && mem4g",
+                ircNotificationChannels: ["#logicabyss"],
+                downstreamRepos        : ["kie-eap-modules-6.5.x"]
+        ],
+        "kie-eap-modules"              : [
+                ghOrgUnit              : "jboss-integration",
+                label                  : "rhel7 && mem8g",
+                ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : []
         ]
 ]
@@ -167,7 +194,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        jdk("jdk1.8")
+        jdk("jdk1.7")
 
         label(get("label"))
 

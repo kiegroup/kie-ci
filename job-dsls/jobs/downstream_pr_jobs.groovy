@@ -6,7 +6,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
-        branch                 : "master",
+        branch                 : "6.5.x",
         timeoutMins            : 300,
         label                  : "rhel7 && mem16g",
         downstreamMvnGoals     : "-e -nsu -fae -B -T1C -Pkie-wb,wildfly10 clean install",
@@ -34,9 +34,15 @@ def final DEFAULTS = [
 def final REPO_CONFIGS = [
         "uberfire"                  : [
                 ghOrgUnit: "appformer",
+                branch   : "0.9.x",
+        ],
+        "uberfire-extensions"       : [
+                ghOrgUnit: "appformer",
+                branch   : "0.9.x",
         ],
         "dashbuilder"               : [
                 ghOrgUnit: "dashbuilder",
+                branch   : "0.5.x"
         ],
         "droolsjbpm-build-bootstrap": [],
         "droolsjbpm-knowledge"      : [],
@@ -44,18 +50,20 @@ def final REPO_CONFIGS = [
         "optaplanner"               : [],
         "jbpm"                      : [],
         "droolsjbpm-integration"    : [],
-        //"droolsjbpm-tools"          : [], // no other repo depends on droolsjbpm-tools
+        // no other repo depends on droolsjbpm-tools
         "kie-uberfire-extensions"   : [],
         "guvnor"                    : [],
-        "kie-wb-playground"         : [],
         "kie-wb-common"             : [],
         "jbpm-form-modeler"         : [],
         "drools-wb"                 : [],
-        "optaplanner-wb"            : [],
         "jbpm-designer"             : [],
         "jbpm-wb"                   : [],
-        //"kie-docs"                  : [], // no other repo depends on kie-docs
-        //"kie-wb-distributions"      : [] // kie-wb-distributions is the last repo in the chain
+        "optaplanner-wb"            : [],
+        "dashboard-builder"         : []
+        // no other repo depends on jbpm-dashboard
+        // no other repo depends on kie-docs
+        // no other repo depends on kie-wb-distributions
+        // no other repo depends on kie-eap-modules
 ]
 
 
@@ -107,7 +115,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        jdk("jdk1.8")
+        jdk("jdk1.7")
 
         label(get("label"))
 

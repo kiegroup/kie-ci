@@ -5,7 +5,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
-        branch                 : "master",
+        branch                 : "6.5.x",
         timeoutMins            : 60,
         label                  : "rhel7 && mem8g",
         mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly10 clean install",
@@ -22,58 +22,65 @@ def final DEFAULTS = [
 
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
-        "uberfire"                  : [
+        "uberfire"                     : [
                 ghOrgUnit: "appformer",
+                branch   : "0.9.x",
                 label    : "rhel7 && mem16g"
         ],
-        "dashbuilder"               : [
+        "uberfire-extensions"          : [
+                ghOrgUnit: "appformer",
+                branch   : "0.9.x",
+                label    : "rhel7 && mem16g"
+        ],
+        "dashbuilder"                  : [
                 ghOrgUnit: "dashbuilder",
                 label    : "rhel7 && mem16g"
         ],
-        "droolsjbpm-build-bootstrap": [
+        "droolsjbpm-build-bootstrap"   : [
                 timeoutMins: 30,
                 label      : "rhel7 && mem4g"
         ],
-        "droolsjbpm-knowledge"      : [
+        "droolsjbpm-knowledge"         : [
                 label: "rhel7 && mem4g"
         ],
-        "drools"                    : [],
-        "optaplanner"               : [],
-        "jbpm"                      : [
+        "drools"                       : [],
+        "optaplanner"                  : [],
+        "jbpm"                         : [
                 timeoutMins: 120
         ],
-        "droolsjbpm-integration"    : [
+        "droolsjbpm-integration"       : [
                 timeoutMins: 120
         ],
-        "droolsjbpm-tools"          : [],
-        "kie-uberfire-extensions"   : [
+        "droolsjbpm-tools"             : [],
+        "kie-uberfire-extensions"      : [
                 label: "rhel7 && mem4g"
         ],
-        "guvnor"                    : [],
-        "kie-wb-playground"         : [
-                label: "rhel7 && mem4g"
-        ],
-        "kie-wb-common"             : [
+        "guvnor"                       : [],
+        "kie-wb-common"                : [
                 label: "rhel7 && mem16g"
         ],
-        "jbpm-form-modeler"         : [],
-        "drools-wb"                 : [
+        "jbpm-form-modeler"            : [],
+        "drools-wb"                    : [
                 label: "rhel7 && mem16g"
         ],
-        "optaplanner-wb"            : [],
-        "jbpm-designer"             : [
+        "jbpm-designer"                : [
                 label: "rhel7 && mem16g"
         ],
-        "jbpm-wb"                   : [
+        "jbpm-wb"                      : [
                 label: "rhel7 && mem16g"
         ],
-        "kie-docs"                  : [
+        "optaplanner-wb"               : [
+                label: "rhel7 && mem16g",
+        ],
+        "dashboard-builder"            : [],
+        "jbpm-dashboard"               : [],
+        "kie-docs"                     : [
                 label             : "rhel7 && mem4g",
                 artifactsToArchive: DEFAULTS["artifactsToArchive"] + [
                         "**/target/generated-docs/**"
                 ]
         ],
-        "kie-wb-distributions"      : [
+        "kie-wb-distributions"         : [
                 label             : "linux && mem16g && gui-testing",
                 timeoutMins       : 120,
                 mvnGoals          : DEFAULTS["mvnGoals"] + " -Pkie-wb",
@@ -86,6 +93,10 @@ def final REPO_CONFIGS = [
                         "kie-wb/kie-wb-distribution-wars/target/kie-wb-*-wildfly10.war",
                         "kie-drools-wb/kie-drools-wb-distribution-wars/target/kie-drools-wb-*-wildfly10.war"
                 ]
+        ],
+        "droolsjbpm-build-distribution": [],
+        "kie-eap-modules"              : [
+                ghOrgUnit: "jboss-integration",
         ]
 ]
 
@@ -138,7 +149,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        jdk("jdk1.8")
+        jdk("jdk1.7")
 
         label(get("label"))
 
@@ -158,9 +169,9 @@ for (repoConfig in REPO_CONFIGS) {
                             completedStatus("SUCCESS",
                                     """|Build successful! See generated HTML docs:
                                        |
-                                       |\$BUILD_URL/artifact/docs/drools-docs/target/generated-docs/html_single/index.html
-                                       |\$BUILD_URL/artifact/docs/jbpm-docs/target/generated-docs/html_single/index.html
-                                       |\$BUILD_URL/artifact/docs/optaplanner-wb-es-docs//target/generated-docs/html_single/index.html
+                                       |\$BUILD_URL/artifact/drools-docs/target/docbook/publish/en-US/html_single/index.html
+                                       |\$BUILD_URL/artifact/jbpm-docs/target/docbook/publish/en-US/html_single/index.html
+                                       |\$BUILD_URL/artifact/optaplanner-wb-es-docs//target/generated-docs/html_single/index.html
                                        |""".stripMargin())
                         }
                     }
