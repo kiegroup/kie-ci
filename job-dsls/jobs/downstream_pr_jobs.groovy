@@ -76,6 +76,7 @@ for (repoConfig in REPO_CONFIGS) {
 
     // jobs for master branch don't use the branch in the name
     String jobName = (repoBranch == "master") ? "$repo-downstream-pullrequests" : "$repo-downstream-pullrequests-$repoBranch"
+    String ghBuildContext = "Linux - full downstream"
     job(jobName) {
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
@@ -129,7 +130,7 @@ for (repoConfig in REPO_CONFIGS) {
                 whiteListTargetBranches([repoBranch])
                 extensions {
                     commitStatus {
-                        context('Linux - full downstream')
+                        context(ghBuildContext)
                         addTestResults(true)
                     }
 
@@ -147,6 +148,10 @@ for (repoConfig in REPO_CONFIGS) {
             }
             timestamps()
             colorizeOutput()
+            downstreamCommitStatus {
+                context(ghBuildContext)
+                addTestResults(true)
+            }
         }
 
         steps {
