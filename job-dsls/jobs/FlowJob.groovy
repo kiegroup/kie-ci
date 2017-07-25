@@ -10,7 +10,7 @@ def kieMainBranch="master"
 def erraiBranch="master"
 def uberfireBranch="master"
 def dashbuilderBranch="master"
-def erraiVersionOld="4.0.2-SNAPSHOT"
+def erraiVersionOld="4.1.0-SNAPSHOT"
 
 // definition of flow script
 
@@ -75,9 +75,9 @@ buildFlowJob("Trigger_kieAllBuild_${kieMainBranch}") {
 
     environmentVariables{
         groovy('''def date = new Date().format( 'yyyyMMdd-hhMMss' )
-def kieVersionPre = "7.2.0."
-def uberfireVersionPre = "1.2.0."
-def dashbuilderVersionPre = "0.8.0."
+def kieVersionPre = "8.0.0."
+def uberfireVersionPre = "2.0.0."
+def dashbuilderVersionPre = "1.0.0."
 def erraiVersionNewPre = "4.0.2."
 return [kieVersion: kieVersionPre + date, uberfireVersion: uberfireVersionPre + date, dashbuilderVersion: dashbuilderVersionPre + date, erraiVersionNew:erraiVersionNewPre +date] ''')
     }
@@ -108,7 +108,7 @@ return [kieVersion: kieVersionPre + date, uberfireVersion: uberfireVersionPre + 
 // ++++++++++++++++++++++++++++++++++++++++++ Build and deploys errai ++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // definition of errai script
-def erraiVersionBuild='''#!/bin/bash
+def erraiVersionBuild='''#!/bin/bash -e
 # removing UF and errai artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
 rm -rf $MAVEN_REPO_LOCAL/org/jboss/errai/
@@ -190,7 +190,7 @@ job("ErraiFor_kieAllBuild_${kieMainBranch}") {
 // ++++++++++++++++++++++++++++++++++++++ Builds and deploys uberfire ++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // definition of uberfire script
-def uberfireVersionBuild='''#!/bin/bash
+def uberfireVersionBuild='''#!/bin/bash -e
 # removing uberfire artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
     rm -rf $MAVEN_REPO_LOCAL/org/uberfire/
@@ -272,7 +272,7 @@ job("UberfireFor_kieAllBuild_${kieMainBranch}") {
 // ++++++++++++++++++++++++++++++++++++++++ Builds and deploys dashbuilder +++++++++++++++++++++++++++++++++++++++++++++
 
 // definition of dashbuilder script
-def dashbuilderVersionBuild='''#!/bin/bash
+def dashbuilderVersionBuild='''#!/bin/bash -e
 # removing dashbuilder artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
     rm -rf $MAVEN_REPO_LOCAL/org/dashbuilder/
@@ -356,7 +356,7 @@ job("DashbuilderFor_kieAllBuild_${kieMainBranch}") {
 // +++++++++++++++++++++++++++++++++++++++++++ Build and deploy kie ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // definition of kie build  script
-def kieVersionBuild='''#!/bin/bash
+def kieVersionBuild='''#!/bin/bash -e
 # removing KIE artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
     rm -rf $MAVEN_REPO_LOCAL/org/jboss/dashboard-builder/
@@ -455,7 +455,7 @@ job("kieAllBuild_${kieMainBranch}") {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // definition of jbpmTestCoverageMatrix test
-def jbpmTestCoverage='''#!/bin/bash
+def jbpmTestCoverage='''#!/bin/bash -e
 STAGING_REP=kie-internal-group
 echo "KIE version: $kieVersion"
 # wget the tar.gz sources
@@ -518,7 +518,7 @@ matrixJob("kieAllBuild_${kieMainBranch}_jbpmTestCoverageMatrix") {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // run additional test: jbpmContainerTestMatrix test
-def jbpmContainerTest='''#!/bin/bash
+def jbpmContainerTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
 wget -q https://repository.jboss.org/nexus/content/repositories/kie-internal-group/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
@@ -591,7 +591,7 @@ matrixJob("kieAllBuild_${kieMainBranch}_jbpmTestContainerMatrix") {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  run additional test: kieWbTestsMatrix
-def kieWbTest='''#!/bin/bash
+def kieWbTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
 wget -q https://repository.jboss.org/nexus/content/repositories/kie-internal-group/org/kie/kie-wb-distributions/$kieVersion/\\
@@ -684,7 +684,7 @@ matrixJob("kieAllBuild_${kieMainBranch}_kieWbTestsMatrix") {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  run additional test: kieServerMatrix
-def kieServerTest='''#!/bin/bash
+def kieServerTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
 wget -q https://repository.jboss.org/nexus/content/repositories/kie-internal-group/org/drools/droolsjbpm-integration/$kieVersion/\\
@@ -758,6 +758,80 @@ matrixJob("kieAllBuild_${kieMainBranch}_kieServerMatrix") {
     }
 }
 
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  run additional test: kieAlBuild-windows
+
+def windowsTests='''set repo_list=droolsjbpm-build-bootstrap droolsjbpm-knowledge drools optaplanner jbpm droolsjbpm-integration droolsjbpm-tools kie-uberfire-extensions guvnor kie-wb-common jbpm-form-modeler drools-wb jbpm-designer jbpm-console-ng optaplanner-wb kie-wb-distributions
+for %%x in (%repo_list%) do (
+    if "%%x" == "kie-wb-common" (
+        rem clone the kie-wb-common into directory with shortest name possible to avoid long path issues
+        git clone --depth 10 https://github.com/kiegroup/%%x.git k
+    ) else (
+        git clone --depth 10 https://github.com/kiegroup/%%x.git
+    )
+)
+for %%x in (%repo_list%) do (
+    if "%%x" == "kie-wb-common" (
+        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f k\\pom.xml clean install -Dfull -T1C -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 || exit \\b
+    ) else (
+        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f %%x\\pom.xml clean install -Dfull -T1C -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 -Dgwt.compiler.skip=true || exit \\b
+    )
+)'''
+
+job("kieAllBuild_windows_${kieMainBranch}") {
+    description("Builds all repos specified in\n" +
+            "<a href=\"https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/script/repository-list.txt\">repository-list.txt</a> (master branch) on Windows machine.\n" +
+            "It does not deploy the artifacts to staging repo (or any other remote). It just checks our repositories can be build and tested on Windows, so that \n" +
+            "contributors do not hit issues when using Windows machines for development.<br/>\n" +
+            "<br/>\n" +
+            "<b>Important:</b> the workspace is under c:\\x, instead of c:\\jenkins\\workspace\\kie-all-build-windows-master. This is to decrease the path prefix as much as possible\n" +
+            "to avoid long path issues on Windows (limit there is 260 chars).")
+
+    label("windows")
+
+    logRotator {
+        numToKeep(10)
+    }
+
+    jdk("${javadk}")
+
+    wrappers {
+        timeout {
+            absolute(300)
+        }
+        timestamps()
+        colorizeOutput()
+        preBuildCleanup()
+    }
+
+    triggers {
+        cron("H 22 * * *")
+    }
+
+    publishers {
+        archiveJunit("**/target/*-reports/TEST-*.xml")
+        mailer('mbiarnes@redhat.com', false, false)
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+                username 'jenkins'
+            }
+        }
+    }
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_OPTS : "-Xms2g -Xmx3g")
+        }
+        shell(windowsTests)
+    }
+
+
+}
 // **************************** VIEW to create on JENKINS CI *******************************************
 
 listView("kieAllBuild ${kieMainBranch}"){
@@ -772,6 +846,7 @@ listView("kieAllBuild ${kieMainBranch}"){
         name("kieAllBuild_${kieMainBranch}_jbpmTestContainerMatrix")
         name("kieAllBuild_${kieMainBranch}_kieWbTestsMatrix")
         name("kieAllBuild_${kieMainBranch}_kieServerMatrix")
+        name("kieAllBuild_windows_${kieMainBranch}")
         }
 	columns {
             status()
