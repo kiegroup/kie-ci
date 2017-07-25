@@ -15,9 +15,9 @@ def final DEFAULTS = [
                 "container.profile"        : "wildfly10",
                 "integration-tests"        : "true",
                 "maven.test.failure.ignore": "true"],
-        ircNotificationChannels: [],
-        artifactsToArchive     : ["**/target/testStatusListener*"],
-        downstreamRepos        : []
+        ircNotificationChannels   : [],
+        artifactsToArchive        : ["**/target/testStatusListener*"],
+        autoExecuteDownstreamBuild: "true"
 ]
 
 // override default config for specific repos (if needed)
@@ -47,7 +47,9 @@ def final REPO_CONFIGS = [
         "droolsjbpm-integration"    : [
                 timeoutMins: 120
         ],
-        "droolsjbpm-tools"          : [],
+        "droolsjbpm-tools"          : [
+                "autoExecuteDownstreamBuild": "false" // there is no downstream build for this repo
+        ],
         "kie-uberfire-extensions"   : [
                 label: "rhel7 && mem4g"
         ],
@@ -73,7 +75,8 @@ def final REPO_CONFIGS = [
                 label             : "rhel7 && mem4g",
                 artifactsToArchive: DEFAULTS["artifactsToArchive"] + [
                         "**/target/generated-docs/**"
-                ]
+                ],
+                "autoExecuteDownstreamBuild": "false" // there is no downstream build for this repo
         ],
         "kie-wb-distributions"      : [
                 label             : "linux && mem16g && gui-testing",
@@ -87,7 +90,8 @@ def final REPO_CONFIGS = [
                         "kie-wb-tests/kie-wb-tests-gui/target/screenshots/**",
                         "kie-wb/kie-wb-distribution-wars/target/kie-wb-*-wildfly10.war",
                         "kie-drools-wb/kie-drools-wb-distribution-wars/target/kie-drools-wb-*-wildfly10.war"
-                ]
+                ],
+                "autoExecuteDownstreamBuild": "false" // there is no downstream build for this repo
         ]
 ]
 
@@ -149,6 +153,7 @@ for (repoConfig in REPO_CONFIGS) {
                 orgWhitelist(["appformer", "dashbuilder", "kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
                 cron("H/5 * * * *")
+                displayBuildErrorsOnDownstreamBuilds(true)
                 whiteListTargetBranches([repoBranch])
                 extensions {
                     commitStatus {
@@ -214,6 +219,17 @@ for (repoConfig in REPO_CONFIGS) {
                     onlyIfSuccessful(false)
                 }
             }
+            if (get("autoExecuteDownstreamBuild") == "true") {
+                String downstreamJobName = (repoBranch == "master") ? "$repo-downstream-pullrequests" : "$repo-downstream-pullrequests-$repoBranch"
+                downstreamParameterized {
+                    trigger(downstreamJobName) {
+                        parameters {
+                            currentBuild()
+                        }
+                    }
+                }
+            }
+
             configure { project ->
                 project / 'publishers' << 'org.jenkinsci.plugins.emailext__template.ExtendedEmailTemplatePublisher' {
                     'templateIds' {
