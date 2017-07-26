@@ -108,7 +108,7 @@ return [kieVersion: kieVersionPre + date, uberfireVersion: uberfireVersionPre + 
 // ++++++++++++++++++++++++++++++++++++++++++ Build and deploys errai ++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // definition of errai script
-def erraiVersionBuild='''#!/bin/bash
+def erraiVersionBuild='''#!/bin/bash -e
 # removing UF and errai artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
 rm -rf $MAVEN_REPO_LOCAL/org/jboss/errai/
@@ -190,7 +190,7 @@ job("ErraiFor_kieAllBuild_${kieMainBranch}") {
 // ++++++++++++++++++++++++++++++++++++++ Builds and deploys uberfire ++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // definition of uberfire script
-def uberfireVersionBuild='''#!/bin/bash
+def uberfireVersionBuild='''#!/bin/bash -e
 # removing uberfire artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
     rm -rf $MAVEN_REPO_LOCAL/org/uberfire/
@@ -272,7 +272,7 @@ job("UberfireFor_kieAllBuild_${kieMainBranch}") {
 // ++++++++++++++++++++++++++++++++++++++++ Builds and deploys dashbuilder +++++++++++++++++++++++++++++++++++++++++++++
 
 // definition of dashbuilder script
-def dashbuilderVersionBuild='''#!/bin/bash
+def dashbuilderVersionBuild='''#!/bin/bash -e
 # removing dashbuilder artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
     rm -rf $MAVEN_REPO_LOCAL/org/dashbuilder/
@@ -356,7 +356,7 @@ job("DashbuilderFor_kieAllBuild_${kieMainBranch}") {
 // +++++++++++++++++++++++++++++++++++++++++++ Build and deploy kie ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // definition of kie build  script
-def kieVersionBuild='''#!/bin/bash
+def kieVersionBuild='''#!/bin/bash -e
 # removing KIE artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
     rm -rf $MAVEN_REPO_LOCAL/org/jboss/dashboard-builder/
@@ -455,7 +455,7 @@ job("kieAllBuild_${kieMainBranch}") {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // definition of jbpmTestCoverageMatrix test
-def jbpmTestCoverage='''#!/bin/bash
+def jbpmTestCoverage='''#!/bin/bash -e
 STAGING_REP=kie-internal-group
 echo "KIE version: $kieVersion"
 # wget the tar.gz sources
@@ -518,7 +518,7 @@ matrixJob("kieAllBuild_${kieMainBranch}_jbpmTestCoverageMatrix") {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // run additional test: jbpmContainerTestMatrix test
-def jbpmContainerTest='''#!/bin/bash
+def jbpmContainerTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
 wget -q https://repository.jboss.org/nexus/content/repositories/kie-internal-group/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
@@ -591,7 +591,7 @@ matrixJob("kieAllBuild_${kieMainBranch}_jbpmTestContainerMatrix") {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  run additional test: kieWbTestsMatrix
-def kieWbTest='''#!/bin/bash
+def kieWbTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
 wget -q https://repository.jboss.org/nexus/content/repositories/kie-internal-group/org/kie/kie-wb-distributions/$kieVersion/\\
@@ -684,7 +684,7 @@ matrixJob("kieAllBuild_${kieMainBranch}_kieWbTestsMatrix") {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  run additional test: kieServerMatrix
-def kieServerTest='''#!/bin/bash
+def kieServerTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
 wget -q https://repository.jboss.org/nexus/content/repositories/kie-internal-group/org/drools/droolsjbpm-integration/$kieVersion/\\
