@@ -4,7 +4,7 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
-        branch                 : "master",
+        branch                 : "7.2.x",
         timeoutMins            : 60,
         label                  : "rhel7 && mem8g",
         ghOrgUnit              : "kiegroup",
@@ -19,12 +19,14 @@ def final REPO_CONFIGS = [
         "uberfire"                  : [
                 ghOrgUnit              : "appformer",
                 label                  : "linux && mem16g",
+                branch                 : "1.2.x",
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=2",
                 ircNotificationChannels: ["#appformer"],
                 downstreamRepos        : ["dashbuilder"]
         ],
         "dashbuilder"               : [
                 ghOrgUnit              : "dashbuilder",
+                branch                 : "0.8.x",
                 label                  : "linux && mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=2",
                 ircNotificationChannels: ["#dashbuilder"],

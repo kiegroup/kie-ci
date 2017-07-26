@@ -6,10 +6,10 @@ def mvnVersion="APACHE_MAVEN_3_3_9"
 def mvnVersionTest="apache-maven-3.3.9"
 def mvnHome="${mvnVersion}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
-def kieMainBranch="master"
-def erraiBranch="master"
-def uberfireBranch="master"
-def dashbuilderBranch="master"
+def kieMainBranch="7.2.x"
+def erraiBranch="4.0.x"
+def uberfireBranch="1.2.x"
+def dashbuilderBranch="0.8.x"
 def erraiVersionOld="4.0.2-SNAPSHOT"
 
 // definition of flow script
@@ -758,6 +758,81 @@ matrixJob("kieAllBuild_${kieMainBranch}_kieServerMatrix") {
     }
 }
 
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  run additional test: kieAlBuild-windows
+
+def windowsTests='''set repo_list=droolsjbpm-build-bootstrap droolsjbpm-knowledge drools optaplanner jbpm droolsjbpm-integration droolsjbpm-tools kie-uberfire-extensions guvnor kie-wb-common jbpm-form-modeler drools-wb jbpm-designer jbpm-console-ng optaplanner-wb kie-wb-distributions
+for %%x in (%repo_list%) do (
+    if "%%x" == "kie-wb-common" (
+        rem clone the kie-wb-common into directory with shortest name possible to avoid long path issues
+        git clone --depth 10 https://github.com/kiegroup/%%x.git k
+    ) else (
+        git clone --depth 10 https://github.com/kiegroup/%%x.git
+    )
+)
+for %%x in (%repo_list%) do (
+    if "%%x" == "kie-wb-common" (
+        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f k\\pom.xml clean install -Dfull -T1C -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 || exit \\b
+    ) else (
+        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f %%x\\pom.xml clean install -Dfull -T1C -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 -Dgwt.compiler.skip=true || exit \\b
+    )
+)'''
+
+job("kieAllBuild_windows_${kieMainBranch}") {
+    description("Builds all repos specified in\n" +
+            "<a href=\"https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/script/repository-list.txt\">repository-list.txt</a> (master branch) on Windows machine.\n" +
+            "It does not deploy the artifacts to staging repo (or any other remote). It just checks our repositories can be build and tested on Windows, so that \n" +
+            "contributors do not hit issues when using Windows machines for development.<br/>\n" +
+            "<br/>\n" +
+            "<b>Important:</b> the workspace is under c:\\x, instead of c:\\jenkins\\workspace\\kie-all-build-windows-master. This is to decrease the path prefix as much as possible\n" +
+            "to avoid long path issues on Windows (limit there is 260 chars).")
+
+    label("windows")
+
+    logRotator {
+        numToKeep(10)
+    }
+
+    jdk("${javadk}")
+
+    wrappers {
+        timeout {
+            absolute(300)
+        }
+        timestamps()
+        colorizeOutput()
+        preBuildCleanup()
+    }
+
+    triggers {
+        cron("H 22 * * *")
+    }
+
+    publishers {
+        archiveJunit("**/target/*-reports/TEST-*.xml")
+        mailer('mbiarnes@redhat.com', false, false)
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+                username 'jenkins'
+            }
+        }
+    }
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_OPTS : "-Xms2g -Xmx3g")
+        }
+        shell(windowsTests)
+    }
+
+
+}
+
 // **************************** VIEW to create on JENKINS CI *******************************************
 
 listView("kieAllBuild ${kieMainBranch}"){
@@ -772,6 +847,7 @@ listView("kieAllBuild ${kieMainBranch}"){
         name("kieAllBuild_${kieMainBranch}_jbpmTestContainerMatrix")
         name("kieAllBuild_${kieMainBranch}_kieWbTestsMatrix")
         name("kieAllBuild_${kieMainBranch}_kieServerMatrix")
+        name("kieAllBuild_windows_${kieMainBranch}")
         }
 	columns {
             status()

@@ -8,9 +8,9 @@ def JDK="JDK1_8"
 def MAVEN="APACHE_MAVEN_3_3_9"
 def MVNHOME="${MAVEN}_HOME"
 def MVNOPTS="-Xms2g -Xmx3g"
-def KIE_MAIN_BRANCH="master"
-def UF_MAIN_BRANCH="master"
-def DASH_MAIN_BRANCH="master"
+def KIE_MAIN_BRANCH="7.2.x"
+def UF_MAIN_BRANCH="1.2.x"
+def DASH_MAIN_BRANCH="0.8.x"
 def ORGANIZATION="kiegroup"
 def UF_ORGANIZATION="AppFormer"
 def DASH_ORGANIZATION="dashbuilder"
@@ -29,17 +29,17 @@ sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie_copyBinarie
 """
 
 def jbpmTestCoverageMatrix="""
-git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b master
+git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b 7.2.x
 sh \$WORKSPACE/droolsjbpm-build-bootstrap/script/release/kie_jbpmTestCoverMartix.sh
 """
 
 def kieAllServerMatrix="""
-git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b master
+git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b 7.2.x
 sh \$WORKSPACE/droolsjbpm-build-bootstrap/script/release/kie_allServerMatrix.sh
 """
 
 def kieWbSmokeTestsMatrix="""
-git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b master
+git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b 7.2.x
 sh \$WORKSPACE/droolsjbpm-build-bootstrap/script/release/kie_wbSmokeTestsMatrix.sh
 """
 
@@ -92,7 +92,7 @@ job("kie_${KIE_VERSION}_createAndPushReleaseBranches") {
 
     parameters {
         choiceParam("TARGET", ["community", "productized"], "please select if this release is for community: <b> community </b><br>or<br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
-        choiceParam("SOURCE", ["community-branch", "community-tag", "production-tag"], " please select the source of this release <br> or it is the master branch ( <b> community-branch </b> ) <br> or a community tag ( <b> community-tag </b> ) <br> or a productization tag ( <b> production-tag </b> ) <br> ******************************************************** <br> ")
+        choiceParam("SOURCE", ["community-branch", "community-tag", "production-tag"], " please select the source of this release <br> or it is the 7.2.x branch ( <b> community-branch </b> ) <br> or a community tag ( <b> community-tag </b> ) <br> or a productization tag ( <b> production-tag </b> ) <br> ******************************************************** <br> ")
         stringParam("TAG", "tag", "if you selected as <b> SOURCE=community-tag </b> or <b> SOURCE=production-tag </b> please edit the name of the tag <br> if selected as <b> SOURCE=community-branch </b> the parameter <b> TAG </b> will be ignored <br> The tag should typically look like <b> major.minor.micro.<extension> </b>(7.1.0.Beta1) for <b> community </b> or <b> sync-major.minor.x-<yyyy.mm.dd> (sync-7.1.x-2017.05.14)  </b> for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("RELEASE_VERSION", "release version", "please edit the version for this release <br> The <b> RELEASE_VERSION </b> should typically look like <b> major.minor.micro.<extension></b> (7.1.0.Beta1) for <b> community </b> or <b> major.minor.micro.<yyymmdd>-productization</b> (7.1.0.20170514-productized) for <b> productization </b> <br>******************************************************** <br> ")
         stringParam("BASE_BRANCH", "base branch", "please select the base branch <br> ******************************************************** <br> ")
@@ -600,7 +600,7 @@ job("kie_${KIE_VERSION}_updateToNextDevelopmentVersion") {
     description("This job: <br> updates the KIE repositories to a new developmenmt version <br> for 7.1.x </br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        stringParam("BASE_BRANCH","master","Branch you want to upgrade")
+        stringParam("BASE_BRANCH","7.2.x","Branch you want to upgrade")
         stringParam("newVersion", "new KIE version", "Edit the KIE development version")
         stringParam("UF_DEVEL_VERSION", "uberfire version", "Edit the uberfire development version")
         stringParam("DASHB_DEVEL_VERSION", "dashbuilder version", "Edit the dashbuilder development version")
