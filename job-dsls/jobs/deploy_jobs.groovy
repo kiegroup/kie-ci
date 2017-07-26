@@ -50,7 +50,7 @@ def final REPO_CONFIGS = [
         ],
         "optaplanner"               : [
                 ircNotificationChannels: ["#optaplanner-dev"],
-                downstreamRepos        : ["@optaplanner-wb"]
+                downstreamRepos        : ["optaplanner-wb"]
         ],
         "jbpm"                      : [
                 timeoutMins            : 120,
@@ -231,9 +231,17 @@ for (repoConfig in REPO_CONFIGS) {
 
             def downstreamRepos = get("downstreamRepos")
             if (downstreamRepos) {
-                downstream(downstreamRepos, 'UNSTABLE')
+                def jobNames = downstreamRepos.collect { downstreamRepo ->
+                    if (repoBranch == "master") {
+                        downstreamRepo
+                    } else {
+                        // non-master job names are in the format <repo>-<branch>
+                        def downstreamRepoBranch = REPO_CONFIGS.get(downstreamRepo).get("branch", DEFAULTS["branch"])
+                        "$downstreamRepo-$downstreamRepoBranch"
+                    }
+                }
+                downstream(jobNames, 'UNSTABLE')
             }
-
         }
     }
 }
