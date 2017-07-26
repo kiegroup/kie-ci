@@ -29,7 +29,7 @@ def final REPO_CONFIGS = [
         ],
         "dashbuilder"               : [
                 ghOrgUnit: "dashbuilder",
-                branch   : "0.8.x"
+                branch   : "0.8.x",
                 label    : "rhel7 && mem16g"
         ],
         "droolsjbpm-build-bootstrap": [
