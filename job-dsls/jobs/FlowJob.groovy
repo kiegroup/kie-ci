@@ -395,7 +395,9 @@ DEPLOY_DIR=$WORKSPACE/deploy-dir
  -Dgwt.memory.settings="-Xmx4g -Xms1g -Xss1M"
 # (2) upload the content to remote staging repo
 mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
- -DrepositoryDirectory=$DEPLOY_DIR -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie $kieVersion" -DstagingProgressTimeoutMinutes=40'''
+ -DrepositoryDirectory=$DEPLOY_DIR -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie $kieVersion" -DstagingProgressTimeoutMinutes=40
+# creates a file (list) of the last commit hash of each repository as handover for prod
+./droolsjbpm-build-bootstrap/script/git-all.sh log -1 --pretty=oneline >> git-commit-hashes.txt'''
 
 job("kieAllBuild_${kieMainBranch}") {
     description("Upgrades and builds the kie version")
@@ -432,6 +434,10 @@ job("kieAllBuild_${kieMainBranch}") {
 
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml")
+        archiveArtifacts{
+            onlyIfSuccessful(true)
+            pattern("**/git-commit-hashes.txt")
+        }
         mailer('bsig@redhat.com', false, false)
     }
 
