@@ -432,7 +432,7 @@ job("kieAllBuild_${kieMainBranch}") {
 
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml")
-        mailer('mbiarnes@redhat.com', false, false)
+        mailer('bsig@redhat.com', false, false)
     }
 
     configure { project ->
