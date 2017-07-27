@@ -835,7 +835,7 @@ job("kieAllBuild_windows_${kieMainBranch}") {
 // **************************** VIEW to create on JENKINS CI *******************************************
 
 listView("kieAllBuild ${kieMainBranch}"){
-    description("all scripts needed for building a ${kieMainBranch} kieAll build}")
+    description("all scripts needed for building a ${kieMainBranch} kieAll build")
     jobs {
         name("Trigger_kieAllBuild_${kieMainBranch}")
         name("ErraiFor_kieAllBuild_${kieMainBranch}")

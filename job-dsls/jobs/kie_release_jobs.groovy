@@ -1112,7 +1112,7 @@ job("dash_${DASH_VERSION}_updateVersion") {
 nestedView("kie release for ${KIE_MAIN_BRANCH} branch"){
     views{
         listView("${KIE_VERSION} kie release"){
-            description("all scripts needed for building a ${KIE_VERSION} KIE Release}")
+            description("all scripts needed for building a ${KIE_VERSION} KIE Release")
             jobs {
                 name("kie_${KIE_VERSION}_createAndPushReleaseBranches")
                 name("kie_${KIE_VERSION}_buildAndDeployLocally")
@@ -1134,7 +1134,7 @@ nestedView("kie release for ${KIE_MAIN_BRANCH} branch"){
             }
         }
         listView("${UF_VERSION} uberfire Release"){
-            description("all scripts needed for building a ${UF_VERSION} uberfire release}")
+            description("all scripts needed for building a ${UF_VERSION} uberfire release")
             jobs {
                 name("uf_${UF_VERSION}_release")
                 name("uf_${UF_VERSION}_pushTag")
@@ -1149,7 +1149,7 @@ nestedView("kie release for ${KIE_MAIN_BRANCH} branch"){
             }
         }
         listView("${DASH_VERSION} dashbuilder release"){
-            description("all scripts needed for building a ${DASH_VERSION} dashbuilder release}")
+            description("all scripts needed for building a ${DASH_VERSION} dashbuilder release")
             jobs {
                 name("dash_${DASH_VERSION}_release")
                 name("dash_${DASH_VERSION}_pushTag")
