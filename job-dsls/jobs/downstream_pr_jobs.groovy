@@ -27,7 +27,10 @@ def final DEFAULTS = [
                 "**/target/kie-wb*tomcat*.war",
                 "**/target/kie-drools-wb*wildfly*.war",
                 "**/target/kie-drools-wb*eap*.war",
-                "**/target/kie-drools-wb*tomcat*.war"
+                "**/target/kie-drools-wb*tomcat*.war",
+                "**/target/kie-server-*ee6.war",
+                "**/target/kie-server-*ee7.war",
+                "**/target/kie-server-*webc.war"
         ]
 ]
 // override default config for specific repos (if needed)
