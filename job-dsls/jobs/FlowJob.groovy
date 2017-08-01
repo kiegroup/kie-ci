@@ -31,38 +31,38 @@ out.println dashbuilderVersion
 out.println kieVersion
 
 ignore(UNSTABLE) {
-    build("ErraiFor_kieAllBuild_${kieMainBranch}", erraiVersionNew: "$erraiVersionNew", erraiVersionOld: "$erraiVersionOld", erraiBranch: "$erraiBranch")
+    build("errai-kieAllBuild-${kieMainBranch}", erraiVersionNew: "$erraiVersionNew", erraiVersionOld: "$erraiVersionOld", erraiBranch: "$erraiBranch")
 }
 ignore(UNSTABLE) {
-    build("UberfireFor_kieAllBuild_${kieMainBranch}", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", uberfireBranch: "$uberfireBranch")
+    build("uberfire-kieAllBuild-${kieMainBranch}", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", uberfireBranch: "$uberfireBranch")
 }
 ignore(UNSTABLE) {
-    build("DashbuilderFor_kieAllBuild_${kieMainBranch}", dashbuilderVersion: "$dashbuilderVersion", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", dashbuilderBranch: "$dashbuilderBranch")
+    build("dashbuilder-kieAllBuild-${kieMainBranch}", dashbuilderVersion: "$dashbuilderVersion", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", dashbuilderBranch: "$dashbuilderBranch")
 }
 ignore(UNSTABLE) {
-    build("kieAllBuild_${kieMainBranch}", kieVersion: "$kieVersion", dashbuilderVersion: "$dashbuilderVersion", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
+    build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", dashbuilderVersion: "$dashbuilderVersion", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
 }
 
 
 parallel (
         {
-            build("kieAllBuild_${kieMainBranch}_jbpmTestCoverageMatrix", kieVersion: "$kieVersion")
+            build("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion")
         },
         {
-            build("kieAllBuild_${kieMainBranch}_jbpmTestContainerMatrix", kieVersion: "$kieVersion")
+            build("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion")
         },
         {
-            build("kieAllBuild_${kieMainBranch}_kieWbTestsMatrix", kieVersion: "$kieVersion")
+            build("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion")
         },
         {
-            build("kieAllBuild_${kieMainBranch}_kieServerMatrix", kieVersion: "$kieVersion")
+            build("kieServerMatrix-kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion")
         }
 )'''
 
 // +++++++++++++++++++++++++++++++++++++++ Trigger job  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // flowJob (the build flow text can also be read from a file): triggers all other jobs
 
-buildFlowJob("Trigger_kieAllBuild_${kieMainBranch}") {
+buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
     description("Flow that describes and runs the KIE build pipeline for ${kieMainBranch} branch.<br> IMPORTANT: we don't know the reason but when executet the very first time please go to the <br> configuration and press SAVE - so the dynamic Reference Parameter works")
 
     parameters {
@@ -121,18 +121,18 @@ git checkout -b $erraiVersionNew $erraiBranch
 # update versions
 sh updateVersions.sh $erraiVersionOld $erraiVersionNew
 # build the repos & deploy into local dir (will be later copied into staging repo)
-DEPLOY_DIR=$WORKSPACE/deploy-dir
+deploy-dir=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -U -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$DEPLOY_DIR -s $SETTINGS_XML_FILE\\
+mvn -U -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deploy-dir -s $SETTINGS_XML_FILE\\
  -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=3
 # (2) upload the content to remote staging repo
-cd $DEPLOY_DIR
-mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository -DrepositoryDirectory=$DEPLOY_DIR\\
+cd $deploy-dir
+mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository -DrepositoryDirectory=$deploy-dir\\
  -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="errai $erraiVersionNew" -DstagingProgressTimeoutMinutes=30'''
 
 
-job("ErraiFor_kieAllBuild_${kieMainBranch}") {
+job("errai-kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the errai version")
     parameters{
         stringParam("erraiVersionNew", "errai version", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
@@ -205,17 +205,17 @@ sh scripts/release/update-version.sh $uberfireVersion
 # update files that are not automatically changed with the update-versions-all.sh script
 sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
 # build the repos & deploy into local dir (will be later copied into staging repo)
-DEPLOY_DIR=$WORKSPACE/deploy-dir
+deploy-dir=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -B -U -e clean deploy -Dfull -Drelease -T1C -DaltDeploymentRepository=local::default::file://$DEPLOY_DIR -s $SETTINGS_XML_FILE\\
+mvn -B -U -e clean deploy -Dfull -Drelease -T1C -DaltDeploymentRepository=local::default::file://$deploy-dir -s $SETTINGS_XML_FILE\\
  -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -Xss1M" -Dgwt.compiler.localWorkers=2
 # (2) upload the content to remote staging repo
-cd $DEPLOY_DIR
+cd $deploy-dir
 mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
-  -s $SETTINGS_XML_FILE -DrepositoryDirectory=$DEPLOY_DIR -DstagingProfileId=15c3321d12936e -DstagingDescription="uberfire $uberfireVersion" -DstagingProgressTimeoutMinutes=30'''
+  -s $SETTINGS_XML_FILE -DrepositoryDirectory=$deploy-dir -DstagingProfileId=15c3321d12936e -DstagingDescription="uberfire $uberfireVersion" -DstagingProgressTimeoutMinutes=30'''
 
-job("UberfireFor_kieAllBuild_${kieMainBranch}") {
+job("uberfire-kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the uberfire version")
     parameters{
         stringParam("uberfireVersion", "uberfire version", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
@@ -291,14 +291,14 @@ sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.
 DEPLOY_DIR=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -B -e clean deploy -U -Dfull -Drelease -T1C -DaltDeploymentRepository=local::default::file://$DEPLOY_DIR -s $SETTINGS_XML_FILE\\
+mvn -B -e clean deploy -U -Dfull -Drelease -T1C -DaltDeploymentRepository=local::default::file://$deploy-dir -s $SETTINGS_XML_FILE\\
  -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -Xss1M" -Dgwt.compiler.localWorkers=2
 # (2) upload the content to remote staging repo
-cd $DEPLOY_DIR
+cd $deploy-dir
 mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
-  -s $SETTINGS_XML_FILE -DrepositoryDirectory=$DEPLOY_DIR -DstagingProfileId=15c3321d12936e -DstagingDescription="dashbuilder $dashbuilderVersion" -DstagingProgressTimeoutMinutes=30'''
+  -s $SETTINGS_XML_FILE -DrepositoryDirectory=$deploy-dir -DstagingProfileId=15c3321d12936e -DstagingDescription="dashbuilder $dashbuilderVersion" -DstagingProgressTimeoutMinutes=30'''
 
-job("DashbuilderFor_kieAllBuild_${kieMainBranch}") {
+job("dashbuilder-kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the uberfire version")
     parameters{
         stringParam("erraiVersionNew", "errai version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
@@ -387,21 +387,21 @@ sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.
 sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$kieVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" pom.xml
 cd ..
 # build the repos & deploy into local dir (will be later copied into staging repo)
-DEPLOY_DIR=$WORKSPACE/deploy-dir
+deploy-dir=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -T1C -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$DEPLOY_DIR -s $SETTINGS_XML_FILE\\
+./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -T1C -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deploy-dir -s $SETTINGS_XML_FILE\\
  -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=1\\
  -Dgwt.memory.settings="-Xmx4g -Xms1g -Xss1M"
 # (2) upload the content to remote staging repo
 mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
- -DrepositoryDirectory=$DEPLOY_DIR -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie $kieVersion" -DstagingProgressTimeoutMinutes=40
+ -DrepositoryDirectory=$deploy-dir -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie $kieVersion" -DstagingProgressTimeoutMinutes=40
 # creates a file (list) of the last commit hash of each repository as handover for production
 ./droolsjbpm-build-bootstrap/script/git-all.sh log -1 --pretty=oneline >> git-commit-hashes.txt
 echo $kieVersion > $WORKSPACE/version.txt'''
 
 
-job("kieAllBuild_${kieMainBranch}") {
+job("kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the kie version")
     parameters{
         stringParam("erraiVersionNew", "errai version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
@@ -474,7 +474,7 @@ mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
 '''
 
-matrixJob("kieAllBuild_${kieMainBranch}_jbpmTestCoverageMatrix") {
+matrixJob("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
     description("This job: <br> - Test coverage Matrix for jbpm <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
@@ -536,7 +536,7 @@ mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
 '''
 
-matrixJob("kieAllBuild_${kieMainBranch}_jbpmTestContainerMatrix") {
+matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
     description("Version to test. Will be supplied by the parent job. Also used to donwload proper sources. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
@@ -609,7 +609,7 @@ tar xzf sources.tar.gz
 mv kie-wb-distributions-$kieVersion/* .
 rmdir kie-wb-distributions-$kieVersion'''
 
-matrixJob("kieAllBuild_${kieMainBranch}_kieWbTestsMatrix") {
+matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
@@ -702,7 +702,7 @@ tar xzf sources.tar.gz
 mv droolsjbpm-integration-$kieVersion/* .
 rmdir droolsjbpm-integration-$kieVersion'''
 
-matrixJob("kieAllBuild_${kieMainBranch}_kieServerMatrix") {
+matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
@@ -787,7 +787,7 @@ for %%x in (%repo_list%) do (
     )
 )'''
 
-job("kieAllBuild_windows_${kieMainBranch}") {
+job("windows-kieAllBuild-${kieMainBranch}") {
     description("Builds all repos specified in\n" +
             "<a href=\"https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/script/repository-list.txt\">repository-list.txt</a> (master branch) on Windows machine.\n" +
             "It does not deploy the artifacts to staging repo (or any other remote). It just checks our repositories can be build and tested on Windows, so that \n" +
@@ -843,19 +843,19 @@ job("kieAllBuild_windows_${kieMainBranch}") {
 }
 // **************************** VIEW to create on JENKINS CI *******************************************
 
-listView("kieAllBuild ${kieMainBranch}"){
+listView("kieAllBuild-${kieMainBranch}"){
     description("all scripts needed for building a ${kieMainBranch} kieAll build")
     jobs {
-        name("Trigger_kieAllBuild_${kieMainBranch}")
-        name("ErraiFor_kieAllBuild_${kieMainBranch}")
-        name("UberfireFor_kieAllBuild_${kieMainBranch}")
-        name("DashbuilderFor_kieAllBuild_${kieMainBranch}")
-        name("kieAllBuild_${kieMainBranch}")
-        name("kieAllBuild_${kieMainBranch}_jbpmTestCoverageMatrix")
-        name("kieAllBuild_${kieMainBranch}_jbpmTestContainerMatrix")
-        name("kieAllBuild_${kieMainBranch}_kieWbTestsMatrix")
-        name("kieAllBuild_${kieMainBranch}_kieServerMatrix")
-        name("kieAllBuild_windows_${kieMainBranch}")
+        name("trigger-kieAllBuild-${kieMainBranch}")
+        name("errai-kieAllBuild-${kieMainBranch}")
+        name("uberfire-kieAllBuild-${kieMainBranch}")
+        name("dashbuilder-kieAllBuild-${kieMainBranch}")
+        name("kieAllBuild-${kieMainBranch}")
+        name("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}")
+        name("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}")
+        name("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}")
+        name("kieServerMatrix-kieAllBuild-${kieMainBranch}")
+        name("windows-kieAllBuild-${kieMainBranch}")
         }
 	columns {
             status()
