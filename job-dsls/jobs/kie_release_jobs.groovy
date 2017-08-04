@@ -1,132 +1,201 @@
 //Define Variables
 
-def KIE_VERSION="8.0.x"
-def UF_VERSION="2.0.x"
-def DASH_VERSION="1.0.x"
-def JAVADK="jdk1.8"
-def JDK="JDK1_8"
-def MAVEN="APACHE_MAVEN_3_3_9"
-def MVNHOME="${MAVEN}_HOME"
-def MVNOPTS="-Xms2g -Xmx3g"
-def KIE_MAIN_BRANCH="master"
-def UF_MAIN_BRANCH="master"
-def DASH_MAIN_BRANCH="master"
-def ORGANIZATION="kiegroup"
-def UF_ORGANIZATION="AppFormer"
-def DASH_ORGANIZATION="dashbuilder"
+def kieVersion="8.0.x"
+def uberfireVersion="2.0.x"
+def dashbuilderVersion="1.0.x"
+def javadk="jdk1.8"
+def jaydekay="JDK1_8"
+def mvn="APACHE_MAVEN_3_3_9"
+def mvnHome="${mvn}_HOME"
+def mvnOpts="-Xms2g -Xmx3g"
+def kieMainBranch="master"
+def uberfireBranch="master"
+def dashbuilderBranch="master"
+def organization="kiegroup"
+def uberfireOrganization="AppFormer"
+def dashbuilderOrganization="dashbuilder"
 
 
-def pushReleaseBranches ="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie_createAndPushReleaseBranches.sh
-"""
+//def pushReleaseBranches ="""
+//sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-createAndPushReleaseBranches.sh
+//"""
 
 def deployLocally="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie_deployLocally.sh
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-deployLocally.sh
 """
 
 def copyToNexus="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie_copyBinariesToNexus.sh
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-copyBinariesToNexus.sh
 """
 
 def jbpmTestCoverageMatrix="""
-git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b master
-sh \$WORKSPACE/droolsjbpm-build-bootstrap/script/release/kie_jbpmTestCoverMartix.sh
+git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b ${kieMainBranch}
+sh \$WORKSPACE/droolsjbpm-build-bootstrap/script/release/kie-jbpmTestCoverMartix.sh
 """
 
 def kieAllServerMatrix="""
-git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b master
-sh \$WORKSPACE/droolsjbpm-build-bootstrap/script/release/kie_allServerMatrix.sh
+git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b ${kieMainBranch}
+sh \$WORKSPACE/droolsjbpm-build-bootstrap/script/release/kie-allServerMatrix.sh
 """
 
 def kieWbSmokeTestsMatrix="""
-git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b master
-sh \$WORKSPACE/droolsjbpm-build-bootstrap/script/release/kie_wbSmokeTestsMatrix.sh
+git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b ${kieMainBranch}
+sh \$WORKSPACE/droolsjbpm-build-bootstrap/script/release/kie-wbSmokeTestsMatrix.sh
 """
 
 def pushTags="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie_pushTag.sh
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-pushTag.sh
 """
 
 def removeBranches="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie_removeReleaseBranches.sh
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-removeReleaseBranches.sh
 """
 
 def updateVersions="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie_updateToNextDevelopmentVersion.sh
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-updateToNextDevelopmentVersion.sh
 """
 
 def copyBinariesToFilemgmt="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie_copyBinariesToFilemgmt.sh
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-copyBinariesToFilemgmt.sh
 """
 
 def ufDeploy="""
-sh \$WORKSPACE/scripts/uberfire/scripts/release/uf_createAndDeploy.sh
+sh \$WORKSPACE/scripts/uberfire/scripts/release/uberfire-createAndDeploy.sh
 """
 
 def ufPushTag="""
-sh \$WORKSPACE/scripts/uberfire/scripts/release/uf_pushTag.sh
+sh \$WORKSPACE/scripts/uberfire/scripts/release/uberfire-pushTag.sh
 """
 
 def ufUpdateVersion="""
-sh \$WORKSPACE/scripts/uberfire/scripts/release/uf_updateVersion.sh
+sh \$WORKSPACE/scripts/uberfire/scripts/release/uberfire-updateVersion.sh
 """
 
 def dashDeploy="""
-sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dash_createAndDeploy.sh
+sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dashbuilder-createAndDeploy.sh
 """
 
 def dashPushTag="""
-sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dash_pushTag.sh
+sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dashbuilder-pushTag.sh
 """
 
 def dashUpdateVersion="""
-sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dash_updateVersion.sh
+sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dashbuilder-updateVersion.sh
 """
 
 
 // **************************************************************************
+def pushReleaseBranches='''#!/bin/bash -e
 
-job("kie_${KIE_VERSION}_createAndPushReleaseBranches") {
+# clone rest of the repos
+./droolsjbpm-build-bootstrap/script/git-clone-others.sh --branch $baseBranch --depth 70
+
+if [ "$source" == "community-branch" ]; then
+
+   # checkout to local release names
+   ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $releaseBranch $baseBranch
+
+   # add new remote pointing to jboss-integration
+   ./droolsjbpm-build-bootstrap/script/git-add-remote-jboss-integration.sh
+
+fi
+
+if [ "$source" == "community-tag" ]; then
+
+   # add new remote pointing to jboss-integration
+   ./droolsjbpm-build-bootstrap/script/git-add-remote-jboss-integration.sh
+
+   # get the tags of community
+   ./droolsjbpm-build-bootstrap/script/git-all.sh fetch --tags origin
+
+   # checkout to local release names
+   ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $releaseBranch $tag
+
+fi
+
+if [ "$source" == "production-tag" ]; then
+
+   # add new remote pointing to jboss-integration
+   ./droolsjbpm-build-bootstrap/script/git-add-remote-jboss-integration.sh
+
+   # get the tags of jboss-integration
+   ./droolsjbpm-build-bootstrap/script/git-all.sh fetch --tags jboss-integration
+
+   # checkout to local release names
+   ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $releaseBranch $tag
+
+fi
+
+# upgrades the version to the release/tag version
+./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $releaseVersion $target
+
+# update kie-parent-metadata
+cd droolsjbpm-build-bootstrap/
+
+# change properties via sed as they don't update automatically
+sed -i \\
+-e "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$uberfireVersion<\\/version.org.uberfire>/;" \\
+-e "s/<version.org.dashbuilder>.*.<\\/version.org.dashbuilder>/<version.org.dashbuilder>$dashbuilderVersion<\\/version.org.dashbuilder>/;" \\
+-e "s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;" \\
+-e "s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$releaseVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" \\
+pom.xml
+
+cd $WORKSPACE
+
+# git add and commit the version update changes
+./droolsjbpm-build-bootstrap/script/git-all.sh add .
+commitMsg="Upgraded versions for release $releaseVersion"
+./droolsjbpm-build-bootstrap/script/git-all.sh commit -m "$commitMsg"
+
+# pushes the local release branches to kiegroup or to jboss-integration [IMPORTANT: "push -n" (--dryrun) should be replaced by "push" when script will be in production]
+if [ "$target" == "community" ]; then
+  ./droolsjbpm-build-bootstrap/script/git-all.sh push -n origin $releaseBranch
+else
+  ./droolsjbpm-build-bootstrap/script/git-all.sh push -n jboss-integration $releaseBranch
+  ./droolsjbpm-build-bootstrap/script/git-all.sh push -n jboss-integration $baseBranch
+fi '''
+
+job("createAndPushReleaseBranches-kieReleases-${kieVersion}") {
 
     description("This job: <br> checksout the right source- upgrades the version in poms <br> - modifies the kie-parent-metadata pom <br> - pushes the generated release branches to kiegroup <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        choiceParam("TARGET", ["community", "productized"], "please select if this release is for community: <b> community </b><br>or<br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
-        choiceParam("SOURCE", ["community-branch", "community-tag", "production-tag"], " please select the source of this release <br> or it is the master branch ( <b> community-branch </b> ) <br> or a community tag ( <b> community-tag </b> ) <br> or a productization tag ( <b> production-tag </b> ) <br> ******************************************************** <br> ")
-        stringParam("TAG", "tag", "if you selected as <b> SOURCE=community-tag </b> or <b> SOURCE=production-tag </b> please edit the name of the tag <br> if selected as <b> SOURCE=community-branch </b> the parameter <b> TAG </b> will be ignored <br> The tag should typically look like <b> major.minor.micro.<extension> </b>(7.1.0.Beta1) for <b> community </b> or <b> sync-major.minor.x-<yyyy.mm.dd> (sync-7.1.x-2017.05.14)  </b> for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("RELEASE_VERSION", "release version", "please edit the version for this release <br> The <b> RELEASE_VERSION </b> should typically look like <b> major.minor.micro.<extension></b> (7.1.0.Beta1) for <b> community </b> or <b> major.minor.micro.<yyymmdd>-productization</b> (7.1.0.20170514-productized) for <b> productization </b> <br>******************************************************** <br> ")
-        stringParam("BASE_BRANCH", "base branch", "please select the base branch <br> ******************************************************** <br> ")
-        stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>(r7.1.0.Beta1) for <b> community </b>or <b> bsync-major.minor.x-<yyyy.mm.dd>  </b>(bsync-7.1.x-2017.05.14) for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("UBERFIRE_VERSION", "uberfire version", "please edit the right version to use of uberfire/uberfire-extensions <br> The tag should typically look like <b> major.minor.micro.<extension> </b>(1.1.0.Beta1) for <b> community </b> or <b> related kie major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("DASHBUILDER_VERSION", "dashbuilder version", "please edit the right version to use of dashbuilder <br> The tag should typically look like <b> major.minor.micro.<extension>  </b>(0.7.0.Beta1) for <b> community </b> or <b> related kie major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("ERRAI_VERSION", "errai version", " please edit the related errai version<br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "please select if this release is for community: <b> community </b><br>or<br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
+        choiceParam("source", ["community-branch", "community-tag", "production-tag"], " please select the source of this release <br> or it is the master branch ( <b> community-branch </b> ) <br> or a community tag ( <b> community-tag </b> ) <br> or a productization tag ( <b> production-tag </b> ) <br> ******************************************************** <br> ")
+        stringParam("tag", "tag", "if you selected as <b> source=community-tag </b> or <b> source=production-tag </b> please edit the name of the tag <br> if selected as <b> source=community-branch </b> the parameter <b> tag </b> will be ignored <br> The tag should typically look like <b> major.minor.micro.<extension></b> for <b> community </b> or <b> sync-major.minor.x-<yyyy.mm.dd> </b> for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("releaseVersion", "release version", "please edit the version for this release <br> The <b> releaseVersion </b> should typically look like <b> major.minor.micro.<extension></b> for <b> community </b> or <b> major.minor.micro.<yyymmdd>-productization</b> for <b> productization </b> <br>******************************************************** <br> ")
+        stringParam("baseBranch", "base branch", "please select the base branch <br> ******************************************************** <br> ")
+        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> bsync-major.minor.x-<yyyy.mm.dd>  </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("uberfireVersion", "uberfire version", "please edit the right version to use of uberfire<br> The tag should typically look like <b> major.minor.micro.<extension> </b> for <b> community </b> or <b> related kie major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("dashbuilderVersion", "dashbuilder version", "please edit the right version to use of dashbuilder <br> The tag should typically look like <b> major.minor.micro.<extension>  </b>for <b> community </b> or <b> related kie major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("erraiVersion", "errai version", " please edit the related errai version<br> ******************************************************** <br> ")
     };
 
     scm {
         git {
             remote {
-                github("${ORGANIZATION}/droolsjbpm-build-bootstrap")
+                github("${organization}/droolsjbpm-build-bootstrap")
             }
-            branch ("${KIE_MAIN_BRANCH}")
+            branch ("${kieMainBranch}")
             extensions {
-                relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
+                relativeTargetDirectory("droolsjbpm-build-bootstrap")
             }
 
         }
     }
 
-    label("kie-releases")
+    // label("kie-releases")
 
     logRotator {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
     wrappers {
         timestamps()
         colorizeOutput()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
         preBuildCleanup()
     }
 
@@ -142,7 +211,7 @@ job("kie_${KIE_VERSION}_createAndPushReleaseBranches") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(pushReleaseBranches)
     }
@@ -150,21 +219,21 @@ job("kie_${KIE_VERSION}_createAndPushReleaseBranches") {
 
 // **************************************************************************************
 
-job("kie_${KIE_VERSION}_buildAndDeployLocally") {
+job("buildAndDeployLocally-kieReleases-${kieVersion}") {
 
     description("This job: <br> - builds all repositories and deploys them locally <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        choiceParam("TARGET", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
-        stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>(7.1.0.Beta1) </b> for <b> community </b>or <b> bsync-major.minor.x-<yyyy.mm.dd>  </b>(bsync-7.1.x-2017.05.15) for <b> productization </b> <br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
+        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension></b> for <b> community </b>or <b> bsync-major.minor.x-<yyyy.mm.dd>  </b>for <b> productization </b> <br> ******************************************************** <br> ")
     };
 
     scm {
         git {
             remote {
-                github("${ORGANIZATION}/droolsjbpm-build-bootstrap")
+                github("${organization}/droolsjbpm-build-bootstrap")
             }
-            branch ("${KIE_MAIN_BRANCH}")
+            branch ("${kieMainBranch}")
             extensions {
                 relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
             }
@@ -178,7 +247,7 @@ job("kie_${KIE_VERSION}_buildAndDeployLocally") {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
     publishers {
         archiveJunit("**/TEST-*.xml")
@@ -187,7 +256,7 @@ job("kie_${KIE_VERSION}_buildAndDeployLocally") {
     wrappers {
         timestamps()
         colorizeOutput()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
         preBuildCleanup()
     }
 
@@ -203,7 +272,7 @@ job("kie_${KIE_VERSION}_buildAndDeployLocally") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(deployLocally)
     }
@@ -211,12 +280,12 @@ job("kie_${KIE_VERSION}_buildAndDeployLocally") {
 
 // ********************************************************************************
 
-job("kie_${KIE_VERSION}_copyBinariesToNexus") {
+job("copyBinariesToNexus-kieReleases-${kieVersion}") {
 
     description("This job: <br> - copies binaries from local dir to Nexus <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        choiceParam("TARGET", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
     };
 
     label("kie-releases")
@@ -225,14 +294,14 @@ job("kie_${KIE_VERSION}_copyBinariesToNexus") {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
-    customWorkspace("\$HOME/workspace/kie_${KIE_VERSION}_buildAndDeployLocally")
+    customWorkspace("\$HOME/workspace/buildAndDeployLocally-kieReleases-${kieVersion}")
 
     wrappers {
         timestamps()
         colorizeOutput()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
     }
 
     configure { project ->
@@ -247,7 +316,7 @@ job("kie_${KIE_VERSION}_copyBinariesToNexus") {
 
     publishers{
         downstreamParameterized {
-            trigger("kie_${KIE_VERSION}_allJbpmTestCoverageMatrix, kie_${KIE_VERSION}_allServerMatrix, kie_${KIE_VERSION}_wbSmokeTestsMatrix") {
+            trigger("jbpmTestCoverageMatrix-kieReleases-${kieVersion}, serverMatrix-kieReleases-${kieVersion}, wbSmokeTestsMatrix-kieReleases-${kieVersion}") {
                 condition("SUCCESS")
                 parameters {
                     propertiesFile("kie.properties", true)
@@ -258,7 +327,7 @@ job("kie_${KIE_VERSION}_copyBinariesToNexus") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(copyToNexus)
     }
@@ -268,16 +337,16 @@ job("kie_${KIE_VERSION}_copyBinariesToNexus") {
 
 // **************************************************************************************
 
-matrixJob("kie_${KIE_VERSION}_allJbpmTestCoverageMatrix") {
+matrixJob("jbpmTestCoverageMatrix-kieReleases-${kieVersion}") {
 
     description("This job: <br> - Test coverage Matrix for jbpm <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
-        choiceParam("TARGET", ["community", "productized"], "please select if this release is for community <b> community: </b> or <br> if it is for building a productization tag: <b>productized <br> Version to test. Will be supplied by the parent job. <br> ******************************************************** <br> ")
-        stringParam("KIE_VERSION", "KIE version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community: </b> or <br> if it is for building a productization tag: <b>productized <br> Version to test. Will be supplied by the parent job. <br> ******************************************************** <br> ")
+        stringParam("releaseVersion", "KIE release version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
     };
 
     axes {
-        labelExpression("label-exp","linux && mem4g")
+        labelExpression("label-exp","linux&&mem4g")
         jdk("jdk1.8")
     }
 
@@ -323,18 +392,18 @@ matrixJob("kie_${KIE_VERSION}_allJbpmTestCoverageMatrix") {
 
 // **********************************************************************************
 
-matrixJob("kie_${KIE_VERSION}_allServerMatrix") {
+matrixJob("serverMatrix-kieReleases-${kieVersion}") {
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
-        choiceParam("TARGET", ["community", "productized"], "<br> ******************************************************** <br> ")
-        stringParam("KIE_VERSION", "KIE version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "<br> ******************************************************** <br> ")
+        stringParam("releaseVersion", "KIE release version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
     };
 
     axes {
         jdk("jdk1.8")
         text("container", "tomcat8", "wildfly10")
-        labelExpression("label_exp", "linux && mem4g")
+        labelExpression("label_exp", "linux&&mem4g")
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
@@ -392,19 +461,19 @@ matrixJob("kie_${KIE_VERSION}_allServerMatrix") {
 
 // ****************************************************************************************************
 
-matrixJob("kie_${KIE_VERSION}_wbSmokeTestsMatrix") {
+matrixJob("wbSmokeTestsMatrix-kieReleases-${kieVersion}") {
     description("This job: <br> - Runs the smoke tests on KIE <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
-        choiceParam("TARGET", ["community", "productized"], "<br> ******************************************************** <br> ")
-        stringParam("KIE_VERSION", "KIE version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "<br> ******************************************************** <br> ")
+        stringParam("releaseVesion", "KIE release version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
     };
 
     axes {
         jdk("jdk1.8")
         text("container", "wildfly10", "tomcat8", "eap7")
         text("war", "kie-wb", "kie-drools-wb")
-        labelExpression("label_exp", "linux && mem4g && gui-testing")
+        labelExpression("label_exp", "linux&&mem8g&&gui-testing")
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
@@ -465,22 +534,22 @@ matrixJob("kie_${KIE_VERSION}_wbSmokeTestsMatrix") {
 
 // ************************************************************************************************
 
-job("kie_${KIE_VERSION}_pushTags") {
+job("pushTags-kieReleases-${kieVersion}") {
 
     description("This job: <br> creates and pushes the tags for <br> community (kiegroup) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        choiceParam("TARGET", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
-        stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>(r7.1.0.Beta1) for <b> community </b>or <b> bsync-major.minor.x-<yyy.mm.dd>  </b>()bsync-7.1.x-2017.05.14 for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("TAG_NAME", "tag", "Please enter the tag. The tag should typically look like <b> major.minor.micro.<extension> </b>(7.1.0.Beta1) for <b> community </b> or <b> sync-major.minor.x-<yyy.mm.dd> </b>(sync-7.1.x-2017.05.10) for <b> productization </b> <br> ******************************************************** <br> ")
+        choiceParam("tatget", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
+        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> bsync-major.minor.x-<yyy.mm.dd>  </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("tag", "tag", "Please enter the tag. The tag should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> sync-major.minor.x-<yyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
     };
 
     scm {
         git {
             remote {
-                github("${ORGANIZATION}/droolsjbpm-build-bootstrap")
+                github("${organization}/droolsjbpm-build-bootstrap")
             }
-            branch ("${KIE_MAIN_BRANCH}")
+            branch ("${kieMainBranch}")
             extensions {
                 relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
             }
@@ -494,7 +563,7 @@ job("kie_${KIE_VERSION}_pushTags") {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
     wrappers {
         timeout {
@@ -503,7 +572,7 @@ job("kie_${KIE_VERSION}_pushTags") {
         timestamps()
         preBuildCleanup()
         colorizeOutput()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
     }
 
     configure { project ->
@@ -522,7 +591,7 @@ job("kie_${KIE_VERSION}_pushTags") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(pushTags)
     }
@@ -530,22 +599,22 @@ job("kie_${KIE_VERSION}_pushTags") {
 
 // ***********************************************************************************
 
-job("kie_${KIE_VERSION}_removeReleaseBranches") {
+job("removeReleaseBranches-kieReleases-${kieVersion}") {
 
     description("This job: <br> creates and pushes the tags for <br> community (kiegroup) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        choiceParam("TARGET", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
-        stringParam("BASE_BRANCH", "base branch", "please select the base branch <br> ******************************************************** <br> ")
-        stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>(r7.0.0.CR1) for <b> community </b>or <b> bsync-major.minor.x-<yyy.mm.dd> </b>bsync-7.1.x-2017.05.14 for <b> productization </b> <br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
+        stringParam("baseBranch", "base branch", "please select the base branch <br> ******************************************************** <br> ")
+        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> bsync-major.minor.x-<yyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
     };
 
     scm {
         git {
             remote {
-                github("${ORGANIZATION}/droolsjbpm-build-bootstrap")
+                github("${organization}/droolsjbpm-build-bootstrap")
             }
-            branch ("${KIE_MAIN_BRANCH}")
+            branch ("${kieMainBranch}")
             extensions {
                 relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
             }
@@ -559,7 +628,7 @@ job("kie_${KIE_VERSION}_removeReleaseBranches") {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
     wrappers {
         timeout {
@@ -568,7 +637,7 @@ job("kie_${KIE_VERSION}_removeReleaseBranches") {
         timestamps()
         preBuildCleanup()
         colorizeOutput()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
     }
 
     configure { project ->
@@ -587,7 +656,7 @@ job("kie_${KIE_VERSION}_removeReleaseBranches") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(removeBranches)
     }
@@ -595,24 +664,24 @@ job("kie_${KIE_VERSION}_removeReleaseBranches") {
 
 // ****************************************************************************************
 
-job("kie_${KIE_VERSION}_updateToNextDevelopmentVersion") {
+job("updateToNextDevelopmentVersion-kieReleases-${kieVersion}") {
 
-    description("This job: <br> updates the KIE repositories to a new developmenmt version <br> for 7.1.x </br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
+    description("This job: <br> updates the KIE repositories to a new developmenmt version<br>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        stringParam("BASE_BRANCH","master","Branch you want to upgrade")
+        stringParam("baseBranch","master","Branch you want to upgrade")
         stringParam("newVersion", "new KIE version", "Edit the KIE development version")
-        stringParam("UF_DEVEL_VERSION", "uberfire version", "Edit the uberfire development version")
-        stringParam("DASHB_DEVEL_VERSION", "dashbuilder version", "Edit the dashbuilder development version")
-        stringParam("ERRAI_DEVEL_VERSION", "errai version", "Edit the errai development version")
+        stringParam("uberfireDevelVersion", "uberfire version", "Edit the uberfire development version")
+        stringParam("dashbuilderDevelVersion", "dashbuilder version", "Edit the dashbuilder development version")
+        stringParam("erraiDevelVersion", "errai version", "Edit the errai development version")
     }
 
     scm {
         git {
             remote {
-                github("${ORGANIZATION}/droolsjbpm-build-bootstrap")
+                github("${organization}/droolsjbpm-build-bootstrap")
             }
-            branch ("${KIE_MAIN_BRANCH}")
+            branch ("${kieMainBranch}")
             extensions {
                 relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
             }
@@ -626,7 +695,7 @@ job("kie_${KIE_VERSION}_updateToNextDevelopmentVersion") {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
     wrappers {
         timeout {
@@ -635,7 +704,7 @@ job("kie_${KIE_VERSION}_updateToNextDevelopmentVersion") {
         timestamps()
         preBuildCleanup()
         colorizeOutput()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
     }
 
     configure { project ->
@@ -654,7 +723,7 @@ job("kie_${KIE_VERSION}_updateToNextDevelopmentVersion") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(updateVersions)
     }
@@ -662,12 +731,12 @@ job("kie_${KIE_VERSION}_updateToNextDevelopmentVersion") {
 
 // ****************************************************************************************
 
-job("kie_${KIE_VERSION}_copyBinariesToFilemgmt") {
+job("copyBinariesToFilemgmt-kieReleases-${kieVersion}") {
 
     description("This job: <br> copies kiegroup binaries to filemgmt.jbosss.org  <br> IMPORTANT: makes only sense for community releases <br><b> Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
 
     parameters{
-        stringParam("VERSION", "release version", "Edit the version of release, i.e. <b>major.minor.micro.<extension></b>(7.0.0.Final) ")
+        stringParam("version", "release version", "Edit the version of release, i.e. <b>major.minor.micro.<extension></b> ")
     }
 
     label("kie-releases")
@@ -676,9 +745,9 @@ job("kie_${KIE_VERSION}_copyBinariesToFilemgmt") {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
-    customWorkspace("\$HOME/workspace/kie_${KIE_VERSION}_buildAndDeployLocally")
+    customWorkspace("\$HOME/workspace/buildAndDeployLocally-kieReleases-${kieVersion}")
 
     wrappers {
         timeout {
@@ -686,7 +755,7 @@ job("kie_${KIE_VERSION}_copyBinariesToFilemgmt") {
         }
         timestamps()
         colorizeOutput()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
     }
 
     configure { project ->
@@ -705,7 +774,7 @@ job("kie_${KIE_VERSION}_copyBinariesToFilemgmt") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(copyBinariesToFilemgmt)
     }
@@ -713,24 +782,24 @@ job("kie_${KIE_VERSION}_copyBinariesToFilemgmt") {
 
 // *************** Uberfire Release scripts *********
 
-job("uf_${UF_VERSION}_release") {
+job("release-uberfire-${uberfireVersion}") {
 
     description("This job: <br> releases uberfire, upgrades the version, builds and deploys, copies artifacts to Nexus, closes the release on Nexus  <br> <b>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
 
     parameters {
-        choiceParam("TARGET", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
-        stringParam("BASE_BRANCH", "base branch", "please edit the name of the base branch <br> i.e. typically <b> 1.0.x </b> for <b> community </b>or <b> bsync-6.5.x-2016.08.05  </b> for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extenbsion> </b>(r1.1.0.Beta1) for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x-<yyyy.mm.dd> </b> bsync-7.1.x-2017.05.14  for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("newVersion", "new version", "please edit the new version that should be used in the poms <br> The version should typically look like <b> major.minor.micro.<extension> </b>(1.1.0.Beta1) for<b> community </b> or <b> major.minor.micro.<yyyymmdd>-productized </b>(1.1.0.20170515-productized) for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("ERRAI_VERSION", "errai version", " please edit the related errai version<br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
+        stringParam("baseBranch", "base branch", "please edit the name of the base branch <br> i.e. typically <b> ${uberfireBranch} </b> for <b> community </b><br> ******************************************************** <br> ")
+        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x-<yyyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("newVersion", "new version", "please edit the new version that should be used in the poms <br> The version should typically look like <b> major.minor.micro.<extension> </b>for<b> community </b> or <b> major.minor.micro.<yyyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("erraiVersion", "errai version", " please edit the related errai version<br> ******************************************************** <br> ")
     }
 
     scm {
         git {
             remote {
-                github("${UF_ORGANIZATION}/uberfire")
+                github("${uberfireOrganization}/uberfire")
             }
-            branch ("${UF_MAIN_BRANCH}")
+            branch ("${uberfireBranch}")
             extensions {
                 relativeTargetDirectory("scripts/uberfire")
             }
@@ -744,7 +813,7 @@ job("uf_${UF_VERSION}_release") {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
     wrappers {
         timeout {
@@ -753,7 +822,7 @@ job("uf_${UF_VERSION}_release") {
         timestamps()
         preBuildCleanup()
         colorizeOutput()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
     }
 
     configure { project ->
@@ -772,7 +841,7 @@ job("uf_${UF_VERSION}_release") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(ufDeploy)
     }
@@ -780,22 +849,22 @@ job("uf_${UF_VERSION}_release") {
 
 // ******************************************************
 
-job("uf_${UF_VERSION}_pushTag") {
+job("pushTag-uberfire-${uberfireVersion}") {
 
     description("This job: <br> creates and pushes the tags for <br> community (droolsjbpm) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        choiceParam("TARGET", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
-        stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b> (r1.1.0.Beta1) for <b> community </b>or <b>  related kie prod release branch bsync-major.minor.x->yyy.mm.dd> </b>(bsync-7.1.x-2017.05.14) for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("TAG", "tag", "The tag should typically look like <b> major.minor.micro.<extension> </b>(1.1.0.Beta1) </b> for <b> community </b> or <b>  related kie prod tag sync-major.minor.x-<yyyy.mm.dd> </b>(sync-7.1.0.2017.05.14) </b> for <b> productization </b> <br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
+        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b> for <b> community </b>or <b>  related kie prod release branch bsync-major.minor.x->yyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("tag", "tag", "The tag should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b>  related kie prod tag sync-major.minor.x-<yyyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
     };
 
     scm {
         git {
             remote {
-                github("${UF_ORGANIZATION}/uberfire")
+                github("${uberfireOrganization}/uberfire")
             }
-            branch ("${UF_MAIN_BRANCH}")
+            branch ("${uberfireBranch}")
             extensions {
                 relativeTargetDirectory("scripts/uberfire")
             }
@@ -809,7 +878,7 @@ job("uf_${UF_VERSION}_pushTag") {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
     wrappers {
         timeout {
@@ -818,7 +887,7 @@ job("uf_${UF_VERSION}_pushTag") {
         timestamps()
         colorizeOutput()
         preBuildCleanup()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
     }
 
     configure { project ->
@@ -837,7 +906,7 @@ job("uf_${UF_VERSION}_pushTag") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(ufPushTag)
     }
@@ -845,22 +914,22 @@ job("uf_${UF_VERSION}_pushTag") {
 
 // ******************************************************
 
-job("uf_${UF_VERSION}_updateVersion") {
+job("updateVersion-uberfire-${uberfireVersion}") {
 
     description("This job: <br> updates the uberfire repository to a new development version <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
         stringParam("newVersion", "uberfire development version", "Edit uberfire development version")
-        stringParam("BASE_BRANCH", "base branch", "please edit the name of the base branch <br> ******************************************************** <br> ")
-        stringParam("ERRAI_DEVEL_VERSION","errai development version","Edit errai development version")
+        stringParam("baseBranch", "base branch", "please edit the name of the base branch <br> ******************************************************** <br> ")
+        stringParam("erraiDevelVersion","errai development version","Edit errai development version")
     }
 
     scm {
         git {
             remote {
-                github("${UF_ORGANIZATION}/uberfire")
+                github("${uberfireOrganization}/uberfire")
             }
-            branch ("${UF_MAIN_BRANCH}")
+            branch ("${uberfireBranch}")
             extensions {
                 relativeTargetDirectory("scripts/uberfire")
             }
@@ -874,7 +943,7 @@ job("uf_${UF_VERSION}_updateVersion") {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
     wrappers {
         timeout {
@@ -883,7 +952,7 @@ job("uf_${UF_VERSION}_updateVersion") {
         timestamps()
         colorizeOutput()
         preBuildCleanup()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
     }
 
     configure { project ->
@@ -902,32 +971,32 @@ job("uf_${UF_VERSION}_updateVersion") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(ufUpdateVersion)
     }
 }
 // *************** Dashbuilder Release scripts ***********************
 
-job("dash_${DASH_VERSION}_release") {
+job("release-dashbuilder-${dashbuilderVersion}") {
 
     description("This job: <br> releases dashbuilder, upgrades the version, builds and deploys, copies artifacts to Nexus, closes the release on Nexus  <br> <b>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
 
     parameters {
-        choiceParam("TARGET", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
-        stringParam("BASE_BRANCH", "base branch", "please edit the name of the base branch <br> i.e. typically <b> major.minor.x </b>(0.7.x) for <b> community </b>or <b> bsync-major.minor.x-<yyyy.mm.dd> </b>(bsync-7.1.x-2017.05.14)  for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>(r0.7.0.Beta1) for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x-<yyyy.mm.dd> </b> bsync-7.1.x-2017.05.14  for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("newVersion", "new version", "please edit the new version that should be used in the poms <br> The version should typically look like <b> major.minor.micro.<extension> </b>(0.7.0.Beta1) for<b> community </b> or <b> major.minor.micro.<yyyymmdd>-productized </b>(0.7.0.20170514-productized) for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("UBERFIRE_VERSION", "uberfire version", "please edit the version of uberfire <br> The version should typically look like <b> major.minor.micro.<extension> </b>(1.1.0.Beta1) for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-productized </b>(7.1.0.20170524-productized) for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("ERRAI_VERSION", "errai version", "please select the needed errai version <br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
+        stringParam("baseBranch", "base branch", "please edit the name of the base branch <br> i.e. typically <b> major.minor.x </b>for <b> community </b><br> ******************************************************** <br> ")
+        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x-<yyyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("newVersion", "new version", "please edit the new version that should be used in the poms <br> The version should typically look like <b> major.minor.micro.<extension> </b>for<b> community </b> or <b> major.minor.micro.<yyyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("uberfireVersion", "uberfire version", "please edit the version of uberfire <br> The version should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("erraiVersion", "errai version", "please select the needed errai version <br> ******************************************************** <br> ")
     }
 
     scm {
         git {
             remote {
-                github("${DASH_ORGANIZATION}/dashbuilder")
+                github("${dashbuilderOrganization}/dashbuilder")
             }
-            branch ("${DASH_MAIN_BRANCH}")
+            branch ("${dashbuilderBranch}")
             extensions {
                 relativeTargetDirectory("scripts/dashbuilder")
             }
@@ -941,7 +1010,7 @@ job("dash_${DASH_VERSION}_release") {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
     wrappers {
         timeout {
@@ -950,7 +1019,7 @@ job("dash_${DASH_VERSION}_release") {
         timestamps()
         preBuildCleanup()
         colorizeOutput()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
     }
 
     configure { project ->
@@ -969,7 +1038,7 @@ job("dash_${DASH_VERSION}_release") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(dashDeploy)
     }
@@ -977,22 +1046,22 @@ job("dash_${DASH_VERSION}_release") {
 
 // ******************************************************
 
-job("dash_${DASH_VERSION}_pushTag") {
+job("pushTag-dashbuilder-${dashbuilderVersion}") {
 
     description("This job: <br> creates and pushes the tags for <br> community (dashbuilder) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        choiceParam("TARGET", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
-        stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b> (r0.7.0.Beta1) for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x->yyy.mm.dd> </b>(bsync-7.1.x-2017.05.14) for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("TAG", "tag", "The tag should typically look like <b> major.minor.micro.<extension> </b>(0.7.0.Beta1) </b> for <b> community </b> or <b> related kie prod tag sync-major.minor.x-<yyyy.mm.dd> </b>(sync-7.1.0.2017.05.14) </b> for <b> productization </b> <br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
+        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x->yyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("tag", "tag", "The tag should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> related kie prod tag sync-major.minor.x-<yyyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
     };
 
     scm {
         git {
             remote {
-                github("${DASH_ORGANIZATION}/dashbuilder")
+                github("${dashbuilderOrganization}/dashbuilder")
             }
-            branch ("${DASH_MAIN_BRANCH}")
+            branch ("${dashbuilderBranch}")
             extensions {
                 relativeTargetDirectory("scripts/dashbuilder")
             }
@@ -1006,7 +1075,7 @@ job("dash_${DASH_VERSION}_pushTag") {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
     wrappers {
         timeout {
@@ -1015,7 +1084,7 @@ job("dash_${DASH_VERSION}_pushTag") {
         timestamps()
         colorizeOutput()
         preBuildCleanup()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
     }
 
     configure { project ->
@@ -1034,7 +1103,7 @@ job("dash_${DASH_VERSION}_pushTag") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(dashPushTag)
     }
@@ -1042,23 +1111,23 @@ job("dash_${DASH_VERSION}_pushTag") {
 
 // ******************************************************
 
-job("dash_${DASH_VERSION}_updateVersion") {
+job("updateVersion-dashbuilder-${dashbuilderVersion}") {
 
     description("This job: <br> updates dashbuilder repository to a new developmenmt version <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
         stringParam("newVersion", "new dashbuilder version", "Edit the new dashbuilder version")
-        stringParam("BASE_BRANCH", "base branch", "please select the base branch <br> ******************************************************** <br> ")
-        stringParam("UF_DEVEL_VERSION", "uberfire development version", "Edit the uberfire development version")
-        stringParam("ERRAI_DEVEL_VERSION", "errai development version", "Edit the errai development version")
+        stringParam("baseBranch", "base branch", "please select the base branch <br> ******************************************************** <br> ")
+        stringParam("uberfireDevelVersion", "uberfire development version", "Edit the uberfire development version")
+        stringParam("erraiDevelVersion", "errai development version", "Edit the errai development version")
     }
 
     scm {
         git {
             remote {
-                github("${DASH_ORGANIZATION}/dashbuilder")
+                github("${dashbuilderOrganization}/dashbuilder")
             }
-            branch ("${DASH_MAIN_BRANCH}")
+            branch ("${dashbuilderBranch}")
             extensions {
                 relativeTargetDirectory("scripts/dashbuilder")
             }
@@ -1072,7 +1141,7 @@ job("dash_${DASH_VERSION}_updateVersion") {
         numToKeep(10)
     }
 
-    jdk("${JAVADK}")
+    jdk("${javadk}")
 
     wrappers {
         timeout {
@@ -1081,7 +1150,7 @@ job("dash_${DASH_VERSION}_updateVersion") {
         timestamps()
         colorizeOutput()
         preBuildCleanup()
-        toolenv("${MAVEN}", "${JDK}")
+        toolenv("${mvn}", "${jaydekay}")
     }
 
     configure { project ->
@@ -1100,7 +1169,7 @@ job("dash_${DASH_VERSION}_updateVersion") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${MVNOPTS}", MAVEN_HOME : "\$${MVNHOME}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${MVNHOME}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(dashUpdateVersion)
     }
@@ -1109,21 +1178,21 @@ job("dash_${DASH_VERSION}_updateVersion") {
 
 // **************************** VIEW to create on JENKINS CI *******************************************
 
-nestedView("kie release for ${KIE_MAIN_BRANCH} branch"){
+nestedView("kieReleases-${kieMainBranch}"){
     views{
-        listView("${KIE_VERSION} kie release"){
-            description("all scripts needed for building a ${KIE_VERSION} KIE Release")
+        listView("kieRelease-${kieVersion}"){
+            description("all scripts needed for building a ${kieVersion} KIE Release")
             jobs {
-                name("kie_${KIE_VERSION}_createAndPushReleaseBranches")
-                name("kie_${KIE_VERSION}_buildAndDeployLocally")
-                name("kie_${KIE_VERSION}_copyBinariesToNexus")
-                name("kie_${KIE_VERSION}_allJbpmTestCoverageMatrix")
-                name("kie_${KIE_VERSION}_allServerMatrix")
-                name("kie_${KIE_VERSION}_wbSmokeTestsMatrix")
-                name("kie_${KIE_VERSION}_pushTags")
-                name("kie_${KIE_VERSION}_removeReleaseBranches")
-                name("kie_${KIE_VERSION}_updateToNextDevelopmentVersion")
-                name("kie_${KIE_VERSION}_copyBinariesToFilemgmt")
+                name("createAndPushReleaseBranches-kieReleases-${kieVersion}")
+                name("buildAndDeployLocally-kieReleases-${kieVersion}")
+                name("copyBinariesToNexus-kieReleases-${kieVersion}")
+                name("jbpmTestCoverageMatrix-kieReleases-${kieVersion}")
+                name("serverMatrix-kieReleases-${kieVersion}")
+                name("wbSmokeTestsMatrix-kieReleases-${kieVersion}")
+                name("pushTags-kieReleases-${kieVersion}")
+                name("removeReleaseBranches-kieReleases-${kieVersion}")
+                name("updateToNextDevelopmentVersion-kieReleases-${kieVersion}")
+                name("copyBinariesToFilemgmt-kieReleases-${kieVersion}")
             }
             columns {
                 status()
@@ -1133,12 +1202,12 @@ nestedView("kie release for ${KIE_MAIN_BRANCH} branch"){
                 lastFailure()
             }
         }
-        listView("${UF_VERSION} uberfire Release"){
-            description("all scripts needed for building a ${UF_VERSION} uberfire release")
+        listView("uberfireRelease-${uberfireVersion}"){
+            description("all scripts needed for building a ${uberfireVersion} uberfire release")
             jobs {
-                name("uf_${UF_VERSION}_release")
-                name("uf_${UF_VERSION}_pushTag")
-                name("uf_${UF_VERSION}_updateVersion")
+                name("release-uberfire-${uberfireVersion}")
+                name("pushTag-uberfire-${uberfireVersion}")
+                name("updateVersion-uberfire-${uberfireVersion}")
             }
             columns {
                 status()
@@ -1148,12 +1217,12 @@ nestedView("kie release for ${KIE_MAIN_BRANCH} branch"){
                 lastFailure()
             }
         }
-        listView("${DASH_VERSION} dashbuilder release"){
-            description("all scripts needed for building a ${DASH_VERSION} dashbuilder release")
+        listView("dashbuilderRelease-${dashbuilderVersion}"){
+            description("all scripts needed for building a ${dashbuilderVersion} dashbuilder release")
             jobs {
-                name("dash_${DASH_VERSION}_release")
-                name("dash_${DASH_VERSION}_pushTag")
-                name("dash_${DASH_VERSION}_updateVersion")
+                name("release-dashbuilder-${dashbuilderVersion}")
+                name("pushTag-dashbuilder-${dashbuilderVersion}")
+                name("updateVersion-dashbuilder-${dashbuilderVersion}")
             }
             columns {
                 status()
