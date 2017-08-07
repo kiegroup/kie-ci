@@ -16,7 +16,10 @@ def final DEFAULTS = [
                 "integration-tests"        : "true",
                 "maven.test.failure.ignore": "true"],
         ircNotificationChannels   : [],
-        artifactsToArchive        : ["**/target/testStatusListener*"],
+        artifactsToArchive        : [
+                "**/target/*.log",
+                "**/target/testStatusListener*"
+        ],
         autoExecuteDownstreamBuild: "true"
 ]
 

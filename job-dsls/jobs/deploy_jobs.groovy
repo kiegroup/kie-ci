@@ -10,7 +10,10 @@ def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
         mvnGoals               : "-e -nsu -fae -B -T1C -Dfull -Pwildfly10 -Dcontainer=wildfly10 -Dintegration-tests -Dmaven.test.failure.ignore=true clean deploy findbugs:findbugs",
         ircNotificationChannels: [],
-        artifactsToArchive     : [],
+        artifactsToArchive     : [
+                "**/target/testStatusListener*",
+                "**/target/*.log"
+        ],
         downstreamRepos        : []
 ]
 
@@ -118,7 +121,9 @@ def final REPO_CONFIGS = [
                 label                  : "rhel7 && mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=1 -Dwebdriver.firefox.bin=/opt/tools/firefox-38esr/firefox-bin -Pkie-wb,wildfly10",
                 ircNotificationChannels: ["#guvnordev"],
-                artifactsToArchive     : ["kie-wb-tests/kie-wb-tests-gui/target/screenshots/**"],
+                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
+                        "kie-wb-tests/kie-wb-tests-gui/target/screenshots/**"
+                ],
                 downstreamRepos        : []
         ]
 ]
