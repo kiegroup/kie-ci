@@ -439,7 +439,7 @@ job("kieAllBuild-${kieMainBranch}") {
         archiveArtifacts{
             onlyIfSuccessful(false)
             allowEmpty(true)
-            pattern("**/git-commit-hashes.txt,version.txt,**/hs_err_pid*.log")
+            pattern("**/git-commit-hashes.txt, version.txt, **/hs_err_pid*.log, **/target/*.log")
         }
         mailer('bsig@redhat.com', false, false)
     }

@@ -20,6 +20,7 @@ def final DEFAULTS = [
                 "gwt.compiler.localWorkers"          : 1
         ],
         artifactsToArchive     : [
+                "**/target/*.log",
                 "**/target/testStatusListener*",
                 "**/target/screenshots/**",
                 "**/target/kie-wb*wildfly*.war",

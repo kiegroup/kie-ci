@@ -251,6 +251,11 @@ job("buildAndDeployLocally-kieReleases-${kieVersion}") {
 
     publishers {
         archiveJunit("**/TEST-*.xml")
+        archiveArtifacts{
+            onlyIfSuccessful(false)
+            allowEmpty(true)
+            pattern("**/target/*.log")
+        }
     }
 
     wrappers {
