@@ -6,6 +6,7 @@ def DASH_VERSION="0.8.x"
 def JAVADK="jdk1.8"
 def JDK="JDK1_8"
 def MAVEN="APACHE_MAVEN_3_3_9"
+def MAVEN_TEST_VERSION="apache-maven-3.3.9"
 def MVNHOME="${MAVEN}_HOME"
 def MVNOPTS="-Xms2g -Xmx3g"
 def KIE_MAIN_BRANCH="7.2.x"
@@ -312,7 +313,7 @@ matrixJob("kie_${KIE_VERSION}_allJbpmTestCoverageMatrix") {
     steps {
         shell(jbpmTestCoverageMatrix)
         maven{
-            mavenInstallation("apache-maven-3.2.5")
+            mavenInstallation("${MAVEN_TEST_VERSION}")
             goals("clean verify -e -B -Dmaven.test.failure.ignore=true -Dintegration-tests")
             rootPOM("jbpm-test-coverage/pom.xml")
             mavenOpts("-Xmx3g")
@@ -376,7 +377,7 @@ matrixJob("kie_${KIE_VERSION}_allServerMatrix") {
     steps {
         shell(kieAllServerMatrix)
         maven{
-            mavenInstallation("apache-maven-3.2.5")
+            mavenInstallation("${MAVEN_TEST_VERSION}")
             goals("-B -U -e -fae clean verify -P\$container")
             rootPOM("kie-server-parent/kie-server-tests/pom.xml")
             properties("kie.server.testing.kjars.build.settings.xml":"\$SETTINGS_XML_FILE")
@@ -449,7 +450,7 @@ matrixJob("kie_${KIE_VERSION}_wbSmokeTestsMatrix") {
     steps {
         shell(kieWbSmokeTestsMatrix)
         maven{
-            mavenInstallation("apache-maven-3.2.5")
+            mavenInstallation("${MAVEN_TEST_VERSION}")
             goals("-B -e -fae clean verify -P\$container,\$war,selenium -D\$TARGET")
             rootPOM("kie-wb-tests/pom.xml")
             properties("maven.test.failure.ignore":true)
