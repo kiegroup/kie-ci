@@ -6,11 +6,12 @@ def mvnVersion="APACHE_MAVEN_3_3_9"
 def mvnVersionTest="apache-maven-3.3.9"
 def mvnHome="${mvnVersion}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
-def kieMainBranch="master"
-def erraiBranch="master"
-def uberfireBranch="master"
-def dashbuilderBranch="master"
-def erraiVersionOld="4.1.0-SNAPSHOT"
+def kieMainBranch="7.3.x"
+def erraiBranch="4.0.x"
+def uberfireBranch="1.3.x"
+def dashbuilderBranch="0.9.x"
+def erraiVersionOld="4.0.3-SNAPSHOT"
+def organization="kiegroup"
 
 // definition of flow script
 
@@ -56,6 +57,9 @@ parallel (
         },
         {
             build("kieServerMatrix-kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion")
+        },
+        {
+            build("kie-docker-ci-images-${kieMainBranch}", kieVersion: "$kieVersion")
         }
 )'''
 
@@ -75,10 +79,10 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
 
     environmentVariables{
         groovy('''def date = new Date().format( 'yyyyMMdd-hhMMss' )
-def kieVersionPre = "8.0.0."
-def uberfireVersionPre = "2.0.0."
-def dashbuilderVersionPre = "1.0.0."
-def erraiVersionNewPre = "4.0.2."
+def kieVersionPre = "7.3.0."
+def uberfireVersionPre = "1.3.0."
+def dashbuilderVersionPre = "0.9.0."
+def erraiVersionNewPre = "4.0.3."
 return [kieVersion: kieVersionPre + date, uberfireVersion: uberfireVersionPre + date, dashbuilderVersion: dashbuilderVersionPre + date, erraiVersionNew:erraiVersionNewPre +date] ''')
     }
 
@@ -789,7 +793,7 @@ for %%x in (%repo_list%) do (
 
 job("windows-kieAllBuild-${kieMainBranch}") {
     description("Builds all repos specified in\n" +
-            "<a href=\"https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/script/repository-list.txt\">repository-list.txt</a> (master branch) on Windows machine.\n" +
+            "<a href=\"https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/7.3.x/script/repository-list.txt\">repository-list.txt</a> (7.3.x branch) on Windows machine.\n" +
             "It does not deploy the artifacts to staging repo (or any other remote). It just checks our repositories can be build and tested on Windows, so that \n" +
             "contributors do not hit issues when using Windows machines for development.<br/>\n" +
             "<br/>\n" +
@@ -840,6 +844,82 @@ job("windows-kieAllBuild-${kieMainBranch}") {
     }
 
 
+}
+// *****************************************************************************************************
+// definition of kieDockerCi  script
+
+def kieDockerCi='''#!/bin/bash -e
+sh scripts/docker-clean.sh $kieVersion
+sh scripts/update-versions.sh $kieVersion "-s $SETTINGS_XML"'''
+
+job("kie-docker-ci-images-${kieMainBranch}") {
+    description("Builds CI Docker images for 7.3.x branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
+
+    parameters {
+        stringParam("kieVersion", "7.3.0-SNAPSHOT", "Please edit the version of the kie release <br> i.e. typically <b> major.minor.micro.EXT </b>i.e. 7.3.0.Beta1<br> Normally the kie version will be supplied by parent job <br> ******************************************************** <br> ")
+    }
+
+    scm {
+        git {
+            remote {
+                github("${organization}/kie-docker-ci-images")
+            }
+            branch ("${kieMainBranch}")
+            extensions {
+                relativeTargetDirectory("kie-docker-ci-images")
+            }
+
+        }
+    }
+
+    label("kieci-02")
+
+    logRotator {
+        numToKeep(10)
+    }
+
+    jdk("${javadk}")
+
+    wrappers {
+        timeout {
+            absolute(120)
+        }
+        timestamps()
+        colorizeOutput()
+        preBuildCleanup()
+        configFiles {
+            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
+                variable("SETTINGS_XML_FILE")
+            }
+        }
+    }
+
+    publishers {
+        mailer('psiroky@redhat.com mbiarnes@redhat.com', false, false)
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+                username 'jenkins'
+            }
+        }
+    }
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_HOME : "/opt/tools/\$${mvnVersionTest}", PATH : "/opt/tools/\$${mvnVersionTest}/bin:\$PATH")
+        }
+        shell(kieDockerCi)
+        maven{
+            mavenInstallation("${mvnVersionTest}")
+            goals("-e -B -U clean install")
+            providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905")
+            properties("kie.artifacts.deploy.path":"/home/docker/kie-artifacts/\$kieVersion")
+        }
+    }
 }
 // **************************** VIEW to create on JENKINS CI *******************************************
 

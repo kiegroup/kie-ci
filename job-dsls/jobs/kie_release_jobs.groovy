@@ -1,24 +1,24 @@
 //Define Variables
 
-def kieVersion="8.0.x"
-def uberfireVersion="2.0.x"
-def dashbuilderVersion="1.0.x"
+def kieVersion="7.3.x"
+def uberfireVersion="1.3.x"
+def dashbuilderVersion="0.9.x"
 def javadk="jdk1.8"
 def jaydekay="JDK1_8"
 def mvn="APACHE_MAVEN_3_3_9"
 def mvnHome="${mvn}_HOME"
 def mvnOpts="-Xms2g -Xmx3g"
-def kieMainBranch="master"
-def uberfireBranch="master"
-def dashbuilderBranch="master"
+def kieMainBranch="7.3.x"
+def uberfireBranch="1.3.x"
+def dashbuilderBranch="0.9.x"
 def organization="kiegroup"
 def uberfireOrganization="AppFormer"
 def dashbuilderOrganization="dashbuilder"
 
 
-//def pushReleaseBranches ="""
-//sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-createAndPushReleaseBranches.sh
-//"""
+def pushReleaseBranches ="""
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-createAndPushReleaseBranches.sh
+"""
 
 def deployLocally="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-deployLocally.sh
@@ -85,75 +85,6 @@ sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dashbuilder-updateVersion.sh
 
 
 // **************************************************************************
-def pushReleaseBranches='''#!/bin/bash -e
-
-# clone rest of the repos
-./droolsjbpm-build-bootstrap/script/git-clone-others.sh --branch $baseBranch --depth 70
-
-if [ "$source" == "community-branch" ]; then
-
-   # checkout to local release names
-   ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $releaseBranch $baseBranch
-
-   # add new remote pointing to jboss-integration
-   ./droolsjbpm-build-bootstrap/script/git-add-remote-jboss-integration.sh
-
-fi
-
-if [ "$source" == "community-tag" ]; then
-
-   # add new remote pointing to jboss-integration
-   ./droolsjbpm-build-bootstrap/script/git-add-remote-jboss-integration.sh
-
-   # get the tags of community
-   ./droolsjbpm-build-bootstrap/script/git-all.sh fetch --tags origin
-
-   # checkout to local release names
-   ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $releaseBranch $tag
-
-fi
-
-if [ "$source" == "production-tag" ]; then
-
-   # add new remote pointing to jboss-integration
-   ./droolsjbpm-build-bootstrap/script/git-add-remote-jboss-integration.sh
-
-   # get the tags of jboss-integration
-   ./droolsjbpm-build-bootstrap/script/git-all.sh fetch --tags jboss-integration
-
-   # checkout to local release names
-   ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $releaseBranch $tag
-
-fi
-
-# upgrades the version to the release/tag version
-./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $releaseVersion $target
-
-# update kie-parent-metadata
-cd droolsjbpm-build-bootstrap/
-
-# change properties via sed as they don't update automatically
-sed -i \\
--e "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$uberfireVersion<\\/version.org.uberfire>/;" \\
--e "s/<version.org.dashbuilder>.*.<\\/version.org.dashbuilder>/<version.org.dashbuilder>$dashbuilderVersion<\\/version.org.dashbuilder>/;" \\
--e "s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;" \\
--e "s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$releaseVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" \\
-pom.xml
-
-cd $WORKSPACE
-
-# git add and commit the version update changes
-./droolsjbpm-build-bootstrap/script/git-all.sh add .
-commitMsg="Upgraded versions for release $releaseVersion"
-./droolsjbpm-build-bootstrap/script/git-all.sh commit -m "$commitMsg"
-
-# pushes the local release branches to kiegroup or to jboss-integration [IMPORTANT: "push -n" (--dryrun) should be replaced by "push" when script will be in production]
-if [ "$target" == "community" ]; then
-  ./droolsjbpm-build-bootstrap/script/git-all.sh push -n origin $releaseBranch
-else
-  ./droolsjbpm-build-bootstrap/script/git-all.sh push -n jboss-integration $releaseBranch
-  ./droolsjbpm-build-bootstrap/script/git-all.sh push -n jboss-integration $baseBranch
-fi '''
 
 job("createAndPushReleaseBranches-kieReleases-${kieVersion}") {
 
@@ -161,7 +92,7 @@ job("createAndPushReleaseBranches-kieReleases-${kieVersion}") {
 
     parameters {
         choiceParam("target", ["community", "productized"], "please select if this release is for community: <b> community </b><br>or<br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
-        choiceParam("source", ["community-branch", "community-tag", "production-tag"], " please select the source of this release <br> or it is the master branch ( <b> community-branch </b> ) <br> or a community tag ( <b> community-tag </b> ) <br> or a productization tag ( <b> production-tag </b> ) <br> ******************************************************** <br> ")
+        choiceParam("source", ["community-branch", "community-tag", "production-tag"], " please select the source of this release <br> or it is the 7.3.x branch ( <b> community-branch </b> ) <br> or a community tag ( <b> community-tag </b> ) <br> or a productization tag ( <b> production-tag </b> ) <br> ******************************************************** <br> ")
         stringParam("tag", "tag", "if you selected as <b> source=community-tag </b> or <b> source=production-tag </b> please edit the name of the tag <br> if selected as <b> source=community-branch </b> the parameter <b> tag </b> will be ignored <br> The tag should typically look like <b> major.minor.micro.<extension></b> for <b> community </b> or <b> sync-major.minor.x-<yyyy.mm.dd> </b> for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("releaseVersion", "release version", "please edit the version for this release <br> The <b> releaseVersion </b> should typically look like <b> major.minor.micro.<extension></b> for <b> community </b> or <b> major.minor.micro.<yyymmdd>-productization</b> for <b> productization </b> <br>******************************************************** <br> ")
         stringParam("baseBranch", "base branch", "please select the base branch <br> ******************************************************** <br> ")
@@ -669,7 +600,7 @@ job("updateToNextDevelopmentVersion-kieReleases-${kieVersion}") {
     description("This job: <br> updates the KIE repositories to a new developmenmt version<br>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        stringParam("baseBranch","master","Branch you want to upgrade")
+        stringParam("baseBranch","7.3.x","Branch you want to upgrade")
         stringParam("newVersion", "new KIE version", "Edit the KIE development version")
         stringParam("uberfireDevelVersion", "uberfire version", "Edit the uberfire development version")
         stringParam("dashbuilderDevelVersion", "dashbuilder version", "Edit the dashbuilder development version")
