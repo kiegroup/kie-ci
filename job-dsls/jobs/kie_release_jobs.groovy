@@ -277,7 +277,7 @@ matrixJob("kie_${KIE_VERSION}_allJbpmTestCoverageMatrix") {
     };
 
     axes {
-        labelExpression("label-exp","linux && mem4g")
+        labelExpression("label-exp","linux&&mem4g")
         jdk("jdk1.8")
     }
 
@@ -334,7 +334,7 @@ matrixJob("kie_${KIE_VERSION}_allServerMatrix") {
     axes {
         jdk("jdk1.8")
         text("container", "tomcat8", "wildfly10")
-        labelExpression("label_exp", "linux && mem4g")
+        labelExpression("label_exp", "linux&&mem4g")
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
@@ -404,7 +404,7 @@ matrixJob("kie_${KIE_VERSION}_wbSmokeTestsMatrix") {
         jdk("jdk1.8")
         text("container", "wildfly10", "tomcat8", "eap7")
         text("war", "kie-wb", "kie-drools-wb")
-        labelExpression("label_exp", "linux && mem4g && gui-testing")
+        labelExpression("label_exp", "linux&&mem4g&&gui-testing")
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
