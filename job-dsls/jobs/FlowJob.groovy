@@ -2,9 +2,9 @@
 
 def javadk="jdk1.8"
 def jaydekay="JDK1_8"
-def mvnVersion="APACHE_MAVEN_3_3_9"
-def mvnVersionTest="apache-maven-3.3.9"
-def mvnHome="${mvnVersion}_HOME"
+def mvnToolEnv="APACHE_MAVEN_3_3_9"
+def mvnVersion="apache-maven-3.3.9"
+def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
 def kieMainBranch="master"
 def erraiBranch="master"
@@ -158,7 +158,7 @@ job("errai-kieAllBuild-${kieMainBranch}") {
         }
         timestamps()
         colorizeOutput()
-        toolenv("${mvnVersion}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
         preBuildCleanup()
         configFiles {
             mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
@@ -241,7 +241,7 @@ job("uberfire-kieAllBuild-${kieMainBranch}") {
         }
         timestamps()
         colorizeOutput()
-        toolenv("${mvnVersion}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
         preBuildCleanup()
         configFiles {
             mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
@@ -325,7 +325,7 @@ job("dashbuilder-kieAllBuild-${kieMainBranch}") {
         }
         timestamps()
         colorizeOutput()
-        toolenv("${mvnVersion}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
         preBuildCleanup()
         configFiles {
             mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
@@ -429,7 +429,7 @@ job("kieAllBuild-${kieMainBranch}") {
         }
         timestamps()
         colorizeOutput()
-        toolenv("${mvnVersion}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
         preBuildCleanup()
         configFiles {
             mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
@@ -520,7 +520,7 @@ matrixJob("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
     steps {
         shell(jbpmTestCoverage)
         maven{
-            mavenInstallation("${mvnVersionTest}")
+            mavenInstallation("${mvnVersion}")
             goals("clean verify -e -B -Dmaven.test.failure.ignore=true -Dintegration-tests")
             rootPOM("jbpm-test-coverage/pom.xml")
             mavenOpts("-Xmx3g")
@@ -590,7 +590,7 @@ matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
     steps {
         shell(jbpmContainerTest)
         maven{
-            mavenInstallation("${mvnVersionTest}")
+            mavenInstallation("${mvnVersion}")
             goals("-e -B clean install")
             rootPOM("jbpm-container-test/pom.xml")
             mavenOpts("-Xmx3g")
@@ -681,7 +681,7 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     steps {
         shell(kieWbTest)
         maven{
-            mavenInstallation("${mvnVersionTest}")
+            mavenInstallation("${mvnVersion}")
             goals("-nsu -B -e -fae clean verify -P\$container,\$war")
             rootPOM("kie-wb-tests/pom.xml")
             properties("maven.test.failure.ignore": true)
@@ -757,7 +757,7 @@ matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
     steps {
         shell(kieServerTest)
         maven{
-            mavenInstallation("${mvnVersionTest}")
+            mavenInstallation("${mvnVersion}")
             goals("-B -e -fae -nsu clean verify -P\$container")
             rootPOM("kie-server-parent/kie-server-tests/pom.xml")
             properties("kie.server.testing.kjars.build.settings.xml":"\$SETTINGS_XML_FILE")
@@ -910,11 +910,11 @@ job("kie-docker-ci-images-${kieMainBranch}") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_HOME : "/opt/tools/\$${mvnVersionTest}", PATH : "/opt/tools/\$${mvnVersionTest}/bin:\$PATH")
+            envs(MAVEN_HOME : "/opt/tools/\$${mvnVersion}", PATH : "/opt/tools/\$${mvnVersion}/bin:\$PATH")
         }
         shell(kieDockerCi)
         maven{
-            mavenInstallation("${mvnVersionTest}")
+            mavenInstallation("${mvnVersion}")
             goals("-e -B -U clean install")
             providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905")
             properties("kie.artifacts.deploy.path":"/home/docker/kie-artifacts/\$kieVersion")
