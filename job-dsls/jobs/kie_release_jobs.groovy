@@ -5,8 +5,9 @@ def uberfireVersion="1.3.x"
 def dashbuilderVersion="0.9.x"
 def javadk="jdk1.8"
 def jaydekay="JDK1_8"
-def mvn="APACHE_MAVEN_3_3_9"
-def mvnHome="${mvn}_HOME"
+def mvnToolEnv="APACHE_MAVEN_3_3_9"
+def mvnVersion="apache-maven-3.3.9"
+def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms2g -Xmx3g"
 def kieMainBranch="7.3.x"
 def uberfireBranch="1.3.x"
@@ -126,7 +127,7 @@ job("createAndPushReleaseBranches-kieReleases-${kieVersion}") {
     wrappers {
         timestamps()
         colorizeOutput()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
         preBuildCleanup()
     }
 
@@ -187,7 +188,7 @@ job("buildAndDeployLocally-kieReleases-${kieVersion}") {
     wrappers {
         timestamps()
         colorizeOutput()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
         preBuildCleanup()
     }
 
@@ -232,7 +233,7 @@ job("copyBinariesToNexus-kieReleases-${kieVersion}") {
     wrappers {
         timestamps()
         colorizeOutput()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
     }
 
     configure { project ->
@@ -312,7 +313,7 @@ matrixJob("jbpmTestCoverageMatrix-kieReleases-${kieVersion}") {
     steps {
         shell(jbpmTestCoverageMatrix)
         maven{
-            mavenInstallation("apache-maven-3.2.5")
+            mavenInstallation("${mvnVersion}")
             goals("clean verify -e -B -Dmaven.test.failure.ignore=true -Dintegration-tests")
             rootPOM("jbpm-test-coverage/pom.xml")
             mavenOpts("-Xmx3g")
@@ -376,7 +377,7 @@ matrixJob("serverMatrix-kieReleases-${kieVersion}") {
     steps {
         shell(kieAllServerMatrix)
         maven{
-            mavenInstallation("apache-maven-3.2.5")
+            mavenInstallation("${mvnVersion}")
             goals("-B -U -e -fae clean verify -P\$container")
             rootPOM("kie-server-parent/kie-server-tests/pom.xml")
             properties("kie.server.testing.kjars.build.settings.xml":"\$SETTINGS_XML_FILE")
@@ -449,7 +450,7 @@ matrixJob("wbSmokeTestsMatrix-kieReleases-${kieVersion}") {
     steps {
         shell(kieWbSmokeTestsMatrix)
         maven{
-            mavenInstallation("apache-maven-3.2.5")
+            mavenInstallation("${mvnVersion}")
             goals("-B -e -fae clean verify -P\$container,\$war,selenium -D\$TARGET")
             rootPOM("kie-wb-tests/pom.xml")
             properties("maven.test.failure.ignore":true)
@@ -503,7 +504,7 @@ job("pushTags-kieReleases-${kieVersion}") {
         timestamps()
         preBuildCleanup()
         colorizeOutput()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
     }
 
     configure { project ->
@@ -568,7 +569,7 @@ job("removeReleaseBranches-kieReleases-${kieVersion}") {
         timestamps()
         preBuildCleanup()
         colorizeOutput()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
     }
 
     configure { project ->
@@ -635,7 +636,7 @@ job("updateToNextDevelopmentVersion-kieReleases-${kieVersion}") {
         timestamps()
         preBuildCleanup()
         colorizeOutput()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
     }
 
     configure { project ->
@@ -686,7 +687,7 @@ job("copyBinariesToFilemgmt-kieReleases-${kieVersion}") {
         }
         timestamps()
         colorizeOutput()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
     }
 
     configure { project ->
@@ -753,7 +754,7 @@ job("release-uberfire-${uberfireVersion}") {
         timestamps()
         preBuildCleanup()
         colorizeOutput()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
     }
 
     configure { project ->
@@ -818,7 +819,7 @@ job("pushTag-uberfire-${uberfireVersion}") {
         timestamps()
         colorizeOutput()
         preBuildCleanup()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
     }
 
     configure { project ->
@@ -883,7 +884,7 @@ job("updateVersion-uberfire-${uberfireVersion}") {
         timestamps()
         colorizeOutput()
         preBuildCleanup()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
     }
 
     configure { project ->
@@ -950,7 +951,7 @@ job("release-dashbuilder-${dashbuilderVersion}") {
         timestamps()
         preBuildCleanup()
         colorizeOutput()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
     }
 
     configure { project ->
@@ -1015,7 +1016,7 @@ job("pushTag-dashbuilder-${dashbuilderVersion}") {
         timestamps()
         colorizeOutput()
         preBuildCleanup()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
     }
 
     configure { project ->
@@ -1081,7 +1082,7 @@ job("updateVersion-dashbuilder-${dashbuilderVersion}") {
         timestamps()
         colorizeOutput()
         preBuildCleanup()
-        toolenv("${mvn}", "${jaydekay}")
+        toolenv("${mvnToolEnv}", "${jaydekay}")
     }
 
     configure { project ->
