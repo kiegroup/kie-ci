@@ -17,7 +17,7 @@ def uberfireOrganization="AppFormer"
 def dashbuilderOrganization="dashbuilder"
 
 
-def pushReleaseBranches ="""
+def pushReleaseBranches="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-createAndPushReleaseBranches.sh
 """
 
@@ -335,7 +335,7 @@ matrixJob("serverMatrix-kieReleases-${kieVersion}") {
     axes {
         jdk("jdk1.8")
         text("container", "tomcat8", "wildfly10")
-        labelExpression("label_exp", "linux&&mem4g")
+        labelExpression("label_exp", "linux&&mem8g")
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
@@ -384,7 +384,7 @@ matrixJob("serverMatrix-kieReleases-${kieVersion}") {
             properties("maven.test.failure.ignore": true)
             properties("deployment.timeout.millis":"240000")
             properties("container.startstop.timeout.millis":"240000")
-            properties("eap64x.download.url":"http://download.devel.redhat.com/released/JBEAP-6/6.4.4/jboss-eap-6.4.4-full-build.zip")
+            properties("eap7.download.url":"http://download.eng.brq.redhat.com/released/JBEAP-7/7.0.2/jboss-eap-7.0.2-full-build.zip")
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905")
         }
@@ -451,7 +451,7 @@ matrixJob("wbSmokeTestsMatrix-kieReleases-${kieVersion}") {
         shell(kieWbSmokeTestsMatrix)
         maven{
             mavenInstallation("${mvnVersion}")
-            goals("-B -e -fae clean verify -P\$container,\$war,selenium -D\$TARGET")
+            goals("-B -e -fae clean verify -P\$container,\$war,selenium -D\$target")
             rootPOM("kie-wb-tests/pom.xml")
             properties("maven.test.failure.ignore":true)
             properties("deployment.timeout.millis":"240000")
