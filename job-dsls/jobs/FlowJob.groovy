@@ -125,14 +125,14 @@ git checkout -b $erraiVersionNew $erraiBranch
 # update versions
 sh updateVersions.sh $erraiVersionOld $erraiVersionNew
 # build the repos & deploy into local dir (will be later copied into staging repo)
-deploy-dir=$WORKSPACE/deploy-dir
+deployDir=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -U -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deploy-dir -s $SETTINGS_XML_FILE\\
+mvn -U -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=3
 # (2) upload the content to remote staging repo
-cd $deploy-dir
-mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository -DrepositoryDirectory=$deploy-dir\\
+cd $deployDir
+mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository -DrepositoryDirectory=$deployDir\\
  -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="errai $erraiVersionNew" -DstagingProgressTimeoutMinutes=30'''
 
 
@@ -209,15 +209,15 @@ sh scripts/release/update-version.sh $uberfireVersion
 # update files that are not automatically changed with the update-versions-all.sh script
 sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
 # build the repos & deploy into local dir (will be later copied into staging repo)
-deploy-dir=$WORKSPACE/deploy-dir
+deployDir=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -B -U -e clean deploy -Dfull -Drelease -T1C -DaltDeploymentRepository=local::default::file://$deploy-dir -s $SETTINGS_XML_FILE\\
+mvn -B -U -e clean deploy -Dfull -Drelease -T1C -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -Xss1M" -Dgwt.compiler.localWorkers=2
 # (2) upload the content to remote staging repo
-cd $deploy-dir
+cd $deployDir
 mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
-  -s $SETTINGS_XML_FILE -DrepositoryDirectory=$deploy-dir -DstagingProfileId=15c3321d12936e -DstagingDescription="uberfire $uberfireVersion" -DstagingProgressTimeoutMinutes=30'''
+  -s $SETTINGS_XML_FILE -DrepositoryDirectory=$deployDir -DstagingProfileId=15c3321d12936e -DstagingDescription="uberfire $uberfireVersion" -DstagingProgressTimeoutMinutes=30'''
 
 job("uberfire-kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the uberfire version")
@@ -292,15 +292,15 @@ sh scripts/release/update-version.sh $dashbuilderVersion
 sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$uberfireVersion<\\/version.org.uberfire>/;P;D" pom.xml
 sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
 # build the repos & deploy into local dir (will be later copied into staging repo)
-DEPLOY_DIR=$WORKSPACE/deploy-dir
+deployDir=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -B -e clean deploy -U -Dfull -Drelease -T1C -DaltDeploymentRepository=local::default::file://$deploy-dir -s $SETTINGS_XML_FILE\\
+mvn -B -e clean deploy -U -Dfull -Drelease -T1C -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -Xss1M" -Dgwt.compiler.localWorkers=2
 # (2) upload the content to remote staging repo
-cd $deploy-dir
+cd $deployDir
 mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
-  -s $SETTINGS_XML_FILE -DrepositoryDirectory=$deploy-dir -DstagingProfileId=15c3321d12936e -DstagingDescription="dashbuilder $dashbuilderVersion" -DstagingProgressTimeoutMinutes=30'''
+  -s $SETTINGS_XML_FILE -DrepositoryDirectory=$deployDir -DstagingProfileId=15c3321d12936e -DstagingDescription="dashbuilder $dashbuilderVersion" -DstagingProgressTimeoutMinutes=30'''
 
 job("dashbuilder-kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the uberfire version")
@@ -391,15 +391,15 @@ sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.
 sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$kieVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" pom.xml
 cd ..
 # build the repos & deploy into local dir (will be later copied into staging repo)
-deploy-dir=$WORKSPACE/deploy-dir
+deployDir=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -T1C -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deploy-dir -s $SETTINGS_XML_FILE\\
+./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -T1C -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=1\\
  -Dgwt.memory.settings="-Xmx4g -Xms1g -Xss1M"
 # (2) upload the content to remote staging repo
 mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
- -DrepositoryDirectory=$deploy-dir -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie $kieVersion" -DstagingProgressTimeoutMinutes=40
+ -DrepositoryDirectory=$deployDir -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie $kieVersion" -DstagingProgressTimeoutMinutes=40
 # creates a file (list) of the last commit hash of each repository as handover for production
 ./droolsjbpm-build-bootstrap/script/git-all.sh log -1 --pretty=oneline >> git-commit-hashes.txt
 echo $kieVersion > $WORKSPACE/version.txt'''
