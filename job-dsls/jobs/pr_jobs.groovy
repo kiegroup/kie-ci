@@ -110,7 +110,7 @@ for (repoConfig in REPO_CONFIGS) {
                     |""".stripMargin())
 
         logRotator {
-            daysToKeep(14)
+            daysToKeep(7)
         }
 
         parameters {
