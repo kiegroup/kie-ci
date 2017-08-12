@@ -888,8 +888,9 @@ job("kie-docker-ci-images-${kieMainBranch}") {
         colorizeOutput()
         preBuildCleanup()
         configFiles {
-            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
-                variable("SETTINGS_XML_FILE")
+            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905"){
+                targetLocation("\$WORKSPACE/settings.xml")
+                variable("SETTINGS_XML")
             }
         }
     }
@@ -910,7 +911,7 @@ job("kie-docker-ci-images-${kieMainBranch}") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_HOME : "/opt/tools/\$${mvnVersion}", PATH : "/opt/tools/\$${mvnVersion}/bin:\$PATH")
+            envs(MAVEN_HOME : "/opt/tools/${mvnVersion}", PATH : "/opt/tools/${mvnVersion}/bin:\$PATH")
         }
         shell(kieDockerCi)
         maven{
