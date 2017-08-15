@@ -8,6 +8,7 @@ def final DEFAULTS = [
         branch                 : "master",
         timeoutMins            : 60,
         label                  : "rhel7 && mem8g",
+        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly10 clean install",
         mvnProps               : [
                 "full"                     : "true",
@@ -15,8 +16,8 @@ def final DEFAULTS = [
                 "container.profile"        : "wildfly10",
                 "integration-tests"        : "true",
                 "maven.test.failure.ignore": "true"],
-        ircNotificationChannels   : [],
-        artifactsToArchive        : [
+        ircNotificationChannels: [],
+        artifactsToArchive     : [
                 "**/target/*.log",
                 "**/target/testStatusListener*"
         ],
@@ -191,6 +192,11 @@ for (repoConfig in REPO_CONFIGS) {
         steps {
             configure { project ->
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.UpstreamReposBuilder' {
+                    mavenBuildConfig {
+                        mavenHome("/opt/tools/apache-maven-${Constants.MAVEN_VERSION}")
+                        mavenOpts("-Xmx2g")
+                        mavenArgs(get("upstreamMvnArgs"))
+                    }
                 }
             }
             maven {

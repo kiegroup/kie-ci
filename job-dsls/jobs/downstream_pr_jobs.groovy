@@ -9,6 +9,7 @@ def final DEFAULTS = [
         branch                 : "master",
         timeoutMins            : 300,
         label                  : "rhel7 && mem16g",
+        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         downstreamMvnGoals     : "-e -nsu -fae -B -T1C -Pkie-wb,wildfly10 clean install",
         downstreamMvnProps     : [
                 "full"                               : "true",
@@ -148,6 +149,11 @@ for (repoConfig in REPO_CONFIGS) {
         steps {
             configure { project ->
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.UpstreamReposBuilder' {
+                    mavenBuildConfig {
+                        mavenHome("/opt/tools/apache-maven-${Constants.MAVEN_VERSION}")
+                        mavenOpts("-Xmx2g")
+                        mavenArgs(get("upstreamMvnArgs"))
+                    }
                 }
                 project / 'builders' << 'hudson.tasks.Maven' {
                     mavenName("apache-maven-${Constants.MAVEN_VERSION}")
@@ -155,7 +161,11 @@ for (repoConfig in REPO_CONFIGS) {
                     targets("-e -fae -nsu -B -T1C clean install -Dfull -DskipTests")
                 }
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
-                    mvnArgLine(get("downstreamMvnGoals") + " " + get("downstreamMvnProps").collect { k, v -> "-D$k=$v" }.join(" "))
+                    mavenBuildConfig {
+                        mavenHome("/opt/tools/apache-maven-${Constants.MAVEN_VERSION}")
+                        mavenOpts("-Xmx2g")
+                        mavenArgs(get("downstreamMvnGoals") + " " + get("downstreamMvnProps").collect { k, v -> "-D$k=$v" }.join(" "))
+                    }
                 }
             }
         }
