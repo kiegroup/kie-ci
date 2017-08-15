@@ -8,6 +8,7 @@ def final DEFAULTS = [
         timeoutMins            : 60,
         label                  : "rhel7 && mem8g",
         ghOrgUnit              : "kiegroup",
+        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-e -nsu -fae -B -T1C -Dfull -Pwildfly10 -Dcontainer=wildfly10 -Dintegration-tests -Dmaven.test.failure.ignore=true clean deploy findbugs:findbugs",
         ircNotificationChannels: [],
         artifactsToArchive     : [],
@@ -192,8 +193,13 @@ for (repoConfig in REPO_CONFIGS) {
 
         configure { project ->
             project / 'prebuilders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.StandardBuildUpstreamReposBuilder' {
-                baseRepository "$repo"
+                baseRepository "$ghOrgUnit/$repo"
                 branch "$repoBranch"
+                mavenBuildConfig {
+                    mavenHome("/opt/tools/apache-maven-${Constants.MAVEN_VERSION}")
+                    mavenOpts("-Xmx2g")
+                    mavenArgs(get("upstreamMvnArgs"))
+                }
             }
         }
 
