@@ -84,9 +84,13 @@ def final REPO_CONFIGS = [
                         "webdriver.firefox.bin"    : "/opt/tools/firefox-45esr/firefox-bin"
                 ],
                 artifactsToArchive: DEFAULTS["artifactsToArchive"] + [
-                        "kie-wb-tests/kie-wb-tests-gui/target/screenshots/**",
-                        "kie-wb/kie-wb-distribution-wars/target/kie-wb-*-wildfly10.war",
-                        "kie-drools-wb/kie-drools-wb-distribution-wars/target/kie-drools-wb-*-wildfly10.war"
+                        "**/target/screenshots/**",
+                        "**/target/kie-wb*wildfly*.war",
+                        "**/target/kie-wb*eap*.war",
+                        "**/target/kie-wb*tomcat*.war",
+                        "**/target/kie-drools-wb*wildfly*.war",
+                        "**/target/kie-drools-wb*eap*.war",
+                        "**/target/kie-drools-wb*tomcat*.war"
                 ]
         ]
 ]
