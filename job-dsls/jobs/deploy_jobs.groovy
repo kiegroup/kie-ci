@@ -142,6 +142,8 @@ for (repoConfig in REPO_CONFIGS) {
                     |Every configuration change needs to be done directly in the DSL files. See the below listed 'Seed job' for more info.
                     |""".stripMargin())
 
+        disabled(shouldDisable = true)
+
         logRotator {
             numToKeep(10)
         }
