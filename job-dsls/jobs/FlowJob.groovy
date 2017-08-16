@@ -140,6 +140,8 @@ job("ErraiFor_kieAllBuild_${kieMainBranch}") {
         stringParam("erraiBranch", "errai branch", "Branch of errai. This will be usually set automatically by the parent trigger job. ")
     }
 
+    disabled(shouldDisable = true)
+
     label("rhel7&&mem16g")
 
     logRotator {
@@ -222,6 +224,8 @@ job("UberfireFor_kieAllBuild_${kieMainBranch}") {
         stringParam("erraiVersionNew", "errai version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
         stringParam("uberfireBranch", "uberfire branch", "branch of uberfire. This will be usually set automatically by the parent trigger job. ")
     }
+
+    disabled(shouldDisable = true)
 
     label("linux&&rhel7&&mem16g")
 
@@ -306,6 +310,8 @@ job("DashbuilderFor_kieAllBuild_${kieMainBranch}") {
         stringParam("dashbuilderVersion", "dashbuilder version", "Version of dashbuilder. This will be usually set automatically by the parent trigger job. ")
         stringParam("dashbuilderBranch", "dashbuilder branch", "branch of dashbuilder. This will be usually set automatically by the parent trigger job. ")
     }
+
+    disabled(shouldDisable = true)
 
     label("linux&&rhel7&&mem16g")
 
@@ -410,6 +416,8 @@ job("kieAllBuild_${kieMainBranch}") {
         stringParam("kieMainBranch", "uberfire branch", "branch of kie. This will be usually set automatically by the parent trigger job. ")
     }
 
+    disabled(shouldDisable = true)
+
     label("linux&&rhel7&&mem16g")
 
     logRotator {
@@ -479,6 +487,8 @@ matrixJob("kieAllBuild_${kieMainBranch}_jbpmTestCoverageMatrix") {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
     }
 
+    disabled(shouldDisable = true)
+
     axes {
         labelExpression("label-exp","linux&&mem8g")
         jdk("${javadk}")
@@ -540,6 +550,8 @@ matrixJob("kieAllBuild_${kieMainBranch}_jbpmTestContainerMatrix") {
     parameters {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
     }
+
+    disabled(shouldDisable = true)
 
     axes {
         labelExpression("label-exp","rhel7&&mem8g")
@@ -614,6 +626,8 @@ matrixJob("kieAllBuild_${kieMainBranch}_kieWbTestsMatrix") {
     parameters {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
     }
+
+    disabled(shouldDisable = true)
 
     axes {
         jdk("${javadk}")
@@ -708,6 +722,8 @@ matrixJob("kieAllBuild_${kieMainBranch}_kieServerMatrix") {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
     }
 
+    disabled(shouldDisable = true)
+
     axes {
         jdk("${jaydekay}")
         text("container", "wildfly10", "eap7", "tomcat8")
@@ -794,6 +810,8 @@ job("kieAllBuild_windows_${kieMainBranch}") {
             "<br/>\n" +
             "<b>Important:</b> the workspace is under c:\\x, instead of c:\\jenkins\\workspace\\kie-all-build-windows-master. This is to decrease the path prefix as much as possible\n" +
             "to avoid long path issues on Windows (limit there is 260 chars).")
+
+    disabled(shouldDisable = true)
 
     label("windows")
 

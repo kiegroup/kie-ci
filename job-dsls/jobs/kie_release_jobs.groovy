@@ -100,7 +100,9 @@ job("kie_${KIE_VERSION}_createAndPushReleaseBranches") {
         stringParam("UBERFIRE_VERSION", "uberfire version", "please edit the right version to use of uberfire/uberfire-extensions <br> The tag should typically look like <b> major.minor.micro.<extension> </b>(1.1.0.Beta1) for <b> community </b> or <b> related kie major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("DASHBUILDER_VERSION", "dashbuilder version", "please edit the right version to use of dashbuilder <br> The tag should typically look like <b> major.minor.micro.<extension>  </b>(0.7.0.Beta1) for <b> community </b> or <b> related kie major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("ERRAI_VERSION", "errai version", " please edit the related errai version<br> ******************************************************** <br> ")
-    };
+    }
+
+    disabled(shouldDisable = true)
 
     scm {
         git {
@@ -157,7 +159,9 @@ job("kie_${KIE_VERSION}_buildAndDeployLocally") {
     parameters {
         choiceParam("TARGET", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
         stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>(7.1.0.Beta1) </b> for <b> community </b>or <b> bsync-major.minor.x-<yyyy.mm.dd>  </b>(bsync-7.1.x-2017.05.15) for <b> productization </b> <br> ******************************************************** <br> ")
-    };
+    }
+
+    disabled(shouldDisable = true)
 
     scm {
         git {
@@ -217,7 +221,9 @@ job("kie_${KIE_VERSION}_copyBinariesToNexus") {
 
     parameters {
         choiceParam("TARGET", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
-    };
+    }
+
+    disabled(shouldDisable = true)
 
     label("kie-releases")
 
@@ -274,7 +280,9 @@ matrixJob("kie_${KIE_VERSION}_allJbpmTestCoverageMatrix") {
     parameters {
         choiceParam("TARGET", ["community", "productized"], "please select if this release is for community <b> community: </b> or <br> if it is for building a productization tag: <b>productized <br> Version to test. Will be supplied by the parent job. <br> ******************************************************** <br> ")
         stringParam("KIE_VERSION", "KIE version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
-    };
+    }
+
+    disabled(shouldDisable = true)
 
     axes {
         labelExpression("label-exp","linux&&mem4g")
@@ -329,7 +337,9 @@ matrixJob("kie_${KIE_VERSION}_allServerMatrix") {
     parameters {
         choiceParam("TARGET", ["community", "productized"], "<br> ******************************************************** <br> ")
         stringParam("KIE_VERSION", "KIE version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
-    };
+    }
+
+    disabled(shouldDisable = true)
 
     axes {
         jdk("jdk1.8")
@@ -398,7 +408,9 @@ matrixJob("kie_${KIE_VERSION}_wbSmokeTestsMatrix") {
     parameters {
         choiceParam("TARGET", ["community", "productized"], "<br> ******************************************************** <br> ")
         stringParam("KIE_VERSION", "KIE version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
-    };
+    }
+
+    disabled(shouldDisable = true)
 
     axes {
         jdk("jdk1.8")
@@ -473,7 +485,9 @@ job("kie_${KIE_VERSION}_pushTags") {
         choiceParam("TARGET", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
         stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>(r7.1.0.Beta1) for <b> community </b>or <b> bsync-major.minor.x-<yyy.mm.dd>  </b>()bsync-7.1.x-2017.05.14 for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("TAG_NAME", "tag", "Please enter the tag. The tag should typically look like <b> major.minor.micro.<extension> </b>(7.1.0.Beta1) for <b> community </b> or <b> sync-major.minor.x-<yyy.mm.dd> </b>(sync-7.1.x-2017.05.10) for <b> productization </b> <br> ******************************************************** <br> ")
-    };
+    }
+
+    disabled(shouldDisable = true)
 
     scm {
         git {
@@ -538,7 +552,9 @@ job("kie_${KIE_VERSION}_removeReleaseBranches") {
         choiceParam("TARGET", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
         stringParam("BASE_BRANCH", "base branch", "please select the base branch <br> ******************************************************** <br> ")
         stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>(r7.0.0.CR1) for <b> community </b>or <b> bsync-major.minor.x-<yyy.mm.dd> </b>bsync-7.1.x-2017.05.14 for <b> productization </b> <br> ******************************************************** <br> ")
-    };
+    }
+
+    disabled(shouldDisable = true)
 
     scm {
         git {
@@ -607,6 +623,8 @@ job("kie_${KIE_VERSION}_updateToNextDevelopmentVersion") {
         stringParam("ERRAI_DEVEL_VERSION", "errai version", "Edit the errai development version")
     }
 
+    disabled(shouldDisable = true)
+
     scm {
         git {
             remote {
@@ -670,6 +688,8 @@ job("kie_${KIE_VERSION}_copyBinariesToFilemgmt") {
         stringParam("VERSION", "release version", "Edit the version of release, i.e. <b>major.minor.micro.<extension></b>(7.0.0.Final) ")
     }
 
+    disabled(shouldDisable = true)
+
     label("kie-releases")
 
     logRotator {
@@ -724,6 +744,8 @@ job("uf_${UF_VERSION}_release") {
         stringParam("newVersion", "new version", "please edit the new version that should be used in the poms <br> The version should typically look like <b> major.minor.micro.<extension> </b>(1.1.0.Beta1) for<b> community </b> or <b> major.minor.micro.<yyyymmdd>-productized </b>(1.1.0.20170515-productized) for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("ERRAI_VERSION", "errai version", " please edit the related errai version<br> ******************************************************** <br> ")
     }
+
+    disabled(shouldDisable = true)
 
     scm {
         git {
@@ -788,7 +810,9 @@ job("uf_${UF_VERSION}_pushTag") {
         choiceParam("TARGET", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
         stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b> (r1.1.0.Beta1) for <b> community </b>or <b>  related kie prod release branch bsync-major.minor.x->yyy.mm.dd> </b>(bsync-7.1.x-2017.05.14) for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("TAG", "tag", "The tag should typically look like <b> major.minor.micro.<extension> </b>(1.1.0.Beta1) </b> for <b> community </b> or <b>  related kie prod tag sync-major.minor.x-<yyyy.mm.dd> </b>(sync-7.1.0.2017.05.14) </b> for <b> productization </b> <br> ******************************************************** <br> ")
-    };
+    }
+
+    disabled(shouldDisable = true)
 
     scm {
         git {
@@ -854,6 +878,8 @@ job("uf_${UF_VERSION}_updateVersion") {
         stringParam("BASE_BRANCH", "base branch", "please edit the name of the base branch <br> ******************************************************** <br> ")
         stringParam("ERRAI_DEVEL_VERSION","errai development version","Edit errai development version")
     }
+
+    disabled(shouldDisable = true)
 
     scm {
         git {
@@ -922,6 +948,8 @@ job("dash_${DASH_VERSION}_release") {
         stringParam("ERRAI_VERSION", "errai version", "please select the needed errai version <br> ******************************************************** <br> ")
     }
 
+    disabled(shouldDisable = true)
+
     scm {
         git {
             remote {
@@ -985,7 +1013,9 @@ job("dash_${DASH_VERSION}_pushTag") {
         choiceParam("TARGET", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
         stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b> (r0.7.0.Beta1) for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x->yyy.mm.dd> </b>(bsync-7.1.x-2017.05.14) for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("TAG", "tag", "The tag should typically look like <b> major.minor.micro.<extension> </b>(0.7.0.Beta1) </b> for <b> community </b> or <b> related kie prod tag sync-major.minor.x-<yyyy.mm.dd> </b>(sync-7.1.0.2017.05.14) </b> for <b> productization </b> <br> ******************************************************** <br> ")
-    };
+    }
+
+    disabled(shouldDisable = true)
 
     scm {
         git {
@@ -1052,6 +1082,8 @@ job("dash_${DASH_VERSION}_updateVersion") {
         stringParam("UF_DEVEL_VERSION", "uberfire development version", "Edit the uberfire development version")
         stringParam("ERRAI_DEVEL_VERSION", "errai development version", "Edit the errai development version")
     }
+
+    disabled(shouldDisable = true)
 
     scm {
         git {
