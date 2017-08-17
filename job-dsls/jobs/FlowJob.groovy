@@ -850,7 +850,7 @@ job("windows-kieAllBuild-${kieMainBranch}") {
 
 def kieDockerCi='''#!/bin/bash -e
 sh scripts/docker-clean.sh $kieVersion
-sh scripts/update-versions.sh $kieVersion "-s $SETTINGS_XML"'''
+sh scripts/update-versions.sh $kieVersion -s "$SETTINGS_XML"'''
 
 job("kie-docker-ci-images-${kieMainBranch}") {
     description("Builds CI Docker images for master branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
@@ -865,10 +865,6 @@ job("kie-docker-ci-images-${kieMainBranch}") {
                 github("${organization}/kie-docker-ci-images")
             }
             branch ("${kieMainBranch}")
-            extensions {
-                relativeTargetDirectory("kie-docker-ci-images")
-            }
-
         }
     }
 
