@@ -155,7 +155,7 @@ for (repoConfig in REPO_CONFIGS) {
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.UpstreamReposBuilder' {
                     mavenBuildConfig {
                         mavenHome("/opt/tools/apache-maven-${Constants.MAVEN_VERSION}")
-                        mavenOpts("-Xmx2g")
+                        delegate.mavenOpts("-Xmx2g")
                         mavenArgs(get("upstreamMvnArgs"))
                     }
                 }
@@ -167,7 +167,7 @@ for (repoConfig in REPO_CONFIGS) {
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
                     mavenBuildConfig {
                         mavenHome("/opt/tools/apache-maven-${Constants.MAVEN_VERSION}")
-                        mavenOpts("-Xmx2g")
+                        delegate.mavenOpts("-Xmx2g")
                         mavenArgs(get("downstreamMvnGoals") + " " + get("downstreamMvnProps").collect { k, v -> "-D$k=$v" }.join(" "))
                     }
                 }
