@@ -10,6 +10,7 @@ def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-e -nsu -fae -B -T1C -Dfull -Pwildfly10 -Dcontainer=wildfly10 -Dintegration-tests -Dmaven.test.failure.ignore=true clean deploy findbugs:findbugs",
+        mvnOpts                : "-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled",
         ircNotificationChannels: [],
         artifactsToArchive     : [],
         downstreamRepos        : []
@@ -146,6 +147,7 @@ def final REPO_CONFIGS = [
         "kie-eap-modules"              : [
                 ghOrgUnit              : "jboss-integration",
                 label                  : "rhel7 && mem8g",
+                mvnOpts                : "-Xms1g -Xmx4g -XX:+CMSClassUnloadingEnabled",
                 ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : []
         ]
@@ -231,7 +233,7 @@ for (repoConfig in REPO_CONFIGS) {
         archivingDisabled(true)
         providedSettings("ci-snapshots-deploy")
         goals(get("mvnGoals"))
-        mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
+        mavenOpts(get("mvnOpts"))
         mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
 
         publishers {

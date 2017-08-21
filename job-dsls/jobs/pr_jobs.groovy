@@ -9,6 +9,7 @@ def final DEFAULTS = [
         timeoutMins            : 60,
         label                  : "rhel7 && mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
+        mvnOpts                : "-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled",
         mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly10 clean install",
         mvnProps               : [
                 "full"                     : "true",
@@ -101,6 +102,7 @@ def final REPO_CONFIGS = [
         "droolsjbpm-build-distribution": [],
         "kie-eap-modules"              : [
                 ghOrgUnit: "jboss-integration",
+                mvnOpts  : "-Xms1g -Xmx4g -XX:+CMSClassUnloadingEnabled"
         ]
 ]
 
@@ -208,7 +210,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
             maven {
                 mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
-                mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
+                mavenOpts(get("mvnOpts"))
                 goals(get("mvnGoals"))
                 properties(get("mvnProps"))
 
