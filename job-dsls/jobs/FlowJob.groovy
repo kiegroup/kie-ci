@@ -212,7 +212,7 @@ sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.
 deployDir=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -B -U -e clean deploy -Dfull -Drelease -T1C -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
+mvn -B -U -e clean deploy -Dfull -Drelease -T2 -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -Xss1M" -Dgwt.compiler.localWorkers=2
 # (2) upload the content to remote staging repo
 cd $deployDir
@@ -295,7 +295,7 @@ sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.
 deployDir=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -B -e clean deploy -U -Dfull -Drelease -T1C -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
+mvn -B -e clean deploy -U -Dfull -Drelease -T2 -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -Xss1M" -Dgwt.compiler.localWorkers=2
 # (2) upload the content to remote staging repo
 cd $deployDir
@@ -394,7 +394,7 @@ cd ..
 deployDir=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -T1C -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
+./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=1\\
  -Dgwt.memory.settings="-Xmx4g -Xms1g -Xss1M"
 # (2) upload the content to remote staging repo
@@ -785,9 +785,9 @@ for %%x in (%repo_list%) do (
 )
 for %%x in (%repo_list%) do (
     if "%%x" == "kie-wb-common" (
-        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f k\\pom.xml clean install -Dfull -T1C -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 || exit \\b
+        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f k\\pom.xml clean install -Dfull -T2 -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 || exit \\b
     ) else (
-        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f %%x\\pom.xml clean install -Dfull -T1C -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 -Dgwt.compiler.skip=true || exit \\b
+        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f %%x\\pom.xml clean install -Dfull -T2 -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 -Dgwt.compiler.skip=true || exit \\b
     )
 )'''
 
