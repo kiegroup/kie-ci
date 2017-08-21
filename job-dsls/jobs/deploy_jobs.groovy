@@ -119,7 +119,7 @@ def final REPO_CONFIGS = [
         "kie-wb-distributions"      : [
                 timeoutMins            : 120,
                 label                  : "rhel7 && mem16g",
-                mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=1 -Dwebdriver.firefox.bin=/opt/tools/firefox-38esr/firefox-bin -Pkie-wb,wildfly10",
+                mvnGoals               : DEFAULTS["mvnGoals"].replace("-T1C", "-T2") + " -Dgwt.compiler.localWorkers=1 -Dwebdriver.firefox.bin=/opt/tools/firefox-38esr/firefox-bin -Pkie-wb,wildfly10",
                 ircNotificationChannels: ["#guvnordev"],
                 artifactsToArchive     : ["kie-wb-tests/kie-wb-tests-gui/target/screenshots/**"],
                 downstreamRepos        : []
