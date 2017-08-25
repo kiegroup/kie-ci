@@ -110,7 +110,7 @@ job("createAndPushReleaseBranches-kieReleases-${kieVersion}") {
             }
             branch ("${kieMainBranch}")
             extensions {
-                relativeTargetDirectory("droolsjbpm-build-bootstrap")
+                relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
             }
 
         }
@@ -224,6 +224,19 @@ job("copyBinariesToNexus-kieReleases-${kieVersion}") {
     parameters {
         choiceParam("target", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
     };
+
+    scm {
+        git {
+            remote {
+                github("${organization}/droolsjbpm-build-bootstrap")
+            }
+            branch ("${kieMainBranch}")
+            extensions {
+                relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
+            }
+
+        }
+    }
 
     label("kie-releases")
 
@@ -676,6 +689,19 @@ job("copyBinariesToFilemgmt-kieReleases-${kieVersion}") {
         stringParam("version", "release version", "Edit the version of release, i.e. <b>major.minor.micro.<extension></b> ")
     }
 
+    scm {
+        git {
+            remote {
+                github("${organization}/droolsjbpm-build-bootstrap")
+            }
+            branch ("${kieMainBranch}")
+            extensions {
+                relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
+            }
+
+        }
+    }
+    
     label("kie-releases")
 
     logRotator {
