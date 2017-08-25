@@ -116,7 +116,7 @@ job("createAndPushReleaseBranches-kieReleases-${kieVersion}") {
         }
     }
 
-    // label("kie-releases")
+    label("kie-releases")
 
     logRotator {
         numToKeep(10)
