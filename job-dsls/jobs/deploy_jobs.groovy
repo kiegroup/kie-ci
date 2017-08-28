@@ -70,6 +70,7 @@ def final REPO_CONFIGS = [
         ],
         "droolsjbpm-integration"       : [
                 timeoutMins            : 120,
+                mvnGoals               : DEFAULTS["mvnGoals"].replace("-Pwildfly10", "-Pwildfly10x"),
                 ircNotificationChannels: ["#droolsdev", "#jbpmdev"],
                 downstreamRepos        : ["droolsjbpm-tools-6.5.x", "kie-uberfire-extensions-6.5.x"]
         ],

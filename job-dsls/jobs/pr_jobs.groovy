@@ -54,7 +54,8 @@ def final REPO_CONFIGS = [
                 timeoutMins: 120
         ],
         "droolsjbpm-integration"       : [
-                timeoutMins: 120
+                timeoutMins: 120,
+                mvnGoals   : DEFAULTS["mvnGoals"].replace("-Pwildfly10", "-Pwildfly10x"),
         ],
         "droolsjbpm-tools"             : [],
         "kie-uberfire-extensions"      : [
