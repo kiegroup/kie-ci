@@ -213,6 +213,7 @@ for (repoConfig in REPO_CONFIGS) {
         mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
 
         publishers {
+            wsCleanup()
             findbugs("**/findbugsXml.xml")
 
             checkstyle("**/checkstyle-result.xml")
