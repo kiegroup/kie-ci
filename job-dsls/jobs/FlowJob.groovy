@@ -168,6 +168,7 @@ job("errai-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
+        wsCleanup()
         archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
@@ -251,6 +252,7 @@ job("uberfire-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
+        wsCleanup()
         archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
@@ -335,6 +337,7 @@ job("dashbuilder-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
+        wsCleanup()
         archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
@@ -439,6 +442,7 @@ job("kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
+        wsCleanup()
         archiveJunit("**/target/*-reports/TEST-*.xml")
         archiveArtifacts{
             onlyIfSuccessful(false)
@@ -503,6 +507,7 @@ matrixJob("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
+        wsCleanup()
         archiveJunit("**/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
@@ -573,6 +578,7 @@ matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
+        wsCleanup()
         archiveJunit("**/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
@@ -674,6 +680,7 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
+        wsCleanup()
         archiveJunit("**/target/failsafe-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
@@ -750,6 +757,7 @@ matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
+        wsCleanup()
         archiveJunit("**/target/failsafe-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
@@ -822,6 +830,7 @@ job("windows-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
+        wsCleanup()
         archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
@@ -892,6 +901,7 @@ job("kie-docker-ci-images-${kieMainBranch}") {
     }
 
     publishers {
+        wsCleanup()
         mailer('psiroky@redhat.com mbiarnes@redhat.com', false, false)
     }
 

@@ -212,6 +212,7 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         publishers {
+            wsCleanup()
             archiveJunit('**/target/*-reports/TEST-*.xml') {
                 allowEmptyResults()
             }
