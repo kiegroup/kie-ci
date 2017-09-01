@@ -224,7 +224,7 @@ for (repoConfig in REPO_CONFIGS) {
                 branch "$repoBranch"
                 mavenBuildConfig {
                     mavenHome("/opt/tools/apache-maven-${Constants.MAVEN_VERSION}")
-                    delegate.mavenOpts("-Xmx2g")
+                    delegate.mavenOpts("-Xmx3g")
                     mavenArgs(get("upstreamMvnArgs"))
                 }
             }
