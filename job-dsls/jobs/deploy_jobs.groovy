@@ -196,7 +196,7 @@ for (repoConfig in REPO_CONFIGS) {
                 baseRepository "$ghOrgUnit/$repo"
                 branch "$repoBranch"
                 mavenBuildConfig {
-                    mavenHome("/opt/tools/apache-maven-${Constants.MAVEN_VERSION}")
+                    mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
                     delegate.mavenOpts("-Xmx2g")
                     mavenArgs(get("upstreamMvnArgs"))
                 }
