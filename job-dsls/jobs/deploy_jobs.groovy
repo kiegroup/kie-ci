@@ -209,7 +209,7 @@ for (repoConfig in REPO_CONFIGS) {
         archivingDisabled(true)
         providedSettings("ci-snapshots-deploy")
         goals(get("mvnGoals"))
-        mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
+        mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
         mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
 
         publishers {
