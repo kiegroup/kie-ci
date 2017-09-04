@@ -9,7 +9,13 @@ def final DEFAULTS = [
         label                  : "rhel7 && mem8g",
         ghOrgUnit              : "kiegroup",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
-        mvnGoals               : "-e -nsu -fae -B -T1C -Dfull -Pwildfly10 -Dcontainer=wildfly10 -Dintegration-tests -Dmaven.test.failure.ignore=true clean deploy findbugs:findbugs",
+        mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly10 clean deploy findbugs:findbugs",
+        mvnProps: [
+                "full"                     : "true",
+                "container"                : "wildfly10",
+                "integration-tests"        : "true",
+                "maven.test.failure.ignore": "true"
+        ],
         ircNotificationChannels: [],
         artifactsToArchive     : [],
         downstreamRepos        : []
@@ -21,7 +27,9 @@ def final REPO_CONFIGS = [
                 ghOrgUnit              : "appformer",
                 branch                 : "1.3.x",
                 label                  : "linux && mem16g",
-                mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=2",
+                mvnProps               : DEFAULTS["mvnProps"] + [
+                        "gwt.compiler.localWorkers": "2"
+                ],
                 ircNotificationChannels: ["#appformer"],
                 downstreamRepos        : ["dashbuilder"]
         ],
@@ -29,7 +37,9 @@ def final REPO_CONFIGS = [
                 ghOrgUnit              : "dashbuilder",
                 branch                 : "0.9.x",
                 label                  : "linux && mem16g",
-                mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=2",
+                mvnProps               : DEFAULTS["mvnProps"] + [
+                        "gwt.compiler.localWorkers": "2"
+                ],
                 ircNotificationChannels: ["#dashbuilder"],
                 downstreamRepos        : ["droolsjbpm-build-bootstrap"]
         ],
@@ -101,13 +111,17 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["jbpm-wb"]
         ],
         "jbpm-designer"             : [
-                mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=1",
+                mvnProps               : DEFAULTS["mvnProps"] + [
+                        "gwt.compiler.localWorkers": "1"
+                ],
                 ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["jbpm-wb"]
         ],
         "jbpm-wb"                   : [
                 label                  : "rhel7 && mem16g",
-                mvnGoals               : DEFAULTS["mvnGoals"] + " -Dgwt.compiler.localWorkers=1",
+                mvnProps               : DEFAULTS["mvnProps"] + [
+                        "gwt.compiler.localWorkers": "1"
+                ],
                 ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["kie-wb-distributions", "kie-docs"]
         ],
@@ -119,7 +133,11 @@ def final REPO_CONFIGS = [
         "kie-wb-distributions"      : [
                 timeoutMins            : 120,
                 label                  : "rhel7 && mem16g",
-                mvnGoals               : DEFAULTS["mvnGoals"].replace("-T1C", "-T2") + " -Dgwt.compiler.localWorkers=1 -Dwebdriver.firefox.bin=/opt/tools/firefox-38esr/firefox-bin -Pkie-wb,wildfly10",
+                mvnGoals               : DEFAULTS["mvnGoals"].replace("-T1C", "-T2") + " -Pkie-wb",
+                mvnProps               : DEFAULTS["mvnProps"] + [
+                        "gwt.compiler.localWorkers": "1",
+                        "webdriver.firefox.bin"    : "/opt/tools/firefox-38esr/firefox-bin"
+                ],
                 ircNotificationChannels: ["#guvnordev"],
                 artifactsToArchive     : ["kie-wb-tests/kie-wb-tests-gui/target/screenshots/**"],
                 downstreamRepos        : []
@@ -136,7 +154,7 @@ for (repoConfig in REPO_CONFIGS) {
     // jobs for master branch don't use the branch in the name
     String jobName = (repoBranch == "master") ? repo : "$repo-$repoBranch"
 
-    mavenJob(jobName) {
+    job(jobName) {
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
                     |
@@ -190,27 +208,32 @@ for (repoConfig in REPO_CONFIGS) {
             timestamps()
             colorizeOutput()
         }
-
-        configure { project ->
-            project / 'prebuilders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.StandardBuildUpstreamReposBuilder' {
-                baseRepository "$ghOrgUnit/$repo"
-                branch "$repoBranch"
-                mavenBuildConfig {
-                    mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
-                    delegate.mavenOpts("-Xmx2g")
-                    mavenArgs(get("upstreamMvnArgs"))
+        steps {
+            configure { project ->
+                project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.StandardBuildUpstreamReposBuilder' {
+                    baseRepository "$ghOrgUnit/$repo"
+                    branch "$repoBranch"
+                    mavenBuildConfig {
+                        mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
+                        delegate.mavenOpts("-Xmx2g")
+                        mavenArgs(get("upstreamMvnArgs"))
+                    }
+                }
+                maven {
+                    mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
+                    mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
+                    goals(get("mvnGoals"))
+                    properties(get("mvnProps"))
+                    providedSettings("ci-snapshots-deploy")
                 }
             }
         }
 
-        archivingDisabled(true)
-        providedSettings("ci-snapshots-deploy")
-        goals(get("mvnGoals"))
-        mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
-        mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
-
         publishers {
             wsCleanup()
+            archiveJunit('**/target/*-reports/TEST-*.xml') {
+                allowEmptyResults()
+            }
             findbugs("**/findbugsXml.xml")
 
             checkstyle("**/checkstyle-result.xml")
