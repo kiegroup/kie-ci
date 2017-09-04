@@ -139,7 +139,7 @@ for (repoConfig in REPO_CONFIGS) {
     // jobs for master branch don't use the branch in the name
     String jobName = (repoBranch == "master") ? repo : "$repo-$repoBranch"
 
-    mavenJob(jobName) {
+    job(jobName) {
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
                     |
@@ -206,11 +206,14 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        archivingDisabled(true)
-        providedSettings("ci-snapshots-deploy")
-        goals(get("mvnGoals"))
-        mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
-        mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
+        steps {
+            maven{
+                providedSettings("ci-snapshots-deploy")
+                goals(get("mvnGoals"))
+                mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
+                mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
+            }
+        }
 
         publishers {
             wsCleanup()
