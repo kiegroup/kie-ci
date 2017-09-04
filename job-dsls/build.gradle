@@ -102,6 +102,10 @@ test {
 
     // set build directory for Jenkins test harness, JENKINS-26331
     systemProperty 'buildDirectory', project.buildDir.absolutePath
+    testLogging {
+        // Show that tests are run in the command-line output
+        events 'started', 'passed'
+    }
 }
 
 task rest(dependsOn: 'classes', type: JavaExec) {
