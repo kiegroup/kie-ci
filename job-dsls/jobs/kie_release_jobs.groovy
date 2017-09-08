@@ -484,7 +484,7 @@ job("pushTags-kieReleases-${kieVersion}") {
     description("This job: <br> creates and pushes the tags for <br> community (kiegroup) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        choiceParam("tatget", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
         stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> bsync-major.minor.x-<yyy.mm.dd>  </b>for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("tag", "tag", "Please enter the tag. The tag should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> sync-major.minor.x-<yyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
     };
