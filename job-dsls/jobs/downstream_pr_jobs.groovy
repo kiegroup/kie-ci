@@ -45,6 +45,7 @@ def final REPO_CONFIGS = [
         ],
         "droolsjbpm-build-bootstrap": [],
         "droolsjbpm-knowledge"      : [],
+        "drlx-parser"               : [],
         "drools"                    : [],
         "optaplanner"               : [],
         "jbpm"                      : [],

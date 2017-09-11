@@ -41,6 +41,9 @@ def final REPO_CONFIGS = [
         "droolsjbpm-knowledge"      : [
                 label: "rhel7 && mem4g"
         ],
+        "drlx-parser"               : [
+                timeoutMins: 20
+        ],
         "drools"                    : [],
         "optaplanner"               : [],
         "jbpm"                      : [
