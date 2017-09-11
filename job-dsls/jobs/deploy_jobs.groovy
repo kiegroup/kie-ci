@@ -10,7 +10,7 @@ def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly10 clean deploy findbugs:findbugs",
-        mvnProps: [
+        mvnProps               : [
                 "full"                     : "true",
                 "container"                : "wildfly10",
                 "integration-tests"        : "true",
@@ -28,7 +28,7 @@ def final REPO_CONFIGS = [
                 ghOrgUnit              : "appformer",
                 branch                 : "0.9.x",
                 label                  : "linux && mem16g",
-                mvnGoals               : DEFAULTS["mvnProps"] + [
+                mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
                 ],
                 ircNotificationChannels: ["#appformer"],
@@ -76,7 +76,7 @@ def final REPO_CONFIGS = [
         ],
         "jbpm"                         : [
                 timeoutMins            : 120,
-                mvnGoals               : DEFAULTS["mvnProps"] + [
+                mvnProps               : DEFAULTS["mvnProps"] + [
                         "container.profile": "wildfly10"
                 ],
                 ircNotificationChannels: ["#jbpmdev"],
@@ -115,7 +115,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["jbpm-designer-6.5.x"]
         ],
         "jbpm-designer"                : [
-                mvnGoals               : DEFAULTS["mvnProps"] + [
+                mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1"
                 ],
                 ircNotificationChannels: ["#guvnordev"],
@@ -123,8 +123,8 @@ def final REPO_CONFIGS = [
         ],
         "jbpm-wb"                      : [
                 label                  : "rhel7 && mem16g",
-                mvnGoals               : DEFAULTS["mvnProps"] + [
-                        "Dgwt.compiler.localWorkers": "1"
+                mvnProps               : DEFAULTS["mvnProps"] + [
+                        "gwt.compiler.localWorkers": "1"
                 ],
                 ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["optaplanner-wb-6.5.x"]
@@ -250,13 +250,13 @@ for (repoConfig in REPO_CONFIGS) {
                         mavenArgs(get("upstreamMvnArgs"))
                     }
                 }
-                maven {
-                    mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
-                    mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
-                    goals(get("mvnGoals"))
-                    properties(get("mvnProps"))
-                    providedSettings("ci-snapshots-deploy")
-                }
+            }
+            maven {
+                mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
+                mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
+                goals(get("mvnGoals"))
+                properties(get("mvnProps"))
+                providedSettings("ci-snapshots-deploy")
             }
         }
 
