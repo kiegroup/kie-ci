@@ -253,7 +253,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
             maven {
                 mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
-                mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
+                mavenOpts(get("mvnOpts"))
                 goals(get("mvnGoals"))
                 properties(get("mvnProps"))
                 providedSettings("ci-snapshots-deploy")
