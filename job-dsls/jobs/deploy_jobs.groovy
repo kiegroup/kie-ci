@@ -26,6 +26,11 @@ def final DEFAULTS = [
 
 // used to override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
+        "kie-soup"                  : [
+                label                  : "rhel7 && mem4g",
+                ircNotificationChannels: ["#logicabyss", "#appformer"],
+                downstreamRepos        : ["uberfire"]
+        ],
         "uberfire"                  : [
                 ghOrgUnit              : "appformer",
                 label                  : "linux && mem16g",

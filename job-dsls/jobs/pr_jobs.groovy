@@ -26,6 +26,9 @@ def final DEFAULTS = [
 
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
+        "kie-soup"                  : [
+                label: "rhel7 && mem4g"
+        ],
         "uberfire"                  : [
                 ghOrgUnit: "appformer",
                 label    : "rhel7 && mem16g"
