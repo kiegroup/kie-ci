@@ -57,6 +57,14 @@ def copyBinariesToFilemgmt="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-copyBinariesToFilemgmt.sh
 """
 
+def createJbpmInstaller ="""
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-createJbpmInstaller.sh
+"""
+
+def pushJbpmInstaller="""
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-pushJbpmInstaller.sh
+"""
+
 def ufDeploy="""
 sh \$WORKSPACE/scripts/uberfire/scripts/release/uberfire-createAndDeploy.sh
 """
@@ -732,9 +740,10 @@ job("copyBinariesToFilemgmt-kieReleases-${kieMainBranch}") {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(copyBinariesToFilemgmt)
+        shell(createJbpmInstaller)
+        shell(pushJbpmInstaller)
     }
 }
-
 // *************** Uberfire Release scripts *********
 
 job("release-uberfire-${uberfireBranch}") {
