@@ -8,6 +8,7 @@ def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
 def kieMainBranch="master"
 def erraiBranch="master"
+def kiesoupBranch="master"
 def uberfireBranch="master"
 def dashbuilderBranch="master"
 def erraiVersionOld="4.1.0-SNAPSHOT"
@@ -20,19 +21,19 @@ def kieMainBranch =params["kieMainBranch"]
 def uberfireBranch=params["uberfireBranch"]
 def dashbuilderBranch=params["dashbuilderBranch"]
 def erraiBranch=params["erraiBranch"]
+def kiesoupBranch=params["kiesoupBranch"]
 
 erraiVersionNew = build.environment.get("erraiVersionNew")
+kiesoupVersion = build.environment.get("kiesoupVersion")
 uberfireVersion = build.environment.get("uberfireVersion")
 dashbuilderVersion = build.environment.get("dashbuilderVersion")
 kieVersion = build.environment.get("kieVersion")
 
-out.println erraiVersionNew
-out.println uberfireVersion
-out.println dashbuilderVersion
-out.println kieVersion
-
 ignore(UNSTABLE) {
     build("errai-kieAllBuild-${kieMainBranch}", erraiVersionNew: "$erraiVersionNew", erraiVersionOld: "$erraiVersionOld", erraiBranch: "$erraiBranch")
+}
+ignore(UNSTABLE) {
+    build("kiesoup-kieAllBuild-${kieMainBranch}", kiesoupVersion: "$kiesoupVersion", kiesoupBranch: "$kiesoupBranch", organization: "$organization")
 }
 ignore(UNSTABLE) {
     build("uberfire-kieAllBuild-${kieMainBranch}", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", uberfireBranch: "$uberfireBranch")
@@ -72,6 +73,7 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
     parameters {
         stringParam("erraiVersionOld", "${erraiVersionOld}", "edit old errai -SNAPSHOT version")
         stringParam("erraiBranch", "${erraiBranch}", "edit errai branch")
+        stringParam("kiesoupBranch", "${kiesoupBranch}", "edit kiesoup branch")
         stringParam("uberfireBranch", "${uberfireBranch}", "edit uberfire branch")
         stringParam("dashbuilderBranch", "${dashbuilderBranch}", "edit dashbuilder branch")
         stringParam("kieMainBranch", "${kieMainBranch}", "edit kie branch")
@@ -83,7 +85,9 @@ def kieVersionPre = "8.0.0."
 def uberfireVersionPre = "2.0.0."
 def dashbuilderVersionPre = "1.0.0."
 def erraiVersionNewPre = "4.0.2."
-return [kieVersion: kieVersionPre + date, uberfireVersion: uberfireVersionPre + date, dashbuilderVersion: dashbuilderVersionPre + date, erraiVersionNew:erraiVersionNewPre +date] ''')
+def kiesoupVersionPre = "8.0.0."
+
+return [kieVersion: kieVersionPre + date, uberfireVersion: uberfireVersionPre + date, dashbuilderVersion: dashbuilderVersionPre + date, erraiVersionNew: erraiVersionNewPre + date, kiesoupVersion: kiesoupVersionPre + date] ''')
     }
 
     buildFlow("${flowJob}")
@@ -188,6 +192,88 @@ job("errai-kieAllBuild-${kieMainBranch}") {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(erraiVersionBuild)
+    }
+
+}
+
+// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys kie-soup ++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// definition of kiesoup script
+def kiesoupVersionBuild='''#!/bin/bash -e
+# removing kiesoup artifacts from local maven repo (basically all possible SNAPSHOTs)
+if [ -d $MAVEN_REPO_LOCAL ]; then
+rm -rf $MAVEN_REPO_LOCAL/org/kie/kie-soup
+       fi
+# clone the kiesoup repository
+git clone https://github.com/$organization/kie-soup.git -b $kiesoupBranch --depth 100
+# checkout the release branch
+cd kie-soup
+git checkout -b $kiesoupVersion $kiesoupBranch
+# update versions
+sh scripts/release/update-versions.sh $kiesoupVersion
+# build the repos & deploy into local dir (will be later copied into staging repo)
+deployDir=$WORKSPACE/deploy-dir
+# (1) do a full build, but deploy only into local dir
+# we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
+mvn -U -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
+ -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=3
+# (2) upload the content to remote staging repo
+cd $deployDir
+mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository -DrepositoryDirectory=$deployDir\\
+ -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie-soup $kiesoupVersion" -DstagingProgressTimeoutMinutes=30'''
+
+
+job("kiesoup-kieAllBuild-${kieMainBranch}") {
+    description("Upgrades and builds the kiesoup version")
+    parameters{
+        stringParam("kiesoupVersion", "kie-soup version", "Version of kie-soup. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kiesoupBranch", "kie-soup branch", "Branch of kie-soup. This will be usually set automatically by the parent trigger job. ")
+    }
+
+    label("rhel7&&mem16g")
+
+    logRotator {
+        numToKeep(10)
+    }
+
+    jdk("${javadk}")
+
+    wrappers {
+        timeout {
+            absolute(60)
+        }
+        timestamps()
+        colorizeOutput()
+        toolenv("${mvnToolEnv}", "${jaydekay}")
+        preBuildCleanup()
+        configFiles {
+            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
+                variable("SETTINGS_XML_FILE")
+            }
+        }
+    }
+
+    publishers {
+        wsCleanup()
+        archiveJunit("**/target/*-reports/TEST-*.xml")
+        mailer('mbiarnes@redhat.com', false, false)
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+                username 'jenkins'
+            }
+        }
+    }
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
+        }
+        shell(kiesoupVersionBuild)
     }
 
 }
@@ -936,6 +1022,7 @@ listView("kieAllBuild-${kieMainBranch}"){
     jobs {
         name("trigger-kieAllBuild-${kieMainBranch}")
         name("errai-kieAllBuild-${kieMainBranch}")
+        name("kiesoup-kieAllBuild-${kieMainBranch}")
         name("uberfire-kieAllBuild-${kieMainBranch}")
         name("dashbuilder-kieAllBuild-${kieMainBranch}")
         name("kieAllBuild-${kieMainBranch}")
