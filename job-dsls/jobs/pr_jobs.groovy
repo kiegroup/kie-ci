@@ -23,8 +23,7 @@ def final DEFAULTS = [
         ],
         excludedArtifacts      : [
                 "**/target/checkstyle.log"
-        ],
-        downstreamRepos        : []
+        ]
 ]
 
 // override default config for specific repos (if needed)
