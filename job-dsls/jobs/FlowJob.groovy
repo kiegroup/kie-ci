@@ -81,13 +81,18 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
 
     environmentVariables{
         groovy('''def date = new Date().format( 'yyyyMMdd-hhMMss' )
-def kieVersionPre = "8.0.0."
-def uberfireVersionPre = "2.0.0."
-def dashbuilderVersionPre = "1.0.0."
-def erraiVersionNewPre = "4.0.2."
-def kiesoupVersionPre = "8.0.0."
+    def kieVersionPre = "8.0.0."
+    def uberfireVersionPre = "2.0.0."
+    def dashbuilderVersionPre = "1.0.0."
+    def erraiVersionNewPre = "4.0.2."
+    def kiesoupVersionPre = "8.0.0."
+    def sourceProductTag = ""
+    def targetProductBuild = ""
 
-return [kieVersion: kieVersionPre + date, uberfireVersion: uberfireVersionPre + date, dashbuilderVersion: dashbuilderVersionPre + date, erraiVersionNew: erraiVersionNewPre + date, kiesoupVersion: kiesoupVersionPre + date] ''')
+    return [kieVersion: kieVersionPre + date, uberfireVersion: uberfireVersionPre + date, dashbuilderVersion: dashbuilderVersionPre + date, \
+ erraiVersionNew:erraiVersionNewPre +date, kiesoupVersion:kiesoupVersionPre + date, cutOffDate: date, reportDate: date,  sourceProductTag: sourceProductTag, targetProductBuild: targetProductBuild] \
+ ''')
+
     }
 
     buildFlow("${flowJob}")
@@ -491,8 +496,42 @@ mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-re
  -DrepositoryDirectory=$deployDir -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie $kieVersion" -DstagingProgressTimeoutMinutes=40
 # creates a file (list) of the last commit hash of each repository as handover for production
 ./droolsjbpm-build-bootstrap/script/git-all.sh log -1 --pretty=oneline >> git-commit-hashes.txt
-echo $kieVersion > $WORKSPACE/version.txt'''
-
+echo $kieVersion > $WORKSPACE/version.txt
+# creates JSON file for prod
+# resultant sed extraction files
+./droolsjbpm-build-bootstrap/script/git-all.sh log -1 --format=%H  >> sedExtraction_1.txt
+sed -e '1d;2d' -e '/Total/d' -e '/====/d' -e 's/Repository: //g' -e 's/^/\"/; s/$/\"/;' -e '/""/d' sedExtraction_1.txt >> sedExtraction_2.txt
+sed -e '0~2 a\\' sedExtraction_2.txt >> sedExtraction_3.txt
+sed -e '1~3 s/$/,/g' sedExtraction_3.txt >> sedExtraction_4.txt
+sed -e '1~3 s/^/"repo": /' sedExtraction_4.txt >> sedExtraction_5.txt
+sed -e '2~3 s/^/"commit": /' sedExtraction_5.txt >> sedExtraction_6.txt
+sed -e 's/^$/},\n{/g' sedExtraction_6.txt >> sedExtraction_7.txt
+sed -e '$d' sedExtraction_7.txt >> sedExtraction_8.txt
+sed -e '$ s/.$//' sedExtraction_8.txt >> sedExtraction_9.txt
+cat sedExtraction_9.txt
+fileToWrite=$reportDate.json
+commitHash=$(cat sedExtraction_9.txt)
+cat <<EOF > int.json
+{
+   "handover" : {
+   "cut_off_date" : "$cutOffDate",
+   "report_date": "$reportDate",
+   "repos" : [
+      {
+         $commitHash
+      
+    ],
+   "source_product_tag":"$sourceProductTag",
+   "target_product_build":"$targetProductBuild" 
+   }
+}
+EOF
+# indent json
+python -m json.tool int.json >> $fileToWrite
+# remove sed extraction and int files
+rm sedExtraction*
+rm int.json
+'''
 
 job("kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the kie version")
@@ -533,7 +572,7 @@ job("kieAllBuild-${kieMainBranch}") {
         archiveArtifacts{
             onlyIfSuccessful(false)
             allowEmpty(true)
-            pattern("**/git-commit-hashes.txt, version.txt, **/hs_err_pid*.log, **/target/*.log")
+            pattern("**/git-commit-hashes.txt, version.txt, **/hs_err_pid*.log, **/target/*.log, **/\$reportDate.json")
         }
         mailer('bsig@redhat.com', false, false)
     }
