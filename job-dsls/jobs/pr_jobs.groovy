@@ -21,6 +21,9 @@ def final DEFAULTS = [
                 "**/target/*.log",
                 "**/target/testStatusListener*"
         ],
+        excludedArtifacts      : [
+                "**/target/checkstyle.log"
+        ],
         downstreamRepos        : []
 ]
 
@@ -220,6 +223,8 @@ for (repoConfig in REPO_CONFIGS) {
 
             checkstyle("**/checkstyle-result.xml")
             def artifactsToArchive = get("artifactsToArchive")
+            def excludedArtifacts = get("excludedArtifacts")
+            println("Excluded artifacts: " + excludedArtifacts)
             if (artifactsToArchive) {
                 archiveArtifacts {
                     allowEmpty(true)
@@ -227,6 +232,11 @@ for (repoConfig in REPO_CONFIGS) {
                         pattern(artifactPattern)
                     }
                     onlyIfSuccessful(false)
+                    if (excludedArtifacts) {
+                        for (excludePattern in excludedArtifacts) {
+                            exclude(excludePattern)
+                        }
+                    }
                 }
             }
             configure { project ->
