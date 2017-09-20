@@ -33,7 +33,10 @@ def final DEFAULTS = [
                 "**/target/kie-server-*ee6.war",
                 "**/target/kie-server-*ee7.war",
                 "**/target/kie-server-*webc.war"
-        ]
+        ],
+        excludedArtifacts      : [
+                "**/target/checkstyle.log"
+        ],
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
@@ -180,6 +183,7 @@ for (repoConfig in REPO_CONFIGS) {
 
             checkstyle("**/checkstyle-result.xml")
             def artifactsToArchive = get("artifactsToArchive")
+            def excludedArtifacts = get("excludedArtifacts")
             if (artifactsToArchive) {
                 archiveArtifacts {
                     allowEmpty(true)
@@ -187,6 +191,11 @@ for (repoConfig in REPO_CONFIGS) {
                         pattern(artifactPattern)
                     }
                     onlyIfSuccessful(false)
+                    if (excludedArtifacts) {
+                        for (excludePattern in excludedArtifacts) {
+                            exclude(excludePattern)
+                        }
+                    }
                 }
             }
             configure { project ->

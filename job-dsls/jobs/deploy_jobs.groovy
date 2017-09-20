@@ -21,6 +21,9 @@ def final DEFAULTS = [
                 "**/target/testStatusListener*",
                 "**/target/*.log"
         ],
+        excludedArtifacts      : [
+                "**/target/checkstyle.log"
+        ],
         downstreamRepos        : []
 ]
 
@@ -257,6 +260,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
 
             def artifactsToArchive = get("artifactsToArchive")
+            def excludedArtifacts = get("excludedArtifacts")
             if (artifactsToArchive) {
                 archiveArtifacts {
                     allowEmpty(true)
@@ -264,6 +268,11 @@ for (repoConfig in REPO_CONFIGS) {
                         pattern(artifactPattern)
                     }
                     onlyIfSuccessful(false)
+                    if (excludedArtifacts) {
+                        for (excludePattern in excludedArtifacts) {
+                            exclude(excludePattern)
+                        }
+                    }
                 }
             }
 
