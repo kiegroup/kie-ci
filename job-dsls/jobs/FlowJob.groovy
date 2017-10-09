@@ -8,9 +8,9 @@ def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
 def kieMainBranch="7.3.x"
 def erraiBranch="4.0.x"
-def uberfireBranch="1.3.x"
-def dashbuilderBranch="0.9.x"
-def erraiVersionOld="4.0.3-SNAPSHOT"
+def uberfireBranch="1.4.x"
+def dashbuilderBranch="1.0.x"
+def erraiVersionOld="4.0.4-SNAPSHOT"
 def organization="kiegroup"
 
 // definition of flow script
@@ -79,10 +79,10 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
 
     environmentVariables{
         groovy('''def date = new Date().format( 'yyyyMMdd-hhMMss' )
-def kieVersionPre = "7.3.1."
-def uberfireVersionPre = "1.3.1."
-def dashbuilderVersionPre = "0.9.1."
-def erraiVersionNewPre = "4.0.3."
+def kieVersionPre = "7.4.1."
+def uberfireVersionPre = "1.4.1."
+def dashbuilderVersionPre = "1.0.1."
+def erraiVersionNewPre = "4.0.4."
 return [kieVersion: kieVersionPre + date, uberfireVersion: uberfireVersionPre + date, dashbuilderVersion: dashbuilderVersionPre + date, erraiVersionNew:erraiVersionNewPre +date] ''')
     }
 

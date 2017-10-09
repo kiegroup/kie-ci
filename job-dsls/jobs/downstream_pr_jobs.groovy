@@ -6,7 +6,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
-        branch                 : "7.3.x",
+        branch                 : "7.4.x",
         timeoutMins            : 300,
         label                  : "rhel7 && mem16g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
@@ -38,11 +38,11 @@ def final DEFAULTS = [
 def final REPO_CONFIGS = [
         "uberfire"                  : [
                 ghOrgUnit: "appformer",
-                branch   : "1.3.x",
+                branch   : "1.4.x",
         ],
         "dashbuilder"               : [
                 ghOrgUnit: "dashbuilder",
-                branch   : "0.9.x",
+                branch   : "1.0.x",
         ],
         "droolsjbpm-build-bootstrap": [],
         "droolsjbpm-knowledge"      : [],
