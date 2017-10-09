@@ -67,6 +67,9 @@ parallel (
 // flowJob (the build flow text can also be read from a file): triggers all other jobs
 
 buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
+
+    disabled()
+
     description("Flow that describes and runs the KIE build pipeline for ${kieMainBranch} branch.<br> IMPORTANT: we don't know the reason but when executet the very first time please go to the <br> configuration and press SAVE - so the dynamic Reference Parameter works")
 
     parameters {
@@ -137,6 +140,7 @@ mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-re
 
 
 job("errai-kieAllBuild-${kieMainBranch}") {
+    disabled()
     description("Upgrades and builds the errai version")
     parameters{
         stringParam("erraiVersionNew", "errai version", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
@@ -221,6 +225,7 @@ mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-re
   -s $SETTINGS_XML_FILE -DrepositoryDirectory=$deployDir -DstagingProfileId=15c3321d12936e -DstagingDescription="uberfire $uberfireVersion" -DstagingProgressTimeoutMinutes=30'''
 
 job("uberfire-kieAllBuild-${kieMainBranch}") {
+    disabled()
     description("Upgrades and builds the uberfire version")
     parameters{
         stringParam("uberfireVersion", "uberfire version", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
@@ -305,6 +310,7 @@ mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-re
   -s $SETTINGS_XML_FILE -DrepositoryDirectory=$deployDir -DstagingProfileId=15c3321d12936e -DstagingDescription="dashbuilder $dashbuilderVersion" -DstagingProgressTimeoutMinutes=30'''
 
 job("dashbuilder-kieAllBuild-${kieMainBranch}") {
+    disabled()
     description("Upgrades and builds the uberfire version")
     parameters{
         stringParam("erraiVersionNew", "errai version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
@@ -409,6 +415,7 @@ echo $kieVersion > $WORKSPACE/version.txt'''
 
 
 job("kieAllBuild-${kieMainBranch}") {
+    disabled()
     description("Upgrades and builds the kie version")
     parameters{
         stringParam("erraiVersionNew", "errai version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
@@ -483,6 +490,7 @@ rmdir jbpm-$kieVersion
 '''
 
 matrixJob("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
+    disabled()
     description("This job: <br> - Test coverage Matrix for jbpm <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
@@ -546,6 +554,7 @@ rmdir jbpm-$kieVersion
 '''
 
 matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
+    disabled()
     description("Version to test. Will be supplied by the parent job. Also used to donwload proper sources. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
@@ -620,6 +629,7 @@ mv kie-wb-distributions-$kieVersion/* .
 rmdir kie-wb-distributions-$kieVersion'''
 
 matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
+    disabled()
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
@@ -714,6 +724,7 @@ mv droolsjbpm-integration-$kieVersion/* .
 rmdir droolsjbpm-integration-$kieVersion'''
 
 matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
+    disabled()
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
@@ -800,6 +811,7 @@ for %%x in (%repo_list%) do (
 )'''
 
 job("windows-kieAllBuild-${kieMainBranch}") {
+    disabled()
     description("Builds all repos specified in\n" +
             "<a href=\"https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/7.3.x/script/repository-list.txt\">repository-list.txt</a> (7.3.x branch) on Windows machine.\n" +
             "It does not deploy the artifacts to staging repo (or any other remote). It just checks our repositories can be build and tested on Windows, so that \n" +
@@ -862,6 +874,7 @@ sh scripts/docker-clean.sh $kieVersion
 sh scripts/update-versions.sh $kieVersion -s "$SETTINGS_XML"'''
 
 job("kie-docker-ci-images-${kieMainBranch}") {
+    disabled()
     description("Builds CI Docker images for 7.3.x branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
