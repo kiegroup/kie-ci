@@ -22,6 +22,7 @@ def uberfireBranch=params["uberfireBranch"]
 def dashbuilderBranch=params["dashbuilderBranch"]
 def erraiBranch=params["erraiBranch"]
 def kiesoupBranch=params["kiesoupBranch"]
+def organization=params["organization"]
 
 erraiVersionNew = build.environment.get("erraiVersionNew")
 kiesoupVersion = build.environment.get("kiesoupVersion")
@@ -77,6 +78,7 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
         stringParam("uberfireBranch", "${uberfireBranch}", "edit uberfire branch")
         stringParam("dashbuilderBranch", "${dashbuilderBranch}", "edit dashbuilder branch")
         stringParam("kieMainBranch", "${kieMainBranch}", "edit kie branch")
+        stringParam("organization","${organization}","edit organization")
     }
 
     environmentVariables{
@@ -233,6 +235,7 @@ job("kiesoup-kieAllBuild-${kieMainBranch}") {
     parameters{
         stringParam("kiesoupVersion", "kie-soup version", "Version of kie-soup. This will be usually set automatically by the parent trigger job. ")
         stringParam("kiesoupBranch", "kie-soup branch", "Branch of kie-soup. This will be usually set automatically by the parent trigger job. ")
+        stringParam("organization","kiegroup","Name of organization. This will be usually set automatically by the parent trigger job.")
     }
 
     label("rhel7&&mem16g")
