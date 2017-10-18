@@ -217,7 +217,7 @@ git clone https://github.com/$organization/kie-soup.git -b $kiesoupBranch --dept
 cd kie-soup
 git checkout -b $kiesoupVersion $kiesoupBranch
 # update versions
-sh scripts/release/update-versions.sh $kiesoupVersion
+sh scripts/release/update-version.sh $kiesoupVersion
 # build the repos & deploy into local dir (will be later copied into staging repo)
 deployDir=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
