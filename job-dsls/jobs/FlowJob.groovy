@@ -85,8 +85,8 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
         groovy('''def date = new Date().format( 'yyyyMMdd-hhMMss' )
     def kieVersionPre = "7.5.0."
     def uberfireVersionPre = "2.0.0."
-    def dashbuilderVersionPre = "1.0.0."
-    def erraiVersionNewPre = "4.0.2."
+    def dashbuilderVersionPre = "1.1.0."
+    def erraiVersionNewPre = "4.1.0."
     def kiesoupVersionPre = "7.5.0."
     def sourceProductTag = ""
     def targetProductBuild = ""
@@ -217,7 +217,7 @@ git clone https://github.com/$organization/kie-soup.git -b $kiesoupBranch --dept
 cd kie-soup
 git checkout -b $kiesoupVersion $kiesoupBranch
 # update versions
-sh scripts/release/update-versions.sh $kiesoupVersion
+sh scripts/release/update-version.sh $kiesoupVersion
 # build the repos & deploy into local dir (will be later copied into staging repo)
 deployDir=$WORKSPACE/deploy-dir
 # (1) do a full build, but deploy only into local dir
@@ -503,17 +503,18 @@ echo $kieVersion > $WORKSPACE/version.txt
 # creates JSON file for prod
 # resultant sed extraction files
 ./droolsjbpm-build-bootstrap/script/git-all.sh log -1 --format=%H  >> sedExtraction_1.txt
-sed -e '1d;2d' -e '/Total/d' -e '/====/d' -e 's/Repository: //g' -e 's/^/\"/; s/$/\"/;' -e '/""/d' sedExtraction_1.txt >> sedExtraction_2.txt
+sed -e '1d;2d' -e '/Total/d' -e '/====/d' -e 's/Repository: //g' -e 's/^/"/; s/$/"/;' -e '/""/d' sedExtraction_1.txt >> sedExtraction_2.txt
 sed -e '0~2 a\\' sedExtraction_2.txt >> sedExtraction_3.txt
-sed -e '1~3 s/$/,/g' sedExtraction_3.txt >> sedExtraction_4.txt
-sed -e '1~3 s/^/"repo": /' sedExtraction_4.txt >> sedExtraction_5.txt
-sed -e '2~3 s/^/"commit": /' sedExtraction_5.txt >> sedExtraction_6.txt
-sed -e 's/^$/},\n{/g' sedExtraction_6.txt >> sedExtraction_7.txt
+sed -e '1~2 s/$/,/g' sedExtraction_3.txt >> sedExtraction_4.txt
+sed -e '1~2 s/^/"repo": /' sedExtraction_4.txt >> sedExtraction_5.txt
+sed -e '2~2 s/^/"commit": /' sedExtraction_5.txt >> sedExtraction_6.txt
+sed -e '0~2 s/$/\\n },{/g' sedExtraction_6.txt >> sedExtraction_7.txt
 sed -e '$d' sedExtraction_7.txt >> sedExtraction_8.txt
-sed -e '$ s/.$//' sedExtraction_8.txt >> sedExtraction_9.txt
-cat sedExtraction_9.txt
+cat sedExtraction_8.txt
+cutOffDate=$(date +"%m-%d-%Y %H:%M")
+reportDate=$(date +"%m-%d-%Y")
 fileToWrite=$reportDate.json
-commitHash=$(cat sedExtraction_9.txt)
+commitHash=$(cat sedExtraction_8.txt)
 cat <<EOF > int.json
 {
    "handover" : {
@@ -522,7 +523,7 @@ cat <<EOF > int.json
    "repos" : [
       {
          $commitHash
-      
+      }   
     ],
    "source_product_tag":"$sourceProductTag",
    "target_product_build":"$targetProductBuild" 
@@ -575,7 +576,7 @@ job("kieAllBuild-${kieMainBranch}") {
         archiveArtifacts{
             onlyIfSuccessful(false)
             allowEmpty(true)
-            pattern("**/git-commit-hashes.txt, version.txt, **/hs_err_pid*.log, **/target/*.log, **/\$reportDate.json")
+            pattern("**/git-commit-hashes.txt, version.txt, **/hs_err_pid*.log, **/target/*.log, **/*.json")
         }
         mailer('bsig@redhat.com', false, false)
     }
