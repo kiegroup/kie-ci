@@ -83,11 +83,11 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
 
     environmentVariables{
         groovy('''def date = new Date().format( 'yyyyMMdd-hhMMss' )
-    def kieVersionPre = "8.0.0."
+    def kieVersionPre = "7.5.0."
     def uberfireVersionPre = "2.0.0."
     def dashbuilderVersionPre = "1.1.0."
     def erraiVersionNewPre = "4.1.0."
-    def kiesoupVersionPre = "8.0.0."
+    def kiesoupVersionPre = "7.5.0."
     def sourceProductTag = ""
     def targetProductBuild = ""
 
