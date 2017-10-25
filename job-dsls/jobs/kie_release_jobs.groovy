@@ -714,7 +714,7 @@ job("copyBinariesToFilemgmt-kieReleases-${kieMainBranch}") {
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(180)
         }
         timestamps()
         colorizeOutput()
