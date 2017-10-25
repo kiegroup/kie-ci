@@ -929,6 +929,7 @@ for %%x in (%repo_list%) do (
 )'''
 
 job("windows-kieAllBuild-${kieMainBranch}") {
+    disabled ()
     description("Builds all repos specified in\n" +
             "<a href=\"https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/script/repository-list.txt\">repository-list.txt</a> (master branch) on Windows machine.\n" +
             "It does not deploy the artifacts to staging repo (or any other remote). It just checks our repositories can be build and tested on Windows, so that \n" +
