@@ -58,14 +58,12 @@ def final REPO_CONFIGS = [
         "kie-uberfire-extensions"   : [
                 label: "rhel7 && mem4g"
         ],
-        "guvnor"                    : [],
         "kie-wb-playground"         : [
                 label: "rhel7 && mem4g"
         ],
         "kie-wb-common"             : [
                 label: "rhel7 && mem16g"
         ],
-        "jbpm-form-modeler"         : [],
         "drools-wb"                 : [
                 label: "rhel7 && mem16g"
         ],
