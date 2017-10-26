@@ -90,10 +90,6 @@ def final REPO_CONFIGS = [
         "kie-uberfire-extensions"   : [
                 timeoutMins            : 40,
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["guvnor"]
-        ],
-        "guvnor"                    : [
-                ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["kie-wb-playground"]
         ],
         "kie-wb-playground"         : [
@@ -102,10 +98,6 @@ def final REPO_CONFIGS = [
         ],
         "kie-wb-common"             : [
                 label                  : "rhel7 && mem16g",
-                ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-form-modeler"]
-        ],
-        "jbpm-form-modeler"         : [
                 ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["drools-wb"]
         ],
