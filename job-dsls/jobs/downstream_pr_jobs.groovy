@@ -55,7 +55,6 @@ def final REPO_CONFIGS = [
         "guvnor"                    : [],
         "kie-wb-playground"         : [],
         "kie-wb-common"             : [],
-        "jbpm-form-modeler"         : [],
         "drools-wb"                 : [],
         "optaplanner-wb"            : [],
         "jbpm-designer"             : [],

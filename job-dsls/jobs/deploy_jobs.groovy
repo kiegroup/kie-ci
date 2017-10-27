@@ -94,10 +94,6 @@ def final REPO_CONFIGS = [
         "kie-wb-common"             : [
                 label                  : "rhel7 && mem16g",
                 ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-form-modeler"]
-        ],
-        "jbpm-form-modeler"         : [
-                ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["drools-wb"]
         ],
         "drools-wb"                 : [
