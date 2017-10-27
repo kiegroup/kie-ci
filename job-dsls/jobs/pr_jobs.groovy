@@ -63,7 +63,6 @@ def final REPO_CONFIGS = [
         "kie-wb-common"             : [
                 label: "rhel7 && mem16g"
         ],
-        "jbpm-form-modeler"         : [],
         "drools-wb"                 : [
                 label: "rhel7 && mem16g"
         ],
