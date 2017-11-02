@@ -765,6 +765,8 @@ job("release-uberfire-${uberfireVersion}") {
         stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x-<yyyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("newVersion", "new version", "please edit the new version that should be used in the poms <br> The version should typically look like <b> major.minor.micro.<extension> </b>for<b> community </b> or <b> major.minor.micro.<yyyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("erraiVersion", "errai version", " please edit the related errai version<br> ******************************************************** <br> ")
+        stringParam("kiesoupVersion", "kie-soup version", "please edit the version of kie-soup <br> The version should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
+
     }
 
     scm {
@@ -959,9 +961,11 @@ job("release-dashbuilder-${dashbuilderVersion}") {
         choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
         stringParam("baseBranch", "base branch", "please edit the name of the base branch <br> i.e. typically <b> major.minor.x </b>for <b> community </b><br> ******************************************************** <br> ")
         stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x-<yyyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("newVersion", "new version", "please edit the new version that should be used in the poms <br> The version should typically look like <b> major.minor.micro.<extension> </b>for<b> community </b> or <b> major.minor.micro.<yyyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("uberfireVersion", "uberfire version", "please edit the version of uberfire <br> The version should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("newVersion", "new version", "please edit the new version that should be used in the poms <br> The version should typically look like <b> major.minor.micro.<extension> </b>for<b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("erraiVersion", "errai version", "please select the needed errai version <br> ******************************************************** <br> ")
+        stringParam("kiesoupVersion", "kie-soup version", "please edit the version of kie-soup <br> The version should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("uberfireVersion", "uberfire version", "please edit the version of uberfire <br> The version should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
+
     }
 
     scm {
