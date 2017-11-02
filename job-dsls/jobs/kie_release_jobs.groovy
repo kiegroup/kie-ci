@@ -1,8 +1,8 @@
 //Define Variables
 
-def kieVersion="8.0.x"
+def kieVersion="7.5.x"
 def uberfireVersion="2.0.x"
-def dashbuilderVersion="1.0.x"
+def dashbuilderVersion="1.1.x"
 def javadk="jdk1.8"
 def jaydekay="JDK1_8"
 def mvnToolEnv="APACHE_MAVEN_3_3_9"
