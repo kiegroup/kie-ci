@@ -25,6 +25,8 @@ configurations {
 // Exclude buggy Xalan dependency this way the JRE default TransformerFactory is used
 // The xalan pulled in by htmlunit does not properly deal with spaces folder / job names
 configurations.all*.exclude group: 'xalan'
+// Some bogus artifact which dissappeared from the remote repos. Not needed anyway.
+configurations.all*.exclude group: 'org.netbeans.modules', module: 'org-netbeans-insane'
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.7'
