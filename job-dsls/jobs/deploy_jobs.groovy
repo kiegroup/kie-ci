@@ -256,7 +256,7 @@ for (repoConfig in REPO_CONFIGS) {
                 mavenOpts(get("mvnOpts"))
                 goals(get("mvnGoals"))
                 properties(get("mvnProps"))
-                providedSettings("ci-snapshots-deploy")
+                providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig143380150840")
             }
         }
 
