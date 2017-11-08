@@ -227,7 +227,7 @@ for (repoConfig in REPO_CONFIGS) {
                     mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
                     goals(get("mvnGoals"))
                     properties(get("mvnProps"))
-                    providedSettings("ci-snapshots-deploy")
+                    providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1433801508409")
                 }
             }
         }
