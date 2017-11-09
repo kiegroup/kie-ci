@@ -256,7 +256,7 @@ for (repoConfig in REPO_CONFIGS) {
                 mavenOpts(get("mvnOpts"))
                 goals(get("mvnGoals"))
                 properties(get("mvnProps"))
-                providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig143380150840")
+                providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1433801508409")
             }
         }
 
