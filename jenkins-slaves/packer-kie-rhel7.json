@@ -1,0 +1,37 @@
+{
+  "variables": {
+    "openstack_endpoint": null,
+    "openstack_username": null,
+    "openstack_password": null,
+    "image_name": null,
+    "ssh_private_key_file": null
+  },
+  "builders": [
+    {
+      "type": "openstack",
+      "identity_endpoint": "{{ user `openstack_endpoint` }}",
+      "username": "{{ user `openstack_username` }}",
+      "password": "{{ user `openstack_password` }}",
+      "tenant_name": "kie-jenkins",
+      "source_image": "35546b46-2f70-4eae-8f95-ec3d9b7ebeba",
+      "image_name": "{{ user `image_name` }}",
+      "flavor": "m1.medium",
+      "floating_ip_pool": "10.8.240.0",
+      "insecure": "true",
+      "ssh_username": "root",
+      "ssh_keypair_name": "jenkins-slave",
+      "ssh_private_key_file": "{{ user `ssh_private_key_file` }}",
+      "user_data_file": "cloud-init-linux",
+      "domain_name": "Default"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "../ansible/kie-rhel7.yaml",
+      "groups": [
+        "packer"
+      ]
+    }
+  ]
+}

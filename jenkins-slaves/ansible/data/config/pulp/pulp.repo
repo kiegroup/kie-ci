@@ -1,0 +1,43 @@
+[rhel-7-server-os-rpms]
+metadata_expire = 86400
+baseurl = https://pulp04.web.prod.ext.phx2.redhat.com/content/dist/rhel/server/7/$releasever/$basearch/os
+ui_repoid_vars = releasever basearch
+sslverify = 0
+name = Red Hat Enterprise Linux 7 Server - os (RPMs)
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+enabled = 1
+sslcacert = /etc/rhsm/ca/redhat-uep.pem
+gpgcheck = 1
+
+[rhel-7-server-supplementary-rpms]
+metadata_expire = 86400
+baseurl = https://pulp04.web.prod.ext.phx2.redhat.com/content/dist/rhel/server/7/$releasever/$basearch/supplementary/os
+ui_repoid_vars = releasever basearch
+sslverify = 0
+name = Red Hat Enterprise Linux 7 Server - supplementary (RPMs)
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+enabled = 1
+sslcacert = /etc/rhsm/ca/redhat-uep.pem
+gpgcheck = 1
+
+[rhel-7-server-extras-rpms]
+metadata_expire = 86400
+baseurl = https://pulp04.web.prod.ext.phx2.redhat.com/content/dist/rhel/server/7/$releasever/$basearch/extras/os
+ui_repoid_vars = releasever basearch
+sslverify = 0
+name = Red Hat Enterprise Linux 7 Server - extras (RPMs)
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+enabled = 1
+sslcacert = /etc/rhsm/ca/redhat-uep.pem
+gpgcheck = 1
+
+[rhel-7-server-optional-rpms]
+metadata_expire = 86400
+baseurl = https://pulp04.web.prod.ext.phx2.redhat.com/content/dist/rhel/server/7/$releasever/$basearch/optional/os
+ui_repoid_vars = releasever basearch
+sslverify = 0
+name = Red Hat Enterprise Linux 7 Server - optional (RPMs)
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+enabled = 1
+sslcacert = /etc/rhsm/ca/redhat-uep.pem
+gpgcheck = 1
