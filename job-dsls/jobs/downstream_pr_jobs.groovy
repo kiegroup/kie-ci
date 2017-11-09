@@ -62,7 +62,8 @@ def final REPO_CONFIGS = [
         "jbpm-designer"             : [],
         "jbpm-wb"                   : [],
         //"kie-docs"                  : [], // no other repo depends on kie-docs
-        //"kie-wb-distributions"      : [] // kie-wb-distributions is the last repo in the chain
+        "kie-wb-distributions"      : [],
+        "jbpm-work-items"           : [] // jbpm-work-items is the last repo in the chain
 ]
 
 

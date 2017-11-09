@@ -97,6 +97,9 @@ def final REPO_CONFIGS = [
                         "**/target/kie-drools-wb*eap*.war",
                         "**/target/kie-drools-wb*tomcat*.war"
                 ]
+        ],
+        "jbpm-work-items"                   : [
+                label: "rhel7 && mem4g"
         ]
 ]
 

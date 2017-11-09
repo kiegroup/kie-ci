@@ -143,6 +143,11 @@ def final REPO_CONFIGS = [
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "kie-wb-tests/kie-wb-tests-gui/target/screenshots/**"
                 ],
+                downstreamRepos        : ["jbpm-work-items"]
+        ],
+        "jbpm-work-items"                  : [
+                label                  : "rhel7 && mem4g",
+                ircNotificationChannels: ["#jbpmdev"],
                 downstreamRepos        : []
         ]
 ]
