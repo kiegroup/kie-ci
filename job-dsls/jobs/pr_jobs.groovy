@@ -97,6 +97,11 @@ def final REPO_CONFIGS = [
                         "**/target/kie-drools-wb*eap*.war",
                         "**/target/kie-drools-wb*tomcat*.war"
                 ]
+        ],
+        // following repos are not in repository-list.txt, but we want a PR jobs for them
+        "jbpm-work-items"           : [
+                label      : "linux && mem4g",
+                timeoutMins: 30,
         ]
 ]
 
@@ -193,12 +198,14 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         steps {
-            configure { project ->
-                project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.UpstreamReposBuilder' {
-                    mavenBuildConfig {
-                        mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
-                        delegate.mavenOpts("-Xmx2g")
-                        mavenArgs(get("upstreamMvnArgs"))
+            if (repo != "jbpm-work-items") {
+                configure { project ->
+                    project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.UpstreamReposBuilder' {
+                        mavenBuildConfig {
+                            mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
+                            delegate.mavenOpts("-Xmx2g")
+                            mavenArgs(get("upstreamMvnArgs"))
+                        }
                     }
                 }
             }

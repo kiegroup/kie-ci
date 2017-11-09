@@ -76,7 +76,7 @@ def final REPO_CONFIGS = [
                 timeoutMins            : 120,
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly10",
                 ircNotificationChannels: ["#jbpmdev"],
-                downstreamRepos        : ["droolsjbpm-integration"]
+                downstreamRepos        : ["droolsjbpm-integration", "jbpm-work-items"]
         ],
         "droolsjbpm-integration"    : [
                 timeoutMins            : 120,
@@ -144,6 +144,12 @@ def final REPO_CONFIGS = [
                         "kie-wb-tests/kie-wb-tests-gui/target/screenshots/**"
                 ],
                 downstreamRepos        : []
+        ],
+        // following repos are not in repository-list.txt, but we want a deploy jobs for them
+        "jbpm-work-items"           : [
+                label      : "linux && mem4g",
+                timeoutMins: 30,
+                ircNotificationChannels: ["#jbpmdev"]
         ]
 ]
 
@@ -214,7 +220,13 @@ for (repoConfig in REPO_CONFIGS) {
         steps {
             configure { project ->
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.StandardBuildUpstreamReposBuilder' {
-                    baseRepository "$ghOrgUnit/$repo"
+                    if (repo == "jbpm-work-items") {
+                        // jbpm-work-items is _not_ in repository-list.txt, so the default config won't work
+                        // this is a workaround to make sure we build all repos until and including jbpm
+                        baseRepository "$ghOrgUnit/droolsjbpm-integration"
+                    } else {
+                        baseRepository "$ghOrgUnit/$repo"
+                    }
                     branch "$repoBranch"
                     mavenBuildConfig {
                         mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
