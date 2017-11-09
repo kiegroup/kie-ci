@@ -28,7 +28,7 @@
   "provisioners": [
     {
       "type": "ansible",
-      "playbook_file": "../ansible/kie-rhel7.yaml",
+      "playbook_file": "ansible/kie-rhel7.yaml",
       "groups": [
         "packer"
       ]
