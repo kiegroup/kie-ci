@@ -95,6 +95,7 @@
      - bash-completion
      - bzip2
      - rng-tools
+     - ansible
 
   - name: Copy Docker config
     copy:
