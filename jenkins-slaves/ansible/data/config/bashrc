@@ -1,0 +1,13 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+export LANG=en_US.UTF-8
+export JAVA_HOME=/opt/tools/jdk1.8
+export MAVEN_HOME=/opt/tools/apache-maven-3.2.5
+export MAVEN_OPTS="-Xmx2g"
+
+export PATH=$JAVA_HOME/bin:$MAVEN_HOME/bin:$PATH
