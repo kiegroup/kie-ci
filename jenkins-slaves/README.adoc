@@ -1,0 +1,35 @@
+= OpenStack image resources for Jenkins slaves
+
+== How to create new image
+We are using a tool called `packer` (https://www.packer.io) to automate the whole process. `packer` will automatically
+create new OpenStack machine, configure the machine via Ansible playbook and if everything succeeds create new image
+which can then be used by the Jenkins slaves.
+
+=== Prerequisites
+. Make sure `packer` is installed. Go to https://www.packer.io/downloads.html, choose a package for your platform,
+download the file and extract it. Try to run `./packer --version` which should return the `packer` version.
+
+. Make sure `ansible` is installed (e.g. `dnf install ansible` on Fedora).
+
+=== Building the image
+[source,shell]
+----
+export ANSIBLE_SCP_IF_SSH=y
+$ ./packer build\
+  -var "openstack_endpoint=<endpoint>"\
+  -var "openstack_username=<username>"\
+  -var "openstack_password=<password>"\
+  -var "image_name=<image-name>"\
+  -var "ssh_private_key_file=<ssh-private-file>"\
+  packer-kie-rhel7.json
+----
+where
+
+ * `<endpoint>` is OpenStack API endpoint. For example `https://openstack.mycompany.com:13000/v3`.
+
+ * `<username>` + `<password>` are credentials used to log into the OpenStack instance.
+
+ * `<image-name>` is the name of the resulting image. For example `kie-rhel7-20171110-1`.
+
+ * `ssh-private-file` is location of SSH private key file which is used to talk to the created OpenStack machine.
+ Ansible uses the SSH connection to perform the configuration.
