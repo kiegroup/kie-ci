@@ -15,7 +15,7 @@ package org.kie.jenkins.jobdsl
  */
 
 class Constants {
-    static final String MAVEN_VERSION = "3.3.9"
+    static final String MAVEN_VERSION = "3.5.2"
 
-    static final String UPSTREAM_BUILD_MAVEN_VERSION = "3.5.0"
+    static final String UPSTREAM_BUILD_MAVEN_VERSION = "3.5.2"
 }
