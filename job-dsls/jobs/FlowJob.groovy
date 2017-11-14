@@ -489,11 +489,23 @@ sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionF
 cd ..
 # build the repos & deploy into local dir (will be later copied into staging repo)
 deployDir=$WORKSPACE/deploy-dir
+
+cat > "$WORKSPACE/clean-up.sh" << EOT
+baseDir=\\$1
+rm -rf \\`find \\$baseDir -type d -wholename "*/target/*wildfly*Final"\\`
+rm -rf \\`find \\$baseDir -type d -wholename "*/target/cargo"\\`
+rm -rf \\`find \\$baseDir -type f -name "*war"\\`
+rm -rf \\`find \\$baseDir -type f -name "*jar"\\`
+rm -rf \\`find \\$baseDir -type f -name "*zip"\\`
+rm -rf \\`find \\$baseDir -type d -name "gwt-unitCache"\\`
+EOT
+
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
 ./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=1\\
- -Dgwt.memory.settings="-Xmx4g -Xms1g -Xss1M"
+ -Dgwt.memory.settings="-Xmx4g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
+
 # (2) upload the content to remote staging repo
 mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
  -DrepositoryDirectory=$deployDir -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie $kieVersion" -DstagingProgressTimeoutMinutes=40
