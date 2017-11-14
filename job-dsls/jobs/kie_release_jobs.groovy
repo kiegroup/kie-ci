@@ -17,8 +17,12 @@ def uberfireOrganization="AppFormer"
 def dashbuilderOrganization="dashbuilder"
 
 
+def createReleaseBranches="""
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-createReleaseBranches.sh
+"""
+
 def pushReleaseBranches="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-createAndPushReleaseBranches.sh
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-pushReleaseBranches.sh
 """
 
 def deployLocally="""
@@ -149,6 +153,7 @@ job("createAndPushReleaseBranches-kieReleases-${kieVersion}") {
         environmentVariables {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
+        shell(createReleaseBranches)
         shell(pushReleaseBranches)
     }
 }
