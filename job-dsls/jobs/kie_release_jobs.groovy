@@ -64,10 +64,6 @@ def createJbpmInstaller ="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-createJbpmInstaller.sh
 """
 
-def pushJbpmInstaller="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-pushJbpmInstaller.sh
-"""
-
 def ufDeploy="""
 sh \$WORKSPACE/scripts/uberfire/scripts/release/uberfire-createAndDeploy.sh
 """
@@ -688,6 +684,69 @@ job("updateToNextDevelopmentVersion-kieReleases-${kieVersion}") {
 }
 
 // ****************************************************************************************
+job("create-jbpm-installers-kieReleases-${kieVersion}") {
+
+    description("This job: <br> creates the jbpm-installers  <br> IMPORTANT: makes only sense for community releases <br><b> Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
+
+    parameters{
+        stringParam("version", "release version", "Edit the version of release, i.e. <b>major.minor.micro.<extension></b> ")
+    }
+
+    scm {
+        git {
+            remote {
+                github("${organization}/droolsjbpm-build-bootstrap")
+            }
+            branch ("${kieMainBranch}")
+            extensions {
+                relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
+            }
+
+        }
+    }
+
+    label("kie-releases")
+
+    logRotator {
+        numToKeep(10)
+    }
+
+    jdk("${javadk}")
+
+    customWorkspace("\$HOME/workspace/buildAndDeployLocally-kieReleases-${kieVersion}")
+
+    wrappers {
+        timeout {
+            absolute(180)
+        }
+        timestamps()
+        colorizeOutput()
+        toolenv("${mvnToolEnv}", "${jaydekay}")
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+                username 'jenkins'
+            }
+        }
+    }
+
+    publishers {
+        mailer('mbiarnes@redhat.com', false, false)
+    }
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
+        }
+        shell(createJbpmInstaller)
+    }
+}
+
+// ****************************************************************************************
 
 job("copyBinariesToFilemgmt-kieReleases-${kieVersion}") {
 
@@ -748,8 +807,6 @@ job("copyBinariesToFilemgmt-kieReleases-${kieVersion}") {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(copyBinariesToFilemgmt)
-        shell(createJbpmInstaller)
-        shell(pushJbpmInstaller)
     }
 }
 
@@ -1169,6 +1226,7 @@ nestedView("kieReleases-${kieMainBranch}"){
                 name("pushTags-kieReleases-${kieVersion}")
                 name("removeReleaseBranches-kieReleases-${kieVersion}")
                 name("updateToNextDevelopmentVersion-kieReleases-${kieVersion}")
+                name("create-jbpm-installers-kieReleases-${kieVersion}")
                 name("copyBinariesToFilemgmt-kieReleases-${kieVersion}")
             }
             columns {
