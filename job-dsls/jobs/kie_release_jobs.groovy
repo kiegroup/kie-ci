@@ -740,6 +740,11 @@ job("create-jbpm-installers-kieReleases-${kieVersion}") {
     }
 
     publishers {
+        archiveArtifacts{
+            onlyIfSuccessful(false)
+            allowEmpty(true)
+            pattern("**/jbpm-installer*.zip")
+        }
         mailer('mbiarnes@redhat.com', false, false)
     }
 
