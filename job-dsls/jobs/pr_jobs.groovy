@@ -228,7 +228,6 @@ for (repoConfig in REPO_CONFIGS) {
             checkstyle("**/checkstyle-result.xml")
             def artifactsToArchive = get("artifactsToArchive")
             def excludedArtifacts = get("excludedArtifacts")
-            println("Excluded artifacts: " + excludedArtifacts)
             if (artifactsToArchive) {
                 archiveArtifacts {
                     allowEmpty(true)
