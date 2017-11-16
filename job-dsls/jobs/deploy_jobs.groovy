@@ -234,14 +234,15 @@ for (repoConfig in REPO_CONFIGS) {
                         mavenArgs(get("upstreamMvnArgs"))
                     }
                 }
-                maven {
-                    mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
-                    mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
-                    goals(get("mvnGoals"))
-                    properties(get("mvnProps"))
-                    providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1433801508409")
-                }
             }
+            maven {
+                mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
+                mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
+                goals(get("mvnGoals"))
+                properties(get("mvnProps"))
+                providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1433801508409")
+            }
+
         }
 
         publishers {
