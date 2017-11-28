@@ -425,7 +425,7 @@ matrixJob("wbSmokeTestsMatrix-kieReleases-${kieVersion}") {
 
     parameters {
         choiceParam("target", ["community", "productized"], "<br> ******************************************************** <br> ")
-        stringParam("releaseVesion", "KIE release version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieVersion", "KIE release version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
     };
 
     axes {
@@ -1029,10 +1029,9 @@ job("release-dashbuilder-${dashbuilderVersion}") {
         stringParam("baseBranch", "base branch", "please edit the name of the base branch <br> i.e. typically <b> major.minor.x </b>for <b> community </b><br> ******************************************************** <br> ")
         stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x-<yyyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("newVersion", "new version", "please edit the new version that should be used in the poms <br> The version should typically look like <b> major.minor.micro.<extension> </b>for<b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("erraiVersion", "errai version", "please select the needed errai version <br> ******************************************************** <br> ")
-        stringParam("kiesoupVersion", "kie-soup version", "please edit the version of kie-soup <br> The version should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("kieVersion", "uberfire version", "please edit the version of uberfire <br> The version should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("uberfireVersion", "uberfire version", "please edit the version of uberfire <br> The version should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
-
+        stringParam("erraiVersion", "errai version", "please select the needed errai version <br> ******************************************************** <br> ")
     }
 
     scm {
@@ -1162,6 +1161,7 @@ job("updateVersion-dashbuilder-${dashbuilderVersion}") {
     parameters {
         stringParam("newVersion", "new dashbuilder version", "Edit the new dashbuilder version")
         stringParam("baseBranch", "base branch", "please select the base branch <br> ******************************************************** <br> ")
+        stringParam("kieDevelVersion", "kie development version", "Edit the kie development version")
         stringParam("uberfireDevelVersion", "uberfire development version", "Edit the uberfire development version")
         stringParam("erraiDevelVersion", "errai development version", "Edit the errai development version")
     }
