@@ -41,9 +41,7 @@ def final DEFAULTS = [
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
         "kie-soup"                  : [],
-        "uberfire"                  : [
-                ghOrgUnit: "appformer",
-        ],
+        "appformer"                  : [],
         "droolsjbpm-build-bootstrap": [],
         "droolsjbpm-knowledge"      : [],
         "drools"                    : [],

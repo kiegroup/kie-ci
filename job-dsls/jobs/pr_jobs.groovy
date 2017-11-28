@@ -31,8 +31,7 @@ def final REPO_CONFIGS = [
         "kie-soup"                  : [
                 label: "rhel7 && mem4g"
         ],
-        "uberfire"                  : [
-                ghOrgUnit: "appformer",
+        "appformer"                  : [
                 label    : "rhel7 && mem16g"
         ],
         "droolsjbpm-build-bootstrap": [

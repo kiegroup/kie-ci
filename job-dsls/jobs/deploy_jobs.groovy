@@ -32,10 +32,9 @@ def final REPO_CONFIGS = [
         "kie-soup"                  : [
                 label                  : "rhel7 && mem4g",
                 ircNotificationChannels: ["#logicabyss", "#appformer"],
-                downstreamRepos        : ["uberfire"]
+                downstreamRepos        : ["appformer"]
         ],
-        "uberfire"                  : [
-                ghOrgUnit              : "appformer",
+        "appformer"                  : [
                 label                  : "linux && mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
