@@ -311,6 +311,8 @@
      - uberfire/uberfire
      - uberfire/uberfire-extensions
      - dashbuilder/dashbuilder
+     - kiegroup/kie-soup
+     - kiegroup/appformer
      - kiegroup/droolsjbpm-build-bootstrap
      - kiegroup/droolsjbpm-knowledge
      - kiegroup/drools

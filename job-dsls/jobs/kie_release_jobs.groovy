@@ -11,7 +11,7 @@ def mvnOpts="-Xms2g -Xmx3g"
 def kieMainBranch="master"
 def uberfireBranch="master"
 def organization="kiegroup"
-def uberfireOrganization="AppFormer"
+def uberfireOrganization="kiegroup"
 
 
 def createReleaseBranches="""
@@ -66,15 +66,15 @@ sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-createJbpmI
 """
 
 def ufDeploy="""
-sh \$WORKSPACE/scripts/uberfire/scripts/release/uberfire-createAndDeploy.sh
+sh \$WORKSPACE/scripts/appformer/scripts/release/uberfire-createAndDeploy.sh
 """
 
 def ufPushTag="""
-sh \$WORKSPACE/scripts/uberfire/scripts/release/uberfire-pushTag.sh
+sh \$WORKSPACE/scripts/appformer/scripts/release/uberfire-pushTag.sh
 """
 
 def ufUpdateVersion="""
-sh \$WORKSPACE/scripts/uberfire/scripts/release/uberfire-updateVersion.sh
+sh \$WORKSPACE/scripts/appformer/scripts/release/uberfire-updateVersion.sh
 """
 
 
@@ -822,11 +822,11 @@ job("release-uberfire-${uberfireVersion}") {
     scm {
         git {
             remote {
-                github("${uberfireOrganization}/uberfire")
+                github("${uberfireOrganization}/appformer")
             }
             branch ("${uberfireBranch}")
             extensions {
-                relativeTargetDirectory("scripts/uberfire")
+                relativeTargetDirectory("scripts/appformer")
             }
 
         }
@@ -887,11 +887,11 @@ job("pushTag-uberfire-${uberfireVersion}") {
     scm {
         git {
             remote {
-                github("${uberfireOrganization}/uberfire")
+                github("${uberfireOrganization}/appformer")
             }
             branch ("${uberfireBranch}")
             extensions {
-                relativeTargetDirectory("scripts/uberfire")
+                relativeTargetDirectory("scripts/appformer")
             }
 
         }
@@ -952,11 +952,11 @@ job("updateVersion-uberfire-${uberfireVersion}") {
     scm {
         git {
             remote {
-                github("${uberfireOrganization}/uberfire")
+                github("${uberfireOrganization}/appformer")
             }
             branch ("${uberfireBranch}")
             extensions {
-                relativeTargetDirectory("scripts/uberfire")
+                relativeTargetDirectory("scripts/appformer")
             }
 
         }
