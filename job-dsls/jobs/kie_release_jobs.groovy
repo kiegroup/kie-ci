@@ -2,7 +2,6 @@
 
 def kieVersion="7.5.x"
 def uberfireVersion="2.0.x"
-def dashbuilderVersion="1.1.x"
 def javadk="jdk1.8"
 def jaydekay="JDK1_8"
 def mvnToolEnv="APACHE_MAVEN_3_3_9"
@@ -11,10 +10,8 @@ def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms2g -Xmx3g"
 def kieMainBranch="master"
 def uberfireBranch="master"
-def dashbuilderBranch="master"
 def organization="kiegroup"
 def uberfireOrganization="AppFormer"
-def dashbuilderOrganization="dashbuilder"
 
 
 def createReleaseBranches="""
@@ -80,18 +77,6 @@ def ufUpdateVersion="""
 sh \$WORKSPACE/scripts/uberfire/scripts/release/uberfire-updateVersion.sh
 """
 
-def dashDeploy="""
-sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dashbuilder-createAndDeploy.sh
-"""
-
-def dashPushTag="""
-sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dashbuilder-pushTag.sh
-"""
-
-def dashUpdateVersion="""
-sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dashbuilder-updateVersion.sh
-"""
-
 
 // **************************************************************************
 
@@ -107,7 +92,6 @@ job("createAndPushReleaseBranches-kieReleases-${kieVersion}") {
         stringParam("baseBranch", "base branch", "please select the base branch <br> ******************************************************** <br> ")
         stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> bsync-major.minor.x-<yyyy.mm.dd>  </b>for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("uberfireVersion", "uberfire version", "please edit the right version to use of uberfire<br> The tag should typically look like <b> major.minor.micro.<extension> </b> for <b> community </b> or <b> related kie major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("dashbuilderVersion", "dashbuilder version", "please edit the right version to use of dashbuilder <br> The tag should typically look like <b> major.minor.micro.<extension>  </b>for <b> community </b> or <b> related kie major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("erraiVersion", "errai version", " please edit the related errai version<br> ******************************************************** <br> ")
     };
 
@@ -631,7 +615,6 @@ job("updateToNextDevelopmentVersion-kieReleases-${kieVersion}") {
         stringParam("baseBranch","master","Branch you want to upgrade")
         stringParam("newVersion", "new KIE version", "Edit the KIE development version")
         stringParam("uberfireDevelVersion", "uberfire version", "Edit the uberfire development version")
-        stringParam("dashbuilderDevelVersion", "dashbuilder version", "Edit the dashbuilder development version")
         stringParam("erraiDevelVersion", "errai version", "Edit the errai development version")
     }
 
@@ -1018,206 +1001,6 @@ job("updateVersion-uberfire-${uberfireVersion}") {
         shell(ufUpdateVersion)
     }
 }
-// *************** Dashbuilder Release scripts ***********************
-
-job("release-dashbuilder-${dashbuilderVersion}") {
-
-    description("This job: <br> releases dashbuilder, upgrades the version, builds and deploys, copies artifacts to Nexus, closes the release on Nexus  <br> <b>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
-
-    parameters {
-        choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
-        stringParam("baseBranch", "base branch", "please edit the name of the base branch <br> i.e. typically <b> major.minor.x </b>for <b> community </b><br> ******************************************************** <br> ")
-        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x-<yyyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("newVersion", "new version", "please edit the new version that should be used in the poms <br> The version should typically look like <b> major.minor.micro.<extension> </b>for<b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("erraiVersion", "errai version", "please select the needed errai version <br> ******************************************************** <br> ")
-        stringParam("kiesoupVersion", "kie-soup version", "please edit the version of kie-soup <br> The version should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("uberfireVersion", "uberfire version", "please edit the version of uberfire <br> The version should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
-
-    }
-
-    scm {
-        git {
-            remote {
-                github("${dashbuilderOrganization}/dashbuilder")
-            }
-            branch ("${dashbuilderBranch}")
-            extensions {
-                relativeTargetDirectory("scripts/dashbuilder")
-            }
-
-        }
-    }
-
-    label("kie-releases")
-
-    logRotator {
-        numToKeep(10)
-    }
-
-    jdk("${javadk}")
-
-    wrappers {
-        timeout {
-            absolute(60)
-        }
-        timestamps()
-        preBuildCleanup()
-        colorizeOutput()
-        toolenv("${mvnToolEnv}", "${jaydekay}")
-    }
-
-    configure { project ->
-        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
-            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
-                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
-                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
-                username 'jenkins'
-            }
-        }
-    }
-
-    publishers {
-        mailer('mbiarnes@redhat.com', false, false)
-    }
-
-    steps {
-        environmentVariables {
-            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
-        }
-        shell(dashDeploy)
-    }
-}
-
-// ******************************************************
-
-job("pushTag-dashbuilder-${dashbuilderVersion}") {
-
-    description("This job: <br> creates and pushes the tags for <br> community (dashbuilder) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
-
-    parameters {
-        choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
-        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x->yyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("tag", "tag", "The tag should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> related kie prod tag sync-major.minor.x-<yyyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
-    };
-
-    scm {
-        git {
-            remote {
-                github("${dashbuilderOrganization}/dashbuilder")
-            }
-            branch ("${dashbuilderBranch}")
-            extensions {
-                relativeTargetDirectory("scripts/dashbuilder")
-            }
-
-        }
-    }
-
-    label("kie-releases")
-
-    logRotator {
-        numToKeep(10)
-    }
-
-    jdk("${javadk}")
-
-    wrappers {
-        timeout {
-            absolute(30)
-        }
-        timestamps()
-        colorizeOutput()
-        preBuildCleanup()
-        toolenv("${mvnToolEnv}", "${jaydekay}")
-    }
-
-    configure { project ->
-        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
-            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
-                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
-                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
-                username 'jenkins'
-            }
-        }
-    }
-
-    publishers {
-        mailer('mbiarnes@redhat.com', false, false)
-    }
-
-    steps {
-        environmentVariables {
-            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
-        }
-        shell(dashPushTag)
-    }
-}
-
-// ******************************************************
-
-job("updateVersion-dashbuilder-${dashbuilderVersion}") {
-
-    description("This job: <br> updates dashbuilder repository to a new developmenmt version <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
-
-    parameters {
-        stringParam("newVersion", "new dashbuilder version", "Edit the new dashbuilder version")
-        stringParam("baseBranch", "base branch", "please select the base branch <br> ******************************************************** <br> ")
-        stringParam("uberfireDevelVersion", "uberfire development version", "Edit the uberfire development version")
-        stringParam("erraiDevelVersion", "errai development version", "Edit the errai development version")
-    }
-
-    scm {
-        git {
-            remote {
-                github("${dashbuilderOrganization}/dashbuilder")
-            }
-            branch ("${dashbuilderBranch}")
-            extensions {
-                relativeTargetDirectory("scripts/dashbuilder")
-            }
-
-        }
-    }
-
-    label("kie-releases")
-
-    logRotator {
-        numToKeep(10)
-    }
-
-    jdk("${javadk}")
-
-    wrappers {
-        timeout {
-            absolute(30)
-        }
-        timestamps()
-        colorizeOutput()
-        preBuildCleanup()
-        toolenv("${mvnToolEnv}", "${jaydekay}")
-    }
-
-    configure { project ->
-        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
-            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
-                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
-                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
-                username 'jenkins'
-            }
-        }
-    }
-
-    publishers {
-        mailer('mbiarnes@redhat.com', false, false)
-    }
-
-    steps {
-        environmentVariables {
-            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
-        }
-        shell(dashUpdateVersion)
-    }
-}
 
 
 // **************************** VIEW to create on JENKINS CI *******************************************
@@ -1253,21 +1036,6 @@ nestedView("kieReleases-${kieMainBranch}"){
                 name("release-uberfire-${uberfireVersion}")
                 name("pushTag-uberfire-${uberfireVersion}")
                 name("updateVersion-uberfire-${uberfireVersion}")
-            }
-            columns {
-                status()
-                weather()
-                name()
-                lastSuccess()
-                lastFailure()
-            }
-        }
-        listView("dashbuilderRelease-${dashbuilderVersion}"){
-            description("all scripts needed for building a ${dashbuilderVersion} dashbuilder release")
-            jobs {
-                name("release-dashbuilder-${dashbuilderVersion}")
-                name("pushTag-dashbuilder-${dashbuilderVersion}")
-                name("updateVersion-dashbuilder-${dashbuilderVersion}")
             }
             columns {
                 status()
