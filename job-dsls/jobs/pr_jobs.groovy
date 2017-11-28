@@ -1,5 +1,5 @@
 /**
- * Creates pullrequest (PR) jobs for appformer (formerly known as uberfire), dashbuilder and kiegroup GitHub org. units.
+ * Creates pullrequest (PR) jobs for appformer (formerly known as uberfire) and kiegroup GitHub org. units.
  */
 import org.kie.jenkins.jobdsl.Constants
 
@@ -33,10 +33,6 @@ def final REPO_CONFIGS = [
         ],
         "uberfire"                  : [
                 ghOrgUnit: "appformer",
-                label    : "rhel7 && mem16g"
-        ],
-        "dashbuilder"               : [
-                ghOrgUnit: "dashbuilder",
                 label    : "rhel7 && mem16g"
         ],
         "droolsjbpm-build-bootstrap": [
@@ -160,7 +156,7 @@ for (repoConfig in REPO_CONFIGS) {
 
         triggers {
             githubPullRequest {
-                orgWhitelist(["appformer", "dashbuilder", "kiegroup"])
+                orgWhitelist(["appformer", "kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
                 cron("H/10 * * * *")
                 whiteListTargetBranches([repoBranch])
