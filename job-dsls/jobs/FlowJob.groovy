@@ -27,7 +27,7 @@ ignore(UNSTABLE) {
     build("errai-kieAllBuild-${kieMainBranch}", erraiVersionNew: "$erraiVersionNew", erraiVersionOld: "$erraiVersionOld", erraiBranch: "$erraiBranch")
 }
 ignore(UNSTABLE) {
-    build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", appformerVersion: "$appformerVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
+    build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", kiesoupVersion: "kiesoupVersion", appformerVersion: "$appformerVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
 }
 
 
@@ -205,6 +205,7 @@ git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git --branch $k
 # upgrade version kie-soup
 cd kie-soup
 ./scripts/release/update-version.sh $kiesoupVersion
+mvn clean install -DskipTests -U
 cd ..
 # upgrade version appformer
 cd appformer
@@ -212,6 +213,7 @@ cd appformer
 # update files that are not automatically changed with the update-versions-all.sh script
 sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieVersion<\\/version.org.kie>/;P;D" pom.xml
 sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
+mvn clean install -DskipTests -U
 cd ..
 # upgrade version kiegroup 
 ./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieVersion productized
