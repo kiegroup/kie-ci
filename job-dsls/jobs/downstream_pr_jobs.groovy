@@ -1,5 +1,5 @@
 /**
- * Creates downstream pullrequest (PR) jobs for appformer (formerly known as uberfire), dashbuilder and kiegroup GitHub org. units.
+ * Creates downstream pullrequest (PR) jobs for appformer (formerly known as uberfire) and kiegroup GitHub org. units.
  * These jobs execute the full downstream build for a specific PR to make sure the changes do not break the downstream repos.
  */
 import org.kie.jenkins.jobdsl.Constants
@@ -41,12 +41,7 @@ def final DEFAULTS = [
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
         "kie-soup"                  : [],
-        "uberfire"                  : [
-                ghOrgUnit: "appformer",
-        ],
-        "dashbuilder"               : [
-                ghOrgUnit: "dashbuilder",
-        ],
+        "appformer"                  : [],
         "droolsjbpm-build-bootstrap": [],
         "droolsjbpm-knowledge"      : [],
         "drools"                    : [],
@@ -120,7 +115,7 @@ for (repoConfig in REPO_CONFIGS) {
 
         triggers {
             githubPullRequest {
-                orgWhitelist(["appformer", "dashbuilder", "kiegroup"])
+                orgWhitelist(["appformer", "kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
                 cron("H/10 * * * *")
                 triggerPhrase(".*[j|J]enkins,?.*execute full downstream build.*")

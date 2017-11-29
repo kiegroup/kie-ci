@@ -1,5 +1,5 @@
 /**
- * Creates all the standard "deploy" jobs for appformer (formerly known as uberfire), dashbuilder and kiegroup GitHub org. units.
+ * Creates all the standard "deploy" jobs for appformer (formerly known as uberfire) and kiegroup GitHub org. units.
  */
 import org.kie.jenkins.jobdsl.Constants
 
@@ -32,24 +32,14 @@ def final REPO_CONFIGS = [
         "kie-soup"                  : [
                 label                  : "rhel7 && mem4g",
                 ircNotificationChannels: ["#logicabyss", "#appformer"],
-                downstreamRepos        : ["uberfire"]
+                downstreamRepos        : ["appformer"]
         ],
-        "uberfire"                  : [
-                ghOrgUnit              : "appformer",
+        "appformer"                  : [
                 label                  : "linux && mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
                 ],
                 ircNotificationChannels: ["#appformer"],
-                downstreamRepos        : ["dashbuilder"]
-        ],
-        "dashbuilder"               : [
-                ghOrgUnit              : "dashbuilder",
-                label                  : "linux && mem16g",
-                mvnProps               : DEFAULTS["mvnProps"] + [
-                        "gwt.compiler.localWorkers": "2"
-                ],
-                ircNotificationChannels: ["#dashbuilder"],
                 downstreamRepos        : ["droolsjbpm-build-bootstrap"]
         ],
         "droolsjbpm-build-bootstrap": [
