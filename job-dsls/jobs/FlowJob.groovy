@@ -8,42 +8,26 @@ def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
 def kieMainBranch="master"
 def erraiBranch="master"
-def kiesoupBranch="master"
-def uberfireBranch="master"
-def dashbuilderBranch="master"
-def erraiVersionOld="4.1.0-SNAPSHOT"
+def erraiVersionOld="4.1.2-SNAPSHOT"
 def organization="kiegroup"
 
 // definition of flow script
 
 def flowJob ='''def erraiVersionOld = params["erraiVersionOld"]
 def kieMainBranch =params["kieMainBranch"]
-def uberfireBranch=params["uberfireBranch"]
-def dashbuilderBranch=params["dashbuilderBranch"]
 def erraiBranch=params["erraiBranch"]
-def kiesoupBranch=params["kiesoupBranch"]
 def organization=params["organization"]
 
 erraiVersionNew = build.environment.get("erraiVersionNew")
 kiesoupVersion = build.environment.get("kiesoupVersion")
-uberfireVersion = build.environment.get("uberfireVersion")
-dashbuilderVersion = build.environment.get("dashbuilderVersion")
+appformerVersion = build.environment.get("appformerVersion")
 kieVersion = build.environment.get("kieVersion")
 
 ignore(UNSTABLE) {
     build("errai-kieAllBuild-${kieMainBranch}", erraiVersionNew: "$erraiVersionNew", erraiVersionOld: "$erraiVersionOld", erraiBranch: "$erraiBranch")
 }
 ignore(UNSTABLE) {
-    build("kiesoup-kieAllBuild-${kieMainBranch}", kiesoupVersion: "$kiesoupVersion", kiesoupBranch: "$kiesoupBranch", organization: "$organization")
-}
-ignore(UNSTABLE) {
-    build("uberfire-kieAllBuild-${kieMainBranch}", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", uberfireBranch: "$uberfireBranch")
-}
-ignore(UNSTABLE) {
-    build("dashbuilder-kieAllBuild-${kieMainBranch}", dashbuilderVersion: "$dashbuilderVersion", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", dashbuilderBranch: "$dashbuilderBranch")
-}
-ignore(UNSTABLE) {
-    build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", dashbuilderVersion: "$dashbuilderVersion", uberfireVersion: "$uberfireVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
+    build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", appformerVersion: "$appformerVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
 }
 
 
@@ -74,9 +58,6 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
     parameters {
         stringParam("erraiVersionOld", "${erraiVersionOld}", "edit old errai -SNAPSHOT version")
         stringParam("erraiBranch", "${erraiBranch}", "edit errai branch")
-        stringParam("kiesoupBranch", "${kiesoupBranch}", "edit kiesoup branch")
-        stringParam("uberfireBranch", "${uberfireBranch}", "edit uberfire branch")
-        stringParam("dashbuilderBranch", "${dashbuilderBranch}", "edit dashbuilder branch")
         stringParam("kieMainBranch", "${kieMainBranch}", "edit kie branch")
         stringParam("organization","${organization}","edit organization")
     }
@@ -84,15 +65,14 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
     environmentVariables{
         groovy('''def date = new Date().format( 'yyyyMMdd-hhMMss' )
     def kieVersionPre = "7.5.0."
-    def uberfireVersionPre = "2.0.0."
-    def dashbuilderVersionPre = "1.1.0."
-    def erraiVersionNewPre = "4.1.0."
+    def appformerVersionPre = "2.0.0."
+    def erraiVersionNewPre = "4.1.2."
     def kiesoupVersionPre = "7.5.0."
     def sourceProductTag = ""
     def targetProductBuild = ""
 
-    return [kieVersion: kieVersionPre + date, uberfireVersion: uberfireVersionPre + date, dashbuilderVersion: dashbuilderVersionPre + date, \
- erraiVersionNew:erraiVersionNewPre +date, kiesoupVersion:kiesoupVersionPre + date, cutOffDate: date, reportDate: date,  sourceProductTag: sourceProductTag, targetProductBuild: targetProductBuild] \
+    return [kieVersion: kieVersionPre + date, appformerVersion: appformerVersionPre + date, erraiVersionNew:erraiVersionNewPre +date, \
+ kiesoupVersion:kiesoupVersionPre + date, cutOffDate: date, reportDate: date,  sourceProductTag: sourceProductTag, targetProductBuild: targetProductBuild] \
  ''')
 
     }
@@ -203,257 +183,6 @@ job("errai-kieAllBuild-${kieMainBranch}") {
 
 }
 
-// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys kie-soup ++++++++++++++++++++++++++++++++++++++++++++++++++
-
-// definition of kiesoup script
-def kiesoupVersionBuild='''#!/bin/bash -e
-# removing kiesoup artifacts from local maven repo (basically all possible SNAPSHOTs)
-if [ -d $MAVEN_REPO_LOCAL ]; then
-rm -rf $MAVEN_REPO_LOCAL/org/kie/kie-soup
-       fi
-# clone the kiesoup repository
-git clone https://github.com/$organization/kie-soup.git -b $kiesoupBranch --depth 100
-# checkout the release branch
-cd kie-soup
-git checkout -b $kiesoupVersion $kiesoupBranch
-# update versions
-sh scripts/release/update-version.sh $kiesoupVersion
-# build the repos & deploy into local dir (will be later copied into staging repo)
-deployDir=$WORKSPACE/deploy-dir
-# (1) do a full build, but deploy only into local dir
-# we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -U -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
- -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=3
-# (2) upload the content to remote staging repo
-cd $deployDir
-mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository -DrepositoryDirectory=$deployDir\\
- -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie-soup $kiesoupVersion" -DstagingProgressTimeoutMinutes=30'''
-
-
-job("kiesoup-kieAllBuild-${kieMainBranch}") {
-    description("Upgrades and builds the kiesoup version")
-    parameters{
-        stringParam("kiesoupVersion", "kie-soup version", "Version of kie-soup. This will be usually set automatically by the parent trigger job. ")
-        stringParam("kiesoupBranch", "kie-soup branch", "Branch of kie-soup. This will be usually set automatically by the parent trigger job. ")
-        stringParam("organization","kiegroup","Name of organization. This will be usually set automatically by the parent trigger job.")
-    }
-
-    label("rhel7&&mem16g")
-
-    logRotator {
-        numToKeep(10)
-    }
-
-    jdk("${javadk}")
-
-    wrappers {
-        timeout {
-            absolute(60)
-        }
-        timestamps()
-        colorizeOutput()
-        toolenv("${mvnToolEnv}", "${jaydekay}")
-        preBuildCleanup()
-        configFiles {
-            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
-                variable("SETTINGS_XML_FILE")
-            }
-        }
-    }
-
-    publishers {
-        wsCleanup()
-        archiveJunit("**/target/*-reports/TEST-*.xml")
-        mailer('mbiarnes@redhat.com', false, false)
-    }
-
-    configure { project ->
-        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
-            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
-                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
-                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
-                username 'jenkins'
-            }
-        }
-    }
-
-    steps {
-        environmentVariables {
-            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
-        }
-        shell(kiesoupVersionBuild)
-    }
-
-}
-
-// ++++++++++++++++++++++++++++++++++++++ Builds and deploys uberfire ++++++++++++++++++++++++++++++++++++++++++++++++++
-
-// definition of uberfire script
-def uberfireVersionBuild='''#!/bin/bash -e
-# removing uberfire artifacts from local maven repo (basically all possible SNAPSHOTs)
-if [ -d $MAVEN_REPO_LOCAL ]; then
-    rm -rf $MAVEN_REPO_LOCAL/org/uberfire/
-fi
-# clones uberfire branch
-git clone https://github.com/appformer/uberfire.git -b $uberfireBranch
-# checkout the release branch
-cd uberfire
-git checkout -b $uberfireVersion $uberfireBranch
-# upgrades the version to the release/tag version
-sh scripts/release/update-version.sh $uberfireVersion
-# update files that are not automatically changed with the update-versions-all.sh script
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
-# build the repos & deploy into local dir (will be later copied into staging repo)
-deployDir=$WORKSPACE/deploy-dir
-# (1) do a full build, but deploy only into local dir
-# we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -B -U -e clean deploy -Dfull -Drelease -T2 -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
- -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -Xss1M" -Dgwt.compiler.localWorkers=2
-# (2) upload the content to remote staging repo
-cd $deployDir
-mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
-  -s $SETTINGS_XML_FILE -DrepositoryDirectory=$deployDir -DstagingProfileId=15c3321d12936e -DstagingDescription="uberfire $uberfireVersion" -DstagingProgressTimeoutMinutes=30'''
-
-job("uberfire-kieAllBuild-${kieMainBranch}") {
-    description("Upgrades and builds the uberfire version")
-    parameters{
-        stringParam("uberfireVersion", "uberfire version", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("erraiVersionNew", "errai version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("uberfireBranch", "uberfire branch", "branch of uberfire. This will be usually set automatically by the parent trigger job. ")
-    }
-
-    label("linux&&rhel7&&mem16g")
-
-    logRotator {
-        numToKeep(10)
-    }
-
-    jdk("${javadk}")
-
-    wrappers {
-        timeout {
-            absolute(60)
-        }
-        timestamps()
-        colorizeOutput()
-        toolenv("${mvnToolEnv}", "${jaydekay}")
-        preBuildCleanup()
-        configFiles {
-            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
-                variable("SETTINGS_XML_FILE")
-            }
-        }
-    }
-
-    publishers {
-        wsCleanup()
-        archiveJunit("**/target/*-reports/TEST-*.xml")
-        mailer('mbiarnes@redhat.com', false, false)
-    }
-
-    configure { project ->
-        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
-            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
-                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
-                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
-                username 'jenkins'
-            }
-        }
-    }
-
-    steps {
-        environmentVariables {
-            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
-        }
-        shell(uberfireVersionBuild)
-    }
-}
-
-// ++++++++++++++++++++++++++++++++++++++++ Builds and deploys dashbuilder +++++++++++++++++++++++++++++++++++++++++++++
-
-// definition of dashbuilder script
-def dashbuilderVersionBuild='''#!/bin/bash -e
-# removing dashbuilder artifacts from local maven repo (basically all possible SNAPSHOTs)
-if [ -d $MAVEN_REPO_LOCAL ]; then
-    rm -rf $MAVEN_REPO_LOCAL/org/dashbuilder/
-fi
-# clone the repository and branch
-git clone https://github.com/dashbuilder/dashbuilder.git --branch $dashbuilderBranch
-# checkout the release branch
-cd dashbuilder
-git checkout -b $dashbuilderVersion $dashbuilderBranch
-# upgrades the version to the release/tag version
-sh scripts/release/update-version.sh $dashbuilderVersion
-# update files that are not automatically changed with the update-version.sh script
-sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$uberfireVersion<\\/version.org.uberfire>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
-# build the repos & deploy into local dir (will be later copied into staging repo)
-deployDir=$WORKSPACE/deploy-dir
-# (1) do a full build, but deploy only into local dir
-# we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -B -e clean deploy -U -Dfull -Drelease -T2 -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
- -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -Xss1M" -Dgwt.compiler.localWorkers=2
-# (2) upload the content to remote staging repo
-cd $deployDir
-mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
-  -s $SETTINGS_XML_FILE -DrepositoryDirectory=$deployDir -DstagingProfileId=15c3321d12936e -DstagingDescription="dashbuilder $dashbuilderVersion" -DstagingProgressTimeoutMinutes=30'''
-
-job("dashbuilder-kieAllBuild-${kieMainBranch}") {
-    description("Upgrades and builds the uberfire version")
-    parameters{
-        stringParam("erraiVersionNew", "errai version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("uberfireVersion", "uberfire version", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("dashbuilderVersion", "dashbuilder version", "Version of dashbuilder. This will be usually set automatically by the parent trigger job. ")
-        stringParam("dashbuilderBranch", "dashbuilder branch", "branch of dashbuilder. This will be usually set automatically by the parent trigger job. ")
-    }
-
-    label("linux&&rhel7&&mem16g")
-
-    logRotator {
-        numToKeep(10)
-    }
-
-    jdk("${javadk}")
-
-    wrappers {
-        timeout {
-            absolute(60)
-        }
-        timestamps()
-        colorizeOutput()
-        toolenv("${mvnToolEnv}", "${jaydekay}")
-        preBuildCleanup()
-        configFiles {
-            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
-                variable("SETTINGS_XML_FILE")
-            }
-        }
-    }
-
-    publishers {
-        wsCleanup()
-        archiveJunit("**/target/*-reports/TEST-*.xml")
-        mailer('mbiarnes@redhat.com', false, false)
-    }
-
-    configure { project ->
-        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
-            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
-                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
-                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
-                username 'jenkins'
-            }
-        }
-    }
-
-    steps {
-        environmentVariables {
-            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
-        }
-        shell(dashbuilderVersionBuild)
-    }
-}
-
 // +++++++++++++++++++++++++++++++++++++++++++ Build and deploy kie ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // definition of kie build  script
@@ -473,17 +202,27 @@ git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git --branch $k
 ./droolsjbpm-build-bootstrap/script/git-clone-others.sh --branch $kieMainBranch --depth 100
 # checkout to release branches
 ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $kieVersion $kieMainBranch
-# update versions
+# upgrade version kie-soup
+cd kie-soup
+./scripts/release/update-version.sh $kiesoupVersion
+cd ..
+# upgrade version appformer
+cd appformer
+./scripts/release/update-version.sh $appformerVersion
+# update files that are not automatically changed with the update-versions-all.sh script
+sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieVersion<\\/version.org.kie>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
+cd ..
+# upgrade version kiegroup 
 ./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieVersion productized
-# change <version.org.uberfire>, <version.org.dashbuilder> and <version.org.jboss.errai>
 # change properties via sed as they don't update automatically
 echo "errai version:" $erraiVersionNew
-echo "uberfire version:" $uberfireVersion
-echo "dashbuilder version:" $dashbuilderVersion
+echo "appformer version:" $appformerVersion
+echo "kie-soup version:" $kieSoupVersion
 echo "kie version" $kieVersion
 cd droolsjbpm-build-bootstrap
-sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$uberfireVersion<\\/version.org.uberfire>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.dashbuilder>.*.<\\/version.org.dashbuilder>/<version.org.dashbuilder>$dashbuilderVersion<\\/version.org.dashbuilder>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieVersion<\\/version.org.kie>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$appformerVersion<\\/version.org.uberfire>/;P;D" pom.xml
 sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
 sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$kieVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" pom.xml
 cd ..
@@ -553,10 +292,10 @@ job("kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the kie version")
     parameters{
         stringParam("erraiVersionNew", "errai version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("uberfireVersion", "uberfire version", "Version of uberfire. This will be usually set automatically by the parent trigger job. ")
-        stringParam("dashbuilderVersion", "dashbuilder version", "Version of dashbuilder. This will be usually set automatically by the parent trigger job. ")
+        stringParam("appformerVersion", "appformer version", "Version of appformer. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kiesoupVersion", "kie-soup version", "Version of kie-soup. This will be usually set automatically by the parent trigger job. ")
         stringParam("kieVersion", "kie version", "Version of kie. This will be usually set automatically by the parent trigger job. ")
-        stringParam("kieMainBranch", "uberfire branch", "branch of kie. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kieMainBranch", "appformer branch", "branch of kie. This will be usually set automatically by the parent trigger job. ")
     }
 
     label("linux&&rhel7&&mem16g")
@@ -923,7 +662,7 @@ matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  run additional test: kieAlBuild-windows
 
-def windowsTests='''set repo_list=droolsjbpm-build-bootstrap droolsjbpm-knowledge drools optaplanner jbpm droolsjbpm-integration droolsjbpm-tools kie-uberfire-extensions guvnor kie-wb-common jbpm-form-modeler drools-wb jbpm-designer jbpm-console-ng optaplanner-wb kie-wb-distributions
+def windowsTests='''set repo_list=droolsjbpm-build-bootstrap droolsjbpm-knowledge drools optaplanner jbpm droolsjbpm-integration droolsjbpm-tools kie-appformer-extensions guvnor kie-wb-common jbpm-form-modeler drools-wb jbpm-designer jbpm-console-ng optaplanner-wb kie-wb-distributions
 for %%x in (%repo_list%) do (
     if "%%x" == "kie-wb-common" (
         rem clone the kie-wb-common into directory with shortest name possible to avoid long path issues
@@ -1078,9 +817,6 @@ listView("kieAllBuild-${kieMainBranch}"){
     jobs {
         name("trigger-kieAllBuild-${kieMainBranch}")
         name("errai-kieAllBuild-${kieMainBranch}")
-        name("kiesoup-kieAllBuild-${kieMainBranch}")
-        name("uberfire-kieAllBuild-${kieMainBranch}")
-        name("dashbuilder-kieAllBuild-${kieMainBranch}")
         name("kieAllBuild-${kieMainBranch}")
         name("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}")
         name("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}")
