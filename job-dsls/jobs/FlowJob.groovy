@@ -27,7 +27,7 @@ ignore(UNSTABLE) {
     build("errai-kieAllBuild-${kieMainBranch}", erraiVersionNew: "$erraiVersionNew", erraiVersionOld: "$erraiVersionOld", erraiBranch: "$erraiBranch")
 }
 ignore(UNSTABLE) {
-    build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", kiesoupVersion: "kiesoupVersion", appformerVersion: "$appformerVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
+    build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", kiesoupVersion: "$kiesoupVersion", appformerVersion: "$appformerVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
 }
 
 
