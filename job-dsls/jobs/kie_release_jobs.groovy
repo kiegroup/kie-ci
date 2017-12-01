@@ -1,7 +1,7 @@
 //Define Variables
 
 def kieVersion="7.5.x"
-def uberfireVersion="2.0.x"
+def appformerVersion="2.0.x"
 def javadk="jdk1.8"
 def jaydekay="JDK1_8"
 def mvnToolEnv="APACHE_MAVEN_3_3_9"
@@ -9,9 +9,8 @@ def mvnVersion="apache-maven-3.3.9"
 def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms2g -Xmx3g"
 def kieMainBranch="master"
-def uberfireBranch="master"
+def appformerBranch="master"
 def organization="kiegroup"
-def uberfireOrganization="kiegroup"
 
 
 def createReleaseBranches="""
@@ -49,10 +48,6 @@ def pushTags="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-pushTag.sh
 """
 
-def removeBranches="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-removeReleaseBranches.sh
-"""
-
 def updateVersions="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-updateToNextDevelopmentVersion.sh
 """
@@ -65,16 +60,52 @@ def createJbpmInstaller ="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-createJbpmInstaller.sh
 """
 
-def ufDeploy="""
-sh \$WORKSPACE/scripts/appformer/scripts/release/uberfire-createAndDeploy.sh
+def kiesoupCreateReleaseBranch="""
+sh \$WORKSPACE/scripts/kie-soup/scripts/release/kiesoup-createReleaseBranch.sh
 """
 
-def ufPushTag="""
-sh \$WORKSPACE/scripts/appformer/scripts/release/uberfire-pushTag.sh
+def kiesoupDeployLocally="""
+sh \$WORKSPACE/scripts/kie-soup/scripts/release/kiesoup-deployLocally.sh
 """
 
-def ufUpdateVersion="""
-sh \$WORKSPACE/scripts/appformer/scripts/release/uberfire-updateVersion.sh
+def kiesoupPushReleaseBranch="""
+sh \$WORKSPACE/scripts/kie-soup/scripts/release/kiesoup-pushReleaseBranch.sh
+"""
+
+def kiesoupPushArtifacts="""
+sh \$WORKSPACE/scripts/kie-soup/scripts/release/kiesoup-pushArtifactsToNexus.sh
+"""
+
+def kiesoupPushTag="""
+sh \$WORKSPACE/scripts/kie-soup/scripts/release/kiesoup-pushTag.sh
+"""
+
+def kiesoupUpdateVersion="""
+sh \$WORKSPACE/scripts/kie-soup/scripts/release/kiesoup-updateVersionAndRaisePR.sh
+"""
+
+def appformerCreateReleaseBranch="""
+sh \$WORKSPACE/scripts/kie-soup/scripts/release/appformer-createReleaseBranch.sh
+"""
+
+def appformerDeployLocally="""
+sh \$WORKSPACE/scripts/kie-soup/scripts/release/appformer-deployLocally.sh
+"""
+
+def appformerPushReleaseBranch="""
+sh \$WORKSPACE/scripts/kie-soup/scripts/release/appformer-pushReleaseBranch.sh
+"""
+
+def appformerPushArtifacts="""
+sh \$WORKSPACE/scripts/kie-soup/scripts/release/appformer-pushArtifactsToNexus.sh
+"""
+
+def appformerPushTag="""
+sh \$WORKSPACE/scripts/kie-soup/scripts/release/appformer-pushTag.sh
+"""
+
+def appformerUpdateVersion="""
+sh \$WORKSPACE/scripts/kie-soup/scripts/release/appformer-updateVersionAndRaisePR.sh
 """
 
 
@@ -91,7 +122,7 @@ job("createAndPushReleaseBranches-kieReleases-${kieVersion}") {
         stringParam("releaseVersion", "release version", "please edit the version for this release <br> The <b> releaseVersion </b> should typically look like <b> major.minor.micro.<extension></b> for <b> community </b> or <b> major.minor.micro.<yyymmdd>-productization</b> for <b> productization </b> <br>******************************************************** <br> ")
         stringParam("baseBranch", "base branch", "please select the base branch <br> ******************************************************** <br> ")
         stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> bsync-major.minor.x-<yyyy.mm.dd>  </b>for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("uberfireVersion", "uberfire version", "please edit the right version to use of uberfire<br> The tag should typically look like <b> major.minor.micro.<extension> </b> for <b> community </b> or <b> related kie major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("appformerVersion", "appformer version", "please edit the right version to use of appformer<br> The tag should typically look like <b> major.minor.micro.<extension> </b> for <b> community </b> or <b> related kie major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("erraiVersion", "errai version", " please edit the related errai version<br> ******************************************************** <br> ")
     };
 
@@ -540,71 +571,6 @@ job("pushTags-kieReleases-${kieVersion}") {
     }
 }
 
-// ***********************************************************************************
-
-job("removeReleaseBranches-kieReleases-${kieVersion}") {
-
-    description("This job: <br> creates and pushes the tags for <br> community (kiegroup) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
-
-    parameters {
-        choiceParam("target", ["community", "productized"], "please select if this release is for community: <b> community </b> or <br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
-        stringParam("baseBranch", "base branch", "please select the base branch <br> ******************************************************** <br> ")
-        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> bsync-major.minor.x-<yyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
-    };
-
-    scm {
-        git {
-            remote {
-                github("${organization}/droolsjbpm-build-bootstrap")
-            }
-            branch ("${kieMainBranch}")
-            extensions {
-                relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
-            }
-
-        }
-    }
-
-    label("kie-releases")
-
-    logRotator {
-        numToKeep(10)
-    }
-
-    jdk("${javadk}")
-
-    wrappers {
-        timeout {
-            absolute(30)
-        }
-        timestamps()
-        preBuildCleanup()
-        colorizeOutput()
-        toolenv("${mvnToolEnv}", "${jaydekay}")
-    }
-
-    configure { project ->
-        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
-            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
-                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
-                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
-                username 'jenkins'
-            }
-        }
-    }
-
-    publishers {
-        mailer('mbiarnes@redhat.com', false, false)
-    }
-
-    steps {
-        environmentVariables {
-            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
-        }
-        shell(removeBranches)
-    }
-}
-
 // ****************************************************************************************
 
 job("updateToNextDevelopmentVersion-kieReleases-${kieVersion}") {
@@ -614,7 +580,7 @@ job("updateToNextDevelopmentVersion-kieReleases-${kieVersion}") {
     parameters {
         stringParam("baseBranch","master","Branch you want to upgrade")
         stringParam("newVersion", "new KIE version", "Edit the KIE development version")
-        stringParam("uberfireDevelVersion", "uberfire version", "Edit the uberfire development version")
+        stringParam("appformerDevelVersion", "appformer version", "Edit the appformer development version")
         stringParam("erraiDevelVersion", "errai version", "Edit the errai development version")
     }
 
@@ -803,28 +769,227 @@ job("copyBinariesToFilemgmt-kieReleases-${kieVersion}") {
     }
 }
 
-// *************** Uberfire Release scripts *********
+// *************** kie-soup Release scripts *********
 
-job("release-uberfire-${uberfireVersion}") {
+job("release-kiesoup-${kieVersion}") {
 
-    description("This job: <br> releases uberfire, upgrades the version, builds and deploys, copies artifacts to Nexus, closes the release on Nexus  <br> <b>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
+    description("This job: <br> releases kie-soup, upgrades the version, builds and deploys, copies artifacts to Nexus, closes the release on Nexus  <br> <b>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
 
     parameters {
         choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
-        stringParam("baseBranch", "base branch", "please edit the name of the base branch <br> i.e. typically <b> ${uberfireBranch} </b> for <b> community </b><br> ******************************************************** <br> ")
+        stringParam("baseBranch", "base branch", "please edit the name of the base branch <br> i.e. typically <b> ${appformerBranch} </b> for <b> community </b><br> ******************************************************** <br> ")
         stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x-<yyyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("newVersion", "new version", "please edit the new version that should be used in the poms <br> The version should typically look like <b> major.minor.micro.<extension> </b>for<b> community </b> or <b> major.minor.micro.<yyyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
-        stringParam("erraiVersion", "errai version", " please edit the related errai version<br> ******************************************************** <br> ")
-        stringParam("kiesoupVersion", "kie-soup version", "please edit the version of kie-soup <br> The version should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
 
     }
 
     scm {
         git {
             remote {
-                github("${uberfireOrganization}/appformer")
+                github("${organization}/kie-soup")
             }
-            branch ("${uberfireBranch}")
+            branch ("${kieMainBranch}")
+            extensions {
+                relativeTargetDirectory("scripts/kie-soup")
+            }
+
+        }
+    }
+
+    label("kie-releases")
+
+    logRotator {
+        numToKeep(10)
+    }
+
+    jdk("${javadk}")
+
+    wrappers {
+        timeout {
+            absolute(60)
+        }
+        timestamps()
+        preBuildCleanup()
+        colorizeOutput()
+        toolenv("${mvnToolEnv}", "${jaydekay}")
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+                username 'jenkins'
+            }
+        }
+    }
+
+    publishers {
+        mailer('mbiarnes@redhat.com', false, false)
+    }
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
+        }
+        shell(kiesoupCreateReleaseBranch)
+        shell(kiesoupPushReleaseBranch)
+        shell(kiesoupDeployLocally)
+        shell(kiesoupPushArtifacts)
+    }
+}
+
+// ******************************************************
+
+job("pushTag-kiesoup-${kieVersion}") {
+
+    description("This job: <br> creates and pushes the tags for <br> community (droolsjbpm) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
+
+    parameters {
+        choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
+        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b> for <b> community </b>or <b>  related kie prod release branch bsync-major.minor.x->yyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("tag", "tag", "The tag should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b>  related kie prod tag sync-major.minor.x-<yyyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
+    };
+
+    scm {
+        git {
+            remote {
+                github("${organization}/kie-soup")
+            }
+            branch ("${kieMainBranch}")
+            extensions {
+                relativeTargetDirectory("scripts/kie-soup")
+            }
+
+        }
+    }
+
+    label("kie-releases")
+
+    logRotator {
+        numToKeep(10)
+    }
+
+    jdk("${javadk}")
+
+    wrappers {
+        timeout {
+            absolute(30)
+        }
+        timestamps()
+        colorizeOutput()
+        preBuildCleanup()
+        toolenv("${mvnToolEnv}", "${jaydekay}")
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+                username 'jenkins'
+            }
+        }
+    }
+
+    publishers {
+        mailer('mbiarnes@redhat.com', false, false)
+    }
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
+        }
+        shell(kiesoupPushTag)
+    }
+}
+
+// ******************************************************
+
+job("updateVersion-kiesoup-${kieVersion}") {
+
+    description("This job: <br> updates the kie-soup repository to a new development version <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
+
+    parameters {
+        stringParam("newVersion", "appformer development version", "Edit appformer development version")
+        stringParam("baseBranch", "base branch", "please edit the name of the base branch <br> ******************************************************** <br> ")
+    }
+
+    scm {
+        git {
+            remote {
+                github("${organization}/kie-soup")
+            }
+            branch ("${kieMainBranch}")
+            extensions {
+                relativeTargetDirectory("scripts/kie-soup")
+            }
+
+        }
+    }
+
+    label("kie-releases")
+
+    logRotator {
+        numToKeep(10)
+    }
+
+    jdk("${javadk}")
+
+    wrappers {
+        timeout {
+            absolute(30)
+        }
+        timestamps()
+        colorizeOutput()
+        preBuildCleanup()
+        toolenv("${mvnToolEnv}", "${jaydekay}")
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+                username 'jenkins'
+            }
+        }
+    }
+
+    publishers {
+        mailer('mbiarnes@redhat.com', false, false)
+    }
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
+        }
+        shell(kiesoupUpdateVersion)
+    }
+}
+
+// *************** appformer Release scripts *********
+
+job("release-appformer-${appformerVersion}") {
+
+    description("This job: <br> releases appformer, upgrades the version, builds and deploys, copies artifacts to Nexus, closes the release on Nexus  <br> <b>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
+
+    parameters {
+        choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
+        stringParam("baseBranch", "base branch", "please edit the name of the base branch <br> i.e. typically <b> ${appformerBranch} </b> for <b> community </b><br> ******************************************************** <br> ")
+        stringParam("releaseBranch", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r+major.minor.micro.<extension> </b>for <b> community </b>or <b> related kie prod release branch bsync-major.minor.x-<yyyy.mm.dd> </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("newVersion", "new version", "please edit the new version that should be used in the poms <br> The version should typically look like <b> major.minor.micro.<extension> </b>for<b> community </b> or <b> major.minor.micro.<yyyymmdd>-productized </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("kieVersion", "kie version", "please edit the version of kie <br> The version should typically look like <b> major.minor.micro.<extension> </b>for <b> community </b> or <b> major.minor.micro.<yyyymmdd>-prod </b>for <b> productization </b> <br> ******************************************************** <br> ")
+        stringParam("erraiVersion", "errai version", " please edit the related errai version<br> ******************************************************** <br> ")
+
+    }
+
+    scm {
+        git {
+            remote {
+                github("${organization}/appformer")
+            }
+            branch ("${appformerBranch}")
             extensions {
                 relativeTargetDirectory("scripts/appformer")
             }
@@ -868,13 +1033,16 @@ job("release-uberfire-${uberfireVersion}") {
         environmentVariables {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
-        shell(ufDeploy)
+        shell(appformerCreateReleaseBranch)
+        shell(appformerPushReleaseBranch)
+        shell(appformerDeployLocally)
+        shell(appformerPushArtifacts)
     }
 }
 
 // ******************************************************
 
-job("pushTag-uberfire-${uberfireVersion}") {
+job("pushTag-appformer-${appformerVersion}") {
 
     description("This job: <br> creates and pushes the tags for <br> community (droolsjbpm) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
@@ -887,9 +1055,9 @@ job("pushTag-uberfire-${uberfireVersion}") {
     scm {
         git {
             remote {
-                github("${uberfireOrganization}/appformer")
+                github("${organization}/appformer")
             }
-            branch ("${uberfireBranch}")
+            branch ("${appformerBranch}")
             extensions {
                 relativeTargetDirectory("scripts/appformer")
             }
@@ -933,28 +1101,29 @@ job("pushTag-uberfire-${uberfireVersion}") {
         environmentVariables {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
-        shell(ufPushTag)
+        shell(appformerPushTag)
     }
 }
 
 // ******************************************************
 
-job("updateVersion-uberfire-${uberfireVersion}") {
+job("updateVersion-appformer-${appformerVersion}") {
 
-    description("This job: <br> updates the uberfire repository to a new development version <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
+    description("This job: <br> updates the appformer repository to a new development version <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        stringParam("newVersion", "uberfire development version", "Edit uberfire development version")
+        stringParam("newVersion", "appformer development version", "Edit appformer development version")
         stringParam("baseBranch", "base branch", "please edit the name of the base branch <br> ******************************************************** <br> ")
-        stringParam("erraiDevelVersion","errai development version","Edit errai development version")
+        stringParam("kieVersion","kie version","Edit kie version")
+        stringParam("erraiVersion","errai version","Edit errai version")
     }
 
     scm {
         git {
             remote {
-                github("${uberfireOrganization}/appformer")
+                github("${organization}/appformer")
             }
-            branch ("${uberfireBranch}")
+            branch ("${appformerBranch}")
             extensions {
                 relativeTargetDirectory("scripts/appformer")
             }
@@ -998,7 +1167,7 @@ job("updateVersion-uberfire-${uberfireVersion}") {
         environmentVariables {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
         }
-        shell(ufUpdateVersion)
+        shell(appformerUpdateVersion)
     }
 }
 
@@ -1030,12 +1199,27 @@ nestedView("kieReleases-${kieMainBranch}"){
                 lastFailure()
             }
         }
-        listView("uberfireRelease-${uberfireVersion}"){
-            description("all scripts needed for building a ${uberfireVersion} uberfire release")
+        listView("appformerRelease-${appformerVersion}"){
+            description("all scripts needed for building a ${appformerVersion} appformer release")
             jobs {
-                name("release-uberfire-${uberfireVersion}")
-                name("pushTag-uberfire-${uberfireVersion}")
-                name("updateVersion-uberfire-${uberfireVersion}")
+                name("release-appformer-${appformerVersion}")
+                name("pushTag-appformer-${appformerVersion}")
+                name("updateVersion-appformer-${appformerVersion}")
+            }
+            columns {
+                status()
+                weather()
+                name()
+                lastSuccess()
+                lastFailure()
+            }
+        }
+        listView("kiesoupRelease-${kieVersion}"){
+            description("all scripts needed for building a ${kieVersion} kiesoup release")
+            jobs {
+                name("release-kiesoup-${kieVersion}")
+                name("pushTag-kiesoup-${kieVersion}")
+                name("updateVersion-kiesoup-${kieVersion}")
             }
             columns {
                 status()
