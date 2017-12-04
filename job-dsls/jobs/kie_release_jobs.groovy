@@ -409,7 +409,7 @@ matrixJob("wbSmokeTestsMatrix-kieReleases-${kieVersion}") {
 
     parameters {
         choiceParam("target", ["community", "productized"], "<br> ******************************************************** <br> ")
-        stringParam("releaseVesion", "KIE release version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieVersion", "KIE release version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
     };
 
     axes {
@@ -1001,8 +1001,6 @@ job("updateVersion-uberfire-${uberfireVersion}") {
         shell(ufUpdateVersion)
     }
 }
-
-
 // **************************** VIEW to create on JENKINS CI *******************************************
 
 nestedView("kieReleases-${kieMainBranch}"){
