@@ -720,26 +720,25 @@ job("copyBinariesToFilemgmt-kieReleases-${kieVersion}") {
 
 // **************************** VIEW to create on JENKINS CI *******************************************
 
-    listView("kieReleases-master"){
-        description("all scripts needed for building a ${kieVersion} KIE Release")
-        jobs {
-            name("createAndPushReleaseBranches-kieReleases-${kieVersion}")
-            name("buildAndDeployLocally-kieReleases-${kieVersion}")
-            name("copyBinariesToNexus-kieReleases-${kieVersion}")
-            name("jbpmTestCoverageMatrix-kieReleases-${kieVersion}")
-            name("serverMatrix-kieReleases-${kieVersion}")
-            name("wbSmokeTestsMatrix-kieReleases-${kieVersion}")
-            name("pushTags-kieReleases-${kieVersion}")
-            name("removeReleaseBranches-kieReleases-${kieVersion}")
-            name("updateVersion-kieReleases-${kieVersion}")
-            name("create-jbpm-installers-kieReleases-${kieVersion}")
-            name("copyBinariesToFilemgmt-kieReleases-${kieVersion}")
-        }
-        columns {
-            status()
-            weather()
-            name()
-            lastSuccess()
-            lastFailure()
-        }
+listView("kieReleases-master"){
+    description("all scripts needed for building a ${kieVersion} KIE Release")
+    jobs {
+        name("createAndPushReleaseBranches-kieReleases-${kieVersion}")
+        name("buildAndDeployLocally-kieReleases-${kieVersion}")
+        name("copyBinariesToNexus-kieReleases-${kieVersion}")
+        name("jbpmTestCoverageMatrix-kieReleases-${kieVersion}")
+        name("serverMatrix-kieReleases-${kieVersion}")
+        name("wbSmokeTestsMatrix-kieReleases-${kieVersion}")
+        name("pushTags-kieReleases-${kieVersion}")
+        name("updateVersion-kieReleases-${kieVersion}")
+        name("create-jbpm-installers-kieReleases-${kieVersion}")
+        name("copyBinariesToFilemgmt-kieReleases-${kieVersion}")
     }
+    columns {
+        status()
+        weather()
+        name()
+        lastSuccess()
+        lastFailure()
+    }
+}
