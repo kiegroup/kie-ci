@@ -19,7 +19,6 @@ def erraiBranch=params["erraiBranch"]
 def organization=params["organization"]
 
 erraiVersionNew = build.environment.get("erraiVersionNew")
-kiesoupVersion = build.environment.get("kiesoupVersion")
 appformerVersion = build.environment.get("appformerVersion")
 kieVersion = build.environment.get("kieVersion")
 
@@ -27,7 +26,7 @@ ignore(UNSTABLE) {
     build("errai-kieAllBuild-${kieMainBranch}", erraiVersionNew: "$erraiVersionNew", erraiVersionOld: "$erraiVersionOld", erraiBranch: "$erraiBranch")
 }
 ignore(UNSTABLE) {
-    build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", kiesoupVersion: "$kiesoupVersion", appformerVersion: "$appformerVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
+    build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", appformerVersion: "$appformerVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
 }
 
 
@@ -67,12 +66,11 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
     def kieVersionPre = "7.5.0."
     def appformerVersionPre = "2.0.0."
     def erraiVersionNewPre = "4.1.2."
-    def kiesoupVersionPre = "7.5.0."
     def sourceProductTag = ""
     def targetProductBuild = ""
 
     return [kieVersion: kieVersionPre + date, appformerVersion: appformerVersionPre + date, erraiVersionNew:erraiVersionNewPre +date, \
- kiesoupVersion:kiesoupVersionPre + date, cutOffDate: date, reportDate: date,  sourceProductTag: sourceProductTag, targetProductBuild: targetProductBuild] \
+ cutOffDate: date, reportDate: date,  sourceProductTag: sourceProductTag, targetProductBuild: targetProductBuild] \
  ''')
 
     }
@@ -202,32 +200,26 @@ git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git --branch $k
 ./droolsjbpm-build-bootstrap/script/git-clone-others.sh --branch $kieMainBranch --depth 100
 # checkout to release branches
 ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $kieVersion $kieMainBranch
-# upgrade version kie-soup
-cd kie-soup
-./scripts/release/update-version.sh $kiesoupVersion
-mvn clean install -U -DskipTests -s $SETTINGS_XML_FILE
-cd ..
-# upgrade version appformer
-cd appformer
-./scripts/release/update-version.sh $appformerVersion
-# update files that are not automatically changed with the update-versions-all.sh script
-sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieVersion<\\/version.org.kie>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
-mvn clean install -U -DskipTests -s $SETTINGS_XML_FILE
-cd ..
+
 # upgrade version kiegroup 
-./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieVersion productized
-# change properties via sed as they don't update automatically
+./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieVersion $appformerVersion productized
 echo "errai version:" $erraiVersionNew
 echo "appformer version:" $appformerVersion
-echo "kie-soup version:" $kieSoupVersion
 echo "kie version" $kieVersion
+# change properties via sed as they don't update automatically
+# appformer
+cd appformer
+sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieVersion<\\/version.org.kie>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
+cd ..
+#droolsjbpm-build-bootstrap
 cd droolsjbpm-build-bootstrap
 sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieVersion<\\/version.org.kie>/;P;D" pom.xml
 sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$appformerVersion<\\/version.org.uberfire>/;P;D" pom.xml
 sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
 sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$kieVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" pom.xml
 cd ..
+
 # build the repos & deploy into local dir (will be later copied into staging repo)
 deployDir=$WORKSPACE/deploy-dir
 
@@ -294,8 +286,7 @@ job("kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the kie version")
     parameters{
         stringParam("erraiVersionNew", "errai version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("appformerVersion", "appformer version", "Version of appformer. This will be usually set automatically by the parent trigger job. ")
-        stringParam("kiesoupVersion", "kie-soup version", "Version of kie-soup. This will be usually set automatically by the parent trigger job. ")
+        stringParam("appformerVersion", "appformer version (former uberfire version)", "Version of appformer. This will be usually set automatically by the parent trigger job. ")
         stringParam("kieVersion", "kie version", "Version of kie. This will be usually set automatically by the parent trigger job. ")
         stringParam("kieMainBranch", "appformer branch", "branch of kie. This will be usually set automatically by the parent trigger job. ")
     }
