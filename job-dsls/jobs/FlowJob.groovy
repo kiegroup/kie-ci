@@ -69,6 +69,8 @@ parallel (
 buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
     description("Flow that describes and runs the KIE build pipeline for ${kieMainBranch} branch.<br> IMPORTANT: we don't know the reason but when executet the very first time please go to the <br> configuration and press SAVE - so the dynamic Reference Parameter works")
 
+    disabled()
+
     parameters {
         stringParam("erraiVersionOld", "${erraiVersionOld}", "edit old errai -SNAPSHOT version")
         stringParam("erraiBranch", "${erraiBranch}", "edit errai branch")
