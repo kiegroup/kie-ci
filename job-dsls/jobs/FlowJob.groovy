@@ -8,7 +8,7 @@ def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
 def kieMainBranch="master"
 def erraiBranch="master"
-def erraiVersionOld="4.1.2-SNAPSHOT"
+def erraiVersionOld="4.1.3-SNAPSHOT"
 def organization="kiegroup"
 
 // definition of flow script

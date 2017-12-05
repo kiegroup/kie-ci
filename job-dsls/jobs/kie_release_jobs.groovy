@@ -1,6 +1,6 @@
 //Define Variables
 
-def kieVersion="7.5.x"
+def kieVersion="7.6.x"
 def javadk="jdk1.8"
 def jaydekay="JDK1_8"
 def mvnToolEnv="APACHE_MAVEN_3_3_9"
@@ -720,7 +720,7 @@ job("copyBinariesToFilemgmt-kieReleases-${kieVersion}") {
 
 // **************************** VIEW to create on JENKINS CI *******************************************
 
-    listView("kieRelease-${kieVersion}"){
+    listView("kieReleases-${kieVersion}"){
         description("all scripts needed for building a ${kieVersion} KIE Release")
         jobs {
             name("createAndPushReleaseBranches-kieReleases-${kieVersion}")
