@@ -94,6 +94,7 @@ sh \$WORKSPACE/scripts/dashbuilder/scripts/release/dashbuilder-updateVersion.sh
 
 job("createAndPushReleaseBranches-kieReleases-${kieMainBranch}") {
 
+    disabled()
     description("This job: <br> checksout the right source- upgrades the version in poms <br> - modifies the kie-parent-metadata pom <br> - pushes the generated release branches to kiegroup <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
@@ -158,6 +159,7 @@ job("createAndPushReleaseBranches-kieReleases-${kieMainBranch}") {
 
 job("buildAndDeployLocally-kieReleases-${kieMainBranch}") {
 
+    disabled()
     description("This job: <br> - builds all repositories and deploys them locally <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
@@ -219,6 +221,7 @@ job("buildAndDeployLocally-kieReleases-${kieMainBranch}") {
 
 job("copyBinariesToNexus-kieReleases-${kieMainBranch}") {
 
+    disabled()
     description("This job: <br> - copies binaries from local dir to Nexus <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
@@ -289,6 +292,7 @@ job("copyBinariesToNexus-kieReleases-${kieMainBranch}") {
 
 matrixJob("jbpmTestCoverageMatrix-kieReleases-${kieMainBranch}") {
 
+    disabled()
     description("This job: <br> - Test coverage Matrix for jbpm <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         choiceParam("target", ["community", "productized"], "please select if this release is for community <b> community: </b> or <br> if it is for building a productization tag: <b>productized <br> Version to test. Will be supplied by the parent job. <br> ******************************************************** <br> ")
@@ -343,6 +347,8 @@ matrixJob("jbpmTestCoverageMatrix-kieReleases-${kieMainBranch}") {
 // **********************************************************************************
 
 matrixJob("serverMatrix-kieReleases-${kieMainBranch}") {
+
+    disabled()
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
@@ -412,6 +418,8 @@ matrixJob("serverMatrix-kieReleases-${kieMainBranch}") {
 // ****************************************************************************************************
 
 matrixJob("wbSmokeTestsMatrix-kieReleases-${kieMainBranch}") {
+
+    disabled()
     description("This job: <br> - Runs the smoke tests on KIE <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
@@ -486,6 +494,7 @@ matrixJob("wbSmokeTestsMatrix-kieReleases-${kieMainBranch}") {
 
 job("pushTags-kieReleases-${kieMainBranch}") {
 
+    disabled()
     description("This job: <br> creates and pushes the tags for <br> community (kiegroup) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
@@ -551,6 +560,7 @@ job("pushTags-kieReleases-${kieMainBranch}") {
 
 job("removeReleaseBranches-kieReleases-${kieMainBranch}") {
 
+    disabled()
     description("This job: <br> creates and pushes the tags for <br> community (kiegroup) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
@@ -616,6 +626,7 @@ job("removeReleaseBranches-kieReleases-${kieMainBranch}") {
 
 job("updateToNextDevelopmentVersion-kieReleases-${kieMainBranch}") {
 
+    disabled()
     description("This job: <br> updates the KIE repositories to a new developmenmt version<br>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
@@ -683,6 +694,7 @@ job("updateToNextDevelopmentVersion-kieReleases-${kieMainBranch}") {
 
 job("copyBinariesToFilemgmt-kieReleases-${kieMainBranch}") {
 
+    disabled()
     description("This job: <br> copies kiegroup binaries to filemgmt.jbosss.org  <br> IMPORTANT: makes only sense for community releases <br><b> Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
 
     parameters{
@@ -748,6 +760,7 @@ job("copyBinariesToFilemgmt-kieReleases-${kieMainBranch}") {
 
 job("release-uberfire-${uberfireBranch}") {
 
+    disabled()
     description("This job: <br> releases uberfire, upgrades the version, builds and deploys, copies artifacts to Nexus, closes the release on Nexus  <br> <b>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
 
     parameters {
@@ -815,6 +828,7 @@ job("release-uberfire-${uberfireBranch}") {
 
 job("pushTag-uberfire-${uberfireBranch}") {
 
+    disabled()
     description("This job: <br> creates and pushes the tags for <br> community (droolsjbpm) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
@@ -880,6 +894,7 @@ job("pushTag-uberfire-${uberfireBranch}") {
 
 job("updateVersion-uberfire-${uberfireBranch}") {
 
+    disabled()
     description("This job: <br> updates the uberfire repository to a new development version <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
@@ -944,6 +959,7 @@ job("updateVersion-uberfire-${uberfireBranch}") {
 
 job("release-dashbuilder-${dashbuilderBranch}") {
 
+    disabled()
     description("This job: <br> releases dashbuilder, upgrades the version, builds and deploys, copies artifacts to Nexus, closes the release on Nexus  <br> <b>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
 
     parameters {
@@ -1012,6 +1028,7 @@ job("release-dashbuilder-${dashbuilderBranch}") {
 
 job("pushTag-dashbuilder-${dashbuilderBranch}") {
 
+    disabled()
     description("This job: <br> creates and pushes the tags for <br> community (dashbuilder) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
@@ -1077,6 +1094,7 @@ job("pushTag-dashbuilder-${dashbuilderBranch}") {
 
 job("updateVersion-dashbuilder-${dashbuilderBranch}") {
 
+    disabled()
     description("This job: <br> updates dashbuilder repository to a new developmenmt version <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
