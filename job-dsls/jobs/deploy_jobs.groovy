@@ -4,7 +4,7 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
-        branch                 : "master",
+        branch                 : "7.5.x",
         timeoutMins            : 60,
         label                  : "rhel7 && mem8g",
         ghOrgUnit              : "kiegroup",
@@ -135,7 +135,6 @@ def final REPO_CONFIGS = [
                 ],
                 downstreamRepos        : []
         ],
-        // following repos are not in repository-list.txt, but we want a deploy jobs for them
         "jbpm-work-items"           : [
                 label      : "linux && mem4g",
                 timeoutMins: 30,

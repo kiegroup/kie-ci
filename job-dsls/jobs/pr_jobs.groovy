@@ -5,7 +5,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
-        branch                 : "master",
+        branch                 : "7.5.x",
         timeoutMins            : 60,
         label                  : "rhel7 && mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
@@ -93,7 +93,6 @@ def final REPO_CONFIGS = [
                         "**/target/kie-drools-wb*tomcat*.war"
                 ]
         ],
-        // following repos are not in repository-list.txt, but we want a PR jobs for them
         "jbpm-work-items"           : [
                 label      : "linux && mem4g",
                 timeoutMins: 30,

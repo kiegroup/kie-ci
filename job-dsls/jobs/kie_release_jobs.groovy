@@ -7,7 +7,7 @@ def mvnToolEnv="APACHE_MAVEN_3_3_9"
 def mvnVersion="apache-maven-3.3.9"
 def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms2g -Xmx3g"
-def kieMainBranch="master"
+def kieMainBranch="7.5.x"
 def organization="kiegroup"
 
 
@@ -527,7 +527,7 @@ job("updateVersion-kieReleases-${kieVersion}") {
     description("This job: <br> updates the KIE repositories to a new developmenmt version<br>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        stringParam("baseBranch","master","Branch you want to upgrade")
+        stringParam("baseBranch","7.5.x","Branch you want to upgrade")
         stringParam("newVersion", "new KIE version", "Edit the KIE development version")
         stringParam("uberfireDevelVersion", "uberfire version", "Edit the uberfire development version")
         stringParam("erraiDevelVersion", "errai version", "Edit the errai development version")

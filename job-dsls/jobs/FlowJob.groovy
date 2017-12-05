@@ -6,9 +6,9 @@ def mvnToolEnv="APACHE_MAVEN_3_3_9"
 def mvnVersion="apache-maven-3.3.9"
 def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
-def kieMainBranch="master"
+def kieMainBranch="7.5.x"
 def erraiBranch="master"
-def erraiVersionOld="4.1.2-SNAPSHOT"
+def erraiVersionOld="4.1.3-SNAPSHOT"
 def organization="kiegroup"
 
 // definition of flow script
@@ -63,9 +63,9 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
 
     environmentVariables{
         groovy('''def date = new Date().format( 'yyyyMMdd-hhMMss' )
-    def kieVersionPre = "7.5.0."
-    def appformerVersionPre = "2.0.0."
-    def erraiVersionNewPre = "4.1.2."
+    def kieVersionPre = "7.5.1."
+    def appformerVersionPre = "2.0.1."
+    def erraiVersionNewPre = "4.1.3."
     def sourceProductTag = ""
     def targetProductBuild = ""
 
