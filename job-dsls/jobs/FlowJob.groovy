@@ -63,9 +63,9 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
 
     environmentVariables{
         groovy('''def date = new Date().format( 'yyyyMMdd-hhMMss' )
-    def kieVersionPre = "7.5.0."
-    def appformerVersionPre = "2.0.0."
-    def erraiVersionNewPre = "4.1.2."
+    def kieVersionPre = "7.6.0."
+    def appformerVersionPre = "2.1.0."
+    def erraiVersionNewPre = "4.1.3."
     def sourceProductTag = ""
     def targetProductBuild = ""
 
@@ -731,7 +731,7 @@ job("windows-kieAllBuild-${kieMainBranch}") {
 // *****************************************************************************************************
 // definition of kieDockerCi  script
 
-def kieDockerCi='''#!/bin/bash -e
+def kieDockerCi='''
 sh scripts/docker-clean.sh $kieVersion
 sh scripts/update-versions.sh $kieVersion -s "$SETTINGS_XML"'''
 
@@ -739,7 +739,7 @@ job("kie-docker-ci-images-${kieMainBranch}") {
     description("Builds CI Docker images for master branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
-        stringParam("kieVersion", "8.0.0-SNAPSHOT", "Please edit the version of the kie release <br> i.e. typically <b> major.minor.micro.EXT </b>i.e. 8.0.0.Beta1<br> Normally the kie version will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieVersion", "7.6.0-SNAPSHOT", "Please edit the version of the kie release <br> i.e. typically <b> major.minor.micro.EXT </b>i.e. 8.0.0.Beta1<br> Normally the kie version will be supplied by parent job <br> ******************************************************** <br> ")
     }
 
     scm {
