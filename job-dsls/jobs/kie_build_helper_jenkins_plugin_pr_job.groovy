@@ -46,7 +46,7 @@ def jobDefinition = job("kie-build-helper-jenkins-plugin-pullrequests") {
             remote {
 
                 // Sets a remote URL for a GitHub repository.
-                github("https://github.com/kiegroup/kie-build-helper-jenkins-plugin")
+                github("kiegroup/kie-build-helper-jenkins-plugin")
 
                 // Sets a name for the remote.
                 name("origin")
