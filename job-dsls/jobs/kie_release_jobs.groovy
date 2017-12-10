@@ -720,7 +720,7 @@ job("copyBinariesToFilemgmt-kieReleases-${kieVersion}") {
 
 // **************************** VIEW to create on JENKINS CI *******************************************
 
-    listView("kieReleases-${kieVersion}"){
+    listView("kieReleases-master"){
         description("all scripts needed for building a ${kieVersion} KIE Release")
         jobs {
             name("createAndPushReleaseBranches-kieReleases-${kieVersion}")
