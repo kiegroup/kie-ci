@@ -41,9 +41,10 @@ def final DEFAULTS = [
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
         "kie-soup"                  : [],
-        "appformer"                  : [],
+        "appformer"                 : [],
         "droolsjbpm-build-bootstrap": [],
         "droolsjbpm-knowledge"      : [],
+        "drlx-parser"               : [],
         "drools"                    : [],
         "optaplanner"               : [],
         "jbpm"                      : [],
