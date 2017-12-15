@@ -375,7 +375,7 @@ matrixJob("serverMatrix-kieReleases-${kieVersion}") {
             properties("maven.test.failure.ignore": true)
             properties("deployment.timeout.millis":"240000")
             properties("container.startstop.timeout.millis":"240000")
-            properties("eap7.download.url":"http://download.eng.brq.redhat.com/released/JBEAP-7/7.0.2/jboss-eap-7.0.2-full-build.zip")
+            properties("eap7.download.url":"http://download.devel.redhat.com/released/JBEAP-7/7.1.0/jboss-eap-7.1.0.zip")
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905")
         }
@@ -448,7 +448,7 @@ matrixJob("wbSmokeTestsMatrix-kieReleases-${kieVersion}") {
             properties("deployment.timeout.millis":"240000")
             properties("container.startstop.timeout.millis":"240000")
             properties("webdriver.firefox.bin":"/opt/tools/firefox-38esr/firefox-bin")
-            properties("eap7.download.url":"http://download.eng.brq.redhat.com/released/JBEAP-7/7.0.2/jboss-eap-7.0.2-full-build.zip")
+            properties("eap7.download.url":"http://download.devel.redhat.com/released/JBEAP-7/7.1.0/jboss-eap-7.1.0.zip")
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905")
         }
