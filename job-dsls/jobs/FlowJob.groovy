@@ -952,7 +952,7 @@ job("kie-docker-ci-images-${kieMainBranch}") {
 
     publishers {
         wsCleanup()
-        mailer('psiroky@redhat.com mbiarnes@redhat.com', false, false)
+        mailer('mbiarnes@redhat.com', false, false)
     }
 
     configure { project ->
