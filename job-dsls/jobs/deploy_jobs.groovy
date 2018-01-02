@@ -188,8 +188,8 @@ for (repoConfig in REPO_CONFIGS) {
 
         properties {
             ownership {
-                primaryOwnerId("psiroky")
-                coOwnerIds("mbiarnes")
+                primaryOwnerId("mbiarnes")
+                coOwnerIds("pszubiak", "anstephe")
             }
         }
 
