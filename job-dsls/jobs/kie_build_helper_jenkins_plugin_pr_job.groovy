@@ -16,7 +16,7 @@ def jobDefinition = job("kie-build-helper-jenkins-plugin-pullrequests") {
             primaryOwnerId("pszubiak")
 
             // Adds additional users, who have ownership privileges.
-            coOwnerIds("mbiarnes", "psiroky", "anstephe")
+            coOwnerIds("mbiarnes", "anstephe")
         }
     }
 
