@@ -308,8 +308,6 @@
     shell: cd /home/jenkins/git-repos && git clone --bare https://github.com/{{ item }}
     with_items:
      - errai/errai
-     - uberfire/uberfire
-     - uberfire/uberfire-extensions
      - dashbuilder/dashbuilder
      - kiegroup/kie-soup
      - kiegroup/appformer
