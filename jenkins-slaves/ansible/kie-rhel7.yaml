@@ -313,6 +313,7 @@
      - kiegroup/appformer
      - kiegroup/droolsjbpm-build-bootstrap
      - kiegroup/droolsjbpm-knowledge
+     - kiegroup/drlx-parser
      - kiegroup/drools
      - kiegroup/optaplanner
      - kiegroup/jbpm
