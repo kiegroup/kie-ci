@@ -528,9 +528,9 @@ job("updateVersion-kieReleases-${kieVersion}") {
 
     parameters {
         stringParam("baseBranch","master","Branch you want to upgrade")
-        stringParam("newVersion", "new KIE version", "Edit the KIE development version")
-        stringParam("uberfireDevelVersion", "uberfire version", "Edit the uberfire development version")
-        stringParam("erraiDevelVersion", "errai version", "Edit the errai development version")
+        stringParam("kieVersion", "new KIE version", "Edit the KIE development version")
+        stringParam("uberfireVersion", "uberfire version", "Edit the uberfire development version")
+        stringParam("erraiVersion", "errai version", "Edit the errai development version")
     }
 
     scm {
