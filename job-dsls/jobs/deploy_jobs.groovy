@@ -138,8 +138,12 @@ def final REPO_CONFIGS = [
         "jbpm-work-items"           : [
                 label      : "linux && mem4g",
                 timeoutMins: 30,
-                ircNotificationChannels: ["#jbpmdev"]
-        ]
+                ircNotificationChannels: ["#jbpmdev"],
+                downstreamRepos        : ["optashift-employee-rostering"]
+        ],
+        "optashift-employee-rostering" : [
+                ircNotificationChannels: ["#optaplanner-dev"]
+        ],
 ]
 
 for (repoConfig in REPO_CONFIGS) {
