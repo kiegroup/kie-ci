@@ -592,7 +592,7 @@ job("create-jbpm-installers-kieReleases-${kieVersion}") {
     description("This job: <br> creates the jbpm-installers  <br> IMPORTANT: makes only sense for community releases <br><b> Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
 
     parameters{
-        choiceParam("target", ["Nexus", "KieInternal"], "Select the target where the jbpm installer should be available</br> ")
+        choiceParam("target", ["public", "internal"], "Select the target where the jbpm installer should be available</br> ")
         stringParam("version", "release version", "Edit the version of release, i.e. <b>major.minor.micro.<extension></b> ")
     }
 
