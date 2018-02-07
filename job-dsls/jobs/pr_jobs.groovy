@@ -100,7 +100,8 @@ def final REPO_CONFIGS = [
         "jbpm-work-items"           : [
                 label      : "linux && mem4g",
                 timeoutMins: 30,
-        ]
+        ],
+        "optashift-employee-rostering" : []
 ]
 
 
