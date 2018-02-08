@@ -29,12 +29,22 @@ def final DEFAULTS = [
 
 // used to override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
+        "lienzo-core"                  : [
+                timeoutMins            : 20,
+                label                  : "rhel7 && mem4g",
+                downstreamRepos        : ["lienzo-tests"]
+        ],
+        "lienzo-tests"              : [
+                timeoutMins            : 20,
+                label                  : "rhel7 && mem4g",
+                downstreamRepos        : ["kie-soup"]
+        ],
         "kie-soup"                  : [
                 label                  : "rhel7 && mem4g",
                 ircNotificationChannels: ["#logicabyss", "#appformer"],
                 downstreamRepos        : ["appformer"]
         ],
-        "appformer"                  : [
+        "appformer"                 : [
                 label                  : "linux && mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
@@ -53,7 +63,7 @@ def final REPO_CONFIGS = [
                 ircNotificationChannels: ["#droolsdev"],
                 downstreamRepos        : ["drlx-parser"]
         ],
-        "drlx-parser"                          : [
+        "drlx-parser"               : [
                 timeoutMins            : 20,
                 label                  : "rhel7 && mem4g",
                 ircNotificationChannels: ["#droolsdev"],
@@ -145,8 +155,12 @@ def final REPO_CONFIGS = [
         "jbpm-work-items"           : [
                 label      : "linux && mem4g",
                 timeoutMins: 30,
-                ircNotificationChannels: ["#jbpmdev"]
-        ]
+                ircNotificationChannels: ["#jbpmdev"],
+                downstreamRepos        : ["optashift-employee-rostering"]
+        ],
+        "optashift-employee-rostering" : [
+                ircNotificationChannels: ["#optaplanner-dev"]
+        ],
 ]
 
 for (repoConfig in REPO_CONFIGS) {
