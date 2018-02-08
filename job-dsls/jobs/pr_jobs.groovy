@@ -28,10 +28,18 @@ def final DEFAULTS = [
 
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
+        "lienzo-core"               : [
+                timeoutMins: 30,
+                label: "rhel7 && mem4g"
+        ],
+        "lienzo-tests"              : [
+                timeoutMins: 30,
+                label: "rhel7 && mem4g"
+        ],
         "kie-soup"                  : [
                 label: "rhel7 && mem4g"
         ],
-        "appformer"                  : [
+        "appformer"                 : [
                 label    : "rhel7 && mem16g"
         ],
         "droolsjbpm-build-bootstrap": [

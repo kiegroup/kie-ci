@@ -40,6 +40,8 @@ def final DEFAULTS = [
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
+        "lienzo-core"               : [],
+        "lienzo-tests"              : [],
         "kie-soup"                  : [],
         "appformer"                 : [],
         "droolsjbpm-build-bootstrap": [],
