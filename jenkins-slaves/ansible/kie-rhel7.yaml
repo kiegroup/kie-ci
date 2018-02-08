@@ -307,6 +307,8 @@
   - name: Create local Git cache
     shell: cd /home/jenkins/git-repos && git clone --bare https://github.com/{{ item }}
     with_items:
+     - kiegroup/lienzo-core
+     - kiegroup/lienzo-tests
      - errai/errai
      - dashbuilder/dashbuilder
      - kiegroup/kie-soup
@@ -316,6 +318,7 @@
      - kiegroup/drlx-parser
      - kiegroup/drools
      - kiegroup/optaplanner
+     - kiegroup/optashift-employee-rostering
      - kiegroup/jbpm
      - kiegroup/droolsjbpm-integration
      - kiegroup/droolsjbpm-tools
