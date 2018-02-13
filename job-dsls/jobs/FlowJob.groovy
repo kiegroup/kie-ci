@@ -427,7 +427,7 @@ matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
     axes {
         labelExpression("label-exp","rhel7&&mem8g")
         jdk("${javadk}")
-        text("container", "tomcat8", "wildfly10")
+        text("container", "tomcat8", "wildfly11")
     }
 
     logRotator {
@@ -501,7 +501,7 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
 
     axes {
         jdk("${javadk}")
-        text("container", "wildfly10", "eap7", "tomcat8")
+        text("container", "wildfly11", "eap7", "tomcat8")
         text("war","kie-wb","kie-drools-wb")
         labelExpression("label_exp", "linux&&mem4g&&gui-testing")
         text("browser","firefox")
@@ -598,7 +598,7 @@ matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
 
     axes {
         jdk("${jaydekay}")
-        text("container", "wildfly10", "eap7", "tomcat8")
+        text("container", "wildfly11", "eap7", "tomcat8")
         labelExpression("label_exp", "linux&&mem8g")
     }
 
