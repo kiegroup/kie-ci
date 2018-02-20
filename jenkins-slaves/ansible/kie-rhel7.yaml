@@ -238,7 +238,7 @@
 
   - name: Download Maven repo cache
     get_url:
-      url: https://kie-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/maven-repo-cache/lastSuccessfulBuild/artifact/maven-repo-cache.tar.gz
+      url: https://kie-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/maven-repo-cache-master/lastSuccessfulBuild/artifact/maven-repo-cache.tar.gz
       dest: /tmp/downloads/maven-repo-cache.tar.gz
       validate_certs: no
       owner: jenkins
