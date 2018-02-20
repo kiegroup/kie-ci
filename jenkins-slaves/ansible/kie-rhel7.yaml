@@ -324,7 +324,6 @@
      - kiegroup/droolsjbpm-tools
      - kiegroup/kie-uberfire-extensions
      - kiegroup/guvnor
-     - kiegroup/appformer
      - kiegroup/kie-wb-playground
      - kiegroup/kie-wb-common
      - kiegroup/jbpm-form-modeler
