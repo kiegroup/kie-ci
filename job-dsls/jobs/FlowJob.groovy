@@ -344,6 +344,153 @@ job("kieAllBuild-${kieMainBranch}") {
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// definition of prod-build
+
+def kieProdBuild='''#!/bin/bash -e
+# removing KIE artifacts from local maven repo (basically all possible SNAPSHOTs)
+DATE=$(date "+%Y%m%d")
+prodDate=$(date "+%Y.%m.%d")
+kieProdVersion="7.7.0."$DATE"-prod"
+kieProdBranch="bsync-7.7.x-"$prodDate
+appformerProdVersion="2.4.0"$DATE"-prod"
+erraiVersion="4.1.3.Final"
+
+echo "kieProdVersion:" $kieProdVersion
+echo "kieProdBranch:" $kieProdBranch
+echo "appformerProdVersion:" $appformerProdVersion
+echo "erraiVersion:" $erraiVersion
+
+# removing KIE artifacts from local maven repo (basically all possible SNAPSHOTs)
+if [ -d $MAVEN_REPO_LOCAL ]; then
+    rm -rf $MAVEN_REPO_LOCAL/org/jboss/dashboard-builder/
+    rm -rf $MAVEN_REPO_LOCAL/org/kie/
+    rm -rf $MAVEN_REPO_LOCAL/org/drools/
+    rm -rf $MAVEN_REPO_LOCAL/org/jbpm/
+    rm -rf $MAVEN_REPO_LOCAL/org/optaplanner/
+    rm -rf $MAVEN_REPO_LOCAL/org/guvnor/
+fi
+
+#switch to the right droolsjbpm-build-bootstrap master branch
+cd $WORKSPACE/droolsjbpm-build-bootstrap
+git checkout $kieMainBranch
+
+# cd into the workspace where droolsjbpm-build-bootstrap is
+cd $WORKSPACE
+
+# clone rest of the repos
+./droolsjbpm-build-bootstrap/script/git-clone-others.sh --branch $kieMainBranch --depth 100
+# checkout to release branches
+./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $kieProdBranch $kieMainBranch
+
+# upgrade version kiegroup 
+./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieProdVersion $appformerProdVersion productized
+
+# change properties via sed as they don't update automatically
+# appformer
+cd appformer
+sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieProdVersion<\\/version.org.kie>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
+cd ..
+#droolsjbpm-build-bootstrap
+cd droolsjbpm-build-bootstrap
+sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieProdVersion<\\/version.org.kie>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$appformerProdVersion<\\/version.org.uberfire>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
+sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$kieProdVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" pom.xml
+cd ..
+
+# git add and commit changes
+./droolsjbpm-build-bootstrap/script/git-all.sh add .
+./droolsjbpm-build-bootstrap/script/git-all.sh commit -m "upgraded version"
+
+cat > "$WORKSPACE/clean-up.sh" << EOT
+baseDir=\\$1
+rm -rf \\`find \\$baseDir -type d -wholename "*/target/*wildfly*Final"\\`
+rm -rf \\`find \\$baseDir -type d -wholename "*/target/cargo"\\`
+rm -rf \\`find \\$baseDir -type f -name "*war"\\`
+rm -rf \\`find \\$baseDir -type f -name "*jar"\\`
+rm -rf \\`find \\$baseDir -type f -name "*zip"\\`
+rm -rf \\`find \\$baseDir -type d -name "gwt-unitCache"\\`
+EOT
+
+# do a full build
+./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean install -T2 -Dfull -Drelease -Dproductized -s $SETTINGS_XML_FILE\\
+ -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=1\\
+ -Dgwt.memory.settings="-Xmx4g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
+ 
+# creates a tarball with all repositories and saves it on Jenkins master
+tar czf prodBranches.tgz *
+'''
+
+job("prod-kieAllBuild-${kieMainBranch}") {
+    description("Upgrades and builds the prod - kie version")
+
+    scm {
+        git {
+            remote {
+                github("${organization}/droolsjbpm-build-bootstrap")
+            }
+            branch ("${kieMainBranch}")
+            extensions {
+                relativeTargetDirectory("droolsjbpm-build-bootstrap")
+            }
+
+        }
+    }
+
+    label("linux&&rhel7&&mem16g")
+
+    logRotator {
+        numToKeep(5)
+    }
+
+    jdk("${javadk}")
+
+    wrappers {
+        timeout {
+            absolute(340)
+        }
+        timestamps()
+        colorizeOutput()
+        toolenv("${mvnToolEnv}", "${jaydekay}")
+        preBuildCleanup()
+        configFiles {
+            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
+                variable("SETTINGS_XML_FILE")
+            }
+        }
+    }
+
+    publishers {
+        wsCleanup()
+        archiveJunit("**/target/*-reports/TEST-*.xml")
+        archiveArtifacts{
+            onlyIfSuccessful(false)
+            allowEmpty(true)
+            pattern("prodBranches.tgz")
+        }
+        mailer('mbiarnes@redhat.com', false, false)
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+                username 'jenkins'
+            }
+        }
+    }
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
+        }
+        shell(kieProdBuild)
+    }
+}
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 // definition of jbpmTestCoverageMatrix test
 def jbpmTestCoverage='''#!/bin/bash -e
 STAGING_REP=kie-internal-group
@@ -814,6 +961,7 @@ listView("kieAllBuild-${kieMainBranch}"){
         name("trigger-kieAllBuild-${kieMainBranch}")
         name("errai-kieAllBuild-${kieMainBranch}")
         name("kieAllBuild-${kieMainBranch}")
+        name("prod-kieAllBuild-${kieMainBranch}")
         name("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}")
         name("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}")
         name("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}")
