@@ -446,6 +446,10 @@ job("prod-kieAllBuild-${kieMainBranch}") {
 
     jdk("${javadk}")
 
+    triggers {
+        cron("H 20 * * *")
+    }
+    
     wrappers {
         timeout {
             absolute(340)
