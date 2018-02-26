@@ -21,12 +21,20 @@ def organization=params["organization"]
 erraiVersionNew = build.environment.get("erraiVersionNew")
 appformerVersion = build.environment.get("appformerVersion")
 kieVersion = build.environment.get("kieVersion")
+kieProdVersion = build.environment.get("kieProdVersion")
+appformerProdVersion = build.environment.get("appformerProdVersion")
+erraiProdVersion = build.environment.get("erraiProdVersion")
+kieProdBranch = build.environment.get("kieProdBranch")
 
 ignore(UNSTABLE) {
     build("errai-kieAllBuild-${kieMainBranch}", erraiVersionNew: "$erraiVersionNew", erraiVersionOld: "$erraiVersionOld", erraiBranch: "$erraiBranch")
 }
 ignore(UNSTABLE) {
     build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", appformerVersion: "$appformerVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
+}
+ignore(UNSTABLE) {
+    build("prod-kieAllBuild-${kieMainBranch}", kieProdVersion: "$kieProdVersion", appformerProdVersion: "$appformerProdVersion", erraiProdVersion: "$erraiProdVersion", kieMainBranch: "$kieMainBranch" \
+    kieProdBranch: "$kieProdBranch")
 }
 
 
@@ -63,14 +71,18 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
 
     environmentVariables{
         groovy('''def date = new Date().format( 'yyyyMMdd-hhMMss' )
+    def prodDate = new Date().format( 'yyyyMMdd' ) 
     def kieVersionPre = "7.7.0."
     def appformerVersionPre = "2.4.0."
     def erraiVersionNewPre = "4.2.0."
     def sourceProductTag = ""
     def targetProductBuild = ""
-
-    return [kieVersion: kieVersionPre + date, appformerVersion: appformerVersionPre + date, erraiVersionNew:erraiVersionNewPre +date, \
- cutOffDate: date, reportDate: date,  sourceProductTag: sourceProductTag, targetProductBuild: targetProductBuild] \
+    def kieProdBranch = "bsync-7.7.x-"
+    def erraiProdVersion="4.1.3.Final"
+    
+    return [kieVersion: kieVersionPre + date, appformerVersion: appformerVersionPre + date, erraiVersionNew:erraiVersionNewPre + date, \
+ cutOffDate: date, reportDate: date,  sourceProductTag: sourceProductTag, targetProductBuild: targetProductBuild, kieProdVersion: kieVersionPre + prodDate + '-prod', \
+ appFormerProdVersion: appformerVersionPre + prodDate + '-prod', kieProdBranch: kieProdBranch + prodDate, erraiProdVersion: erraiProdVersion]     
  ''')
 
     }
@@ -347,18 +359,11 @@ job("kieAllBuild-${kieMainBranch}") {
 // definition of prod-build
 
 def kieProdBuild='''#!/bin/bash -e
-# removing KIE artifacts from local maven repo (basically all possible SNAPSHOTs)
-DATE=$(date "+%Y%m%d")
-prodDate=$(date "+%Y.%m.%d")
-kieProdVersion="7.7.0."$DATE"-prod"
-kieProdBranch="bsync-7.7.x-"$prodDate
-appformerProdVersion="2.4.0"$DATE"-prod"
-erraiVersion="4.1.3.Final"
-
 echo "kieProdVersion:" $kieProdVersion
 echo "kieProdBranch:" $kieProdBranch
 echo "appformerProdVersion:" $appformerProdVersion
-echo "erraiVersion:" $erraiVersion
+echo "erraiProdVersion:" $erraiProdVersion
+echo "kieMainBranch:" $kieMainBranch
 
 # removing KIE artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
@@ -389,13 +394,13 @@ cd $WORKSPACE
 # appformer
 cd appformer
 sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieProdVersion<\\/version.org.kie>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiProdVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
 cd ..
 #droolsjbpm-build-bootstrap
 cd droolsjbpm-build-bootstrap
 sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieProdVersion<\\/version.org.kie>/;P;D" pom.xml
 sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$appformerProdVersion<\\/version.org.uberfire>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiProdVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
 sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$kieProdVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" pom.xml
 cd ..
 
@@ -446,10 +451,6 @@ job("prod-kieAllBuild-${kieMainBranch}") {
 
     jdk("${javadk}")
 
-    triggers {
-        cron("H 20 * * *")
-    }
-    
     wrappers {
         timeout {
             absolute(340)
