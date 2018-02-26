@@ -320,6 +320,7 @@
      - kiegroup/optaplanner
      - kiegroup/optashift-employee-rostering
      - kiegroup/jbpm
+     - kiegroup/jbpm-work-items
      - kiegroup/droolsjbpm-integration
      - kiegroup/droolsjbpm-tools
      - kiegroup/kie-uberfire-extensions
