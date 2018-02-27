@@ -33,7 +33,7 @@ ignore(UNSTABLE) {
     build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", appformerVersion: "$appformerVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
 }
 ignore(UNSTABLE) {
-    build("prod-kieAllBuild-${kieMainBranch}", kieProdVersion: "$kieProdVersion", appformerProdVersion: "$appformerProdVersion", erraiProdVersion: "$erraiProdVersion", kieMainBranch: "$kieMainBranch" \
+    build("prod-kieAllBuild-${kieMainBranch}", kieProdVersion: "$kieProdVersion", appformerProdVersion: "$appformerProdVersion", erraiProdVersion: "$erraiProdVersion", kieMainBranch: "$kieMainBranch", \
     kieProdBranch: "$kieProdBranch")
 }
 
