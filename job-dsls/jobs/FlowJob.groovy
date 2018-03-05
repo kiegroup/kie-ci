@@ -602,7 +602,6 @@ matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
 
     publishers {
         wsCleanup()
-        archiveJunit("**/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
 
@@ -650,10 +649,10 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     axes {
-        jdk("${javadk}")
+        labelExpression("label_exp", "linux&&mem4g&&gui-testing")
         text("container", "wildfly11", "eap7", "tomcat8")
         text("war","kie-wb","kie-drools-wb")
-        labelExpression("label_exp", "linux&&mem4g&&gui-testing")
+        jdk("${javadk}")
         text("browser","firefox")
     }
 
@@ -747,7 +746,7 @@ matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     axes {
-        jdk("${jaydekay}")
+        jdk("${javadk}")
         text("container", "wildfly11", "eap7", "tomcat8")
         labelExpression("label_exp", "linux&&mem8g")
     }
