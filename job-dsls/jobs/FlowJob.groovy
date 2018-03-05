@@ -23,7 +23,6 @@ appformerVersion = build.environment.get("appformerVersion")
 kieVersion = build.environment.get("kieVersion")
 kieProdVersion = build.environment.get("kieProdVersion")
 appformerProdVersion = build.environment.get("appformerProdVersion")
-erraiProdVersion = build.environment.get("erraiProdVersion")
 kieProdBranch = build.environment.get("kieProdBranch")
 
 ignore(UNSTABLE) {
@@ -33,7 +32,7 @@ ignore(UNSTABLE) {
     build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", appformerVersion: "$appformerVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
 }
 ignore(UNSTABLE) {
-    build("prod-kieAllBuild-${kieMainBranch}", kieProdVersion: "$kieProdVersion", appformerProdVersion: "$appformerProdVersion", erraiProdVersion: "$erraiProdVersion", kieMainBranch: "$kieMainBranch", \
+    build("prod-kieAllBuild-${kieMainBranch}", kieProdVersion: "$kieProdVersion", appformerProdVersion: "$appformerProdVersion", erraiVersion: "$erraiVersionNew", kieMainBranch: "$kieMainBranch", \
     kieProdBranch: "$kieProdBranch")
 }
 
@@ -78,11 +77,10 @@ buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
     def sourceProductTag = ""
     def targetProductBuild = ""
     def kieProdBranch = "bsync-7.7.x-"
-    def erraiProdVersion="4.1.3.Final"
     
     return [kieVersion: kieVersionPre + date, appformerVersion: appformerVersionPre + date, erraiVersionNew:erraiVersionNewPre + date, \
  cutOffDate: date, reportDate: date,  sourceProductTag: sourceProductTag, targetProductBuild: targetProductBuild, kieProdVersion: kieVersionPre + prodDate + '-prod', \
- appFormerProdVersion: appformerVersionPre + prodDate + '-prod', kieProdBranch: kieProdBranch + prodDate, erraiProdVersion: erraiProdVersion]     
+ appFormerProdVersion: appformerVersionPre + prodDate + '-prod', kieProdBranch: kieProdBranch + prodDate]     
  ''')
 
     }
@@ -248,8 +246,8 @@ EOT
 # (1) do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
 ./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
- -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=1\\
- -Dgwt.memory.settings="-Xmx4g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
+ -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true\\
+ -Dgwt.memory.settings="-Xms1g -Xmx10g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
 
 # (2) upload the content to remote staging repo
 mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.8:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
@@ -362,7 +360,7 @@ def kieProdBuild='''#!/bin/bash -e
 echo "kieProdVersion:" $kieProdVersion
 echo "kieProdBranch:" $kieProdBranch
 echo "appformerProdVersion:" $appformerProdVersion
-echo "erraiProdVersion:" $erraiProdVersion
+echo "erraiVersion:" $erraiVersion
 echo "kieMainBranch:" $kieMainBranch
 
 # removing KIE artifacts from local maven repo (basically all possible SNAPSHOTs)
@@ -372,7 +370,7 @@ if [ -d $MAVEN_REPO_LOCAL ]; then
     rm -rf $MAVEN_REPO_LOCAL/org/drools/
     rm -rf $MAVEN_REPO_LOCAL/org/jbpm/
     rm -rf $MAVEN_REPO_LOCAL/org/optaplanner/
-    rm -rf $MAVEN_REPO_LOCAL/org/guvnor/
+    rm -rf $MAVEN_REPO_LOCAL/org/uberfire
 fi
 
 #switch to the right droolsjbpm-build-bootstrap master branch
@@ -394,13 +392,13 @@ cd $WORKSPACE
 # appformer
 cd appformer
 sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieProdVersion<\\/version.org.kie>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiProdVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
 cd ..
 #droolsjbpm-build-bootstrap
 cd droolsjbpm-build-bootstrap
 sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieProdVersion<\\/version.org.kie>/;P;D" pom.xml
 sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$appformerProdVersion<\\/version.org.uberfire>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiProdVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
 sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$kieProdVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" pom.xml
 cd ..
 
@@ -420,8 +418,8 @@ EOT
 
 # do a full build
 ./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean install -T2 -Dfull -Drelease -Dproductized -s $SETTINGS_XML_FILE\\
- -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=1\\
- -Dgwt.memory.settings="-Xmx4g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
+ -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true\\
+ -Dgwt.memory.settings="-Xms1g -Xmx10g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
  
 # creates a tarball with all repositories and saves it on Jenkins master
 tar czf prodBranches.tgz *
@@ -604,7 +602,6 @@ matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
 
     publishers {
         wsCleanup()
-        archiveJunit("**/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
 
@@ -652,10 +649,10 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     axes {
-        jdk("${javadk}")
+        labelExpression("label_exp", "linux&&mem4g&&gui-testing")
         text("container", "wildfly11", "eap7", "tomcat8")
         text("war","kie-wb","kie-drools-wb")
-        labelExpression("label_exp", "linux&&mem4g&&gui-testing")
+        jdk("${javadk}")
         text("browser","firefox")
     }
 
@@ -749,7 +746,7 @@ matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     axes {
-        jdk("${jaydekay}")
+        jdk("${javadk}")
         text("container", "wildfly11", "eap7", "tomcat8")
         labelExpression("label_exp", "linux&&mem8g")
     }
