@@ -57,6 +57,68 @@ def copyBinariesToFilemgmt="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-copyBinariesToFilemgmt.sh
 """
 
+def prodErrai="""
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/errai-productizedVersion.sh
+"""
+
+// **************************************************************************
+
+job("createProdErraiVersion-kieReleases-${kieVersion}") {
+
+    description("This job: <br> checksout the right source- upgrades the version in poms <br> - pushes the generated release branche to gerrit <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
+
+    parameters {
+        stringParam("erraiBranch", "base branch", "please select the base branch for errai<br> ******************************************************** <br> ")
+        stringParam("erraiVersionNew", "new errai version", "please edit the name of the new errai version <br> i.e. typically <b> 4.2.0.yyymmdd-prod </b> <br> ******************************************************** <br> ")
+        stringParam("erraiVersionOld", "old errai version", "please edit the name of the old errai version <br> i.e. typically <b> 4.2.0-SNAPSHOT </b> <br> ******************************************************** <br> ")
+        stringParam("erraiTag", "tag for errai prod version", " please edit the tag version here for related kie release <br>  i.e. typically <b> sync-<branch>.yyyy.mm.dd </b> ******************************************************** <br> ")
+    };
+
+    scm {
+        git {
+            remote {
+                github("${organization}/droolsjbpm-build-bootstrap")
+            }
+            branch ("${kieMainBranch}")
+            extensions {
+                relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
+            }
+
+        }
+    }
+
+    label("kie-releases")
+
+    logRotator {
+        numToKeep(10)
+    }
+
+    jdk("${javadk}")
+
+    wrappers {
+        timestamps()
+        colorizeOutput()
+        toolenv("${mvnToolEnv}", "${jaydekay}")
+        preBuildCleanup()
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+                username 'jenkins'
+            }
+        }
+    }
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "/home/jenkins/.m2/repository", PATH : "\$${mvnHome}/bin:\$PATH")
+        }
+        shell(prodErrai)
+    }
+}
 
 // **************************************************************************
 
@@ -270,7 +332,7 @@ matrixJob("jbpmTestCoverageMatrix-kieReleases-${kieVersion}") {
 
     axes {
         labelExpression("label-exp","linux&&mem4g")
-        jdk("jdk1.8")
+        jdk("$javadk")
     }
 
     logRotator {
@@ -324,7 +386,7 @@ matrixJob("serverMatrix-kieReleases-${kieVersion}") {
     };
 
     axes {
-        jdk("jdk1.8")
+        jdk("$javadk")
         text("container", "tomcat8", "wildfly11")
         labelExpression("label_exp", "linux&&mem8g")
     }
@@ -393,7 +455,7 @@ matrixJob("wbSmokeTestsMatrix-kieReleases-${kieVersion}") {
     };
 
     axes {
-        jdk("jdk1.8")
+        jdk("$javadk")
         text("container", "wildfly11", "tomcat8", "eap7")
         text("war", "kie-wb", "kie-drools-wb")
         labelExpression("label_exp", "linux&&mem8g&&gui-testing")
@@ -734,6 +796,7 @@ listView("kieReleases-master"){
         name("updateVersion-kieReleases-${kieVersion}")
         name("create-jbpm-installers-kieReleases-${kieVersion}")
         name("copyBinariesToFilemgmt-kieReleases-${kieVersion}")
+        name("createProdErraiVersion-kieReleases-${kieVersion}")
     }
     columns {
         status()
