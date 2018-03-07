@@ -1,4 +1,4 @@
-/**
+ /**
  * Creates all the standard "deploy" jobs for appformer (formerly known as uberfire) and kiegroup GitHub org. units.
  */
 import org.kie.jenkins.jobdsl.Constants
@@ -9,10 +9,10 @@ def final DEFAULTS = [
         label                  : "rhel7 && mem8g",
         ghOrgUnit              : "kiegroup",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
-        mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly10 clean deploy findbugs:findbugs",
+        mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly11 clean deploy findbugs:findbugs",
         mvnProps: [
                 "full"                     : "true",
-                "container"                : "wildfly10",
+                "container"                : "wildfly11",
                 "integration-tests"        : "true",
                 "maven.test.failure.ignore": "true"
         ],
@@ -80,7 +80,7 @@ def final REPO_CONFIGS = [
         ],
         "jbpm"                      : [
                 timeoutMins            : 120,
-                mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly10",
+                mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly11",
                 ircNotificationChannels: ["#jbpmdev"],
                 downstreamRepos        : ["droolsjbpm-integration", "jbpm-work-items"]
         ],
