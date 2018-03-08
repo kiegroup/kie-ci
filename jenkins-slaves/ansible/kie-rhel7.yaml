@@ -357,6 +357,28 @@
       group: jenkins
       mode: 0755
 
+# Add swap file
+  - name: Create swap file
+    command: dd if=/dev/zero of=/swapfile bs=1M count=8192
+
+  - name: Change swap file permissions
+    file: path="/swapfile"
+      owner=root
+      group=root
+      mode=0600
+
+  - name: Make swap fs
+    command: "mkswap /swapfile"
+
+  - name: Add swap entry in fstab
+    mount: name=none
+      src=/swapfile
+      fstype=swap
+      opts=sw
+      passno=0
+      dump=0
+      state=present
+
 # Clean-up
   - name: Remove temprorary directory
     file:
