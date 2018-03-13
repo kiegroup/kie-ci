@@ -530,9 +530,9 @@ matrixJob("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        wsCleanup()
-        archiveJunit("**/TEST-*.xml")
+        archiveJunit("**/target/failsafe-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
+        wsCleanup()
     }
 
     configure { project ->
@@ -601,8 +601,9 @@ matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        wsCleanup()
+        archiveJunit("**/target/failsafe-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
+        wsCleanup()
     }
 
     configure { project ->
@@ -649,7 +650,7 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     axes {
-        labelExpression("label_exp", "linux&&mem4g&&gui-testing")
+        labelExpression("label_exp", "linux&&mem8g&&gui-testing")
         text("container", "wildfly11", "eap7", "tomcat8")
         text("war","kie-wb","kie-drools-wb")
         jdk("${javadk}")
@@ -702,9 +703,9 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        wsCleanup()
         archiveJunit("**/target/failsafe-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
+        wsCleanup()
     }
 
     steps {
@@ -782,9 +783,9 @@ matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        wsCleanup()
         archiveJunit("**/target/failsafe-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
+        wsCleanup()
     }
 
     steps {
