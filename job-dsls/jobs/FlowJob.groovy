@@ -380,9 +380,9 @@ matrixJob("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        wsCleanup()
-        archiveJunit("**/TEST-*.xml")
+        archiveJunit("**/target/failsafe-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
+        wsCleanup()
     }
 
     configure { project ->
@@ -451,9 +451,9 @@ matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        wsCleanup()
-        archiveJunit("**/TEST-*.xml")
+        archiveJunit("**/target/failsafe-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
+        wsCleanup()
     }
 
     configure { project ->
@@ -503,7 +503,7 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
         jdk("${javadk}")
         text("container", "wildfly10", "eap7", "tomcat8")
         text("war","kie-wb","kie-drools-wb")
-        labelExpression("label_exp", "linux&&mem4g&&gui-testing")
+        labelExpression("label_exp", "linux&&mem8g&&gui-testing")
         text("browser","firefox")
     }
 
@@ -553,9 +553,9 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        wsCleanup()
         archiveJunit("**/target/failsafe-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
+        wsCleanup()
     }
 
     steps {
@@ -630,9 +630,9 @@ matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        wsCleanup()
         archiveJunit("**/target/failsafe-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
+        wsCleanup()
     }
 
     steps {
@@ -739,7 +739,7 @@ job("kie-docker-ci-images-${kieMainBranch}") {
     description("Builds CI Docker images for master branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
-        stringParam("kieVersion", "8.0.0-SNAPSHOT", "Please edit the version of the kie release <br> i.e. typically <b> major.minor.micro.EXT </b>i.e. 8.0.0.Beta1<br> Normally the kie version will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieVersion", "kie version", "Please edit the version of the kie release <br> i.e. typically <b> major.minor.micro.EXT </b>i.e. 7.5.1.Final<br> Normally the kie version will be supplied by parent job <br> ******************************************************** <br> ")
     }
 
     scm {
