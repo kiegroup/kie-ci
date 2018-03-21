@@ -32,7 +32,7 @@ ignore(UNSTABLE) {
     build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", appformerVersion: "$appformerVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
 }
 ignore(UNSTABLE) {
-    build("prod-kieAllBuild-${kieMainBranch}", kieProdVersion: "$kieProdVersion", appformerProdVersion: "$appformerProdVersion", erraiVersion: "$erraiVersionNew", kieMainBranch: "$kieMainBranch", \
+    build("prod-kieAllBuild-${kieMainBranch}", kieProdVersion: "$kieProdVersion", appformerProdVersion: "$appformerProdVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch", \
     kieProdBranch: "$kieProdBranch")
 }
 
@@ -294,6 +294,7 @@ rm int.json
 
 job("kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the kie version")
+
     parameters{
         stringParam("erraiVersionNew", "errai version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
         stringParam("appformerVersion", "appformer version (former uberfire version)", "Version of appformer. This will be usually set automatically by the parent trigger job. ")
@@ -360,7 +361,7 @@ def kieProdBuild='''#!/bin/bash -e
 echo "kieProdVersion:" $kieProdVersion
 echo "kieProdBranch:" $kieProdBranch
 echo "appformerProdVersion:" $appformerProdVersion
-echo "erraiVersion:" $erraiVersion
+echo "erraiVersionNew:" $erraiVersionNew
 echo "kieMainBranch:" $kieMainBranch
 
 # removing KIE artifacts from local maven repo (basically all possible SNAPSHOTs)
@@ -392,13 +393,13 @@ cd $WORKSPACE
 # appformer
 cd appformer
 sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieProdVersion<\\/version.org.kie>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
 cd ..
 #droolsjbpm-build-bootstrap
 cd droolsjbpm-build-bootstrap
 sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieProdVersion<\\/version.org.kie>/;P;D" pom.xml
 sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$appformerProdVersion<\\/version.org.uberfire>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
 sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$kieProdVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" pom.xml
 cd ..
 
@@ -426,7 +427,16 @@ tar czf prodBranches.tgz *
 '''
 
 job("prod-kieAllBuild-${kieMainBranch}") {
-    description("Upgrades and builds the prod - kie version")
+
+    description("Upgrades and builds the prod kie version")
+
+    parameters{
+        stringParam("kieProdVersion", "7.7.0", "Version of errai. This will be usually set automatically by the parent trigger job. ")
+        stringParam("appformerProdVersion", "2.4.0", "Prod version of appformer (former uberfire version). This will be usually set automatically by the parent trigger job. ")
+        stringParam("erraiVersionNew", "4.2.0", "Errai version. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kieMainBranch", "Name of kie branch", "Kie branch name. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kieProdBranch", "Name of kie prod branch", "Prodbranch name of kie. This will be usually set automatically by the parent trigger job. ")
+    }
 
     scm {
         git {
