@@ -7,7 +7,7 @@ def mvnVersion="apache-maven-3.3.9"
 def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
 def kieMainBranch="7.5.x"
-def erraiBranch="master"
+def erraiBranch="4.1.x"
 def erraiVersionOld="4.1.4-SNAPSHOT"
 def organization="kiegroup"
 
