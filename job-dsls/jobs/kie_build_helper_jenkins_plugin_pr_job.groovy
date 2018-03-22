@@ -1,37 +1,29 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import org.kie.jenkins.jobdsl.Constants
+import org.kie.jenkins.jobdsl.templates.BasicJob
+import org.kie.jenkins.jobdsl.templates.PrVerificationJob
+
+// Job parameters values
+projectName = "kie-build-helper-jenkins-plugin"
+labelName = "rhel7&&mem4g"
+timeoutValue = 60
 
 // Creates or updates a free style job.
 def jobDefinition = job("kie-build-helper-jenkins-plugin-pullrequests") {
-
-    // Sets a description for the job.
-    description("This job is responsible for verifing kie-build-helper-jenkins-plugin pull requests.")
-
-    // Adds custom properties to the job.
-    properties {
-
-        // Allows to configure job ownership.
-        ownership {
-
-            // Sets the name of the primary owner of the job.
-            primaryOwnerId("pszubiak")
-
-            // Adds additional users, who have ownership privileges.
-            coOwnerIds("mbiarnes", "anstephe")
-        }
-    }
-
-    // Manages how long to keep records of the builds.
-    logRotator {
-
-        // If specified, build records are only kept up to this number of days.
-        daysToKeep(7)
-    }
-
-    // Name of the JDK installation to use for this job.
-    jdk("jdk1.8")
-
-    // Label which specifies which nodes this job can run on.
-    label("rhel7&&mem4g")
 
     // Allows a job to check out sources from an SCM provider.
     scm {
@@ -68,57 +60,6 @@ def jobDefinition = job("kie-build-helper-jenkins-plugin-pullrequests") {
         }
     }
 
-    // Adds build triggers to the job.
-    triggers {
-
-        // This plugin builds pull requests in github and report results.
-        githubPullRequest {
-
-            // List of organizations. Their members will be whitelisted.
-            orgWhitelist(["appformer", "kiegroup"])
-
-            // Use this option to allow members of whitelisted organisations to behave like admins, i.e. whitelist users and trigger pull request testing.
-            allowMembersOfWhitelistedOrgsAsAdmin()
-
-            //  This field follows the syntax of cron (with minor differences). Specifically, each line consists of 5 fields separated by TAB or whitespace
-            cron("H/10 * * * *")
-
-            // Adding branches to this whitelist allows you to selectively test pull requests destined for these branches only.
-            // Supports regular expressions (e.g. 'master', 'feature-.*').
-            whiteListTargetBranches(["master"])
-
-            extensions {
-
-                // Update commit status during build.
-                commitStatus {
-
-                    // A string label to differentiate this status from the status of other systems. Default: "default"
-                    context('Linux')
-
-                    // Add test result one liner
-                    addTestResults(true)
-                }
-            }
-        }
-    }
-
-    // Adds pre/post actions to the job.
-    wrappers {
-
-        // Add a timeout to the build job.
-        timeout {
-
-            // Aborts the build based on a fixed time-out.
-            absolute(60)
-        }
-
-        // Adds timestamps to the console log.
-        timestamps()
-
-        // Renders ANSI escape sequences, including color, to console output.
-        colorizeOutput()
-    }
-
     // Adds build steps to the jobs.
     steps {
 
@@ -132,18 +73,6 @@ def jobDefinition = job("kie-build-helper-jenkins-plugin-pullrequests") {
             goals("-B clean install")
         }
     }
-
-    // Adds post-build actions to the job.
-    publishers {
-
-        //Archives artifacts with each build.
-        archiveArtifacts("**target/*.hpi")
-
-        // Publishes JUnit test result reports.
-        archiveJunit('**/target/*-reports/TEST-*.xml') {
-
-            // If set, does not fail the build on empty test results.
-            allowEmptyResults()
-        }
-    }
 }
+
+PrVerificationJob.addPrConfiguration(jobDefinition, projectName, labelName, timeoutValue)

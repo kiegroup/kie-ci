@@ -1,4 +1,3 @@
-package org.kie.jenkins.jobdsl
 /*
  * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
@@ -14,8 +13,11 @@ package org.kie.jenkins.jobdsl
  * limitations under the License.
  */
 
+package org.kie.jenkins.jobdsl
+
+
 class Constants {
     static final String MAVEN_VERSION = "3.5.2"
-
     static final String UPSTREAM_BUILD_MAVEN_VERSION = "3.5.2"
+    static final String JDK_VERSION = "jdk1.8"
 }
