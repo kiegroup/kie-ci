@@ -540,7 +540,7 @@ matrixJob("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        archiveJunit("**/target/failsafe-reports/TEST-*.xml")
+        archiveJunit("**/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
         wsCleanup()
     }
