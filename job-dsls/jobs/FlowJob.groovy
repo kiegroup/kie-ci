@@ -553,7 +553,7 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        archiveJunit("**/target/failsafe-reports/TEST-*.xml")
+        archiveJunit("**/target/failsafe-reports/TEST-*.xml, **/target/screenshots/*")
         mailer('mbiarnes@redhat.com', false, false)
         wsCleanup()
     }
