@@ -43,6 +43,7 @@ def final REPO_CONFIGS = [
         ],
         "drools"                    : [],
         "optaplanner"               : [],
+        "optashift-employee-rostering" : [],
         "jbpm"                      : [
                 timeoutMins: 120
         ],
@@ -96,8 +97,7 @@ def final REPO_CONFIGS = [
         "jbpm-work-items"           : [
                 label      : "linux && mem4g",
                 timeoutMins: 30,
-        ],
-        "optashift-employee-rostering" : []
+        ]
 ]
 
 
