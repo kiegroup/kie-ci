@@ -7,98 +7,131 @@ def mvnVersion="apache-maven-3.3.9"
 def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
 def kieMainBranch="master"
+def kieVersion="7.7.0"
+def kieProdBranch="7.7.x"
+def appformerVersion="2.4.0"
 def erraiBranch="master"
 def erraiVersionOld="4.2.0-SNAPSHOT"
+def erraiVersionNew="4.2.0"
 def organization="kiegroup"
 
-// definition of flow script
+// definition of pipeline jobs
 
-def flowJob ='''def erraiVersionOld = params["erraiVersionOld"]
-def kieMainBranch =params["kieMainBranch"]
-def erraiBranch=params["erraiBranch"]
-def organization=params["organization"]
+def kieAllpipeline = ''' 
+pipeline {
+  agent any
+   
+  stages {
+    stage('parameter') {
+      steps {
+        script {
+          date = new Date().format('yyyyMMdd-hhMMss')
+          dateProd = new Date().format('yyyyMMdd')
+          kieProdVersion = "${kieVersion}.${dateProd}-prod"
+          appformerProdVersion = "${kieVersion}.${dateProd}-prod"          
+          kieVersion = "${kieVersion}.${date}"
+          appformerVersion = "${appformerVersion}.${date}"
+          erraiVersionNew = "${erraiVersionNew}.${date}"
+          kieProdBranch = "bsync-${kieProdBranch}-${dateProd}"
+          sourceProductTag = ""
+          targetProductBuild = ""
 
-erraiVersionNew = build.environment.get("erraiVersionNew")
-appformerVersion = build.environment.get("appformerVersion")
-kieVersion = build.environment.get("kieVersion")
-kieProdVersion = build.environment.get("kieProdVersion")
-appformerProdVersion = build.environment.get("appformerProdVersion")
-kieProdBranch = build.environment.get("kieProdBranch")
-
-ignore(UNSTABLE) {
-    build("errai-kieAllBuild-${kieMainBranch}", erraiVersionNew: "$erraiVersionNew", erraiVersionOld: "$erraiVersionOld", erraiBranch: "$erraiBranch")
-}
-ignore(UNSTABLE) {
-    build("kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion", appformerVersion: "$appformerVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch")
-}
-ignore(UNSTABLE) {
-    build("prod-kieAllBuild-${kieMainBranch}", kieProdVersion: "$kieProdVersion", appformerProdVersion: "$appformerProdVersion", erraiVersionNew: "$erraiVersionNew", kieMainBranch: "$kieMainBranch", \
-    kieProdBranch: "$kieProdBranch")
-}
-
-
-parallel (
-        {
-            build("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion")
-        },
-        {
-            build("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion")
-        },
-        {
-            build("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion")
-        },
-        {
-            build("kieServerMatrix-kieAllBuild-${kieMainBranch}", kieVersion: "$kieVersion")
-        },
-                {
-            build("kie-docker-ci-images-${kieMainBranch}", kieVersion: "$kieVersion")
+                  
+          echo "kieVersion: ${kieVersion}"
+          echo "appformerVersion: ${appformerVersion}"
+          echo "erraiVersionOld: ${erraiVersionOld}"
+          echo "erraiVersionNew: ${erraiVersionNew}"
+          echo "kieMainBranch: ${kieMainBranch}"
+          echo "erraiBranch: ${erraiBranch}"
+          echo "organization: ${organization}"
+          echo "sourceProductTag: ${sourceProductTag}"
+          echo "targetProductBuild: ${targetProductBuild}"
+          echo "kieProdVersion: ${kieProdVersion}"
+          echo "appformerProdVersion: ${kieProdVersion}"
+          echo "kieProdBranch: ${kieProdBranch}"
+             
         }
-)'''
-
-// +++++++++++++++++++++++++++++++++++++++ Trigger job  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// flowJob (the build flow text can also be read from a file): triggers all other jobs
-
-buildFlowJob("trigger-kieAllBuild-${kieMainBranch}") {
-    description("Flow that describes and runs the KIE build pipeline for ${kieMainBranch} branch.<br> IMPORTANT: we don't know the reason but when executet the very first time please go to the <br> configuration and press SAVE - so the dynamic Reference Parameter works")
-
-    parameters {
-        stringParam("erraiVersionOld", "${erraiVersionOld}", "edit old errai -SNAPSHOT version")
-        stringParam("erraiBranch", "${erraiBranch}", "edit errai branch")
-        stringParam("kieMainBranch", "${kieMainBranch}", "edit kie branch")
-        stringParam("organization","${organization}","edit organization")
+      }
     }
-
-    environmentVariables{
-        groovy('''def date = new Date().format( 'yyyyMMdd-hhMMss' )
-    def prodDate = new Date().format( 'yyyyMMdd' ) 
-    def kieVersionPre = "7.7.0."
-    def appformerVersionPre = "2.4.0."
-    def erraiVersionNewPre = "4.2.0."
-    def sourceProductTag = ""
-    def targetProductBuild = ""
-    def kieProdBranch = "bsync-7.7.x-"
-    
-    return [kieVersion: kieVersionPre + date, appformerVersion: appformerVersionPre + date, erraiVersionNew:erraiVersionNewPre + date, \
- cutOffDate: date, reportDate: date,  sourceProductTag: sourceProductTag, targetProductBuild: targetProductBuild, kieProdVersion: kieVersionPre + prodDate + '-prod', \
- appFormerProdVersion: appformerVersionPre + prodDate + '-prod', kieProdBranch: kieProdBranch + prodDate]     
- ''')
-
+        
+    stage("start daily build errai") {
+      steps {
+        build job: "errai-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'erraiVersionOld', value: erraiVersionOld],
+        [$class: 'StringParameterValue', name: 'erraiVersionNew', value: erraiVersionNew],[$class: 'StringParameterValue', name: 'erraiBranch', value: erraiBranch]]                    
+      }
+    } 
+        
+    stage('start daily kieAllBuilds for community and product') {
+      steps {
+        parallel (
+          "communityBuild" : {
+            build job: "kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion],
+              [$class: 'StringParameterValue', name: 'erraiVersionNew', value: erraiVersionNew],[$class: 'StringParameterValue', name: 'appformerVersion', value: appformerVersion],
+              [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]                    
+          },
+          "productBuild" : {
+            build job: "prod-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieProdVersion', value: kieProdVersion],
+            [$class: 'StringParameterValue', name: 'erraiVersionNew', value: erraiVersionNew], [$class: 'StringParameterValue', name: 'appformerProdVersion', value: appformerProdVersion],
+            [$class: 'StringParameterValue', name: 'kieProdBranch',value: kieProdBranch], [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]                
+          }
+        )
+      }
     }
+        
+    stage('additional daily tests') {
+      steps {
+        parallel (
+          "jbpmTestCoverageMatrix" : {
+              build job: "jbpmTestCoverageMatrix-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+          },
+          "jbpmTestContainerMatrix" : {
+              build job: "jbpmTestContainerMatrix-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+          },
+          "kieWbTestsMatrix" : {
+            build job: "kieWbTestsMatrix-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+          },
+          "kieServerMatrix" : {
+            build job: "kieServerMatrix-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+          },
+          "kie-docker-ci-images" : {
+            build job: "kie-docker-ci-images-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+          }
+        )    
+      } 
+    }
+  }
+}'''
 
-    buildFlow("${flowJob}")
+pipelineJob("kieAllBuildPipeline-${kieMainBranch}") {
 
-    buildNeedsWorkspace(needsWorkspace = true)
+    description('this is a pipeline job that triggers all other jobs with it\'s parameters needed for the kieAllBuild')
 
-    label("master")
+    label('master')
+
+    parameters{
+        stringParam("kieVersion", "${kieVersion}", "Version of kie. This will be usually set automatically by the parent pipeline job. ")
+        stringParam("kieProdBranch", "${kieProdBranch}", "The prod branch will get this value in it's name: bsync-value-date. " )
+        stringParam("appformerVersion", "${appformerVersion}", "Version of appformer. This will be usually set automatically by the parent pipeline job. ")
+        stringParam("erraiVersionOld", "${erraiVersionOld}", "Old version of errai. This will be usually set automatically by the parent pipeline job. ")
+        stringParam("erraiVersionNew", "${erraiVersionNew}", "New version of errai. This will be usually set automatically by the parent pipeline job. ")
+        stringParam("kieMainBranch", "${kieMainBranch}", "kie branch. This will be usually set automatically by the parent pipeline job. ")
+        stringParam("erraiBranch", "${erraiBranch}", "errai branch. This will be usually set automatically by the parent pipeline job. ")
+        stringParam("organization", "${organization}", "Name of organization. This will be usually set automatically by the parent pipeline job. ")
+    }
 
     logRotator {
         numToKeep(10)
+        daysToKeep(10)
     }
-
-    jdk("${javadk}")
 
     triggers {
         cron("H 20 * * *")
+    }
+
+    definition {
+        cps {
+            script("${kieAllpipeline}")
+        }
     }
 
     publishers {
@@ -296,7 +329,7 @@ job("kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the kie version")
 
     parameters{
-        stringParam("erraiVersionNew", "errai version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
+        stringParam("erraiVersionNew", "errai Version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
         stringParam("appformerVersion", "appformer version (former uberfire version)", "Version of appformer. This will be usually set automatically by the parent trigger job. ")
         stringParam("kieVersion", "kie version", "Version of kie. This will be usually set automatically by the parent trigger job. ")
         stringParam("kieMainBranch", "appformer branch", "branch of kie. This will be usually set automatically by the parent trigger job. ")
@@ -420,7 +453,7 @@ EOT
 # do a full build
 ./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean install -T2 -Dfull -Drelease -Dproductized -s $SETTINGS_XML_FILE\\
  -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true\\
- -Dgwt.memory.settings="-Xms1g -Xmx10g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
+ -Dgwt.memory.settings="-Xmx10g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
  
 # creates a tarball with all repositories and saves it on Jenkins master
 tar czf prodBranches.tgz *
@@ -431,11 +464,11 @@ job("prod-kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the prod kie version")
 
     parameters{
-        stringParam("kieProdVersion", "7.7.0", "Version of errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("appformerProdVersion", "2.4.0", "Prod version of appformer (former uberfire version). This will be usually set automatically by the parent trigger job. ")
+        stringParam("kieProdVersion", "7.7.0", "Prod kie version. This will be usually set automatically by the parent trigger job. ")
+        stringParam("appformerProdVersion", "2.4.0", "Prod appformer version (former uberfire version). This will be usually set automatically by the parent trigger job. ")
         stringParam("erraiVersionNew", "4.2.0", "Errai version. This will be usually set automatically by the parent trigger job. ")
-        stringParam("kieMainBranch", "Name of kie branch", "Kie branch name. This will be usually set automatically by the parent trigger job. ")
-        stringParam("kieProdBranch", "Name of kie prod branch", "Prodbranch name of kie. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kieMainBranch", "master", "Name of kie branch. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kieProdBranch", "bsync-", "Name of product branch. This will be usually set automatically by the parent trigger job. ")
     }
 
     scm {
@@ -971,7 +1004,7 @@ job("kie-docker-ci-images-${kieMainBranch}") {
 listView("kieAllBuild-${kieMainBranch}"){
     description("all scripts needed for building a ${kieMainBranch} kieAll build")
     jobs {
-        name("trigger-kieAllBuild-${kieMainBranch}")
+        name("kieAllBuildPipeline-${kieMainBranch}")
         name("errai-kieAllBuild-${kieMainBranch}")
         name("kieAllBuild-${kieMainBranch}")
         name("prod-kieAllBuild-${kieMainBranch}")
