@@ -15,7 +15,7 @@
 
 package org.kie.jenkins.jobdsl.templates
 
-
+import com.thoughtworks.xstream.converters.basic.StringBufferConverter
 import javaposse.jobdsl.dsl.Job
 import org.kie.jenkins.jobdsl.Constants;
 
@@ -30,13 +30,15 @@ class PrVerificationJob extends BasicJob {
      *
      * @param job - Jenkins job object.
      * @param projectName - Project name that PR verification Job is run against
+     * @param githubGroup - GitHub group name
      * @param labelName - Jenkins slave nodes label name
      * @param timeoutValue - Job timeout value in minutes
+     * @param mavenGoals - Build maven goals
      */
-    static void addPrConfiguration(Job job, String projectName, String labelName, int timeoutValue) {
+    static void addPrConfiguration(Job job, String projectName, String githubGroup, String labelName, int timeoutValue, String mavenGoals) {
 
         //Add common configuration to the job
-        String description = String.format("Pull Request Verification job for %s project.", projectName);
+        String description = String.format("Pull Request Verification job for ${projectName} project.");
         addCommonConfiguration(job, description)
 
         //Add PR configuration
@@ -48,6 +50,41 @@ class PrVerificationJob extends BasicJob {
             // Label which specifies which nodes this job can run on.
             label(labelName)
 
+            // Allows a job to check out sources from an SCM provider.
+            scm {
+
+                // Adds a Git SCM source.
+                git {
+
+                    // Specify the branches to examine for changes and to build.
+                    branch("\${sha1}")
+
+                    // Adds a remote.
+                    remote {
+
+                        // Sets a remote URL for a GitHub repository.
+                        github("${githubGroup}/${projectName}")
+
+                        // Sets a name for the remote.
+                        name("origin")
+
+                        // Sets a refspec for the remote.
+                        refspec("+refs/pull/*:refs/remotes/origin/pr/*")
+                    }
+
+                    // Adds additional behaviors.
+                    extensions {
+
+                        // Specifies behaviors for cloning repositories.
+                        cloneOptions {
+
+                            // Specify a folder containing a repository that will be used by Git as a reference during clone operations.
+                            reference("/home/jenkins/git-repos/${projectName}.git")
+                        }
+                    }
+                }
+            }
+
             // Adds build triggers to the job.
             triggers {
 
@@ -55,7 +92,7 @@ class PrVerificationJob extends BasicJob {
                 githubPullRequest {
 
                     // List of organizations. Their members will be whitelisted.
-                    orgWhitelist(["appformer", "kiegroup"])
+                    orgWhitelist(["appformer", "kiegroup, jboss-integration"])
 
                     // Use this option to allow members of whitelisted organisations to behave like admins, i.e. whitelist users and trigger pull request testing.
                     allowMembersOfWhitelistedOrgsAsAdmin()
@@ -93,11 +130,22 @@ class PrVerificationJob extends BasicJob {
                 }
             }
 
+            // Adds build steps to the jobs.
+            steps {
+
+                // Invokes a Maven build.
+                maven {
+
+                    // Specifies the Maven installation for executing this step.
+                    mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
+
+                    // Specifies the goals to execute including other command line options.
+                    goals(mavenGoals)
+                }
+            }
+
             // Adds post-build actions to the job.
             publishers {
-
-                //Archives artifacts with each build.
-                archiveArtifacts("**target/*.hpi")
 
                 // Publishes JUnit test result reports.
                 archiveJunit('**/target/*-reports/TEST-*.xml') {

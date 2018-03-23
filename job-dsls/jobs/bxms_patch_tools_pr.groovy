@@ -18,22 +18,13 @@ import org.kie.jenkins.jobdsl.templates.BasicJob
 import org.kie.jenkins.jobdsl.templates.PrVerificationJob
 
 // Job parameters values
-projectName = "kie-build-helper-jenkins-plugin"
-githubGroup = "kiegroup"
+projectName = "bxms-patch-tools"
+githubGroup = "jboss-integration"
 labelName = "rhel7&&mem4g"
 timeoutValue = 60
 mavenGoals = "-B clean install"
 
 // Creates or updates a free style job.
-def jobDefinition = job("${projectName}-pullrequests") {
-
-    // Adds post-build actions to the job.
-    publishers {
-
-        //Archives artifacts with each build.
-        archiveArtifacts("**target/*.hpi")
-
-    }
-}
+def jobDefinition = job("${projectName}-pullrequests")
 
 PrVerificationJob.addPrConfiguration(jobDefinition, projectName, githubGroup, labelName, timeoutValue, mavenGoals)
