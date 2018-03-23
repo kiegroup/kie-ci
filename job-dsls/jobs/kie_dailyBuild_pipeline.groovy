@@ -96,6 +96,7 @@ pipelineJob("kieAllBuildPipeline-${kieMainBranch}") {
         stringParam("erraiVersionNew", "${erraiVersionNew}", "New version of errai. This will be usually set automatically by the parent pipeline job. ")
         stringParam("kieMainBranch", "${kieMainBranch}", "kie branch. This will be usually set automatically by the parent pipeline job. ")
         stringParam("erraiBranch", "${erraiBranch}", "errai branch. This will be usually set automatically by the parent pipeline job. ")
+        stringParam("organization", "${organization}", "Name of organization. This will be usually set automatically by the parent pipeline job. ")
     }
 
     logRotator {
