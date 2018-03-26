@@ -5,7 +5,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
-        branch                 : "master",
+        branch                 : "7.7.x",
         timeoutMins            : 60,
         label                  : "rhel7 && mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",

@@ -1,13 +1,13 @@
 //Define Variables
 
-def kieVersion="master"
+def kieVersion="7.7.x"
 def javadk="jdk1.8"
 def jaydekay="JDK1_8"
 def mvnToolEnv="APACHE_MAVEN_3_3_9"
 def mvnVersion="apache-maven-3.3.9"
 def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms2g -Xmx3g"
-def kieMainBranch="master"
+def kieMainBranch="7.7.x"
 def organization="kiegroup"
 
 
