@@ -88,7 +88,7 @@ def final REPO_CONFIGS = [
                 ]
         ],
         "kie-wb-distributions"      : [
-                label             : "linux && mem16g && gui-testing",
+                label             : "linux && mem24g && gui-testing",
                 timeoutMins       : 120,
                 mvnGoals          : DEFAULTS["mvnGoals"].replace("-T1C", "-T2") + " -Pkie-wb",
                 mvnProps          : DEFAULTS["mvnProps"] + [

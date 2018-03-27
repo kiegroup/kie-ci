@@ -8,7 +8,7 @@ def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
         branch                 : "master",
         timeoutMins            : 300,
-        label                  : "rhel7 && mem16g",
+        label                  : "rhel7 && mem24g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         downstreamMvnGoals     : "-e -nsu -fae -B -T2 -Pkie-wb,wildfly11,sourcemaps clean install",
         downstreamMvnProps     : [
