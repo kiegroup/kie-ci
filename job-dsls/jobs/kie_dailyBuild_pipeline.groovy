@@ -335,7 +335,7 @@ job("kieAllBuild-${kieMainBranch}") {
         stringParam("kieMainBranch", "appformer branch", "branch of kie. This will be usually set automatically by the parent trigger job. ")
     }
 
-    label("linux&&rhel7&&mem16g")
+    label("linux&&rhel7&&mem24g")
 
     logRotator {
         numToKeep(10)
@@ -484,7 +484,7 @@ job("prod-kieAllBuild-${kieMainBranch}") {
         }
     }
 
-    label("linux&&rhel7&&mem16g")
+    label("linux&&rhel7&&mem24g")
 
     logRotator {
         numToKeep(5)
