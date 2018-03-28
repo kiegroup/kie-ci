@@ -35,10 +35,10 @@ class PrVerificationJob extends BasicJob {
      * @param timeoutValue - Job timeout value in minutes
      * @param mavenGoals - Build maven goals
      */
-    static void addPrConfiguration(Job job, String projectName, String githubGroup, String labelName, int timeoutValue, String mavenGoals) {
+    static void addPrConfiguration(Job job, String projectName, String githubGroup, String githubCredentials = "none", String labelName, int timeoutValue, String mavenGoals) {
 
         //Add common configuration to the job
-        String description = String.format("Pull Request Verification job for ${projectName} project.");
+        String description = String.format("Pull Request Verification job for ${projectName} project.")
         addCommonConfiguration(job, description)
 
         //Add PR configuration
@@ -64,6 +64,10 @@ class PrVerificationJob extends BasicJob {
 
                         // Sets a remote URL for a GitHub repository.
                         github("${githubGroup}/${projectName}")
+
+
+                        // Sets credentials for authentication with the remote repository.
+                        credentials(githubCredentials)
 
                         // Sets a name for the remote.
                         name("origin")
