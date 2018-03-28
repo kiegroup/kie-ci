@@ -515,7 +515,7 @@ job("prod-kieAllBuild-${kieMainBranch}") {
             allowEmpty(true)
             pattern("prodBranches.tgz")
         }
-        mailer('mbiarnes@redhat.com', false, false)
+        mailer('mbiarnes@redhat.com pszubiak@redhat.com anstephe@redhat.com', false, false)
     }
 
     configure { project ->
