@@ -13,8 +13,6 @@
  * limitations under the License.
  */
 
-import org.kie.jenkins.jobdsl.Constants
-import org.kie.jenkins.jobdsl.templates.BasicJob
 import org.kie.jenkins.jobdsl.templates.PrVerificationJob
 
 // Job parameters values
@@ -36,4 +34,4 @@ def jobDefinition = job("${projectName}-pullrequests") {
     }
 }
 
-PrVerificationJob.addPrConfiguration(jobDefinition, projectName, githubGroup, labelName, timeoutValue, mavenGoals)
+PrVerificationJob.addPrConfiguration(job = jobDefinition, projectName = projectName, githubGroup = githubGroup, labelName = labelName, timeoutValue = timeoutValue, mavenGoals = mavenGoals)
