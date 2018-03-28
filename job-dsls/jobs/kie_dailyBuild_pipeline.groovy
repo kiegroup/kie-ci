@@ -53,7 +53,7 @@ pipeline {
         
     stage('start daily kieAllBuilds for community and product') {
       steps {
-            build job: "kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion],
+            build job: "kieAllBuild-${kieMainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion],
             [$class: 'StringParameterValue', name: 'erraiVersionNew', value: erraiVersionNew],[$class: 'StringParameterValue', name: 'appformerVersion', value: appformerVersion],
             [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]                    
       }
@@ -63,16 +63,16 @@ pipeline {
       steps {
         parallel (
           "jbpmTestCoverageMatrix" : {
-              build job: "jbpmTestCoverageMatrix-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+              build job: "jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
           },
           "jbpmTestContainerMatrix" : {
-              build job: "jbpmTestContainerMatrix-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+              build job: "jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
           },
           "kieWbTestsMatrix" : {
-            build job: "kieWbTestsMatrix-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+            build job: "kieWbTestsMatrix-kieAllBuild-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
           },
           "kieServerMatrix" : {
-            build job: "kieServerMatrix-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+            build job: "kieServerMatrix-kieAllBuild-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
           },
           "kie-docker-ci-images" : {
             build job: "kie-docker-ci-images-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
