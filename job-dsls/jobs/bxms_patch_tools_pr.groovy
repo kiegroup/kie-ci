@@ -23,9 +23,9 @@ githubGroup = "jboss-integration"
 labelName = "rhel7&&mem4g"
 timeoutValue = 60
 mavenGoals = "-B clean install"
-githubCredentials = "KIE CI User"
+githubCredentialsId = "21876262-6e87-4e1f-9e7f-0951d00e6c36"
 
 // Creates or updates a free style job.
 def jobDefinition = job("${projectName}-pullrequests")
 
-PrVerificationJob.addPrConfiguration(job = jobDefinition, projectName = projectName, githubGroup = githubGroup, githubCredentials = githubCredentials, labelName = labelName, timeoutValue = timeoutValue, mavenGoals = mavenGoals)
+PrVerificationJob.addPrConfiguration(job = jobDefinition, projectName = projectName, githubGroup = githubGroup, githubCredentialsId = githubCredentialsId, labelName = labelName, timeoutValue = timeoutValue, mavenGoals = mavenGoals)
