@@ -63,19 +63,19 @@ pipeline {
       steps {
         parallel (
           "jbpmTestCoverageMatrix" : {
-              build job: "jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+              build job: "jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
           },
           "jbpmTestContainerMatrix" : {
-              build job: "jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+              build job: "jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
           },
           "kieWbTestsMatrix" : {
-            build job: "kieWbTestsMatrix-kieAllBuild-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+            build job: "kieWbTestsMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
           },
           "kieServerMatrix" : {
-            build job: "kieServerMatrix-kieAllBuild-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+            build job: "kieServerMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
           },
           "kie-docker-ci-images" : {
-            build job: "kie-docker-ci-images-${kieMainBranch}", parameters: [$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]
+            build job: "kie-docker-ci-images-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
           }
         )    
       } 
@@ -264,7 +264,7 @@ EOT
 
 # (2) upload the content to remote staging repo
 mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
- -DrepositoryDirectory=$deployDir -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie $kieVersion" -DstagingProgressTimeoutMinutes=80
+ -DrepositoryDirectory=$deployDir -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie $kieVersion" -DkeepStagingRepositoryOnCloseRuleFailure=true -DstagingProgressTimeoutMinutes=80
 # creates a file (list) of the last commit hash of each repository as handover for production
 ./droolsjbpm-build-bootstrap/script/git-all.sh log -1 --pretty=oneline >> git-commit-hashes.txt
 echo $kieVersion > $WORKSPACE/version.txt
@@ -324,7 +324,7 @@ job("kieAllBuild-${kieMainBranch}") {
 
     wrappers {
         timeout {
-            absolute(340)
+            absolute(720)
         }
         timestamps()
         colorizeOutput()
