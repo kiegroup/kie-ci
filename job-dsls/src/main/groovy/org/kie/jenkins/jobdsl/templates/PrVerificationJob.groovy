@@ -31,11 +31,12 @@ class PrVerificationJob extends BasicJob {
      * @param job - Jenkins job object.
      * @param projectName - Project name that PR verification Job is run against
      * @param githubGroup - GitHub group name
+     * @param githubCredentialsId - GitHub credentials id.
      * @param labelName - Jenkins slave nodes label name
      * @param timeoutValue - Job timeout value in minutes
      * @param mavenGoals - Build maven goals
      */
-    static void addPrConfiguration(Job job, String projectName, String githubGroup, String githubCredentials = "none", String labelName, int timeoutValue, String mavenGoals) {
+    static void addPrConfiguration(Job job, String projectName, String githubGroup, String githubCredentialsId = "", String labelName, int timeoutValue, String mavenGoals) {
 
         //Add common configuration to the job
         String description = String.format("Pull Request Verification job for ${projectName} project.")
@@ -67,7 +68,7 @@ class PrVerificationJob extends BasicJob {
 
 
                         // Sets credentials for authentication with the remote repository.
-                        credentials(githubCredentials)
+                        credentials(githubCredentialsId)
 
                         // Sets a name for the remote.
                         name("origin")
