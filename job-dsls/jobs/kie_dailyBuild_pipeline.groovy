@@ -125,7 +125,7 @@ pipelineJob("kieAllBuildPipeline-${kieMainBranch}") {
     }
 
     triggers {
-        cron("H 20 * * *")
+        cron("H 2 * * *")
     }
 
     definition {
@@ -835,7 +835,7 @@ matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
         shell(kieServerTest)
         maven{
             mavenInstallation("${mvnVersion}")
-            goals("-B -e -fae -nsu clean verify -P\$container")
+            goals("-B -e -fae -nsu clean verify -P\$container -Pjenkins-pr-builder")
             rootPOM("kie-server-parent/kie-server-tests/pom.xml")
             properties("kie.server.testing.kjars.build.settings.xml":"\$SETTINGS_XML_FILE")
             properties("maven.test.failure.ignore": true)
