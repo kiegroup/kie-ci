@@ -142,7 +142,10 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["optashift-employee-rostering"]
         ],
         "optashift-employee-rostering" : [
-                ircNotificationChannels: ["#optaplanner-dev"]
+                ircNotificationChannels: ["#optaplanner-dev"],
+                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
+                        "**/target/configurations/cargo-profile/profile-log.txt"
+                ]
         ],
 ]
 
