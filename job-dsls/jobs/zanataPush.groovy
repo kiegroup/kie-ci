@@ -1,7 +1,7 @@
 //Define Variables
 
 def kieMainBranch="master"
-def zanataVersion="7.7.0"
+def zanataVersion="7.8.0"
 def settingsXml="org.jenkinsci.plugins.configfiles.custom.CustomConfig1457025283676"
 
 def organization="kiegroup"
