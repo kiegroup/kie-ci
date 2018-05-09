@@ -1,8 +1,8 @@
 //Define Variables
 
-def kieMainBranch="master"
+def kieMainBranch="7.7.x"
 def zanataVersion="7.7.0"
-def settingsXml="org.jenkinsci.plugins.configfiles.custom.CustomConfig1457025283676"
+def settingsXml="88ab0f8c-42fa-4b93-b849-490478570d02"
 
 def organization="kiegroup"
 def javadk="jdk1.8"
@@ -20,6 +20,10 @@ job("zanataPullModules-${zanataVersion}") {
 
     description("This job: <br> pushes the i18n files to https://vendors.zanata.redhat.com<br>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
+    parameters {
+        stringParam("kieMainBranch", "${kieMainBranch}", "please edit the name of the release branch <br> ******************************************************** <br> ")
+    };
+    
     scm {
         git {
             remote {
