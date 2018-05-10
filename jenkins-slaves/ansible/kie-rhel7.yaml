@@ -96,6 +96,7 @@
      - bzip2
      - rng-tools
      - ansible
+     - zip
 
   - name: Copy Docker config
     copy:
