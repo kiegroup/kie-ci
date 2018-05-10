@@ -280,7 +280,7 @@ EOT
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
 ./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true\\
- -Dgwt.memory.settings="-Xms1g -Xmx10g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
+ -Dgwt.memory.settings="-Xmx10g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
 
 # (2) upload the content to remote staging repo
 mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.8:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
@@ -335,7 +335,7 @@ job("kieAllBuild-${kieMainBranch}") {
         stringParam("kieMainBranch", "appformer branch", "branch of kie. This will be usually set automatically by the parent trigger job. ")
     }
 
-    label("linux&&rhel7&&mem16g")
+    label("linux&&rhel7&&mem24g")
 
     logRotator {
         numToKeep(10)
