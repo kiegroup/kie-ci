@@ -158,25 +158,26 @@ git checkout -b $erraiVersionNew $erraiBranch
 sh updateVersions.sh $erraiVersionOld $erraiVersionNew
 # build the repos & deploy into local dir (will be later copied into staging repo)
 deployDir=$WORKSPACE/deploy-dir
-# (1) do a full build, but deploy only into local dir
+# do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
 mvn -U -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=3
-# (2) upload the content to remote staging repo
+# unpack zip to QA Nexus
 cd $deployDir
-mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.8:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository -DrepositoryDirectory=$deployDir\\
- -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="errai $erraiVersionNew" -DstagingProgressTimeoutMinutes=30'''
+zip -r kiegroup .
+curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild/content-compressed
+'''
 
 
 job("errai-kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the errai version")
     parameters{
-        stringParam("erraiVersionNew", "errai version", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("erraiVersionOld", "old errai version", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("erraiBranch", "errai branch", "Branch of errai. This will be usually set automatically by the parent trigger job. ")
+        stringParam("erraiVersionNew", "${erraiVersionNew}", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
+        stringParam("erraiVersionOld", "${erraiVersionOld}", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
+        stringParam("erraiBranch", "${erraiBranch}", "Branch of errai. This will be usually set automatically by the parent trigger job. ")
     }
 
-    label("rhel7&&mem16g")
+    label("rhel7&&mem4g")
 
     logRotator {
         numToKeep(10)
@@ -193,9 +194,12 @@ job("errai-kieAllBuild-${kieMainBranch}") {
         toolenv("${mvnToolEnv}", "${jaydekay}")
         preBuildCleanup()
         configFiles {
-            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
+            mavenSettings("32d15210-2955-4894-93fe-b7b53e0f2e5e"){
                 variable("SETTINGS_XML_FILE")
             }
+        }
+        credentialsBinding {
+          usernamePassword("kieUnpack" , "unpacks-zip-on-qa-nexus")
         }
     }
 
@@ -276,15 +280,17 @@ rm -rf \\`find \\$baseDir -type f -name "*zip"\\`
 rm -rf \\`find \\$baseDir -type d -name "gwt-unitCache"\\`
 EOT
 
-# (1) do a full build, but deploy only into local dir
+# do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
 ./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true\\
  -Dgwt.memory.settings="-Xmx10g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
 
-# (2) upload the content to remote staging repo
-mvn -B -e org.sonatype.plugins:nexus-staging-maven-plugin:1.6.8:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository\\
- -DrepositoryDirectory=$deployDir -s $SETTINGS_XML_FILE -DstagingProfileId=15c3321d12936e -DstagingDescription="kie $kieVersion" -DkeepStagingRepositoryOnCloseRuleFailure=true -DstagingProgressTimeoutMinutes=80
+# unpack zip to QA Nexus
+cd $deployDir
+zip -r kiegroup .
+curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild/content-compressed
+
 # creates a file (list) of the last commit hash of each repository as handover for production
 ./droolsjbpm-build-bootstrap/script/git-all.sh log -1 --pretty=oneline >> git-commit-hashes.txt
 echo $kieVersion > $WORKSPACE/version.txt
@@ -329,10 +335,10 @@ job("kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the kie version")
 
     parameters{
-        stringParam("erraiVersionNew", "errai Version", "Version of errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("appformerVersion", "appformer version (former uberfire version)", "Version of appformer. This will be usually set automatically by the parent trigger job. ")
-        stringParam("kieVersion", "kie version", "Version of kie. This will be usually set automatically by the parent trigger job. ")
-        stringParam("kieMainBranch", "appformer branch", "branch of kie. This will be usually set automatically by the parent trigger job. ")
+        stringParam("erraiVersionNew", "${erraiVersionNew}", "Version of errai. This will be usually set automatically by the parent trigger job. ")
+        stringParam("appformerVersion", "${appformerVersion}", "Version of appformer. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kieVersion", "${kieVersion}", "Version of kie. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kieMainBranch", "${kieMainBranch}", "branch of kie. This will be usually set automatically by the parent trigger job. ")
     }
 
     label("linux&&rhel7&&mem24g")
@@ -352,9 +358,12 @@ job("kieAllBuild-${kieMainBranch}") {
         toolenv("${mvnToolEnv}", "${jaydekay}")
         preBuildCleanup()
         configFiles {
-            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
+            mavenSettings("32d15210-2955-4894-93fe-b7b53e0f2e5e"){
                 variable("SETTINGS_XML_FILE")
             }
+        }
+        credentialsBinding {
+            usernamePassword("kieUnpack" , "unpacks-zip-on-qa-nexus")
         }
     }
 
@@ -464,11 +473,11 @@ job("prod-kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the prod kie version")
 
     parameters{
-        stringParam("kieProdVersion", "7.7.0", "Prod kie version. This will be usually set automatically by the parent trigger job. ")
-        stringParam("appformerProdVersion", "2.4.0", "Prod appformer version (former uberfire version). This will be usually set automatically by the parent trigger job. ")
-        stringParam("erraiVersionNew", "4.2.0", "Errai version. This will be usually set automatically by the parent trigger job. ")
-        stringParam("kieMainBranch", "master", "Name of kie branch. This will be usually set automatically by the parent trigger job. ")
-        stringParam("kieProdBranch", "bsync-", "Name of product branch. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kieProdVersion", "${kieVersion}+<date>+suffix", "Prod kie version. This will be usually set automatically by the parent trigger job. ")
+        stringParam("appformerProdVersion", "${appformerVersion}+<date>+suffix", "Prod appformer version (former uberfire version). This will be usually set automatically by the parent trigger job. ")
+        stringParam("erraiVersionNew", "${erraiVersionNew}+<date>+suffix", "Errai version. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kieMainBranch", "${kieMainBranch}", "Name of kie branch. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kieProdBranch", "${kieProdBranch}", "Name of product branch. This will be usually set automatically by the parent trigger job. ")
     }
 
     scm {
@@ -501,7 +510,7 @@ job("prod-kieAllBuild-${kieMainBranch}") {
         toolenv("${mvnToolEnv}", "${jaydekay}")
         preBuildCleanup()
         configFiles {
-            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1434468480404"){
+            mavenSettings("32d15210-2955-4894-93fe-b7b53e0f2e5e"){
                 variable("SETTINGS_XML_FILE")
             }
         }
@@ -542,7 +551,7 @@ def jbpmTestCoverage='''#!/bin/bash -e
 STAGING_REP=kie-internal-group
 echo "KIE version: $kieVersion"
 # wget the tar.gz sources
-wget -q https://repository.jboss.org/nexus/content/repositories/$STAGING_REP/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
@@ -570,6 +579,11 @@ matrixJob("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
         timestamps()
         colorizeOutput()
         preBuildCleanup()
+        configFiles {
+            mavenSettings("32d15210-2955-4894-93fe-b7b53e0f2e5e"){
+                variable("SETTINGS_XML_FILE")
+            }
+        }
     }
 
     publishers {
@@ -595,7 +609,7 @@ matrixJob("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
             goals("clean verify -e -B -Dmaven.test.failure.ignore=true -Dintegration-tests")
             rootPOM("jbpm-test-coverage/pom.xml")
             mavenOpts("-Xmx3g")
-            providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905")
+            providedSettings("32d15210-2955-4894-93fe-b7b53e0f2e5e")
         }
     }
 }
@@ -605,7 +619,7 @@ matrixJob("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
 def jbpmContainerTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q https://repository.jboss.org/nexus/content/repositories/kie-internal-group/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
@@ -637,7 +651,7 @@ matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
         colorizeOutput()
         preBuildCleanup()
         configFiles {
-            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905"){
+            mavenSettings("32d15210-2955-4894-93fe-b7b53e0f2e5e"){
                 variable("SETTINGS_XML_FILE")
             }
         }
@@ -666,7 +680,7 @@ matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
             goals("-e -B clean install")
             rootPOM("jbpm-container-test/pom.xml")
             mavenOpts("-Xmx3g")
-            providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905")
+            providedSettings("32d15210-2955-4894-93fe-b7b53e0f2e5e")
             properties("maven.test.failure.ignore": true)
             properties("container.profile":"\$container")
             properties("org.apache.maven.user-settings":"\$SETTINGS_XML_FILE")
@@ -679,8 +693,7 @@ matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
 def kieWbTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q https://repository.jboss.org/nexus/content/repositories/kie-internal-group/org/kie/kie-wb-distributions/$kieVersion/\\
-kie-wb-distributions-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv kie-wb-distributions-$kieVersion/* .
 rmdir kie-wb-distributions-$kieVersion'''
@@ -726,7 +739,7 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
         colorizeOutput()
         preBuildCleanup()
         configFiles {
-            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905") {
+            mavenSettings("32d15210-2955-4894-93fe-b7b53e0f2e5e") {
                 variable("SETTINGS_XML_FILE")
             }
         }
@@ -760,10 +773,10 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
             properties("maven.test.failure.ignore": true)
             properties("deployment.timeout.millis":"240000")
             properties("container.startstop.timeout.millis":"240000")
-            properties("webdriver.firefox.bin":"/opt/tools/firefox-38esr/firefox-bin")
+            properties("webdriver.firefox.bin":"/opt/tools/firefox-45esr/firefox-bin")
             properties("eap7.download.url":"http://download.devel.redhat.com/released/JBEAP-7/7.1.0/jboss-eap-7.1.0.zip")
             mavenOpts("-Xms1024m -Xmx1536m")
-            providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905")
+            providedSettings("32d15210-2955-4894-93fe-b7b53e0f2e5e")
         }
     }
 }
@@ -773,8 +786,7 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
 def kieServerTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q https://repository.jboss.org/nexus/content/repositories/kie-internal-group/org/drools/droolsjbpm-integration/$kieVersion/\\
-droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild/org/drools/droolsjbpm-integration/$kieVersion/droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv droolsjbpm-integration-$kieVersion/* .
 rmdir droolsjbpm-integration-$kieVersion'''
@@ -809,7 +821,7 @@ matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
         colorizeOutput()
         preBuildCleanup()
         configFiles {
-            mavenSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905") {
+            mavenSettings("32d15210-2955-4894-93fe-b7b53e0f2e5e") {
                 variable("SETTINGS_XML_FILE")
             }
         }
@@ -843,7 +855,7 @@ matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
             properties("container.startstop.timeout.millis":"240000")
             properties("eap7.download.url":"http://download.devel.redhat.com/released/JBEAP-7/7.1.0/jboss-eap-7.1.0.zip")
             mavenOpts("-Xms1024m -Xmx1536m")
-            providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1438340407905")
+            providedSettings("32d15210-2955-4894-93fe-b7b53e0f2e5e")
         }
     }
 }
@@ -935,7 +947,7 @@ job("kie-docker-ci-images-${kieMainBranch}") {
     description("Builds CI Docker images for master branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
-        stringParam("kieVersion", "7.6.0-SNAPSHOT", "Please edit the version of the kie release <br> i.e. typically <b> major.minor.micro.EXT </b>i.e. 8.0.0.Beta1<br> Normally the kie version will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieVersion", "${kieVersion}-SNAPSHOT", "Please edit the version of the kie release <br> i.e. typically <b> major.minor.micro.EXT </b>i.e. 8.0.0.Beta1<br> Normally the kie version will be supplied by parent job <br> ******************************************************** <br> ")
     }
 
     scm {
