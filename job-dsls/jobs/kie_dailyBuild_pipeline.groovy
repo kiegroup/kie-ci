@@ -125,7 +125,7 @@ pipelineJob("kieAllBuildPipeline-${kieMainBranch}") {
     }
 
     triggers {
-        cron("H 22 * * *")
+        cron("H 20 * * *")
     }
 
     definition {
@@ -290,6 +290,7 @@ EOT
 cd $deployDir
 zip -r kiegroup .
 curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild/content-compressed
+cd ..
 
 # creates a file (list) of the last commit hash of each repository as handover for production
 ./droolsjbpm-build-bootstrap/script/git-all.sh log -1 --pretty=oneline >> git-commit-hashes.txt
@@ -493,7 +494,7 @@ job("prod-kieAllBuild-${kieMainBranch}") {
         }
     }
 
-    label("linux&&rhel7&&mem16g")
+    label("linux&&rhel7&&mem24g")
 
     logRotator {
         numToKeep(5)
