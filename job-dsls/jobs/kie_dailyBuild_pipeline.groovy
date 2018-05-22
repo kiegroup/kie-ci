@@ -10,9 +10,9 @@ def kieMainBranch="7.7.x"
 def kieVersion="7.7.1"
 def kieProdBranch="7.7.x"
 def appformerVersion="2.4.1"
-def erraiBranch="master"
-def erraiVersionOld="4.2.1-SNAPSHOT"
-def erraiVersionNew="4.2.1"
+def erraiBranch="4.2.x"
+def erraiVersionOld="4.2.2-SNAPSHOT"
+def erraiVersionNew="4.2.2"
 def organization="kiegroup"
 
 // definition of pipeline jobs
