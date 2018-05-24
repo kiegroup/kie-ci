@@ -25,6 +25,14 @@
       group: root
       mode: 0644
 
+  - name: Install RCMTOOLS repository
+    yum:
+      name: http://download.devel.redhat.com/rel-eng/RCMTOOLS/latest-redhat-rcminternal-release-server-rhel-7.noarch.rpm
+      state: present
+
+  - name: Import RCMTOOLS repository key
+    shell: rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-rcminternal
+
   - name: Install EPEL7 repository
     yum:
       name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -97,6 +105,8 @@
      - rng-tools
      - ansible
      - zip
+     - brewkoji
+     - python2-pip
 
   - name: Copy Docker config
     copy:
