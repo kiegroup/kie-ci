@@ -388,6 +388,7 @@ matrixJob("${folderPath}/jbpmTestCoverageMatrix-kieReleases-${kieMainBranch}") {
 // **********************************************************************************
 
 matrixJob("${folderPath}/serverMatrix-kieReleases-${kieMainBranch}") {
+
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
@@ -457,7 +458,9 @@ matrixJob("${folderPath}/serverMatrix-kieReleases-${kieMainBranch}") {
 
 // ****************************************************************************************************
 
+
 matrixJob("${folderPath}/wbSmokeTestsMatrix-kieReleases-${kieMainBranch}") {
+
     description("This job: <br> - Runs the smoke tests on KIE <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
@@ -533,6 +536,7 @@ matrixJob("${folderPath}/wbSmokeTestsMatrix-kieReleases-${kieMainBranch}") {
 
 job("${folderPath}/pushTags-kieReleases-${kieMainBranch}") {
 
+
     description("This job: <br> creates and pushes the tags for <br> community (kiegroup) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
@@ -598,6 +602,8 @@ job("${folderPath}/pushTags-kieReleases-${kieMainBranch}") {
 
 job("${folderPath}/updateVersion-kieReleases-${kieMainBranch}") {
 
+
+
     description("This job: <br> updates the KIE repositories to a new developmenmt version<br>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
@@ -661,6 +667,7 @@ job("${folderPath}/updateVersion-kieReleases-${kieMainBranch}") {
 }
 
 // ****************************************************************************************
+
 job("${folderPath}/create-jbpm-installers-kieReleases-${kieMainBranch}") {
 
     description("This job: <br> creates the jbpm-installers  <br> IMPORTANT: makes only sense for community releases <br><b> Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")

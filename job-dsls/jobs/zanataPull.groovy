@@ -25,9 +25,6 @@ sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/zanata/zanata-pullModul
 
 job("${folderPath}/zanataPullModules-${zanataVersion}") {
 
-    // temporary disabled until all jobs are migrated to RHBA Jenkins
-    disabled()
-
     description("This job: <br> pushes the i18n files to https://vendors.zanata.redhat.com<br>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {

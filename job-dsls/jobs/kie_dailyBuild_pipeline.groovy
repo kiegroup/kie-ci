@@ -651,7 +651,11 @@ matrixJob("${folderPath}/jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") 
 
     axes {
         labelExpression("label-exp","kie-rhel7&&kie-mem8g")
+<<<<<<< HEAD
         jdk("${javadk}")
+=======
+        jdk("${javadk}")
+>>>>>>> updated fro migration to RHBA Jenkins
         text("container", "tomcat8", "wildfly11")
     }
 
