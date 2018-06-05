@@ -124,7 +124,7 @@ for (repoConfig in REPO_CONFIGS) {
             githubPullRequest {
                 orgWhitelist(["appformer", "dashbuilder", "kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
-                cron("H/20 * * * *")
+                cron("H/30 * * * *")
                 triggerPhrase(".*[j|J]enkins,?.*execute full downstream build.*")
                 onlyTriggerPhrase()
                 whiteListTargetBranches([repoBranch])
