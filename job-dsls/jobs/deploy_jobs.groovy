@@ -215,7 +215,7 @@ for (repoConfig in REPO_CONFIGS) {
         label(get("label"))
 
         triggers {
-            scm('H/20 * * * *')
+            scm('H/30 * * * *')
         }
 
         wrappers {
