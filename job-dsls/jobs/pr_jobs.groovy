@@ -8,8 +8,8 @@ def final DEFAULTS = [
         branch                 : "master",
         timeoutMins            : 60,
         label                  : "rhel7 && mem8g",
-        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
-        mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly11 clean install",
+        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true -Dmaven.javadoc.skip=true clean install",
+        mvnGoals               : "-B -e -T1c -nsu -fae -Pwildfly11 clean install",
         mvnProps               : [
                 "full"                     : "true",
                 "container"                : "wildfly11",
