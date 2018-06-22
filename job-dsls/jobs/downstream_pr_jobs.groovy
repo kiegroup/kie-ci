@@ -10,7 +10,7 @@ def final DEFAULTS = [
         timeoutMins            : 300,
         label                  : "rhel7 && mem24g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true -Dmaven.javadoc.skip=true clean install",
-        downstreamMvnGoals     : "-B -e -T2 -nsu -fae -Pkie-wb,wildfly11,sourcemaps clean install",
+        downstreamMvnGoals     : "-B -e -nsu -fae -Pkie-wb,wildfly11,sourcemaps clean install",
         downstreamMvnProps     : [
                 "full"                               : "true",
                 "container"                          : "wildfly11",
