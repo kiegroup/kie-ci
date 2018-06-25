@@ -142,7 +142,7 @@ sh updateVersions.sh $erraiVersionOld $erraiVersionNew
 deployDir=$WORKSPACE/deploy-dir
 # do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -U -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
+mvn -U -B -e clean deploy -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=3
 # unpack zip on QA Nexus
 cd $deployDir
@@ -263,7 +263,7 @@ EOT
 
 # do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -T2 -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
+./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=1\\
  -Dgwt.memory.settings="-Xmx4g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
 
@@ -704,9 +704,9 @@ for %%x in (%repo_list%) do (
 )
 for %%x in (%repo_list%) do (
     if "%%x" == "kie-wb-common" (
-        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f k\\pom.xml clean install -Dfull -T2 -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 || exit \\b
+        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f k\\pom.xml clean install -Dfull -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 || exit \\b
     ) else (
-        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f %%x\\pom.xml clean install -Dfull -T2 -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 -Dgwt.compiler.skip=true || exit \\b
+        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f %%x\\pom.xml clean install -Dfull -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 -Dgwt.compiler.skip=true || exit \\b
     )
 )'''
 
