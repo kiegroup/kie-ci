@@ -52,7 +52,10 @@ def final REPO_CONFIGS = [
         "drlx-parser"               : [
                 label: "rhel7 && mem4g"
         ],
-        "drools"                    : [],
+        "drools"                    : [
+                // drools-distribution depends on javadoc artifacts (kie-api + kie-internal) built from upstream repos (droolsjbpm-knowledge)
+                upstreamMvnArgs: DEFAULTS["upstreamMvnArgs"].minus("-Dmaven.javadoc.skip=true ")
+        ],
         "optaplanner"               : [],
         "optashift-employee-rostering" : [
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
