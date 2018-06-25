@@ -9,7 +9,7 @@ def final DEFAULTS = [
         timeoutMins            : 60,
         label                  : "rhel7 && mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true -Dmaven.javadoc.skip=true clean install",
-        mvnGoals               : "-B -e -T1C -nsu -fae -Pwildfly11 clean install",
+        mvnGoals               : "-B -e -nsu -fae -Pwildfly11 clean install",
         mvnProps               : [
                 "full"                     : "true",
                 "container"                : "wildfly11",
@@ -95,7 +95,7 @@ def final REPO_CONFIGS = [
         "kie-wb-distributions"      : [
                 label             : "linux && mem24g && gui-testing",
                 timeoutMins       : 120,
-                mvnGoals          : DEFAULTS["mvnGoals"].replace("-T1C", "-T2") + " -Pkie-wb",
+                mvnGoals          : DEFAULTS["mvnGoals"] + " -Pkie-wb",
                 mvnProps          : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": 1,
                         "webdriver.firefox.bin"    : "/opt/tools/firefox-45esr/firefox-bin"
