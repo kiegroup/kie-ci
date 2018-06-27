@@ -7,10 +7,10 @@ import org.kie.jenkins.jobdsl.Constants
 def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
         branch                 : "master",
-        timeoutMins            : 300,
+        timeoutMins            : 600,
         label                  : "rhel7 && mem24g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
-        downstreamMvnGoals     : "-B -e -nsu -fae -Pkie-wb,wildfly11,sourcemaps clean install",
+        downstreamMvnGoals     : "-B -e -nsu -fae -Pkie-wb,wildfly11,sourcemaps,no-showcase clean install",
         downstreamMvnProps     : [
                 "full"                               : "true",
                 "container"                          : "wildfly11",
