@@ -418,7 +418,7 @@ matrixJob("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        archiveJunit("**/TEST-*.xml")
+        archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
         wsCleanup()
     }
@@ -489,7 +489,7 @@ matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        archiveJunit("**/target/failsafe-reports/TEST-*.xml")
+        archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
         wsCleanup()
     }
@@ -590,7 +590,7 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        archiveJunit("**/target/failsafe-reports/TEST-*.xml, **/target/screenshots/*")
+        archiveJunit("**/target/*-reports/TEST-*.xml, **/target/screenshots/*")
         mailer('mbiarnes@redhat.com', false, false)
         wsCleanup()
     }
@@ -666,7 +666,7 @@ matrixJob("kieServerMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     publishers {
-        archiveJunit("**/target/failsafe-reports/TEST-*.xml")
+        archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
         wsCleanup()
     }
