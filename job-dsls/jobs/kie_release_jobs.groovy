@@ -287,7 +287,7 @@ matrixJob("jbpmTestCoverageMatrix-kieReleases-${kieVersion}") {
     }
 
     publishers {
-        archiveJunit("**/TEST-*.xml")
+        archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
 
@@ -361,7 +361,7 @@ matrixJob("serverMatrix-kieReleases-${kieVersion}") {
     }
 
     publishers {
-        archiveJunit("**/target/failsafe-reports/TEST-*.xml")
+        archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
 
@@ -434,7 +434,7 @@ matrixJob("wbSmokeTestsMatrix-kieReleases-${kieVersion}") {
     }
 
     publishers {
-        archiveJunit("**/target/failsafe-reports/TEST-*.xml")
+        archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
     }
 
