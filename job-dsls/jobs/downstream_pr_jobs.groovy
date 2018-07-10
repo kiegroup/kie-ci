@@ -142,7 +142,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
 
             timeout {
-                absolute(get("timeoutMins"))
+                elastic(200, 3, get("timeoutMins"))
             }
             timestamps()
             colorizeOutput()
