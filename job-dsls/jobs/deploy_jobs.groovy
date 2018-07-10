@@ -5,7 +5,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         branch                 : "master",
-        timeoutMins            : 60,
+        timeoutMins            : 90,
         label                  : "rhel7 && mem8g",
         ghOrgUnit              : "kiegroup",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
@@ -225,7 +225,7 @@ for (repoConfig in REPO_CONFIGS) {
                 }
             }
             timeout {
-                absolute(get("timeoutMins"))
+                elastic(200, 3, get("timeoutMins"))
             }
             timestamps()
             colorizeOutput()
