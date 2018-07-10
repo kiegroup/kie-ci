@@ -165,7 +165,7 @@ mvn -U -B -e clean deploy -Dfull -Drelease -DaltDeploymentRepository=local::defa
 # unpack zip to QA Nexus
 cd $deployDir
 zip -r kiegroup .
-curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild/content-compressed
+curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-7.7.x/content-compressed
 '''
 
 
