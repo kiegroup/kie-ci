@@ -552,7 +552,7 @@ def jbpmTestCoverage='''#!/bin/bash -e
 STAGING_REP=kie-internal-group
 echo "KIE version: $kieVersion"
 # wget the tar.gz sources
-wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild-master/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
@@ -620,7 +620,7 @@ matrixJob("jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
 def jbpmContainerTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild-master/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
@@ -694,7 +694,7 @@ matrixJob("jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
 def kieWbTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild-master/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv kie-wb-distributions-$kieVersion/* .
 rmdir kie-wb-distributions-$kieVersion'''
@@ -787,7 +787,7 @@ matrixJob("kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
 def kieServerTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild/org/drools/droolsjbpm-integration/$kieVersion/droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild-master/org/drools/droolsjbpm-integration/$kieVersion/droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv droolsjbpm-integration-$kieVersion/* .
 rmdir droolsjbpm-integration-$kieVersion'''
