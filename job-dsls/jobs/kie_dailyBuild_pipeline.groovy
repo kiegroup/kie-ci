@@ -265,7 +265,7 @@ git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git --branch $k
 ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $kieVersion $kieMainBranch
 
 # upgrade version kiegroup 
-./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieVersion $appformerVersion productized
+./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieVersion $appformerVersion custom
 echo "errai version:" $erraiVersionNew
 echo "appformer version:" $appformerVersion
 echo "kie version" $kieVersion
@@ -447,7 +447,7 @@ cd $WORKSPACE
 ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $kieProdBranch $kieMainBranch
 
 # upgrade version kiegroup 
-./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieProdVersion $appformerProdVersion productized
+./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieProdVersion $appformerProdVersion custom
 
 # change properties via sed as they don't update automatically
 # appformer
