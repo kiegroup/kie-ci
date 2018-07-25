@@ -308,8 +308,6 @@
     shell: cd /home/jenkins/git-repos && git clone --bare https://github.com/{{ item }}
     with_items:
      - errai/errai
-     - uberfire/uberfire
-     - uberfire/uberfire-extensions
      - dashbuilder/dashbuilder
      - kiegroup/kie-soup
      - kiegroup/appformer
@@ -321,21 +319,16 @@
      - kiegroup/droolsjbpm-integration
      - kiegroup/droolsjbpm-tools
      - kiegroup/kie-uberfire-extensions
-     - kiegroup/guvnor
-     - kiegroup/appformer
      - kiegroup/kie-wb-playground
      - kiegroup/kie-wb-common
-     - kiegroup/jbpm-form-modeler
      - kiegroup/drools-wb
      - kiegroup/optaplanner-wb
      - kiegroup/jbpm-designer
      - kiegroup/jbpm-wb
-     - kiegroup/dashboard-builder
-     - kiegroup/jbpm-dashboard
      - kiegroup/kie-docs
      - kiegroup/kie-wb-distributions
-     - kiegroup/droolsjbpm-build-distribution
-     - jboss-integration/kie-eap-modules
+     - kiegroup/jbpm-workitems
+     - kiegroup/optaweb-employee-rostering
 
   - name: Owner of Git cache is Jenkins
     file:

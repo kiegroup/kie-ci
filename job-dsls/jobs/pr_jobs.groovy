@@ -43,7 +43,7 @@ def final REPO_CONFIGS = [
         ],
         "drools"                    : [],
         "optaplanner"               : [],
-        "optashift-employee-rostering" : [
+        "optaweb-employee-rostering" : [
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "**/target/configurations/cargo-profile/profile-log.txt"
                 ]
