@@ -226,14 +226,14 @@ for (repoConfig in REPO_CONFIGS) {
                     branch "$repoBranch"
                     mavenBuildConfig {
                         mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
-                        delegate.mavenOpts("-Xmx2g")
+                        delegate.mavenOpts("-Xmx3g")
                         mavenArgs(get("upstreamMvnArgs"))
                     }
                 }
             }
             maven {
                 mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
-                mavenOpts("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
+                mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                 goals(get("mvnGoals"))
                 properties(get("mvnProps"))
                 providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1433801508409")
