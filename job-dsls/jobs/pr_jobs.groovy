@@ -7,6 +7,7 @@ def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
         branch                 : "master",
         timeoutMins            : 90,
+        ghAuthTokenId          : "4b8101f8-1825-4c85-912b-0b18e611b0a3",
         label                  : "rhel7 && mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-B -e -nsu -fae -Pwildfly11 clean install",
@@ -124,6 +125,7 @@ for (repoConfig in REPO_CONFIGS) {
     String repo = repoConfig.key
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
+    String ghAuthTokenId = get("ghAuthTokenId")
 
     // jobs for master branch don't use the branch in the name
     String jobName = (repoBranch == "master") ? "$repo-pullrequests" : "$repo-pullrequests-$repoBranch"
@@ -174,7 +176,7 @@ for (repoConfig in REPO_CONFIGS) {
             githubPullRequest {
                 orgWhitelist(["appformer", "kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
-                cron("H/30 * * * *")
+                cron("H/10 * * * *")
                 whiteListTargetBranches([repoBranch])
                 extensions {
                     commitStatus {
@@ -262,6 +264,13 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                     }
                 }
+            }
+
+            // Adds authentication token id for github.
+            configure { node ->
+                node / 'triggers' / 'org.jenkinsci.plugins.ghprb.GhprbTrigger' <<
+                        'gitHubAuthId'(ghAuthTokenId)
+
             }
         }
     }

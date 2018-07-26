@@ -104,7 +104,7 @@ class PrVerificationJob extends BasicJob {
                     allowMembersOfWhitelistedOrgsAsAdmin()
 
                     //  This field follows the syntax of cron (with minor differences). Specifically, each line consists of 5 fields separated by TAB or whitespace
-                    cron("H/30 * * * *")
+                    cron("H/10 * * * *")
 
                     // Adding branches to this whitelist allows you to selectively test pull requests destined for these branches only.
                     // Supports regular expressions (e.g. 'master', 'feature-.*').
