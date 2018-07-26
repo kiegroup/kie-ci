@@ -329,7 +329,7 @@
      - kiegroup/drlx-parser
      - kiegroup/drools
      - kiegroup/optaplanner
-     - kiegroup/optashift-employee-rostering
+     - kiegroup/optaweb-employee-rostering
      - kiegroup/jbpm
      - kiegroup/jbpm-work-items
      - kiegroup/droolsjbpm-integration
