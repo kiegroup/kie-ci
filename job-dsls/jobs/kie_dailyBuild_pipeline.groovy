@@ -4,8 +4,8 @@ import org.kie.jenkins.jobdsl.Constants
 
 def javadk=Constants.JDK_VERSION
 def javaToolEnv="KIE_JDK1_8"
-def mvnToolEnv="APACHE_MAVEN_3_3_9"
-def mvnVersion="apache-maven-3.3.9"
+def mvnToolEnv="KIE_MAVEN_3_3_9"
+def mvnVersion="kie-maven-3.3.9"
 def mvnHome="${mvnToolEnv}_HOME"
 def javaHome="${javaToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
@@ -478,7 +478,7 @@ rm -rf \\`find \\$baseDir -type d -name "gwt-unitCache"\\`
 EOT
 
 # do a full build
-./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean install -Dfull -Drelease -Dproductized -s $SETTINGS_XML_FILE\\
+./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e -U clean install -Dfull -Drelease -Dproductized -s $SETTINGS_XML_FILE\\
  -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true\\
  -Dgwt.memory.settings="-Xmx10g" --clean-up-script="$WORKSPACE/clean-up.sh"
  
