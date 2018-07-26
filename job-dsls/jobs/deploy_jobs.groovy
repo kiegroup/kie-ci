@@ -143,7 +143,8 @@ def final REPO_CONFIGS = [
                 mvnGoals               : DEFAULTS["mvnGoals"].replace("-T1C", "-T2") + " -Pkie-wb",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1",
-                        "webdriver.firefox.bin"    : "/opt/tools/firefox-45esr/firefox-bin"
+                        "webdriver.firefox.bin"    : "/opt/tools/firefox-45esr/firefox-bin",
+                        "gwt.memory.settings"      : "-Xmx10g"
                 ],
                 ircNotificationChannels: ["#guvnordev"],
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
