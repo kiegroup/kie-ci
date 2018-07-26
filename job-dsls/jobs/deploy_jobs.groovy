@@ -139,9 +139,9 @@ def final REPO_CONFIGS = [
                 label      : "linux && mem4g",
                 timeoutMins: 30,
                 ircNotificationChannels: ["#jbpmdev"],
-                downstreamRepos        : ["optaweb-employee-rostering"]
+                downstreamRepos        : ["optashift-employee-rostering"]
         ],
-        "optaweb-employee-rostering" : [
+        "optashift-employee-rostering" : [
                 ircNotificationChannels: ["#optaplanner-dev"],
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "**/target/configurations/cargo-profile/profile-log.txt"
