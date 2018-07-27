@@ -166,7 +166,7 @@ job("errai-kieAllBuild-${kieMainBranch}") {
 
     wrappers {
         timeout {
-            absolute(60)
+            elastic(250, 3, 90)
         }
         timestamps()
         colorizeOutput()
@@ -261,9 +261,9 @@ EOT
 
 # do a full build, but deploy only into local dir
 # we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e clean deploy -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
+./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e -U clean deploy -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
  -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=1\\
- -Dgwt.memory.settings="-Xmx4g -Xms1g -Xss1M" --clean-up-script="$WORKSPACE/clean-up.sh"
+ -Dgwt.memory.settings="-Xmx4g" --clean-up-script="$WORKSPACE/clean-up.sh"
 
 # unpack zip to QA Nexus
 cd $deployDir
@@ -330,7 +330,7 @@ job("kieAllBuild-${kieMainBranch}") {
 
     wrappers {
         timeout {
-            absolute(720)
+            elastic(250, 3, 900)
         }
         timestamps()
         colorizeOutput()
