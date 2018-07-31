@@ -9,6 +9,7 @@ def final DEFAULTS = [
         branch                 : "7.7.x",
         timeoutMins            : 300,
         label                  : "rhel7 && mem16g",
+        ghAuthTokenId          : "b44920d5-c805-473b-887a-2c89263f662f",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         downstreamMvnGoals     : "-e -nsu -fae -B -T2 -Pkie-wb,wildfly11,sourcemaps clean install",
         downstreamMvnProps     : [
@@ -72,6 +73,7 @@ for (repoConfig in REPO_CONFIGS) {
     String repo = repoConfig.key
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
+    String ghAuthTokenId = get("ghAuthTokenId")
 
     // jobs for master branch don't use the branch in the name
     String jobName = (repoBranch == "master") ? "$repo-downstream-pullrequests" : "$repo-downstream-pullrequests-$repoBranch"
@@ -122,7 +124,7 @@ for (repoConfig in REPO_CONFIGS) {
             githubPullRequest {
                 orgWhitelist(["appformer", "kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
-                cron("H/30 * * * *")
+                cron("H/10 * * * *")
                 triggerPhrase(".*[j|J]enkins,?.*execute full downstream build.*")
                 onlyTriggerPhrase()
                 whiteListTargetBranches([repoBranch])
@@ -205,6 +207,12 @@ for (repoConfig in REPO_CONFIGS) {
                     }
                 }
             }
+        }
+
+        // Adds authentication token id for github.
+        configure { node ->
+            node / 'triggers' / 'org.jenkinsci.plugins.ghprb.GhprbTrigger' <<
+                    'gitHubAuthId'(ghAuthTokenId)
         }
     }
 }
