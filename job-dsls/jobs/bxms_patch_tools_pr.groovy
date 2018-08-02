@@ -24,7 +24,6 @@ labelName = "rhel7&&mem4g"
 timeoutValue = 60
 mavenGoals = "-B clean install"
 githubCredentialsId = "kiereleaseuser2-github"
-githubAuthTokenId = "4b8101f8-1825-4c85-912b-0b18e611b0a3"
 
 // Creates or updates a free style job.
 def jobDefinition = job("${projectName}-pullrequests")
@@ -33,7 +32,7 @@ PrVerificationJob.addPrConfiguration(job = jobDefinition,
         projectName = projectName,
         githubGroup = githubGroup,
         githubCredentialsId = githubCredentialsId,
-        githubAuthTokenId = githubAuthTokenId,
+        githubAuthTokenId = Constants.GITHUB_AUTH_TOKEN,
         labelName = labelName,
         timeoutValue = timeoutValue,
         mavenGoals = mavenGoals

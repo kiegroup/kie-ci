@@ -1,14 +1,17 @@
+import com.sun.org.apache.bcel.internal.classfile.ConstantString
+import org.kie.jenkins.jobdsl.Constants
+
 //Define Variables
 
 def kieVersion="master"
-def javadk="jdk1.8"
+def javadk=Constants.JDK_VERSION
 def jaydekay="JDK1_8"
 def mvnToolEnv="APACHE_MAVEN_3_3_9"
 def mvnVersion="apache-maven-3.3.9"
 def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms2g -Xmx3g"
-def kieMainBranch="master"
-def organization="kiegroup"
+def kieMainBranch= Constants.BRANCH
+def organization=Constants.GITHUB_ORG_UNIT
 
 
 def createReleaseBranches="""

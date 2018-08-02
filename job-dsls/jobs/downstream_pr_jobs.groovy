@@ -5,11 +5,11 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
-        ghOrgUnit              : "kiegroup",
-        branch                 : "master",
+        ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
+        branch                 : Constants.BRANCH,
         timeoutMins            : 600,
         label                  : "rhel7 && mem24g",
-        ghAuthTokenId          : "4b8101f8-1825-4c85-912b-0b18e611b0a3",
+        ghAuthTokenId          : Constants.GITHUB_AUTH_TOKEN,
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         downstreamMvnGoals     : "-B -e -nsu -fae -Pkie-wb,wildfly11,sourcemaps,no-showcase clean install",
         downstreamMvnProps     : [
@@ -62,7 +62,6 @@ def final REPO_CONFIGS = [
         "optaplanner-wb"            : [],
         "jbpm-designer"             : [],
         "jbpm-wb"                   : [],
-        //"kie-docs"                  : [], // no other repo depends on kie-docs
         //"kie-wb-distributions"      : [] // kie-wb-distributions is the last repo in the chain
 ]
 

@@ -4,10 +4,10 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
-        ghOrgUnit              : "kiegroup",
-        branch                 : "master",
+        ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
+        branch                 : Constants.BRANCH,
         timeoutMins            : 90,
-        ghAuthTokenId          : "4b8101f8-1825-4c85-912b-0b18e611b0a3",
+        ghAuthTokenId          : Constants.GITHUB_AUTH_TOKEN,
         label                  : "rhel7 && mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-B -e -nsu -fae -Pwildfly11 clean install",
@@ -86,12 +86,6 @@ def final REPO_CONFIGS = [
         ],
         "jbpm-wb"                   : [
                 label: "rhel7 && mem16g"
-        ],
-        "kie-docs"                  : [
-                label             : "rhel7 && mem4g",
-                artifactsToArchive: DEFAULTS["artifactsToArchive"] + [
-                        "**/target/generated-docs/**"
-                ]
         ],
         "kie-wb-distributions"      : [
                 label             : "linux && mem24g && gui-testing",

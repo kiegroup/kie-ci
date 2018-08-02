@@ -20,4 +20,7 @@ class Constants {
     static final String MAVEN_VERSION = "3.5.2"
     static final String UPSTREAM_BUILD_MAVEN_VERSION = "3.5.2"
     static final String JDK_VERSION = "jdk1.8"
+    static final String BRANCH = "master"
+    static final String GITHUB_ORG_UNIT = "kiegroup"
+    static final String GITHUB_AUTH_TOKEN = "4b8101f8-1825-4c85-912b-0b18e611b0a3"
 }
