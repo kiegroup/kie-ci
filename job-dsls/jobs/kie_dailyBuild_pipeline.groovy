@@ -8,14 +8,16 @@ def mvnToolEnv="APACHE_MAVEN_3_3_9"
 def mvnVersion="apache-maven-3.3.9"
 def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
+
 def kieMainBranch=Constants.BRANCH
-def kieVersion="7.9.0"
-def kieProdBranch="7.9.x"
-def appformerVersion="2.6.0"
+def kieVersion="7.10.0"
+def kieProdBranch="7.10.x"
+def appformerVersion="2.7.0"
 def erraiBranch=Constants.BRANCH
-def erraiVersionOld="4.3.1-SNAPSHOT"
-def erraiVersionNew="4.3.1"
+def erraiVersionOld="4.3.2-SNAPSHOT"
+def erraiVersionNew="4.3.2"
 def organization=Constants.GITHUB_ORG_UNIT
+
 
 // definition of pipeline jobs
 
