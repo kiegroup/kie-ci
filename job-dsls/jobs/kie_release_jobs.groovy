@@ -10,7 +10,7 @@ def mvnToolEnv="APACHE_MAVEN_3_3_9"
 def mvnVersion="apache-maven-3.3.9"
 def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms2g -Xmx3g"
-def kieMainBranch= Constants.BRANCH
+def kieMainBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 
 

@@ -2,7 +2,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 // definition of parameters (will change with each branch)
 
-def javadk=Constants.getJDK_VERSION()
+def javadk=Constants.JDK_VERSION
 def jaydekay="JDK1_8"
 def mvnToolEnv="APACHE_MAVEN_3_3_9"
 def mvnVersion="apache-maven-3.3.9"

@@ -43,7 +43,7 @@ class PrVerificationJob extends BasicJob {
                                    String githubGroup,
                                    String githubCredentialsId = "",
                                    String githubAuthTokenId = "",
-                                   String branchName = "\${sha1}",
+                                   String branchName = "master",
                                    String labelName,
                                    int timeoutValue,
                                    String mavenGoals) {
@@ -68,7 +68,7 @@ class PrVerificationJob extends BasicJob {
                 git {
 
                     // Specify the branches to examine for changes and to build.
-                    branch(branchName)
+                    branch("\${sha1}")
 
                     // Adds a remote.
                     remote {
@@ -117,7 +117,7 @@ class PrVerificationJob extends BasicJob {
 
                     // Adding branches to this whitelist allows you to selectively test pull requests destined for these branches only.
                     // Supports regular expressions (e.g. 'master', 'feature-.*').
-                    whiteListTargetBranches(["master"])
+                    whiteListTargetBranches([branchName])
 
                     extensions {
 
