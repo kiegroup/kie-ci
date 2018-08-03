@@ -1,6 +1,6 @@
 // definition of parameters (will change with each branch)
 
-def javadk="jdk1.8"
+def javadk="jdk1.9"
 def jaydekay="JDK1_8"
 def mvnToolEnv="APACHE_MAVEN_3_3_9"
 def mvnVersion="apache-maven-3.3.9"
