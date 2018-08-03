@@ -1,11 +1,13 @@
+import org.kie.jenkins.jobdsl.Constants
+
 //Define Variables
 
-def kieMainBranch="master"
+def kieMainBranch=Constants.BRANCH
 def zanataVersion="7.9.0"
 def settingsXml="org.jenkinsci.plugins.configfiles.custom.CustomConfig1457025283676"
 
-def organization="kiegroup"
-def javadk="jdk1.8"
+def organization=Constants.GITHUB_ORG_UNIT
+def javadk=Constants.JDK_VERSION
 def jaydekay="JDK1_8"
 def mvnToolEnv="APACHE_MAVEN_3_3_9"
 def mvnHome="${mvnToolEnv}_HOME"

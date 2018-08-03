@@ -13,32 +13,25 @@
  * limitations under the License.
  */
 
-
 import org.kie.jenkins.jobdsl.Constants
+import org.kie.jenkins.jobdsl.templates.BasicJob
 import org.kie.jenkins.jobdsl.templates.PrVerificationJob
 
 // Job parameters values
-projectName = "kie-build-helper-jenkins-plugin"
+projectName = "kie-docs"
 labelName = "rhel7&&mem4g"
 timeoutValue = 60
 mavenGoals = "-B clean install"
 
 // Creates or updates a free style job.
-def jobDefinition = job("${projectName}-pullrequests") {
-
-    // Adds post-build actions to the job.
-    publishers {
-
-        //Archives artifacts with each build.
-        archiveArtifacts("**target/*.hpi")
-
-    }
-}
+def jobDefinition = job("${projectName}-pullrequests")
 
 PrVerificationJob.addPrConfiguration(job = jobDefinition,
         projectName = projectName,
         githubGroup = Constants.GITHUB_ORG_UNIT,
         githubAuthTokenId = Constants.GITHUB_AUTH_TOKEN,
+        branchName = Constants.BRANCH,
         labelName = labelName,
         timeoutValue = timeoutValue,
-        mavenGoals = mavenGoals)
+        mavenGoals = mavenGoals
+)

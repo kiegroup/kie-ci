@@ -1,19 +1,23 @@
+import org.kie.jenkins.jobdsl.Constants
+
 // definition of parameters (will change with each branch)
 
-def javadk="jdk1.8"
+def javadk=Constants.JDK_VERSION
 def jaydekay="JDK1_8"
 def mvnToolEnv="APACHE_MAVEN_3_3_9"
 def mvnVersion="apache-maven-3.3.9"
 def mvnHome="${mvnToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
-def kieMainBranch="master"
+
+def kieMainBranch=Constants.BRANCH
 def kieVersion="7.10.0"
 def kieProdBranch="7.10.x"
 def appformerVersion="2.7.0"
-def erraiBranch="master"
+def erraiBranch=Constants.BRANCH
 def erraiVersionOld="4.3.2-SNAPSHOT"
 def erraiVersionNew="4.3.2"
-def organization="kiegroup"
+def organization=Constants.GITHUB_ORG_UNIT
+
 
 // definition of pipeline jobs
 
