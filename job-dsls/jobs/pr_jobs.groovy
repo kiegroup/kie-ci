@@ -8,7 +8,7 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
         ghAuthTokenId          : Constants.GITHUB_AUTH_TOKEN,
-        label                  : "rhel7 && mem8g",
+        label                  : "kie-rhel7 && kie-mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-B -e -nsu -fae -Pwildfly11 clean install",
         mvnProps               : [
@@ -24,7 +24,8 @@ def final DEFAULTS = [
         ],
         excludedArtifacts      : [
                 "**/target/checkstyle.log"
-        ]
+        ],
+        folderPath : "KIE/" + Constants.BRANCH + "/PRs"
 ]
 
 // override default config for specific repos (if needed)
@@ -120,11 +121,19 @@ for (repoConfig in REPO_CONFIGS) {
     String repo = repoConfig.key
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
+    String folderPath = get("folderPath")
     String ghAuthTokenId = get("ghAuthTokenId")
 
+    // creation of folder
+    folder("KIE")
+    folder("KIE/$repoBranch")
+    folder("KIE/$repoBranch/PRs")
+
     // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? "$repo-pullrequests" : "$repo-pullrequests-$repoBranch"
+    String jobName = (repoBranch == "master") ? "$folderPath/$repo-pullrequests" : "$folderPath/$repo-pullrequests-$repoBranch"
     job(jobName) {
+
+        disabled()
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
                     |
@@ -200,7 +209,7 @@ for (repoConfig in REPO_CONFIGS) {
                 }
             }
             timeout {
-                elastic(200, 3, get("timeoutMins"))
+                elastic(250, 3, get("timeoutMins"))
             }
             timestamps()
             colorizeOutput()
