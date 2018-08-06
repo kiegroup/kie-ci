@@ -22,5 +22,5 @@ class Constants {
     static final String JDK_VERSION = "kie-jdk1.8"
     static final String BRANCH = "master"
     static final String GITHUB_ORG_UNIT = "kiegroup"
-    static final String GITHUB_AUTH_TOKEN = "4b8101f8-1825-4c85-912b-0b18e611b0a3"
+    static final String GITHUB_AUTH_TOKEN = "1866d14e-9741-4c22-a594-c4f593511012"
 }
