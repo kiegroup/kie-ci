@@ -25,34 +25,34 @@ def final DEFAULTS = [
         excludedArtifacts      : [
                 "**/target/checkstyle.log"
         ],
-        folderPath : "KIE/" + Constants.BRANCH + "/PRs"
+        finalFolder            : "PRs"
 ]
 
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
         "lienzo-core"               : [
                 timeoutMins: 30,
-                label: "rhel7 && mem4g"
+                label: "kie-rhel7 && kie-mem4g"
         ],
         "lienzo-tests"              : [
                 timeoutMins: 30,
-                label: "rhel7 && mem4g"
+                label: "kie-rhel7 && kie-mem4g"
         ],
         "kie-soup"                  : [
-                label: "rhel7 && mem4g"
+                label: "kie-rhel7 && kie-mem4g"
         ],
         "appformer"                 : [
-                label    : "rhel7 && mem16g"
+                label    : "kie-rhel7 && kie-mem16g"
         ],
         "droolsjbpm-build-bootstrap": [
                 timeoutMins: 30,
-                label      : "rhel7 && mem4g"
+                label      : "kie-rhel7 && kie-mem4g"
         ],
         "droolsjbpm-knowledge"      : [
-                label: "rhel7 && mem4g"
+                label: "kie-rhel7 && kie-mem4g"
         ],
         "drlx-parser"               : [
-                label: "rhel7 && mem4g"
+                label: "kie-rhel7 && kie-mem4g"
         ],
         "drools"                    : [],
         "optaplanner"               : [],
@@ -69,27 +69,27 @@ def final REPO_CONFIGS = [
         ],
         "droolsjbpm-tools"          : [],
         "kie-uberfire-extensions"   : [
-                label: "rhel7 && mem4g"
+                label: "kie-rhel7 && kie-mem4g"
         ],
         "kie-wb-playground"         : [
-                label: "rhel7 && mem4g"
+                label: "kie-rhel7 && kie-mem4g"
         ],
         "kie-wb-common"             : [
                 timeoutMins: 90,
-                label: "rhel7 && mem16g"
+                label: "kie-rhel7 && kie-mem16g"
         ],
         "drools-wb"                 : [
-                label: "rhel7 && mem16g"
+                label: "kie-rhel7 && kie-mem16g"
         ],
         "optaplanner-wb"            : [],
         "jbpm-designer"             : [
-                label: "rhel7 && mem16g"
+                label: "kie-rhel7 && kie-mem16g"
         ],
         "jbpm-wb"                   : [
-                label: "rhel7 && mem16g"
+                label: "kie-rhel7 && kie-mem16g"
         ],
         "kie-wb-distributions"      : [
-                label             : "linux && mem24g && gui-testing",
+                label             : "kie-linux && kie-mem24g && gui-testing",
                 timeoutMins       : 120,
                 mvnGoals          : DEFAULTS["mvnGoals"] + " -Pkie-wb",
                 mvnProps          : DEFAULTS["mvnProps"] + [
@@ -109,7 +109,7 @@ def final REPO_CONFIGS = [
         ],
         // following repos are not in repository-list.txt, but we want a PR jobs for them
         "jbpm-work-items"           : [
-                label      : "linux && mem4g",
+                label      : "kie-linux && kie-mem4g",
                 timeoutMins: 30,
         ]
 ]
@@ -121,13 +121,15 @@ for (repoConfig in REPO_CONFIGS) {
     String repo = repoConfig.key
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
-    String folderPath = get("folderPath")
+    String finalFolder = get("finalFolder")
     String ghAuthTokenId = get("ghAuthTokenId")
+    String folderPath = "KIE/$repoBranch/$finalFolder"
 
-    // creation of folder
+    // Creation of folders where jobs are stored
     folder("KIE")
     folder("KIE/$repoBranch")
-    folder("KIE/$repoBranch/PRs")
+    folder("KIE/$repoBranch/$finalFolder")
+
 
     // jobs for master branch don't use the branch in the name
     String jobName = (repoBranch == "master") ? "$folderPath/$repo-pullrequests" : "$folderPath/$repo-pullrequests-$repoBranch"
@@ -172,7 +174,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        jdk("jdk1.8")
+        jdk("kie-jdk1.8")
 
         label(get("label"))
 
@@ -228,7 +230,7 @@ for (repoConfig in REPO_CONFIGS) {
                 }
             }
             maven {
-                mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
+                mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                 mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                 goals(get("mvnGoals"))
                 properties(get("mvnProps"))
