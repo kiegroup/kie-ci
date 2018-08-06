@@ -41,9 +41,9 @@ class PrVerificationJob extends BasicJob {
     static void addPrConfiguration(Job job,
                                    String projectName,
                                    String githubGroup,
-                                   String githubCredentialsId = "",
-                                   String githubAuthTokenId = "",
-                                   String branchName = "master",
+                                   String githubCredentialsId,
+                                   String githubAuthTokenId,
+                                   String branchName,
                                    String labelName,
                                    int timeoutValue,
                                    String mavenGoals) {
@@ -61,6 +61,14 @@ class PrVerificationJob extends BasicJob {
             // Label which specifies which nodes this job can run on.
             label(labelName)
 
+            // Allows to parameterize the job.
+            parameters {
+                stringParam("sha1")
+            }
+
+            // Allows Jenkins to schedule and execute multiple builds concurrently.
+            concurrentBuild()
+
             // Allows a job to check out sources from an SCM provider.
             scm {
 
@@ -76,9 +84,11 @@ class PrVerificationJob extends BasicJob {
                         // Sets a remote URL for a GitHub repository.
                         github("${githubGroup}/${projectName}")
 
-
-                        // Sets credentials for authentication with the remote repository.
-                        credentials(githubCredentialsId)
+                        // Set credentials if passed.
+                        if(githubCredentialsId != "") {
+                            // Sets credentials for authentication with the remote repository.
+                            credentials(githubCredentialsId)
+                        }
 
                         // Sets a name for the remote.
                         name("origin")
@@ -107,7 +117,7 @@ class PrVerificationJob extends BasicJob {
                 githubPullRequest {
 
                     // List of organizations. Their members will be whitelisted.
-                    orgWhitelist(["appformer", "kiegroup, jboss-integration"])
+                    orgWhitelist(["appformer", "kiegroup", "jboss-integration"])
 
                     // Use this option to allow members of whitelisted organisations to behave like admins, i.e. whitelist users and trigger pull request testing.
                     allowMembersOfWhitelistedOrgsAsAdmin()

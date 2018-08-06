@@ -14,7 +14,6 @@
  */
 
 import org.kie.jenkins.jobdsl.Constants
-import org.kie.jenkins.jobdsl.templates.BasicJob
 import org.kie.jenkins.jobdsl.templates.PrVerificationJob
 
 // Job parameters values
@@ -24,11 +23,28 @@ timeoutValue = 60
 mavenGoals = "-B clean install"
 
 // Creates or updates a free style job.
-def jobDefinition = job("${projectName}-pullrequests")
+def jobDefinition = job("${projectName}-pullrequests") {
+    triggers {
+        githubPullRequest {
+            extensions {
+                buildStatus {
+                    completedStatus("SUCCESS",
+                            """|Build successful! See generated HTML docs:
+                                   |
+                                   |\$BUILD_URL/artifact/docs/drools-docs/target/generated-docs/html_single/index.html
+                                   |\$BUILD_URL/artifact/docs/jbpm-docs/target/generated-docs/html_single/index.html
+                                   |\$BUILD_URL/artifact/docs/optaplanner-wb-es-docs//target/generated-docs/html_single/index.html
+                                   |""".stripMargin())
+                }
+            }
+        }
+    }
+}
 
 PrVerificationJob.addPrConfiguration(job = jobDefinition,
         projectName = projectName,
         githubGroup = Constants.GITHUB_ORG_UNIT,
+        githubCredentialsId = "",
         githubAuthTokenId = Constants.GITHUB_AUTH_TOKEN,
         branchName = Constants.BRANCH,
         labelName = labelName,

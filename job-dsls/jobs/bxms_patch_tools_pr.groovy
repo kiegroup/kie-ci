@@ -33,6 +33,7 @@ PrVerificationJob.addPrConfiguration(job = jobDefinition,
         githubGroup = githubGroup,
         githubCredentialsId = githubCredentialsId,
         githubAuthTokenId = Constants.GITHUB_AUTH_TOKEN,
+        branchName = Constants.BRANCH,
         labelName = labelName,
         timeoutValue = timeoutValue,
         mavenGoals = mavenGoals
