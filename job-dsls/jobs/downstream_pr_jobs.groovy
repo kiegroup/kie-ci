@@ -8,7 +8,7 @@ def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
         timeoutMins            : 600,
-        label                  : "rhel7 && mem24g",
+        label                  : "kie-rhel7 && kie-mem24g",
         ghAuthTokenId          : Constants.GITHUB_AUTH_TOKEN,
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         downstreamMvnGoals     : "-B -e -nsu -fae -Pkie-wb,wildfly11,sourcemaps,no-showcase clean install",
@@ -38,6 +38,7 @@ def final DEFAULTS = [
         excludedArtifacts      : [
                 "**/target/checkstyle.log"
         ],
+        finalFolder            : "PRs"
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
@@ -72,11 +73,20 @@ for (repoConfig in REPO_CONFIGS) {
     String repo = repoConfig.key
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
+    String finalFolder = get("finalFolder")
     String ghAuthTokenId = get("ghAuthTokenId")
+    String folderPath = "KIE/$repoBranch/$finalFolder"
+
+    // Creation of folders where jobs are stored
+    folder("KIE")
+    folder("KIE/$repoBranch")
+    folder("KIE/$repoBranch/$finalFolder")
 
     // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? "$repo-downstream-pullrequests" : "$repo-downstream-pullrequests-$repoBranch"
+    String jobName = (repoBranch == "master") ? "$folderPath/$repo-downstream-pullrequests" : "$folderPath/$repo-downstream-pullrequests-$repoBranch"
     job(jobName) {
+
+        disabled()
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
                     |
@@ -115,7 +125,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        jdk("jdk1.8")
+        jdk("kie-jdk1.8")
 
         label(get("label"))
 
@@ -160,7 +170,7 @@ for (repoConfig in REPO_CONFIGS) {
                     }
                 }
                 project / 'builders' << 'hudson.tasks.Maven' {
-                    mavenName("apache-maven-${Constants.MAVEN_VERSION}")
+                    mavenName("kie-maven-${Constants.MAVEN_VERSION}")
                     jvmOptions("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                     targets("-e -fae -nsu -B -T1C clean install -Dfull -DskipTests")
                 }
