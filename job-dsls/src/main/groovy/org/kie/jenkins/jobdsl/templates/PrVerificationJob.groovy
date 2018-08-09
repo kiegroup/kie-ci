@@ -15,7 +15,6 @@
 
 package org.kie.jenkins.jobdsl.templates
 
-import com.thoughtworks.xstream.converters.basic.StringBufferConverter
 import javaposse.jobdsl.dsl.Job
 import org.kie.jenkins.jobdsl.Constants;
 
@@ -26,7 +25,20 @@ import org.kie.jenkins.jobdsl.Constants;
 class PrVerificationJob extends BasicJob {
 
     /**
-     * Adds common PR verification configuration to the job
+     * Adds folder structure for PR job.
+     *
+     * @param context - Jenkins DLS context.
+     */
+    static void addFolders(context) {
+        context.with {
+
+            // Creates or updates a folder.
+            folder(Constants.PULL_REQUEST_FOLDER)
+        }
+    }
+
+    /**
+     * Adds common PR verification configuration to the job.
      *
      * @param job - Jenkins job object.
      * @param projectName - Project name that PR verification Job is run against

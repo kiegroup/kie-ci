@@ -18,12 +18,15 @@ import org.kie.jenkins.jobdsl.templates.PrVerificationJob
 
 // Job parameters values
 projectName = "kie-docs"
-labelName = "rhel7&&mem4g"
+labelName = "kie-rhel7&&kie-mem4g"
 timeoutValue = 60
 mavenGoals = "-B clean install"
 
+// Adds required folders
+PrVerificationJob.addFolders(this)
+
 // Creates or updates a free style job.
-def jobDefinition = job("${projectName}-pullrequests") {
+def jobDefinition = job(Constants.PULL_REQUEST_FOLDER + "/${projectName}-pullrequests") {
     triggers {
         githubPullRequest {
             extensions {
