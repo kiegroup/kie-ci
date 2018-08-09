@@ -14,19 +14,21 @@
  */
 
 import org.kie.jenkins.jobdsl.Constants
-import org.kie.jenkins.jobdsl.templates.BasicJob
 import org.kie.jenkins.jobdsl.templates.PrVerificationJob
 
 // Job parameters values
 projectName = "bxms-patch-tools"
 githubGroup = "jboss-integration"
-labelName = "rhel7&&mem4g"
+labelName = "kie-rhel7&&kie-mem4g"
 timeoutValue = 60
 mavenGoals = "-B clean install"
 githubCredentialsId = "kiereleaseuser2-github"
 
+// Adds required folders
+PrVerificationJob.addFolders(this)
+
 // Creates or updates a free style job.
-def jobDefinition = job("${projectName}-pullrequests")
+def jobDefinition = job(Constants.PULL_REQUEST_FOLDER + "/${projectName}-pullrequests")
 
 PrVerificationJob.addPrConfiguration(job = jobDefinition,
         projectName = projectName,
