@@ -25,7 +25,7 @@ def final DEFAULTS = [
                 "**/target/checkstyle.log"
         ],
         downstreamRepos        : [],
-        finalFolder            : "deployedReps"
+        finalFolder            : "deployedRep"
 ]
 
 // used to override default config for specific repos (if needed)

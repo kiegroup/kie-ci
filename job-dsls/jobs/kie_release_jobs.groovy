@@ -15,9 +15,9 @@ def m2Dir="\$HOME/.m2/repository"
 // creation of folder
 folder("KIE")
 folder("KIE/${kieMainBranch}")
-folder("KIE/${kieMainBranch}/releases")
+folder("KIE/${kieMainBranch}/release")
 
-def folderPath="KIE/${kieMainBranch}/releases"
+def folderPath="KIE/${kieMainBranch}/release"
 
 
 def createReleaseBranches="""

@@ -23,10 +23,10 @@ def m2Dir="\$HOME/.m2/repository"
 // creation of folder
 folder("KIE")
 folder("KIE/${kieMainBranch}")
-folder("KIE/${kieMainBranch}/dailyBuilds")
+folder("KIE/${kieMainBranch}/dailyBuild")
 folder("KIE/Docker")
 
-def folderPath="KIE/${kieMainBranch}/dailyBuilds"
+def folderPath="KIE/${kieMainBranch}/dailyBuild"
 def dockerPath="KIE/Docker"
 
 // definition of pipeline jobs

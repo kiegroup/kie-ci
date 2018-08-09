@@ -25,7 +25,7 @@ def final DEFAULTS = [
         excludedArtifacts      : [
                 "**/target/checkstyle.log"
         ],
-        finalFolder            : "PRs"
+        finalFolder            : "pullrequest"
 ]
 
 // override default config for specific repos (if needed)
