@@ -7,7 +7,7 @@ def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
-        label                  : "rhel7 && mem8g",
+        label                  : "kie-rhel7 && kie-mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly11 clean deploy findbugs:findbugs",
         mvnProps: [
@@ -24,28 +24,29 @@ def final DEFAULTS = [
         excludedArtifacts      : [
                 "**/target/checkstyle.log"
         ],
-        downstreamRepos        : []
+        downstreamRepos        : [],
+        finalFolder            : "deployedReps"
 ]
 
 // used to override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
         "lienzo-core"                  : [
                 timeoutMins            : 20,
-                label                  : "rhel7 && mem4g",
+                label                  : "kie-rhel7 && kie-mem4g",
                 downstreamRepos        : ["lienzo-tests"]
         ],
         "lienzo-tests"              : [
                 timeoutMins            : 20,
-                label                  : "rhel7 && mem4g",
+                label                  : "kie-rhel7 && kie-mem4g",
                 downstreamRepos        : ["kie-soup"]
         ],
         "kie-soup"                  : [
-                label                  : "rhel7 && mem4g",
+                label                  : "kie-rhel7 && kie-mem4g",
                 ircNotificationChannels: ["#logicabyss", "#appformer"],
                 downstreamRepos        : ["appformer"]
         ],
         "appformer"                 : [
-                label                  : "linux && mem16g",
+                label                  : "kie-linux && kie-mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
                 ],
@@ -54,7 +55,7 @@ def final REPO_CONFIGS = [
         ],
         "droolsjbpm-build-bootstrap": [
                 timeoutMins            : 20,
-                label                  : "rhel7 && mem4g",
+                label                  : "kie-rhel7 && kie-mem4g",
                 ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : ["droolsjbpm-knowledge"]
         ],
@@ -103,17 +104,17 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["kie-wb-common"]
         ],
         "kie-wb-common"             : [
-                label                  : "rhel7 && mem16g",
+                label                  : "kie-rhel7 && kie-mem16g",
                 ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["drools-wb"]
         ],
         "drools-wb"                 : [
-                label                  : "rhel7 && mem16g",
+                label                  : "kie-rhel7 && kie-mem16g",
                 ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["jbpm-designer", "optaplanner-wb"]
         ],
         "optaplanner-wb"            : [
-                label                  : "rhel7 && mem16g",
+                label                  : "kie-rhel7 && kie-mem16g",
                 ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["jbpm-wb"]
         ],
@@ -125,7 +126,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["jbpm-wb"]
         ],
         "jbpm-wb"                   : [
-                label                  : "rhel7 && mem16g",
+                label                  : "kie-rhel7 && kie-mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1"
                 ],
@@ -139,7 +140,7 @@ def final REPO_CONFIGS = [
         ],
         "kie-wb-distributions"      : [
                 timeoutMins            : 120,
-                label                  : "rhel7 && mem16g",
+                label                  : "kie-rhel7 && kie-mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"].replace("-T1C", "-T2") + " -Pkie-wb",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1",
@@ -154,7 +155,7 @@ def final REPO_CONFIGS = [
         ],
         // following repos are not in repository-list.txt, but we want a deploy jobs for them
         "jbpm-work-items"           : [
-                label      : "linux && mem4g",
+                label      : "kie-linux && kie-mem4g",
                 timeoutMins: 30,
                 ircNotificationChannels: ["#jbpmdev"],
                 downstreamRepos        : ["optaweb-employee-rostering"]
@@ -173,11 +174,20 @@ for (repoConfig in REPO_CONFIGS) {
     String repo = repoConfig.key
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
+    String finalFolder = get("finalFolder")
+    String folderPath = "KIE/$repoBranch/$finalFolder"
+
+    // Creation of folders where jobs are stored
+    folder("KIE")
+    folder("KIE/$repoBranch")
+    folder("KIE/$repoBranch/$finalFolder")
 
     // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? repo : "$repo-$repoBranch"
+    String jobName = (repoBranch == "master") ? "$folderPath/$repo" : "$folderPath/$repo-$repoBranch"
 
     job(jobName) {
+
+        disabled()
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
                     |
@@ -211,7 +221,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        jdk("jdk1.8")
+        jdk("kie-jdk1.8")
 
         label(get("label"))
 
@@ -250,11 +260,11 @@ for (repoConfig in REPO_CONFIGS) {
                 }
             }
             maven {
-                mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
+                mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                 mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                 goals(get("mvnGoals"))
                 properties(get("mvnProps"))
-                providedSettings("org.jenkinsci.plugins.configfiles.maven.MavenSettingsConfig1433801508409")
+                providedSettings("7774c60d-cab3-425a-9c3b-26653e5feba1")
             }
 
         }
