@@ -33,7 +33,7 @@ def dockerPath="KIE/Docker"
 
 def kieAllpipeline = ''' 
 pipeline {
-  agent {label('kie-mem4g')}
+  agent {label('kie-linux&&kie-mem512m')}
    
   stages {
     stage('parameter') {
@@ -119,8 +119,7 @@ pipeline {
 pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
 
     description('this is a pipeline job that triggers all other jobs with it\'s parameters needed for the kieAllBuild')
-
-    label('master')
+    
 
     parameters{
         stringParam("kieVersion", "${kieVersion}", "Version of kie. This will be usually set automatically by the parent pipeline job. ")
