@@ -211,6 +211,7 @@ job("${folderPath}/errai-kieAllBuild-${kieMainBranch}") {
         configFiles {
             mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
                 variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
             }
         }
         credentialsBinding {
@@ -377,6 +378,7 @@ job("${folderPath}/kieAllBuild-${kieMainBranch}") {
         configFiles {
             mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
                 variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
             }
         }
         credentialsBinding {
@@ -530,6 +532,7 @@ job("${folderPath}/prod-kieAllBuild-${kieMainBranch}") {
         configFiles {
             mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
                 variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
             }
         }
     }
@@ -600,6 +603,7 @@ matrixJob("${folderPath}/jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
         configFiles {
             mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
                 variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
             }
         }
     }
@@ -671,6 +675,7 @@ matrixJob("${folderPath}/jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") 
         configFiles {
             mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
                 variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
             }
         }
     }
@@ -759,6 +764,7 @@ matrixJob("${folderPath}/kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
         configFiles {
             mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e") {
                 variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
             }
         }
         xvnc{
@@ -841,6 +847,7 @@ matrixJob("${folderPath}/kieServerMatrix-kieAllBuild-${kieMainBranch}") {
         configFiles {
             mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e") {
                 variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
             }
         }
     }
