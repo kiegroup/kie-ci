@@ -42,8 +42,8 @@ PrVerificationJob.addPrConfiguration(job = jobDefinition,
         projectName = projectName,
         githubGroup = Constants.GITHUB_ORG_UNIT,
         githubCredentialsId = "",
-        githubAuthTokenId = Constants.GITHUB_AUTH_TOKEN,
         branchName = Constants.BRANCH,
         labelName = labelName,
         timeoutValue = timeoutValue,
-        mavenGoals = mavenGoals)
+        mavenGoals = mavenGoals
+)

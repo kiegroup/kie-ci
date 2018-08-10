@@ -26,29 +26,12 @@ mavenGoals = "-B clean install"
 PrVerificationJob.addFolders(this)
 
 // Creates or updates a free style job.
-def jobDefinition = job(Constants.PULL_REQUEST_FOLDER + "/${projectName}-pullrequests") {
-    triggers {
-        githubPullRequest {
-            extensions {
-                buildStatus {
-                    completedStatus("SUCCESS",
-                            """|Build successful! See generated HTML docs:
-                                   |
-                                   |\$BUILD_URL/artifact/docs/drools-docs/target/generated-docs/html_single/index.html
-                                   |\$BUILD_URL/artifact/docs/jbpm-docs/target/generated-docs/html_single/index.html
-                                   |\$BUILD_URL/artifact/docs/optaplanner-wb-es-docs//target/generated-docs/html_single/index.html
-                                   |""".stripMargin())
-                }
-            }
-        }
-    }
-}
+def jobDefinition = job(Constants.PULL_REQUEST_FOLDER + "/${projectName}-pullrequests")
 
 PrVerificationJob.addPrConfiguration(job = jobDefinition,
         projectName = projectName,
         githubGroup = Constants.GITHUB_ORG_UNIT,
         githubCredentialsId = "",
-        githubAuthTokenId = Constants.GITHUB_AUTH_TOKEN,
         branchName = Constants.BRANCH,
         labelName = labelName,
         timeoutValue = timeoutValue,

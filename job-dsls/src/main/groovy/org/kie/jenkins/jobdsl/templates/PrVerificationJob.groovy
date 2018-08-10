@@ -44,7 +44,6 @@ class PrVerificationJob extends BasicJob {
      * @param projectName - Project name that PR verification Job is run against
      * @param githubGroup - GitHub group name
      * @param githubCredentialsId - GitHub credentials id.
-     * @param githubAuthTokenId - GitHub authentication token id.
      * @param branchName - Branch name for PR job (default is ${sha1})
      * @param labelName - Jenkins slave nodes label name
      * @param timeoutValue - Job timeout value in minutes
@@ -54,7 +53,6 @@ class PrVerificationJob extends BasicJob {
                                    String projectName,
                                    String githubGroup,
                                    String githubCredentialsId,
-                                   String githubAuthTokenId,
                                    String branchName,
                                    String labelName,
                                    int timeoutValue,
@@ -177,7 +175,7 @@ class PrVerificationJob extends BasicJob {
                 maven {
 
                     // Specifies the Maven installation for executing this step.
-                    mavenInstallation("apache-maven-${Constants.MAVEN_VERSION}")
+                    mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
 
                     // Specifies the goals to execute including other command line options.
                     goals(mavenGoals)
@@ -196,12 +194,9 @@ class PrVerificationJob extends BasicJob {
             }
 
             // Adds authentication token id.
-            if (githubAuthTokenId != "") {
-                configure { node ->
-                    node / 'triggers' / 'org.jenkinsci.plugins.ghprb.GhprbTrigger' <<
-                            'gitHubAuthId'(githubAuthTokenId)
-
-                }
+            configure { node ->
+                node / 'triggers' / 'org.jenkinsci.plugins.ghprb.GhprbTrigger' <<
+                        'gitHubAuthId'(Constants.GITHUB_AUTH_TOKEN)
             }
         }
     }
