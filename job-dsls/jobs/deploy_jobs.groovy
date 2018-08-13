@@ -8,7 +8,7 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
-        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
+        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly11 clean deploy findbugs:findbugs",
         mvnProps: [
                 "full"                     : "true",

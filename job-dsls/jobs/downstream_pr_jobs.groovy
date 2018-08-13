@@ -10,7 +10,7 @@ def final DEFAULTS = [
         timeoutMins            : 600,
         label                  : "kie-rhel7 && kie-mem24g",
         ghAuthTokenId          : Constants.GITHUB_AUTH_TOKEN,
-        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
+        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         downstreamMvnGoals     : "-B -e -nsu -fae -Pkie-wb,wildfly11,sourcemaps,no-showcase clean install",
         downstreamMvnProps     : [
                 "full"                               : "true",
