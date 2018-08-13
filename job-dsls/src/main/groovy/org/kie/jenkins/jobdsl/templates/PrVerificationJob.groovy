@@ -65,9 +65,6 @@ class PrVerificationJob extends BasicJob {
         //Add PR configuration
         job.with {
 
-            // Temporary change for migration
-            disabled()
-
             // Name of the JDK installation to use for this job.
             jdk(Constants.JDK_VERSION)
 
