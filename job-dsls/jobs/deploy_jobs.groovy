@@ -24,8 +24,7 @@ def final DEFAULTS = [
         excludedArtifacts      : [
                 "**/target/checkstyle.log"
         ],
-        downstreamRepos        : [],
-        finalFolder            : "deployedRep"
+        downstreamRepos        : []
 ]
 
 // used to override default config for specific repos (if needed)
@@ -174,16 +173,12 @@ for (repoConfig in REPO_CONFIGS) {
     String repo = repoConfig.key
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
-    String finalFolder = get("finalFolder")
-    String folderPath = "KIE/$repoBranch/$finalFolder"
 
     // Creation of folders where jobs are stored
-    folder("KIE")
-    folder("KIE/$repoBranch")
-    folder("KIE/$repoBranch/$finalFolder")
+    folder(Constants.DEPLOY_FOLDER)
 
     // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? "$folderPath/$repo" : "$folderPath/$repo-$repoBranch"
+    String jobName = (repoBranch == "master") ? Constants.DEPLOY_FOLDER + "/$repo" : Constants.DEPLOY_FOLDER + "/$repo-$repoBranch"
 
     job(jobName) {
 
