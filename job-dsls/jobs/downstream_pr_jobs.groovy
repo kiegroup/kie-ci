@@ -37,8 +37,7 @@ def final DEFAULTS = [
         ],
         excludedArtifacts      : [
                 "**/target/checkstyle.log"
-        ],
-        finalFolder            : "pullrequest"
+        ]
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
@@ -73,17 +72,13 @@ for (repoConfig in REPO_CONFIGS) {
     String repo = repoConfig.key
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
-    String finalFolder = get("finalFolder")
     String ghAuthTokenId = get("ghAuthTokenId")
-    String folderPath = "KIE/$repoBranch/$finalFolder"
 
     // Creation of folders where jobs are stored
-    folder("KIE")
-    folder("KIE/$repoBranch")
-    folder("KIE/$repoBranch/$finalFolder")
+    folder(Constants.PULL_REQUEST_FOLDER)
 
     // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? "$folderPath/$repo-downstream-pullrequests" : "$folderPath/$repo-downstream-pullrequests-$repoBranch"
+    String jobName = (repoBranch == "master") ? Constants.PULL_REQUEST_FOLDER + "/$repo-downstream-pullrequests" : Constants.PULL_REQUEST_FOLDER + "/$repo-downstream-pullrequests-$repoBranch"
     job(jobName) {
 
         disabled()
