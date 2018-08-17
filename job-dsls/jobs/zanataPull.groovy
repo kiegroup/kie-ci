@@ -3,7 +3,7 @@ import org.kie.jenkins.jobdsl.Constants
 //Define Variables
 
 def kieMainBranch=Constants.BRANCH
-def zanataVersion="7.10.0"
+def zanataVersion="7.11.0"
 def settingsXml="3a44127e-aa4e-4002-b244-35bdb78bc4af"
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_VERSION
