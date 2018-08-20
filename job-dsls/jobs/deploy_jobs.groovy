@@ -65,7 +65,7 @@ def final REPO_CONFIGS = [
         ],
         "drlx-parser"               : [
                 timeoutMins            : 20,
-                label                  : "rhel7 && mem4g",
+                label                  : "kie-rhel7 && kie-mem4g",
                 ircNotificationChannels: ["#droolsdev"],
                 downstreamRepos        : ["drools"]
         ],
