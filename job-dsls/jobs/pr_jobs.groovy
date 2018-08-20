@@ -74,7 +74,7 @@ def final REPO_CONFIGS = [
                 label: "kie-rhel7 && kie-mem4g"
         ],
         "kie-wb-common"             : [
-                timeoutMins: 90,
+                timeoutMins: 120,
                 label: "kie-rhel7 && kie-mem16g"
         ],
         "drools-wb"                 : [
