@@ -1031,7 +1031,7 @@ job("${dockerPath}/kie-docker-ci-images-${kieMainBranch}") {
             mavenInstallation("${mvnVersion}")
             goals("-e -B -U clean install")
             providedSettings("3ebb89ff-985c-43a2-965d-1cde56f31e1a")
-            properties("kie.artifacts.deploy.path":"/home/jenkins/kie-artifacts/\$kieVersion")
+            properties("kie.artifacts.deploy.path":"/home/docker/kie-artifacts/\$kieVersion")
         }
     }
 }
