@@ -983,7 +983,7 @@ job("${dockerPath}/kie-docker-ci-images-${kieMainBranch}") {
         }
     }
 
-    label("docker-node")
+    label("kieci-02-docker")
 
     logRotator {
         numToKeep(10)
