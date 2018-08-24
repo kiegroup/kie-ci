@@ -655,7 +655,7 @@ matrixJob("${folderPath}/jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") 
     axes {
         labelExpression("label-exp","kie-rhel7&&kie-mem8g")
         jdk("${javadk}")
-        text("container", "tomcat8", "wildfly11")
+        text("container", "tomcat9", "wildfly11")
     }
 
     logRotator {
@@ -826,7 +826,7 @@ matrixJob("${folderPath}/kieServerMatrix-kieAllBuild-${kieMainBranch}") {
 
     axes {
         jdk("${javadk}")
-        text("container", "wildfly11", "eap7", "tomcat8")
+        text("container", "wildfly11", "eap7", "tomcat9")
         labelExpression("label_exp", "kie-linux&&kie-mem8g")
     }
 
