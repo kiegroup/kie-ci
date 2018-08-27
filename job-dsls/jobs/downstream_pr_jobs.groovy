@@ -33,7 +33,8 @@ def final DEFAULTS = [
                 "**/target/kie-drools-wb*tomcat*.war",
                 "**/target/kie-server-*ee6.war",
                 "**/target/kie-server-*ee7.war",
-                "**/target/kie-server-*webc.war"
+                "**/target/kie-server-*webc.war",
+                "**/target/jbpm-server*dist*.zip"
         ],
         excludedArtifacts      : [
                 "**/target/checkstyle.log"

@@ -103,7 +103,8 @@ def final REPO_CONFIGS = [
                         "**/target/kie-wb*tomcat*.war",
                         "**/target/kie-drools-wb*wildfly*.war",
                         "**/target/kie-drools-wb*eap*.war",
-                        "**/target/kie-drools-wb*tomcat*.war"
+                        "**/target/kie-drools-wb*tomcat*.war",
+                        "**/target/jbpm-server*dist*.zip"
                 ]
         ],
         // following repos are not in repository-list.txt, but we want a PR jobs for them
