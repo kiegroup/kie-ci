@@ -139,7 +139,7 @@ pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
     }
 
     triggers {
-        cron("H 2 * * *")
+        cron("H 20 * * *")
     }
 
     definition {
