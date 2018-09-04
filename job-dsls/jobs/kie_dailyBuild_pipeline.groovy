@@ -305,7 +305,7 @@ EOT
 # unpack zip to QA Nexus
 cd $deployDir
 zip -r kiegroup .
-curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-master/content-compressed
+curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-7.11.x/content-compressed
 cd ..
 
 # creates a file (list) of the last commit hash of each repository as handover for production
