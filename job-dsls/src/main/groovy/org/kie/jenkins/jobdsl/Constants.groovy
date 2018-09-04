@@ -21,6 +21,7 @@ class Constants {
     static final String UPSTREAM_BUILD_MAVEN_VERSION = "3.5.2"
     static final String JDK_VERSION = "kie-jdk1.8"
     static final String BRANCH = "7.11.x"
+    static final String ERRAI_BRANCH = "4.3.x"
     static final String GITHUB_ORG_UNIT = "kiegroup"
     static final String GITHUB_AUTH_TOKEN = "e9d5d102-3b5b-48cb-af5d-7a91c1dd7be5"
     static final String PULL_REQUEST_FOLDER = "pullrequest"
