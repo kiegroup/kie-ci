@@ -100,10 +100,8 @@ def final REPO_CONFIGS = [
                         "**/target/screenshots/**",
                         "**/target/kie-wb*wildfly*.war",
                         "**/target/kie-wb*eap*.war",
-                        "**/target/kie-wb*tomcat*.war",
                         "**/target/kie-drools-wb*wildfly*.war",
                         "**/target/kie-drools-wb*eap*.war",
-                        "**/target/kie-drools-wb*tomcat*.war",
                         "**/target/jbpm-server*dist*.zip"
                 ]
         ],
