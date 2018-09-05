@@ -10,12 +10,12 @@ def mvnHome="${mvnToolEnv}_HOME"
 def javaHome="${javaToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
 def kieMainBranch=Constants.BRANCH
-def kieVersion="7.11.0"
-def kieProdBranch="7.11.x"
-def appformerVersion="2.8.0"
+def kieVersion="7.12.0"
+def kieProdBranch="7.12.x"
+def appformerVersion="2.9.0"
 def erraiBranch=Constants.BRANCH
-def erraiVersionOld="4.3.3-SNAPSHOT"
-def erraiVersionNew="4.3.3"
+def erraiVersionOld="4.4.0-SNAPSHOT"
+def erraiVersionNew="4.4.0"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir="\$HOME/.m2/repository"
 
