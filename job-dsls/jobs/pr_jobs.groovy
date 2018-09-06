@@ -87,6 +87,14 @@ def final REPO_CONFIGS = [
         "jbpm-wb"                   : [
                 label: "kie-rhel7 && kie-mem16g"
         ],
+        "kie-docs"                   : [
+                label: "kie-rhel7 && kie-mem16g",
+                artifactsToArchive: DEFAULTS["artifactsToArchive"] + [
+                        "doc-content/drools-docs/target/generated-docs/html_single/**/*",
+                        "doc-content/jbpm-docs/target/generated-docs/html_single/**/*",
+                        "doc-content/optaplanner-wb-es-docs/target/generated-docs/html_single/**/*"
+                ]
+        ],
         "kie-wb-distributions"      : [
                 label             : "kie-linux && kie-mem24g && gui-testing",
                 timeoutMins       : 120,
@@ -180,17 +188,6 @@ for (repoConfig in REPO_CONFIGS) {
                     commitStatus {
                         context('Linux')
                         addTestResults(true)
-                    }
-                    if (repo == "kie-docs") {
-                        buildStatus {
-                            completedStatus("SUCCESS",
-                                    """|Build successful! See generated HTML docs:
-                                       |
-                                       |\$BUILD_URL/artifact/docs/drools-docs/target/generated-docs/html_single/index.html
-                                       |\$BUILD_URL/artifact/docs/jbpm-docs/target/generated-docs/html_single/index.html
-                                       |\$BUILD_URL/artifact/docs/optaplanner-wb-es-docs//target/generated-docs/html_single/index.html
-                                       |""".stripMargin())
-                        }
                     }
                 }
             }
