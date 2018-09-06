@@ -71,7 +71,7 @@ pipeline {
     stage("start daily build errai") {
       steps {
         build job: "errai-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'erraiVersionOld', value: erraiVersionOld],
-        [$class: 'StringParameterValue', name: 'erraiVersionNew', value: erraiVersionNew],[$class: 'StringParameterValue', name: 'erraiBranch', value: erraiBranch]]                    
+        [$class: 'StringParameterValue', name: 'erraiVersionNew', value: erraiVersionNew],[$class: 'StringParameterValue', name: 'erraiBranch', value: erraiBranch, name: 'kieMainBranch', value: kieMainBranch]]                    
       }
     } 
         
@@ -96,16 +96,16 @@ pipeline {
       steps {
         parallel (
           "jbpmTestCoverageMatrix" : {
-              build job: "jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
+              build job: "jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion, name: 'kieMainBranch', value: kieMainBranch]]
           },
           "jbpmTestContainerMatrix" : {
-              build job: "jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
+              build job: "jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion, name: 'kieMainBranch', value: kieMainBranch]]
           },
           "kieWbTestsMatrix" : {
-            build job: "kieWbTestsMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
+            build job: "kieWbTestsMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion, name: 'kieMainBranch', value: kieMainBranch]]
           },
           "kieServerMatrix" : {
-            build job: "kieServerMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
+            build job: "kieServerMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion, name: 'kieMainBranch', value: kieMainBranch]]
           },
           "kie-docker-ci-images" : {
             build job: "${dockerPath}/kie-docker-ci-images-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
@@ -179,7 +179,7 @@ mvn -U -B -e clean deploy -Dfull -Drelease -DaltDeploymentRepository=local::defa
 # unpack zip to QA Nexus
 cd $deployDir
 zip -r kiegroup .
-curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-7.11.x/content-compressed
+curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-$kieMainBranch/content-compressed
 '''
 
 
@@ -189,6 +189,7 @@ job("${folderPath}/errai-kieAllBuild-${kieMainBranch}") {
         stringParam("erraiVersionNew", "${erraiVersionNew}", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
         stringParam("erraiVersionOld", "${erraiVersionOld}", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
         stringParam("erraiBranch", "${erraiBranch}", "Branch of errai. This will be usually set automatically by the parent trigger job. ")
+        stringParam("kieMainBranch", "${kieMainBranch}", "Branch of kie reps. This will be usually set automatically by the parent trigger job. ")
     }
 
     label("kie-rhel7&&kie-mem4g")
@@ -305,7 +306,7 @@ EOT
 # unpack zip to QA Nexus
 cd $deployDir
 zip -r kiegroup .
-curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-7.11.x/content-compressed
+curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-$kieMainBranch/content-compressed
 cd ..
 
 # creates a file (list) of the last commit hash of each repository as handover for production
@@ -571,7 +572,7 @@ def jbpmTestCoverage='''#!/bin/bash -e
 STAGING_REP=kie-internal-group
 echo "KIE version: $kieVersion"
 # wget the tar.gz sources
-wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild-master/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild-$kieMainBranch/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
@@ -581,6 +582,7 @@ matrixJob("${folderPath}/jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
     description("This job: <br> - Test coverage Matrix for jbpm <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieMainBranch", "kie branch", "please edit the branch of the KIE release <br> Version to test. Will be supplied by the parent job. <br> Normally the kieMainBranch will be supplied by parent job <br> ******************************************************** <br> ")
     }
 
     axes {
@@ -640,7 +642,7 @@ matrixJob("${folderPath}/jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
 def jbpmContainerTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild-master/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild-$kieMainBranch/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
@@ -650,6 +652,8 @@ matrixJob("${folderPath}/jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") 
     description("Version to test. Will be supplied by the parent job. Also used to donwload proper sources. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieMainBranch", "kie branch", "please edit the branch of the KIE release <br> Version to test. Will be supplied by the parent job. <br> Normally the kieMainBranch will be supplied by parent job <br> ******************************************************** <br> ")
+
     }
 
     axes {
@@ -715,7 +719,7 @@ matrixJob("${folderPath}/jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") 
 def kieWbTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild-master/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild-$kieMainBranch/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv kie-wb-distributions-$kieVersion/* .
 rmdir kie-wb-distributions-$kieVersion'''
@@ -725,6 +729,8 @@ matrixJob("${folderPath}/kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
 
     parameters {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieMainBranch", "kie branch", "please edit the branch of the KIE release <br> Version to test. Will be supplied by the parent job. <br> Normally the kieMainBranch will be supplied by parent job <br> ******************************************************** <br> ")
+
     }
 
     axes {
@@ -809,7 +815,7 @@ matrixJob("${folderPath}/kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
 def kieServerTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild-master/org/drools/droolsjbpm-integration/$kieVersion/droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kieAllBuild-$kieMainBranch/org/drools/droolsjbpm-integration/$kieVersion/droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv droolsjbpm-integration-$kieVersion/* .
 rmdir droolsjbpm-integration-$kieVersion'''
@@ -822,6 +828,8 @@ matrixJob("${folderPath}/kieServerMatrix-kieAllBuild-${kieMainBranch}") {
 
     parameters {
         stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieMainBranch", "kie branch", "please edit the branch of the KIE release <br> Version to test. Will be supplied by the parent job. <br> Normally the kieMainBranch will be supplied by parent job <br> ******************************************************** <br> ")
+
     }
 
     axes {
