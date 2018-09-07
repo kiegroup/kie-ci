@@ -4,8 +4,8 @@ import org.kie.jenkins.jobdsl.Constants
 
 def javadk=Constants.JDK_VERSION
 def javaToolEnv="KIE_JDK1_8"
-def mvnToolEnv="KIE_MAVEN_3_3_9"
-def mvnVersion="kie-maven-3.3.9"
+def mvnToolEnv="KIE_MAVEN_3_5_2"
+def mvnVersion="kie-maven-3.5.2"
 def mvnHome="${mvnToolEnv}_HOME"
 def javaHome="${javaToolEnv}_HOME"
 def mvnOpts="-Xms1g -Xmx3g"
