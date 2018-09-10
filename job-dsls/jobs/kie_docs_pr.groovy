@@ -36,5 +36,5 @@ PrVerificationJob.addPrConfiguration(job = jobDefinition,
         labelName = labelName,
         timeoutValue = timeoutValue,
         mavenGoals = mavenGoals,
-        "**/target/generated-docs/html_single/**/*"
+        archiveArtifactsPattern = "**/target/generated-docs/html_single/**/*"
 )
