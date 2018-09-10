@@ -35,5 +35,6 @@ PrVerificationJob.addPrConfiguration(job = jobDefinition,
         branchName = Constants.BRANCH,
         labelName = labelName,
         timeoutValue = timeoutValue,
-        mavenGoals = mavenGoals
+        mavenGoals = mavenGoals,
+        "**/target/generated-docs/html_single/**/*"
 )

@@ -48,15 +48,17 @@ class PrVerificationJob extends BasicJob {
      * @param labelName - Jenkins slave nodes label name
      * @param timeoutValue - Job timeout value in minutes
      * @param mavenGoals - Build maven goals
+     * @param archiveArtifactsPattern - regexp that matches artifacts to archive
      */
     static void addPrConfiguration(Job job,
-                                   String projectName,
-                                   String githubGroup,
-                                   String githubCredentialsId,
-                                   String branchName,
-                                   String labelName,
-                                   int timeoutValue,
-                                   String mavenGoals) {
+            String projectName,
+            String githubGroup,
+            String githubCredentialsId,
+            String branchName,
+            String labelName,
+            int timeoutValue,
+            String mavenGoals,
+            String archiveArtifactsPattern = null) {
 
         //Add common configuration to the job
         String description = String.format("Pull Request Verification job for ${projectName} project.")
@@ -95,7 +97,7 @@ class PrVerificationJob extends BasicJob {
                         github("${githubGroup}/${projectName}")
 
                         // Set credentials if passed.
-                        if(githubCredentialsId != "") {
+                        if (githubCredentialsId != "") {
                             // Sets credentials for authentication with the remote repository.
                             credentials(githubCredentialsId)
                         }
@@ -187,6 +189,10 @@ class PrVerificationJob extends BasicJob {
 
                     // If set, does not fail the build on empty test results.
                     allowEmptyResults()
+                }
+
+                if (archiveArtifactsPattern != null) {
+                    archiveArtifacts(archiveArtifactsPattern)
                 }
             }
 
