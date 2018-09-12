@@ -9,7 +9,7 @@ def final DEFAULTS = [
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
-        mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly11 clean deploy findbugs:findbugs",
+        mvnGoals               : "-e -nsu -fae -B -Pwildfly11 clean deploy findbugs:findbugs",
         mvnProps: [
                 "full"                     : "true",
                 "container"                : "wildfly11",
@@ -140,7 +140,7 @@ def final REPO_CONFIGS = [
         "kie-wb-distributions"      : [
                 timeoutMins            : 120,
                 label                  : "kie-rhel7 && kie-mem16g",
-                mvnGoals               : DEFAULTS["mvnGoals"].replace("-T1C", "-T2") + " -Pkie-wb",
+                mvnGoals               : DEFAULTS["mvnGoals"] + " -Pkie-wb",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1",
                         "webdriver.firefox.bin"    : "/opt/tools/firefox-45esr/firefox-bin",
