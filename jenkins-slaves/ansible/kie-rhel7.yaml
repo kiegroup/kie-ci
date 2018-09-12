@@ -13,8 +13,8 @@
     jdk_short_versions: [6u45, 7u80, 8u152, 9.0.1]
     jdk_long_versions: [jdk1.6.0_45, jdk1.7.0_80, jdk1.8.0_152, jdk-9.0.1]
     jdk_symlink_names: [jdk1.6, jdk1.7, jdk1.8, jdk9]
-    firefox_short_versions: [38esr, 45esr, 52esr]
-    firefox_long_versions: [38.8.0esr, 45.5.0esr, 52.0.2esr]
+    firefox_short_versions: [45esr, 52esr, 60esr]
+    firefox_long_versions: [45.9.0esr, 52.9.0esr, 60.2.0esr]
 
   tasks:
   - name: Copy Pulp repos config
