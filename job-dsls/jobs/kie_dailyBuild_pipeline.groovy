@@ -96,16 +96,16 @@ pipeline {
       steps {
         parallel (
           "jbpmTestCoverageMatrix" : {
-              build job: "jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion, name: 'kieMainBranch', value: kieMainBranch]]
+              build job: "jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]
           },
           "jbpmTestContainerMatrix" : {
-              build job: "jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion, name: 'kieMainBranch', value: kieMainBranch]]
+              build job: "jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]
           },
           "kieWbTestsMatrix" : {
-            build job: "kieWbTestsMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion, name: 'kieMainBranch', value: kieMainBranch]]
+            build job: "kieWbTestsMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]
           },
           "kieServerMatrix" : {
-            build job: "kieServerMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion, name: 'kieMainBranch', value: kieMainBranch]]
+            build job: "kieServerMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]
           },
           "kie-docker-ci-images" : {
             build job: "${dockerPath}/kie-docker-ci-images-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
@@ -581,8 +581,8 @@ rmdir jbpm-$kieVersion
 matrixJob("${folderPath}/jbpmTestCoverageMatrix-kieAllBuild-${kieMainBranch}") {
     description("This job: <br> - Test coverage Matrix for jbpm <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
-        stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
-        stringParam("kieMainBranch", "kie branch", "please edit the branch of the KIE release <br> Version to test. Will be supplied by the parent job. <br> Normally the kieMainBranch will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieMainBranch", "${kieMainBranch}", "please edit the branch of the KIE release <br> Version to test. Will be supplied by the parent job. <br> Normally the kieMainBranch will be supplied by parent job <br> ******************************************************** <br> ")
     }
 
     axes {
@@ -651,8 +651,8 @@ rmdir jbpm-$kieVersion
 matrixJob("${folderPath}/jbpmTestContainerMatrix-kieAllBuild-${kieMainBranch}") {
     description("Version to test. Will be supplied by the parent job. Also used to donwload proper sources. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
-        stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
-        stringParam("kieMainBranch", "kie branch", "please edit the branch of the KIE release <br> Version to test. Will be supplied by the parent job. <br> Normally the kieMainBranch will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieMainBranch", "${kieMainBranch}", "please edit the branch of the KIE release <br> Version to test. Will be supplied by the parent job. <br> Normally the kieMainBranch will be supplied by parent job <br> ******************************************************** <br> ")
 
     }
 
@@ -728,8 +728,8 @@ matrixJob("${folderPath}/kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
-        stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
-        stringParam("kieMainBranch", "kie branch", "please edit the branch of the KIE release <br> Version to test. Will be supplied by the parent job. <br> Normally the kieMainBranch will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieMainBranch", "${kieMainBranch}", "please edit the branch of the KIE release <br> Version to test. Will be supplied by the parent job. <br> Normally the kieMainBranch will be supplied by parent job <br> ******************************************************** <br> ")
 
     }
 
@@ -827,8 +827,8 @@ matrixJob("${folderPath}/kieServerMatrix-kieAllBuild-${kieMainBranch}") {
     label("master")
 
     parameters {
-        stringParam("kieVersion", "kie version", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
-        stringParam("kieMainBranch", "kie branch", "please edit the branch of the KIE release <br> Version to test. Will be supplied by the parent job. <br> Normally the kieMainBranch will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
+        stringParam("kieMainBranch", "${kieMainBranch}", "please edit the branch of the KIE release <br> Version to test. Will be supplied by the parent job. <br> Normally the kieMainBranch will be supplied by parent job <br> ******************************************************** <br> ")
 
     }
 
