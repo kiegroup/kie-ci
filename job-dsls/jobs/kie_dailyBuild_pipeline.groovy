@@ -14,8 +14,8 @@ def kieVersion="7.11.1"
 def kieProdBranch="7.11.x"
 def appformerVersion="2.8.1"
 def erraiBranch=Constants.ERRAI_BRANCH
-def erraiVersionOld="4.3.3-SNAPSHOT"
-def erraiVersionNew="4.3.3"
+def erraiVersionOld="4.3.4-SNAPSHOT"
+def erraiVersionNew="4.3.4"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir="\$HOME/.m2/repository"
 
