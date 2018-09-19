@@ -3,16 +3,15 @@
   remote_user: root
   gather_facts: false
   vars :
-    maven_versions: [3.0.5, 3.2.3, 3.2.5, 3.3.9, 3.5.0, 3.5.2]
+    maven_versions: [3.2.3, 3.2.5, 3.3.9, 3.5.2, 3.5.4]
     jdk_download_urls: [
-      "https://kie-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/slaves-resources/lastSuccessfulBuild/artifact/jdk-6u45-linux-x64.tar.gz",
-      "https://kie-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/slaves-resources/lastSuccessfulBuild/artifact/jdk-7u80-linux-x64.tar.gz",
-      "https://kie-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/slaves-resources/lastSuccessfulBuild/artifact/jdk-8u152-linux-x64.tar.gz",
-      "https://kie-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/slaves-resources/lastSuccessfulBuild/artifact/jdk-9.0.1-linux-x64.tar.gz"
+      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-8u181-linux-x64.tar.gz",
+      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-9.0.4-linux-x64.tar.gz",
+      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-10.0.2-linux-x64.tar.gz"
     ]
-    jdk_short_versions: [6u45, 7u80, 8u152, 9.0.1]
-    jdk_long_versions: [jdk1.6.0_45, jdk1.7.0_80, jdk1.8.0_152, jdk-9.0.1]
-    jdk_symlink_names: [jdk1.6, jdk1.7, jdk1.8, jdk9]
+    jdk_short_versions: [8u181, 9.0.4, 10.0.2]
+    jdk_long_versions: [jdk1.8.0_181, jdk-9.0.4, jdk-10.0.2]
+    jdk_symlink_names: [jdk1.8, jdk9, jdk10]
     firefox_short_versions: [45esr, 52esr, 60esr]
     firefox_long_versions: [45.9.0esr, 52.9.0esr, 60.2.0esr]
 

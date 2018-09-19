@@ -9,3 +9,7 @@ local/
 *.iml
 .idea
 .DS_Store
+
+# Ansible
+*.retry
+packer
