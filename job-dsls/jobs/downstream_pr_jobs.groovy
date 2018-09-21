@@ -60,7 +60,7 @@ def final REPO_CONFIGS = [
         "drools-wb"                 : [],
         "optaplanner-wb"            : [],
         "jbpm-designer"             : [],
-        "jbpm-wb"                   : [],
+        "jbpm-wb"                   : []
         //"kie-wb-distributions"      : [] // kie-wb-distributions is the last repo in the chain
 ]
 
