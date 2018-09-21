@@ -524,7 +524,7 @@ matrixJob("${folderPath}/wbSmokeTestsMatrix-kieReleases-${kieMainBranch}") {
             properties("maven.test.failure.ignore":true)
             properties("deployment.timeout.millis":"240000")
             properties("container.startstop.timeout.millis":"240000")
-            properties("webdriver.firefox.bin":"/opt/tools/firefox-45esr/firefox-bin")
+            properties("webdriver.firefox.bin":"/opt/tools/firefox-60esr/firefox-bin")
             properties("eap7.download.url":"http://download-ipv4.eng.brq.redhat.com/released/JBoss-middleware/eap7/7.1.0/jboss-eap-7.1.0.zip")
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("1461de41-7511-4269-ae02-8eeb01fd059d")
