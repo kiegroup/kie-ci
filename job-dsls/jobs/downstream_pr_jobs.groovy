@@ -51,7 +51,7 @@ def final REPO_CONFIGS = [
         "optaplanner"               : [],
         "jbpm"                      : [],
         "droolsjbpm-integration"    : [
-                downstreamMvnGoals  : DEFAULTS["downstreamMvnGoals"] + ["-Pjenkins-pr-builder"]
+                downstreamMvnGoals  : DEFAULTS["downstreamMvnGoals"] + " -Pjenkins-pr-builder "
                                       ],
         //"droolsjbpm-tools"          : [], // no other repo depends on droolsjbpm-tools
         "kie-uberfire-extensions"   : [],
