@@ -93,7 +93,7 @@ def final REPO_CONFIGS = [
                 mvnGoals          : DEFAULTS["mvnGoals"] + " -Pkie-wb",
                 mvnProps          : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": 1,
-                        "webdriver.firefox.bin"    : "/opt/tools/firefox-45esr/firefox-bin",
+                        "webdriver.firefox.bin"    : "/opt/tools/firefox-60esr/firefox-bin",
                         "gwt.memory.settings"      : "-Xmx10g"
                 ],
                 artifactsToArchive: DEFAULTS["artifactsToArchive"] + [
