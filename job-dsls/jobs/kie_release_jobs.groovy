@@ -472,7 +472,7 @@ matrixJob("${folderPath}/wbSmokeTestsMatrix-kieReleases-${kieMainBranch}") {
     axes {
         jdk("$javadk")
         text("container", "wildfly", "eap7")
-        text("war", "kie-wb", "kie-drools-wb")
+        text("war", "business-central")
         labelExpression("label_exp", "kie-linux&&kie-mem8g&&gui-testing")
     }
 
