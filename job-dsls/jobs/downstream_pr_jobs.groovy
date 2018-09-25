@@ -50,9 +50,6 @@ def final REPO_CONFIGS = [
         "drools"                    : [],
         "optaplanner"               : [],
         "jbpm"                      : [],
-        "droolsjbpm-integration"    : [
-                downstreamMvnGoals  : DEFAULTS["downstreamMvnGoals"] + " -Pjenkins-pr-builder "
-                                      ],
         //"droolsjbpm-tools"          : [], // no other repo depends on droolsjbpm-tools
         "kie-uberfire-extensions"   : [],
         "kie-wb-playground"         : [],
@@ -60,8 +57,13 @@ def final REPO_CONFIGS = [
         "drools-wb"                 : [],
         "optaplanner-wb"            : [],
         "jbpm-designer"             : [],
-        "jbpm-wb"                   : []
+        "jbpm-wb"                   : [],
         //"kie-wb-distributions"      : [] // kie-wb-distributions is the last repo in the chain
+        // droolsjbpm-integration was put as last repo for applying this change - this only works for the last rep in this
+        // file - this is a temporary workaround
+        "droolsjbpm-integration"    : [
+                downstreamMvnGoals  : DEFAULTS["downstreamMvnGoals"] + " -Pjenkins-pr-builder"
+                                      ]
 ]
 
 
