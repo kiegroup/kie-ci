@@ -19,7 +19,9 @@ def final DEFAULTS = [
                 "integration-tests"                  : "true",
                 "maven.test.failure.ignore"          : "true",
                 "maven.test.redirectTestOutputToFile": "true",
-                "gwt.compiler.localWorkers"          : 1
+                "gwt.compiler.localWorkers"          : 1, 
+                "webdriver.firefox.bin"              : "/opt/tools/firefox-60esr/firefox-bin"
+ 
         ],
         artifactsToArchive     : [
                 "**/target/*.log",
