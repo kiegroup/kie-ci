@@ -29,7 +29,6 @@ def final DEFAULTS = [
                 "**/target/screenshots/**",
                 "**/target/business-central*wildfly*.war",
                 "**/target/business-central*eap*.war",
-                "**/target/kie-server-*ee6.war",
                 "**/target/kie-server-*ee7.war",
                 "**/target/kie-server-*webc.war",
                 "**/target/jbpm-server*dist*.zip"
