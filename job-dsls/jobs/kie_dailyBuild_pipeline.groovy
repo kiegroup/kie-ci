@@ -261,7 +261,7 @@ fi
 # clone the build-bootstrap that contains the other build scripts
 git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git --branch $kieMainBranch --depth 100
 # clone rest of the repos
-./droolsjbpm-build-bootstrap/script/git-clone-others.sh --branch $kieMainBranch --depth 100
+./droolsjbpm-build-bootstrap/script/git-clone-others.sh --quiet --branch $kieMainBranch --depth 100
 # checkout to release branches
 ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $kieVersion $kieMainBranch
 
@@ -444,7 +444,7 @@ git checkout $kieMainBranch
 cd $WORKSPACE
 
 # clone rest of the repos
-./droolsjbpm-build-bootstrap/script/git-clone-others.sh --branch $kieMainBranch --depth 100
+./droolsjbpm-build-bootstrap/script/git-clone-others.sh --quiet --branch $kieMainBranch --depth 100
 # checkout to release branches
 ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $kieProdBranch $kieMainBranch
 
