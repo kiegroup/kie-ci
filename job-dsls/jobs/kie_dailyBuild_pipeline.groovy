@@ -179,7 +179,7 @@ mvn -U -B -e clean deploy -Dfull -Drelease -DaltDeploymentRepository=local::defa
 # unpack zip to QA Nexus
 cd $deployDir
 zip -r kiegroup .
-curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-$kieMainBranch/content-compressed
+curl --silent --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-$kieMainBranch/content-compressed
 '''
 
 
@@ -306,7 +306,7 @@ EOT
 # unpack zip to QA Nexus
 cd $deployDir
 zip -r kiegroup .
-curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-$kieMainBranch/content-compressed
+curl --silent --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-$kieMainBranch/content-compressed
 cd ..
 
 # creates a file (list) of the last commit hash of each repository as handover for production
