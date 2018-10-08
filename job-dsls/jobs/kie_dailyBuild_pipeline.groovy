@@ -179,7 +179,7 @@ mvn -U -B -e clean deploy -Dfull -Drelease -DaltDeploymentRepository=local::defa
 # unpack zip to QA Nexus
 cd $deployDir
 zip -r kiegroup .
-curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-$kieMainBranch/content-compressed
+curl --silent --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-$kieMainBranch/content-compressed
 '''
 
 
@@ -261,7 +261,7 @@ fi
 # clone the build-bootstrap that contains the other build scripts
 git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git --branch $kieMainBranch --depth 100
 # clone rest of the repos
-./droolsjbpm-build-bootstrap/script/git-clone-others.sh --branch $kieMainBranch --depth 100
+./droolsjbpm-build-bootstrap/script/git-clone-others.sh --quiet --branch $kieMainBranch --depth 100
 # checkout to release branches
 ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $kieVersion $kieMainBranch
 
@@ -306,7 +306,7 @@ EOT
 # unpack zip to QA Nexus
 cd $deployDir
 zip -r kiegroup .
-curl --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-$kieMainBranch/content-compressed
+curl --silent --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-$kieMainBranch/content-compressed
 cd ..
 
 # creates a file (list) of the last commit hash of each repository as handover for production
@@ -444,7 +444,7 @@ git checkout $kieMainBranch
 cd $WORKSPACE
 
 # clone rest of the repos
-./droolsjbpm-build-bootstrap/script/git-clone-others.sh --branch $kieMainBranch --depth 100
+./droolsjbpm-build-bootstrap/script/git-clone-others.sh --quiet --branch $kieMainBranch --depth 100
 # checkout to release branches
 ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $kieProdBranch $kieMainBranch
 
