@@ -288,13 +288,8 @@ cd ..
 deployDir=$WORKSPACE/deploy-dir
 
 cat > "$WORKSPACE/clean-up.sh" << EOT
-baseDir=\\$1
-rm -rf \\`find \\$baseDir -type d -wholename "*/target/*wildfly*Final"\\`
-rm -rf \\`find \\$baseDir -type d -wholename "*/target/cargo"\\`
-rm -rf \\`find \\$baseDir -type f -name "*war"\\`
-rm -rf \\`find \\$baseDir -type f -name "*jar"\\`
-rm -rf \\`find \\$baseDir -type f -name "*zip"\\`
-rm -rf \\`find \\$baseDir -type d -name "gwt-unitCache"\\`
+cd \\$1
+git clean -ffdx # Remove all build artifacts (= all files not tracked or ignored by git)
 EOT
 
 # do a full build, but deploy only into local dir
@@ -470,13 +465,8 @@ cd ..
 ./droolsjbpm-build-bootstrap/script/git-all.sh commit -m "upgraded version"
 
 cat > "$WORKSPACE/clean-up.sh" << EOT
-baseDir=\\$1
-rm -rf \\`find \\$baseDir -type d -wholename "*/target/*wildfly*Final"\\`
-rm -rf \\`find \\$baseDir -type d -wholename "*/target/cargo"\\`
-rm -rf \\`find \\$baseDir -type f -name "*war"\\`
-rm -rf \\`find \\$baseDir -type f -name "*jar"\\`
-rm -rf \\`find \\$baseDir -type f -name "*zip"\\`
-rm -rf \\`find \\$baseDir -type d -name "gwt-unitCache"\\`
+cd \\$1
+git clean -ffdx # Remove all build artifacts (= all files not tracked or ignored by git)
 EOT
 
 # do a full build
