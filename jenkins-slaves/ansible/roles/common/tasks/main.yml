@@ -37,6 +37,7 @@
    - rng-tools
    - ansible
    - zip
+   - python2-pip
 
 - name: Update all packages
   yum:

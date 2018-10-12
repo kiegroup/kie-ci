@@ -14,5 +14,4 @@
     state: latest
   with_items:
    - brewkoji
-   - python2-pip
 ...
