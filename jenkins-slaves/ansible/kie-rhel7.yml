@@ -1,0 +1,34 @@
+---
+- hosts: packer
+  remote_user: root
+  gather_facts: false
+
+  vars :
+    maven_versions: [3.2.3, 3.2.5, 3.3.9, 3.5.2]
+    jdk_download_urls: [
+      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-8u181-linux-x64.tar.gz",
+      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-9.0.4-linux-x64.tar.gz",
+      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-10.0.2-linux-x64.tar.gz"
+    ]
+    jdk_short_versions: [8u181, 9.0.4, 10.0.2]
+    jdk_long_versions: [jdk1.8.0_181, jdk-9.0.4, jdk-10.0.2]
+    jdk_symlink_names: [jdk1.8, jdk9, jdk10]
+    firefox_short_versions: [45esr, 52esr, 60esr]
+    firefox_long_versions: [45.9.0esr, 52.9.0esr, 60.2.0esr]
+
+  roles:
+    - common
+    - kie
+    - rhba
+
+  tasks:
+  ### Clean up ###
+  - name: Remove temprorary directory
+    file:
+      path: /tmp/downloads
+      state: absent
+
+  # Hack: decrease the image size by writing zeros into unsused parts of the disk
+  - name: Decrease VM image size
+    shell: cd / && (dd if=/dev/zero of=fillmeup || true) && sync && rm -f fillmeup
+...

@@ -1,0 +1,18 @@
+---
+### Install RPM packages ###
+- name: Install RCMTOOLS repository
+  yum:
+    name: http://download.devel.redhat.com/rel-eng/RCMTOOLS/latest-redhat-rcminternal-release-server-rhel-7.noarch.rpm
+    state: present
+
+- name: Import RCMTOOLS repository key
+  shell: rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-rcminternal
+
+- name: Install packages
+  yum:
+    pkg: "{{item}}"
+    state: latest
+  with_items:
+   - brewkoji
+   - python2-pip
+...
