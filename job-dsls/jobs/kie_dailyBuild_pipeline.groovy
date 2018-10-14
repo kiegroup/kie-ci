@@ -289,7 +289,10 @@ deployDir=$WORKSPACE/deploy-dir
 
 cat > "$WORKSPACE/clean-up.sh" << EOT
 cd \\$1
-git clean -ffdx # Remove all build artifacts (= all files not tracked or ignored by git)
+# Add test reports to the index to prevent their removal in the following step
+git add --force **target/*-reports/TEST-*.xml
+# Remove all build artifacts to save space
+git clean -ffdx
 EOT
 
 # do a full build, but deploy only into local dir
@@ -466,7 +469,10 @@ cd ..
 
 cat > "$WORKSPACE/clean-up.sh" << EOT
 cd \\$1
-git clean -ffdx # Remove all build artifacts (= all files not tracked or ignored by git)
+# Add test reports to the index to prevent their removal in the following step
+git add --force **target/*-reports/TEST-*.xml
+# Remove all build artifacts to save space
+git clean -ffdx
 EOT
 
 # do a full build
