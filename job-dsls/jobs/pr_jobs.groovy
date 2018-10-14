@@ -210,7 +210,7 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         steps {
-            if (repo != "jbpm-work-items") {
+            /* if (repo != "jbpm-work-items") {
                 configure { project ->
                     project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.UpstreamReposBuilder' {
                         mavenBuildConfig {
@@ -220,7 +220,7 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                     }
                 }
-            }
+            }*/
             maven {
                 mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                 mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
