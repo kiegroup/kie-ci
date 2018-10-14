@@ -18,7 +18,7 @@ def erraiVersionOld="4.3.4-SNAPSHOT"
 def erraiVersionNew="4.3.4"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir="\$HOME/.m2/repository"
-
+String EAP7_DOWNLOAD_URL = "http://download-ipv4.eng.brq.redhat.com/released/JBoss-middleware/eap7/7.1.4/jboss-eap-7.1.4-full-build.zip"
 
 // creation of folder
 folder("KIE")
@@ -803,7 +803,7 @@ matrixJob("${folderPath}/kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
             properties("deployment.timeout.millis":"240000")
             properties("container.startstop.timeout.millis":"240000")
             properties("webdriver.firefox.bin":"/opt/tools/firefox-60esr/firefox-bin")
-            properties("eap7.download.url":"http://download-ipv4.eng.brq.redhat.com/released/JBoss-middleware/eap7/7.1.0/jboss-eap-7.1.0.zip")
+            properties("eap7.download.url":EAP7_DOWNLOAD_URL)
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e")
         }
@@ -885,7 +885,7 @@ matrixJob("${folderPath}/kieServerMatrix-kieAllBuild-${kieMainBranch}") {
             properties("maven.test.failure.ignore": true)
             properties("deployment.timeout.millis":"240000")
             properties("container.startstop.timeout.millis":"240000")
-            properties("eap7.download.url":"http://download-ipv4.eng.brq.redhat.com/released/JBoss-middleware/eap7/7.1.0/jboss-eap-7.1.0.zip")
+            properties("eap7.download.url":EAP7_DOWNLOAD_URL)
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e")
         }
