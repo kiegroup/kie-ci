@@ -8,7 +8,7 @@
     jdk_download_urls: [
       "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-8u181-linux-x64.tar.gz",
       "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-9.0.4-linux-x64.tar.gz",
-      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-10.0.2-linux-x64.tar.gz"
+      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-10.0.2-linux-x64.tar.gz",
       "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-11-linux-x64.tar.gz"
     ]
     jdk_short_versions: [8u181, 9.0.4, 10.0.2, 11]
