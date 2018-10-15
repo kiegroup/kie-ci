@@ -11,7 +11,7 @@ def final DEFAULTS = [
         label                  : "kie-rhel7 && kie-mem8g",
         ghAuthTokenId          : "0b449357-f73e-42b7-97f7-63ee8b670e5c",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
-        downstreamMvnGoals     : "-B -e -nsu -fae -1TC clean install -Dfull=true -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true",
+        downstreamMvnGoals     : "-B -e -nsu -fae -T1C clean install -Dfull=true -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true",
         artifactsToArchive     : [
                 "**/target/*.log",
                 "**/target/testStatusListener*",
