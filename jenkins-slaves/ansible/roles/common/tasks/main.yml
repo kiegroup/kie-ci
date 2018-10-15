@@ -1,0 +1,158 @@
+---
+# list of common tasks
+### RPM repositories ###
+- name: Copy Pulp repos config
+  copy:
+    src: data/config/pulp/pulp.repo
+    dest: /etc/yum.repos.d/pulp.repo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install EPEL7 repository
+  yum:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state: present
+
+- name: Install packages
+  yum:
+    pkg: "{{item}}"
+    state: latest
+  with_items:
+   - git
+   - tig
+   - wget
+   - mc
+   - vim
+   - unzip
+   - iputils
+   - bind-utils
+   - findutils
+   - htop
+   - hub
+   - screen
+   - lsof
+   - bash-completion
+   - bzip2
+   - rng-tools
+   - ansible
+   - zip
+   - python2-pip
+
+- name: Update all packages
+  yum:
+    name: "*"
+    state: latest
+
+### System services ###
+- name: Start and enable RNGD Service
+  service:
+    name: rngd
+    state: started
+    enabled: true
+
+### Jenkins user ###
+- name: Add user jenkins
+  user:
+    name: jenkins
+    # droolsjbpm.ci1
+    password: $6$rounds=656000$skw/fVgypJZWP8m1$04UK6Ax4.2hhJfcCbgGegNGl0brQtufYJd4lGn4Lw2RnZ8GQL50crLAd/PIU/.JC047TLybYfcdLL/27hkwlx0
+    state: present
+
+- name: Create ~/.ssh directory
+  file:
+    path: /home/jenkins/.ssh
+    state: directory
+    owner: jenkins
+    group: jenkins
+
+- name: Copy SSH authorized_keys file
+  copy:
+    src: data/config/ssh/authorized_keys
+    dest: /home/jenkins/.ssh/authorized_keys
+    owner: jenkins
+    group: jenkins
+    mode: 0644
+
+### Tools ###
+- name: Create tools directory
+  file:
+    path: /opt/tools
+    state: directory
+    recurse: yes
+    owner: root
+    group: root
+
+- name: Create tmp downloads directory
+  file:
+    path: /tmp/downloads
+    state: directory
+    owner: root
+    group: root
+
+### JDK ###
+- name: Download JDK archives
+  get_url:
+    url: "{{ item }}"
+    dest: /tmp/downloads/
+    validate_certs: no
+  with_items:
+    - "{{ jdk_download_urls }}"
+
+- name: Extract JDK archives
+  unarchive:
+    src: /tmp/downloads/jdk-{{ item }}-linux-x64.tar.gz
+    dest: /opt/tools
+    copy: no
+    # owner: root
+    # group: root
+  with_items:
+   - "{{ jdk_short_versions }}"
+
+- name: Create JDK symlinks
+  file:
+    src: /opt/tools/{{ item.0 }}
+    dest: /opt/tools/{{ item.1 }}
+    state: link
+    mode: 0644
+  with_together:
+  - "{{ jdk_long_versions }}"
+  - "{{ jdk_symlink_names }}"
+
+### Maven ###
+- name: Dowload Maven archives
+  get_url:
+    url: https://archive.apache.org/dist/maven/maven-3/{{ item }}/binaries//apache-maven-{{ item }}-bin.tar.gz
+    dest: /tmp/downloads
+    owner: root
+    group: root
+  with_items:
+   - "{{ maven_versions }}"
+
+- name: Extract Maven archives
+  unarchive: copy=no src=/tmp/downloads/apache-maven-{{ item }}-bin.tar.gz dest=/opt/tools owner=root group=root
+  with_items:
+    - "{{ maven_versions }}"
+
+### Swap ###
+- name: Create swap file
+  command: dd if=/dev/zero of=/swapfile bs=1M count=8192
+
+- name: Change swap file permissions
+  file: path="/swapfile"
+    owner=root
+    group=root
+    mode=0600
+
+- name: Make swap fs
+  command: "mkswap /swapfile"
+
+- name: Add swap entry in fstab
+  mount: name=none
+    src=/swapfile
+    fstype=swap
+    opts=sw
+    passno=0
+    dump=0
+    state=present
+...

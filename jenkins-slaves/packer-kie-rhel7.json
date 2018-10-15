@@ -13,7 +13,7 @@
       "username": "{{ user `openstack_username` }}",
       "password": "{{ user `openstack_password` }}",
       "tenant_name": "kie-jenkins",
-      "source_image": "35546b46-2f70-4eae-8f95-ec3d9b7ebeba",
+      "source_image": "d7b7b9b8-751b-4b28-9bc7-3436db1fd3a8",
       "image_name": "{{ user `image_name` }}",
       "flavor": "m1.medium",
       "floating_ip_pool": "10.8.240.0",
@@ -28,7 +28,7 @@
   "provisioners": [
     {
       "type": "ansible",
-      "playbook_file": "ansible/kie-rhel7.yaml",
+      "playbook_file": "ansible/kie-rhel7.yml",
       "groups": [
         "packer"
       ]
