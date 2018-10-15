@@ -6,13 +6,13 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
-        ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
-        branch                 : Constants.BRANCH,
+        ghOrgUnit              : "kiegroup",
+        branch                 : "7.11.x",
         timeoutMins            : 600,
         label                  : "kie-rhel7 && kie-mem8g",
-        ghAuthTokenId          : Constants.GITHUB_AUTH_TOKEN,
+        ghAuthTokenId          : "0b449357-f73e-42b7-97f7-63ee8b670e5c",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
-        downstreamMvnGoals     : "-B -e -nsu -fae clean install -Dfull=true -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true",
+        downstreamMvnGoals     : "-B -e -nsu -fae -T1C clean install -Dfull=true -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true",
         artifactsToArchive     : [
                 "**/target/*.log",
                 "**/target/testStatusListener*",
@@ -21,7 +21,6 @@ def final DEFAULTS = [
                 "**/target/kie-wb*eap*.war",
                 "**/target/kie-drools-wb*wildfly*.war",
                 "**/target/kie-drools-wb*eap*.war",
-                "**/target/kie-server-*ee6.war",
                 "**/target/kie-server-*ee7.war",
                 "**/target/kie-server-*webc.war",
                 "**/target/jbpm-server*dist*.zip"
@@ -64,10 +63,10 @@ for (repoConfig in REPO_CONFIGS) {
     String ghAuthTokenId = get("ghAuthTokenId")
 
     // Creation of folders where jobs are stored
-    folder(Constants.PULL_REQUEST_FOLDER)
+    folder("pullrequest")
 
     // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? Constants.PULL_REQUEST_FOLDER + "/$repo-compile-downstream-build" : Constants.PULL_REQUEST_FOLDER + "/$repo-compile-downstream-build-$repoBranch"
+    String jobName = (repoBranch == "master") ? "pullrequest" + "/$repo-compile-downstream-build" : "pullrequest" + "/$repo-compile-downstream-build-$repoBranch"
     job(jobName) {
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
@@ -146,19 +145,19 @@ for (repoConfig in REPO_CONFIGS) {
             configure { project ->
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.UpstreamReposBuilder' {
                     mavenBuildConfig {
-                        mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
+                        mavenHome("/opt/tools/apache-maven-3.5.2")
                         delegate.mavenOpts("-Xmx3g")
                         mavenArgs(get("upstreamMvnArgs"))
                     }
                 }
                 project / 'builders' << 'hudson.tasks.Maven' {
-                    mavenName("kie-maven-${Constants.MAVEN_VERSION}")
+                    mavenName("apache-maven-3.5.2")
                     jvmOptions("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                     targets("-e -fae -nsu -B -T1C clean install -Dfull -DskipTests")
                 }
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
                     mavenBuildConfig {
-                        mavenHome("/opt/tools/apache-maven-${Constants.MAVEN_VERSION}")
+                        mavenHome("/opt/tools/apache-maven-3.5.2")
                         delegate.mavenOpts("-Xmx3g")
                         mavenArgs(get("downstreamMvnGoals"))
                     }
