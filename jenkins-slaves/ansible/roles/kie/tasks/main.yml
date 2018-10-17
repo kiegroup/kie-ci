@@ -1,5 +1,6 @@
 ---
 ### Install RPM packages ###
+
 - name: Install packages
   yum:
     pkg: "{{item}}"
@@ -11,6 +12,7 @@
    - docker
 
 ### Bash ###
+
 - name: Copy bashrc file
   copy:
     src: data/config/bashrc
@@ -19,6 +21,7 @@
     group: jenkins
 
 ### Docker ###
+
 - name: Copy Docker config
   copy:
     src: data/config/docker/docker
@@ -45,6 +48,7 @@
     groups: dockerroot
 
 ### VNC ###
+
 - name: Create ~/.vnc directory
   file:
     path: /home/jenkins/.vnc
@@ -61,6 +65,7 @@
     mode: 0600
 
 ### Maven repository ###
+
 - name: Copy Maven extensions
   copy:
     src: data/config/maven/ext-{{ item }}/
@@ -111,6 +116,7 @@
     copy: no
 
 ### Groovy ###
+
 - name: Download Groovy 2.x archive
   get_url:
     url: https://dl.bintray.com/groovy/maven/apache-groovy-binary-2.4.7.zip
@@ -130,6 +136,7 @@
     mode: 0644
 
 ### Firefox ###
+
 - name: Download Firefox archives
   get_url:
     url: https://ftp.mozilla.org/pub/firefox/releases/{{ item }}/linux-x86_64/en-US/firefox-{{ item }}.tar.bz2
@@ -159,6 +166,7 @@
     - "{{ firefox_short_versions }}"
 
 ### Git repositories ###
+
 - name: Create git-repos dir
   file:
     path: /home/jenkins/git-repos

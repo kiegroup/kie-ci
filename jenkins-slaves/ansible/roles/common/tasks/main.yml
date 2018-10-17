@@ -1,6 +1,6 @@
 ---
-# list of common tasks
 ### RPM repositories ###
+
 - name: Copy Pulp repos config
   copy:
     src: data/config/pulp/pulp.repo
@@ -45,6 +45,7 @@
     state: latest
 
 ### System services ###
+
 - name: Start and enable RNGD Service
   service:
     name: rngd
@@ -52,6 +53,7 @@
     enabled: true
 
 ### Jenkins user ###
+
 - name: Add user jenkins
   user:
     name: jenkins
@@ -75,6 +77,7 @@
     mode: 0644
 
 ### Tools ###
+
 - name: Create tools directory
   file:
     path: /opt/tools
@@ -91,6 +94,7 @@
     group: root
 
 ### JDK ###
+
 - name: Download JDK archives
   get_url:
     url: "{{ item }}"
@@ -120,6 +124,7 @@
   - "{{ jdk_symlink_names }}"
 
 ### Maven ###
+
 - name: Dowload Maven archives
   get_url:
     url: https://archive.apache.org/dist/maven/maven-3/{{ item }}/binaries//apache-maven-{{ item }}-bin.tar.gz
@@ -135,6 +140,7 @@
     - "{{ maven_versions }}"
 
 ### Swap ###
+
 - name: Create swap file
   command: dd if=/dev/zero of=/swapfile bs=1M count=8192
 
