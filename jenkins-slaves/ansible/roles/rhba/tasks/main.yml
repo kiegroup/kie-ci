@@ -1,5 +1,6 @@
 ---
 ### Install RPM packages ###
+
 - name: Install RCMTOOLS repository
   yum:
     name: http://download.devel.redhat.com/rel-eng/RCMTOOLS/latest-redhat-rcminternal-release-server-rhel-7.noarch.rpm
@@ -14,4 +15,59 @@
     state: latest
   with_items:
    - brewkoji
+
+### Download PME ###
+
+- name: Create tools directory for pme
+  file:
+    path: /opt/tools/pme
+    state: directory
+    recurse: yes
+    owner: root
+    group: root
+
+- name: Dowload PME extension
+  get_url:
+    url: http://central.maven.org/maven2/org/commonjava/maven/ext/pom-manipulation-ext/{{pme_version}}/pom-manipulation-ext-{{pme_version}}.jar
+    dest: /opt/tools/pme
+    owner: root
+    group: root
+
+### Configure Maven ###
+
+- name: Add PME extension to Maven
+  file:
+    src: /opt/tools/pme/pom-manipulation-ext-{{pme_version}}.jar
+    dest: /opt/tools/apache-maven-{{ item }}/lib/ext/pom-manipulation-ext-{{pme_version}}.jar
+    state: link
+    mode: 0644
+  with_items:
+  - "{{ maven_versions }}"
+
+- name: Create qa tools directory
+  file:
+    path: /qa/tools/opt
+    state: directory
+    recurse: yes
+    owner: root
+    group: root
+
+- name: Create qa tools Maven symlinks
+  file:
+    src: /opt/tools/apache-maven-{{ item }}
+    dest: /qa/tools/opt/maven-{{ item }}-prod
+    state: link
+    mode: 0644
+  with_items:
+  - "{{ maven_versions }}"
+
+  ### Prepare Maven repositories ###
+
+- name: Create 70 repository
+  file:
+    path: /m2/70
+    state: directory
+    recurse: yes
+    owner: jenkins
+    group: jenkins
 ...
