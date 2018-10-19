@@ -119,7 +119,7 @@ for (repoConfig in REPO_CONFIGS) {
                 whiteListTargetBranches([repoBranch])
                 extensions {
                     commitStatus {
-                        context('Linux - full downstream')
+                        context('Linux - compile downstream')
                         addTestResults(true)
                     }
 
