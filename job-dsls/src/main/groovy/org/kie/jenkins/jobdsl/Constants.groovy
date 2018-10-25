@@ -17,8 +17,8 @@ package org.kie.jenkins.jobdsl
 
 
 class Constants {
-    static final String MAVEN_VERSION = "3.5.2"
-    static final String UPSTREAM_BUILD_MAVEN_VERSION = "3.5.2"
+    static final String MAVEN_VERSION = "3.5.4"
+    static final String UPSTREAM_BUILD_MAVEN_VERSION = "3.5.4"
     static final String JDK_VERSION = "kie-jdk1.8"
     static final String BRANCH = "master"
     static final String GITHUB_ORG_UNIT = "kiegroup"
