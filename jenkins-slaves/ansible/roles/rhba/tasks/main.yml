@@ -7,7 +7,10 @@
     state: present
 
 - name: Import RCMTOOLS repository key
-  shell: rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-rcminternal
+  rpm_key:
+    state: present
+    key: /etc/pki/rpm-gpg/RPM-GPG-KEY-rcminternal
+
 
 - name: Install packages
   yum:
