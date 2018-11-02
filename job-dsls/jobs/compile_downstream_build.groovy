@@ -115,7 +115,12 @@ for (repoConfig in REPO_CONFIGS) {
                 allowMembersOfWhitelistedOrgsAsAdmin()
                 cron("H/10 * * * *")
                 triggerPhrase(".*[j|J]enkins,?.*execute compile downstream build.*")
-                onlyTriggerPhrase()
+
+                // execute build for drools by default
+                if (repo != "drools") {
+                    onlyTriggerPhrase()
+                }
+
                 whiteListTargetBranches([repoBranch])
                 extensions {
                     commitStatus {
