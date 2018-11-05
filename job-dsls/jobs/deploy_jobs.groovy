@@ -9,10 +9,10 @@ def final DEFAULTS = [
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
-        mvnGoals               : "-e -nsu -fae -B -Pwildfly11 clean deploy findbugs:findbugs",
+        mvnGoals               : "-e -nsu -fae -B -Pwildfly clean deploy findbugs:findbugs",
         mvnProps: [
                 "full"                     : "true",
-                "container"                : "wildfly11",
+                "container"                : "wildfly",
                 "integration-tests"        : "true",
                 "maven.test.failure.ignore": "true"
         ],
@@ -80,7 +80,7 @@ def final REPO_CONFIGS = [
         ],
         "jbpm"                      : [
                 timeoutMins            : 120,
-                mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly11",
+                mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly",
                 ircNotificationChannels: ["#jbpmdev"],
                 downstreamRepos        : ["droolsjbpm-integration", "jbpm-work-items"]
         ],
