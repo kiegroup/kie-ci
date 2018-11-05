@@ -399,7 +399,7 @@ matrixJob("${folderPath}/serverMatrix-kieReleases-${kieMainBranch}") {
 
     axes {
         jdk("$javadk")
-        text("container", "tomcat9", "wildfly11")
+        text("container", "tomcat9", "wildfly")
         labelExpression("label_exp", "kie-linux&&kie-mem8g")
     }
 
@@ -471,7 +471,7 @@ matrixJob("${folderPath}/wbSmokeTestsMatrix-kieReleases-${kieMainBranch}") {
 
     axes {
         jdk("$javadk")
-        text("container", "wildfly11", "eap7")
+        text("container", "wildfly", "eap7")
         text("war", "kie-wb", "kie-drools-wb")
         labelExpression("label_exp", "kie-linux&&kie-mem8g&&gui-testing")
     }
