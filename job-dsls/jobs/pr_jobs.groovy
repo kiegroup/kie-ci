@@ -64,7 +64,11 @@ def final REPO_CONFIGS = [
                 timeoutMins: 120
         ],
         "droolsjbpm-integration"    : [
-                timeoutMins: 120
+                timeoutMins: 120,
+                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
+                        "**/target/kie-server-*ee7.war",
+                        "**/target/kie-server-*webc.war"
+                ]
         ],
         "droolsjbpm-tools"          : [],
         "kie-uberfire-extensions"   : [
@@ -85,7 +89,11 @@ def final REPO_CONFIGS = [
                 label: "kie-rhel7 && kie-mem16g"
         ],
         "jbpm-wb"                   : [
-                label: "kie-rhel7 && kie-mem16g"
+                label: "kie-rhel7 && kie-mem16g",
+                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
+                        "**/target/jbpm-wb-case-mgmt-showcase*.war",
+                        "**/target/jbpm-wb-showcase.war"
+                ]
         ],
         "kie-wb-distributions"      : [
                 label             : "kie-linux && kie-mem24g && gui-testing",
