@@ -4,6 +4,8 @@
  * for a specific PR to make sure the changes do not break the downstream repos.
  */
 
+import org.kie.jenkins.jobdsl.Constants
+
 def final DEFAULTS = [
         ghOrgUnit              : "kiegroup",
         branch                 : "master",
@@ -149,19 +151,19 @@ for (repoConfig in REPO_CONFIGS) {
             configure { project ->
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.UpstreamReposBuilder' {
                     mavenBuildConfig {
-                        mavenHome("/opt/tools/apache-maven-3.5.2")
+                        mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
                         delegate.mavenOpts("-Xmx3g")
                         mavenArgs(get("upstreamMvnArgs"))
                     }
                 }
                 project / 'builders' << 'hudson.tasks.Maven' {
-                    mavenName("apache-maven-3.5.2")
+                    mavenName("apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
                     jvmOptions("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                     targets("-e -fae -nsu -B -T1C clean install -Dfull -DskipTests")
                 }
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
                     mavenBuildConfig {
-                        mavenHome("/opt/tools/apache-maven-3.5.2")
+                        mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
                         delegate.mavenOpts("-Xmx3g")
                         mavenArgs(get("downstreamMvnGoals"))
                     }
