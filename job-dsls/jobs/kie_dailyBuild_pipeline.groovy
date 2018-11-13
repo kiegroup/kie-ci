@@ -42,7 +42,7 @@ pipeline {
           date = new Date().format('yyyyMMdd-hhMMss')
           dateProd = new Date().format('yyyyMMdd')
           kieProdVersion = "${kieVersion}.${dateProd}-prod"
-          appformerProdVersion = "${kieVersion}.${dateProd}-prod"          
+          appformerProdVersion = "${appformerVersion}.${dateProd}-prod"          
           kieVersion = "${kieVersion}.${date}"
           appformerVersion = "${appformerVersion}.${date}"
           erraiVersionNew = "${erraiVersionNew}.${date}"
@@ -61,7 +61,7 @@ pipeline {
           echo "sourceProductTag: ${sourceProductTag}"
           echo "targetProductBuild: ${targetProductBuild}"
           echo "kieProdVersion: ${kieProdVersion}"
-          echo "appformerProdVersion: ${kieProdVersion}"
+          echo "appformerProdVersion: ${appformerProdVersion}"
           echo "kieProdBranch: ${kieProdBranch}"
              
         }
