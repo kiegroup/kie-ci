@@ -519,7 +519,7 @@ job("${folderPath}/prod-kieAllBuild-${kieMainBranch}") {
 
     wrappers {
         timeout {
-            elastic(250, 3, 90)
+            elastic(250, 3, 900)
         }
         timestamps()
         colorizeOutput()
