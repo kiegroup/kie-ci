@@ -36,6 +36,11 @@ sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-deployLocal
 def copyToNexus="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-copyBinariesToNexus.sh
 """
+
+def auxiliaryReps="""
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-upgrade-branch-auxiliary-reps.sh
+"""
+
 def jbpmTestCoverageMatrix="""
 git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git -b ${kieMainBranch}
 sh \$WORKSPACE/droolsjbpm-build-bootstrap/script/release/kie-jbpmTestCoverMartix.sh
@@ -325,6 +330,76 @@ job("${folderPath}/copyBinariesToNexus-kieReleases-${kieMainBranch}") {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(copyToNexus)
+    }
+
+
+}
+
+// **************************************************************************************
+
+job("${folderPath}/kie-auxiliary-reps-kieReleases-${kieMainBranch}") {
+
+    description("This job: <br> - copies binaries from local dir to Nexus <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
+
+    parameters {
+        stringParam("newBranch", "name of branch you're going to create", "branch that needs to be branched from master <br> ******************************************************** <br> ")
+        stringParam("oldSnapshot", "old SNAPSHOT version", "please edit the old SNAPSHOT version of the branch <br> ******************************************************** <br> ")
+        stringParam("newSnapshot", "new SNAPSHOT version", "please edit the new SNAPSHOT version you are going to upgrade to <br> ******************************************************** <br> ")
+    };
+
+    scm {
+        git {
+            remote {
+                github("${organization}/droolsjbpm-build-bootstrap")
+            }
+            branch ("${kieMainBranch}")
+            extensions {
+                relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
+            }
+
+        }
+    }
+
+    label("kie-releases")
+
+    logRotator {
+        numToKeep(10)
+    }
+
+    jdk("${javadk}")
+
+    publishers {
+        archiveJunit("**/TEST-*.xml")
+        archiveArtifacts{
+            onlyIfSuccessful(false)
+            allowEmpty(true)
+            pattern("**/target/*.log")
+        }
+    }
+
+    wrappers {
+        timestamps()
+        colorizeOutput()
+        toolenv("${mvnToolEnv}", "${javaToolEnv}")
+        preBuildCleanup()
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+             cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+             killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+             killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+             username 'jenkins'
+             }
+        }
+    }
+
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
+        }
+        shell(auxiliaryReps)
     }
 
 
