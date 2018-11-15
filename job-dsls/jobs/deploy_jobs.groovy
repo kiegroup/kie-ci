@@ -140,7 +140,7 @@ def final REPO_CONFIGS = [
         "kie-wb-distributions"      : [
                 timeoutMins            : 120,
                 label                  : "kie-rhel7 && kie-mem16g",
-                mvnGoals               : DEFAULTS["mvnGoals"] + " -Pbusiness-central",
+                mvnGoals               : DEFAULTS["mvnGoals"] + " -Pkie-wb",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1",
                         "webdriver.firefox.bin"    : "/opt/tools/firefox-60esr/firefox-bin",
