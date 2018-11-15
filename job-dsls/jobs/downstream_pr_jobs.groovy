@@ -11,7 +11,7 @@ def final DEFAULTS = [
         label                  : "kie-rhel7 && kie-mem24g",
         ghAuthTokenId          : Constants.GITHUB_AUTH_TOKEN,
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
-        downstreamMvnGoals     : "-B -e -nsu -fae -Pbusiness-central,wildfly,sourcemaps,no-showcase clean install",
+        downstreamMvnGoals     : "-B -e -nsu -fae -Pkie-wb,wildfly,sourcemaps,no-showcase clean install",
         downstreamMvnProps     : [
                 "full"                               : "true",
                 "container"                          : "wildfly",
@@ -27,8 +27,11 @@ def final DEFAULTS = [
                 "**/target/*.log",
                 "**/target/testStatusListener*",
                 "**/target/screenshots/**",
-                "**/target/business-central*wildfly*.war",
-                "**/target/business-central*eap*.war",
+                "**/target/kie-wb*wildfly*.war",
+                "**/target/kie-wb*eap*.war",
+                "**/target/kie-drools-wb*wildfly*.war",
+                "**/target/kie-drools-wb*eap*.war",
+                "**/target/kie-server-*ee6.war",
                 "**/target/kie-server-*ee7.war",
                 "**/target/kie-server-*webc.war",
                 "**/target/jbpm-server*dist*.zip"

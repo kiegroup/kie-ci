@@ -732,7 +732,7 @@ matrixJob("${folderPath}/kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     axes {
         labelExpression("label_exp", "kie-linux&&kie-mem8g&&gui-testing")
         text("container", "wildfly", "eap7")
-        text("war","business-central")
+        text("war","kie-wb","kie-drools-wb")
         jdk("${javadk}")
         text("browser","firefox")
     }

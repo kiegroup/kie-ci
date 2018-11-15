@@ -98,7 +98,7 @@ def final REPO_CONFIGS = [
         "kie-wb-distributions"      : [
                 label             : "kie-linux && kie-mem24g && gui-testing",
                 timeoutMins       : 120,
-                mvnGoals          : DEFAULTS["mvnGoals"] + " -Pbusiness-central",
+                mvnGoals          : DEFAULTS["mvnGoals"] + " -Pkie-wb",
                 mvnProps          : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": 1,
                         "webdriver.firefox.bin"    : "/opt/tools/firefox-60esr/firefox-bin",
@@ -106,8 +106,10 @@ def final REPO_CONFIGS = [
                 ],
                 artifactsToArchive: DEFAULTS["artifactsToArchive"] + [
                         "**/target/screenshots/**",
-                        "**/target/business-central*wildfly*.war",
-                        "**/target/business-central*eap*.war",
+                        "**/target/kie-wb*wildfly*.war",
+                        "**/target/kie-wb*eap*.war",
+                        "**/target/kie-drools-wb*wildfly*.war",
+                        "**/target/kie-drools-wb*eap*.war",
                         "**/target/jbpm-server*dist*.zip"
                 ]
         ],
