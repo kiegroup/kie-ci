@@ -556,7 +556,7 @@ job("${folderPath}/prod-kieAllBuild-${kieMainBranch}") {
 
     steps {
         environmentVariables {
-            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", JAVA_HOME : "\$${javaHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", JAVA_HOME : "\$${javaHome}", MAVEN_REPO_LOCAL : "${m2Dir}", JENKINS_SETTINGS_XML_FILE : "\$SETTINGS_XML_FILE" ,PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(kieProdBuild)
     }
