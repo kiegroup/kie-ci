@@ -118,8 +118,8 @@ for (repoConfig in REPO_CONFIGS) {
                 cron("H/10 * * * *")
                 triggerPhrase(".*[j|J]enkins,?.*execute compile downstream build.*")
 
-                // execute build for drools by default
-                if (repo != "drools") {
+                // execute build for drools and appformer by default
+                if ((repo != "drools") && (repo != "appformer")) {
                     onlyTriggerPhrase()
                 }
 
