@@ -140,7 +140,7 @@ def final REPO_CONFIGS = [
         "kie-wb-distributions"      : [
                 timeoutMins            : 120,
                 label                  : "kie-rhel7 && kie-mem16g",
-                mvnGoals               : DEFAULTS["mvnGoals"] + " -Pkie-wb",
+                mvnGoals               : DEFAULTS["mvnGoals"] + " -Pbusiness-central",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1",
                         "webdriver.firefox.bin"    : "/opt/tools/firefox-60esr/firefox-bin",
@@ -148,7 +148,7 @@ def final REPO_CONFIGS = [
                 ],
                 ircNotificationChannels: ["#guvnordev"],
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
-                        "kie-wb-tests/kie-wb-tests-gui/target/screenshots/**"
+                        "business-central-tests/business-central-tests-gui/target/screenshots/**"
                 ],
                 downstreamRepos        : []
         ],

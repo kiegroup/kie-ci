@@ -732,7 +732,7 @@ matrixJob("${folderPath}/kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     axes {
         labelExpression("label_exp", "kie-linux&&kie-mem8g&&gui-testing")
         text("container", "wildfly", "eap7")
-        text("war","kie-wb","kie-drools-wb")
+        text("war","business-central")
         jdk("${javadk}")
         text("browser","firefox")
     }
@@ -794,7 +794,7 @@ matrixJob("${folderPath}/kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
         maven{
             mavenInstallation("${mvnVersion}")
             goals("-nsu -B -e -fae clean verify -P\$container,\$war")
-            rootPOM("kie-wb-tests/pom.xml")
+            rootPOM("business-central-tests/pom.xml")
             properties("maven.test.failure.ignore": true)
             properties("deployment.timeout.millis":"240000")
             properties("container.startstop.timeout.millis":"240000")

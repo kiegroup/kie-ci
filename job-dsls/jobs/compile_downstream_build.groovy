@@ -18,10 +18,6 @@ def final DEFAULTS = [
                 "**/target/*.log",
                 "**/target/testStatusListener*",
                 "**/target/screenshots/**",
-                "**/target/kie-wb*wildfly*.war",
-                "**/target/kie-wb*eap*.war",
-                "**/target/kie-drools-wb*wildfly*.war",
-                "**/target/kie-drools-wb*eap*.war",
                 "**/target/kie-server-*ee7.war",
                 "**/target/kie-server-*webc.war",
                 "**/target/jbpm-server*dist*.zip"
