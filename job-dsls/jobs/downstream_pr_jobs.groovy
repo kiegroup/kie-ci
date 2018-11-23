@@ -84,7 +84,7 @@ for (repoConfig in REPO_CONFIGS) {
     String jobName = (repoBranch == "master") ? Constants.PULL_REQUEST_FOLDER + "/$repo-downstream-pullrequests" : Constants.PULL_REQUEST_FOLDER + "/$repo-downstream-pullrequests-$repoBranch"
     job(jobName) {
 
-        diabled()
+        disabled()
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
                     |
