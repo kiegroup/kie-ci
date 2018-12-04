@@ -31,6 +31,6 @@ class Constants {
     static final String ERRAI_PREFIX = "4.4.2"
     static final String KIE_PREFIX = "7.16.0"
     static final String KIE_PROD_BRANCH_PREFIX = "7.16.x"
-    static final String UBERFIRE_PREFIX = "2.12.0"
+    static final String UBERFIRE_PREFIX = "2.13.0"
 
 }
