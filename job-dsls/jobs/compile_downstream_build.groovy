@@ -172,7 +172,6 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         publishers {
-            wsCleanup()
             checkstyle("**/checkstyle-result.xml")
             def artifactsToArchive = get("artifactsToArchive")
             def excludedArtifacts = get("excludedArtifacts")
@@ -190,6 +189,7 @@ for (repoConfig in REPO_CONFIGS) {
                     }
                 }
             }
+            wsCleanup()
             configure { project ->
                 project / 'publishers' << 'org.jenkinsci.plugins.emailext__template.ExtendedEmailTemplatePublisher' {
                     'templateIds' {

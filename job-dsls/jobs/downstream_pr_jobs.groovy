@@ -179,7 +179,7 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         publishers {
-            wsCleanup()
+
             archiveJunit('**/target/*-reports/TEST-*.xml') {
                 allowEmptyResults()
             }
@@ -202,6 +202,8 @@ for (repoConfig in REPO_CONFIGS) {
                     }
                 }
             }
+            wsCleanup()
+
             configure { project ->
                 project / 'publishers' << 'org.jenkinsci.plugins.emailext__template.ExtendedEmailTemplatePublisher' {
                     'templateIds' {
