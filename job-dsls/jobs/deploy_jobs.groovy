@@ -263,7 +263,6 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         publishers {
-            wsCleanup()
             archiveJunit('**/target/*-reports/TEST-*.xml') {
                 allowEmptyResults()
             }
@@ -312,6 +311,8 @@ for (repoConfig in REPO_CONFIGS) {
                 }
                 downstream(jobNames, 'UNSTABLE')
             }
+
+            wsCleanup()
 
         }
     }
