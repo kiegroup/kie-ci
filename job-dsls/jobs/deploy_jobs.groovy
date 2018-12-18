@@ -53,7 +53,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["droolsjbpm-build-bootstrap"]
         ],
         "droolsjbpm-build-bootstrap": [
-                timeoutMins            : 20,
+                timeoutMins            : 30,
                 label                  : "kie-rhel7 && kie-mem4g",
                 ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : ["droolsjbpm-knowledge"]
