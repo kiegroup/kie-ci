@@ -111,7 +111,7 @@ for (repoConfig in REPO_CONFIGS) {
             githubPullRequest {
                 orgWhitelist(["appformer", "kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
-                cron("H/10 * * * *")
+                cron("H/20 * * * *")
                 triggerPhrase(".*[j|J]enkins,?.*execute compile downstream build.*")
 
                 // execute build for drools and appformer by default
