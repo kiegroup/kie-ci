@@ -88,6 +88,10 @@ def final REPO_CONFIGS = [
         "jbpm-designer"             : [
                 label: "kie-rhel7 && kie-mem16g"
         ],
+        "jbpm-work-items"           : [
+                label      : "kie-linux && kie-mem4g",
+                timeoutMins: 30,
+        ],
         "jbpm-wb"                   : [
                 label: "kie-rhel7 && kie-mem16g",
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
@@ -110,11 +114,6 @@ def final REPO_CONFIGS = [
                         "**/target/business-central*eap*.war",
                         "**/target/jbpm-server*dist*.zip"
                 ]
-        ],
-        // following repos are not in repository-list.txt, but we want a PR jobs for them
-        "jbpm-work-items"           : [
-                label      : "kie-linux && kie-mem4g",
-                timeoutMins: 30,
         ]
 ]
 
