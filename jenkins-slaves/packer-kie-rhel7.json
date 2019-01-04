@@ -12,11 +12,13 @@
       "identity_endpoint": "{{ user `openstack_endpoint` }}",
       "username": "{{ user `openstack_username` }}",
       "password": "{{ user `openstack_password` }}",
-      "tenant_name": "kie-jenkins",
-      "source_image": "d7b7b9b8-751b-4b28-9bc7-3436db1fd3a8",
+      "tenant_name": "rhba-jenkins",
+      "source_image": "33543771-9453-4da2-bcbb-abd01d84b89a",
       "image_name": "{{ user `image_name` }}",
       "flavor": "m1.medium",
-      "floating_ip_pool": "10.8.240.0",
+      "networks": [
+        "6a32627e-d98d-40d8-9324-5da7cf1452fc"
+        ],
       "insecure": "true",
       "ssh_username": "root",
       "ssh_keypair_name": "jenkins-slave",
