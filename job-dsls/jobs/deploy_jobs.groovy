@@ -122,6 +122,12 @@ def final REPO_CONFIGS = [
                         "gwt.compiler.localWorkers": "1"
                 ],
                 ircNotificationChannels: ["#guvnordev"],
+                downstreamRepos        : ["jbpm-work-items"]
+        ],
+        "jbpm-work-items"           : [
+                label      : "kie-linux && kie-mem4g",
+                timeoutMins: 30,
+                ircNotificationChannels: ["#jbpmdev"],
                 downstreamRepos        : ["jbpm-wb"]
         ],
         "jbpm-wb"                   : [
@@ -153,12 +159,6 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : []
         ],
         // following repos are not in repository-list.txt, but we want a deploy jobs for them
-        "jbpm-work-items"           : [
-                label      : "kie-linux && kie-mem4g",
-                timeoutMins: 30,
-                ircNotificationChannels: ["#jbpmdev"],
-                downstreamRepos        : ["optaweb-employee-rostering"]
-        ],
         "optaweb-employee-rostering" : [
                 ircNotificationChannels: ["#optaplanner-dev"],
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
