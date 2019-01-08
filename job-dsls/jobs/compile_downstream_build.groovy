@@ -7,11 +7,11 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
-        ghOrgUnit              : "kiegroup",
-        branch                 : "master",
+        ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
+        branch                 : Constants.BRANCH,
         timeoutMins            : 600,
-        label                  : "rhel7 && mem8g",
-        ghAuthTokenId          : "0b449357-f73e-42b7-97f7-63ee8b670e5c",
+        label                  : "kie-rhel7 && kie-mem8g",
+        ghAuthTokenId          : Constants.GITHUB_AUTH_TOKEN,
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         downstreamMvnGoals     : "-B -e -nsu -fae -T1C clean install -Dfull=true -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true",
         artifactsToArchive     : [
@@ -107,7 +107,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        jdk("jdk1.8")
+        jdk("kie-jdk1.8")
 
         label(get("label"))
 
@@ -157,7 +157,7 @@ for (repoConfig in REPO_CONFIGS) {
                     }
                 }
                 project / 'builders' << 'hudson.tasks.Maven' {
-                    mavenName("apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
+                    mavenName("kie-maven-${Constants.MAVEN_VERSION}")
                     jvmOptions("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                     targets("-e -fae -nsu -B -T1C clean install -Dfull -DskipTests")
                 }
