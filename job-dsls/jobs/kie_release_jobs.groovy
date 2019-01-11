@@ -115,6 +115,12 @@ job("${folderPath}/createProdErraiVersion-kieReleases-${kieMainBranch}") {
         colorizeOutput()
         toolenv("${mvnToolEnv}", "${javaToolEnv}")
         preBuildCleanup()
+        configFiles {
+            mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
+                variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
+            }
+        }
     }
 
     configure { project ->
@@ -142,7 +148,7 @@ job("${folderPath}/createAndPushReleaseBranches-kieReleases-${kieMainBranch}") {
     description("This job: <br> checksout the right source- upgrades the version in poms <br> - modifies the kie-parent-metadata pom <br> - pushes the generated release branches to kiegroup <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
-        choiceParam("target", ["community", "productized"], "please select if this release is for community: <b> community </b><br>or<br> if it is for building a productization tag: <b>productized <br> ******************************************************** <br> ")
+        choiceParam("target", ["community", "productized"], "please select if this release is for community: <b> community </b><br>or<br> if it is for building a productization tag: <b>productized <br> ******************************************************* <br> ")
         choiceParam("source", ["community-branch", "community-tag", "production-tag"], " please select the source of this release <br> or it is the master branch ( <b> community-branch </b> ) <br> or a community tag ( <b> community-tag </b> ) <br> or a productization tag ( <b> production-tag </b> ) <br> ******************************************************** <br> ")
         stringParam("tag", "tag", "if you selected as <b> source=community-tag </b> or <b> source=production-tag </b> please edit the name of the tag <br> if selected as <b> source=community-branch </b> the parameter <b> tag </b> will be ignored <br> The tag should typically look like <b> major.minor.micro.<extension></b> for <b> community </b> or <b> sync-major.minor.x-<yyyy.mm.dd> </b> for <b> productization </b> <br> ******************************************************** <br> ")
         stringParam("releaseVersion", "release version", "please edit the version for this release <br> The <b> releaseVersion </b> should typically look like <b> major.minor.micro.<extension></b> for <b> community </b> or <b> major.minor.micro.<yyymmdd>-productization</b> for <b> productization </b> <br>******************************************************** <br> ")
@@ -178,6 +184,12 @@ job("${folderPath}/createAndPushReleaseBranches-kieReleases-${kieMainBranch}") {
         colorizeOutput()
         toolenv("${mvnToolEnv}", "${javaToolEnv}")
         preBuildCleanup()
+        configFiles {
+            mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
+                variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
+            }
+        }
     }
 
     configure { project ->
@@ -245,6 +257,12 @@ job("${folderPath}/buildAndDeployLocally-kieReleases-${kieMainBranch}") {
         colorizeOutput()
         toolenv("${mvnToolEnv}", "${javaToolEnv}")
         preBuildCleanup()
+        configFiles {
+            mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
+                variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
+            }
+        }
     }
 
     configure { project ->
@@ -382,6 +400,12 @@ job("${folderPath}/kie-auxiliary-reps-kieReleases-${kieMainBranch}") {
         colorizeOutput()
         toolenv("${mvnToolEnv}", "${javaToolEnv}")
         preBuildCleanup()
+        configFiles {
+            mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
+                variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
+            }
+        }
     }
 
     configure { project ->
@@ -716,6 +740,12 @@ job("${folderPath}/updateVersion-kieReleases-${kieMainBranch}") {
         }
         timestamps()
         preBuildCleanup()
+        configFiles {
+            mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
+                variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
+            }
+        }
         colorizeOutput()
         toolenv("${mvnToolEnv}", "${javaToolEnv}")
     }
