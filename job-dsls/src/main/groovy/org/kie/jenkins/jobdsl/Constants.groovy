@@ -26,7 +26,7 @@ class Constants {
     static final String PULL_REQUEST_FOLDER = "pullrequest"
     static final String DEPLOY_FOLDER = "deployedRep"
     static final String ZANATA_VERSION = "7.14.0"
-    static final String ERRAI_BRANCH = "master"
+    static final String ERRAI_BRANCH = "4.4.x"
     static final String ERRAI_SNAPSHOT = "4.4.2-SNAPSHOT"
     static final String ERRAI_PREFIX = "4.4.2"
     static final String KIE_PREFIX = "7.14.0"
