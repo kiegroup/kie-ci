@@ -116,7 +116,7 @@ for (repoConfig in REPO_CONFIGS) {
                 triggerPhrase(".*[j|J]enkins,?.*execute compile downstream build.*")
 
                 // execute build for drools and appformer by default
-                if ((repo != "drools") && (repo != "appformer")) {
+                if ((repo != "drools") && (repo !="droolsjbpm-knowledge") && (repo != "appformer")) {
                     onlyTriggerPhrase()
                 }
 
