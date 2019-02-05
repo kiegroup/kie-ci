@@ -199,7 +199,7 @@ class PrVerificationJob extends BasicJob {
             // Adds authentication token id.
             configure { node ->
                 node / 'triggers' / 'org.jenkinsci.plugins.ghprb.GhprbTrigger' <<
-                        'gitHubAuthId'(Constants.GITHUB_AUTH_TOKEN)
+                        'gitHubAuthId'("kie-ci2-token")
             }
         }
     }
