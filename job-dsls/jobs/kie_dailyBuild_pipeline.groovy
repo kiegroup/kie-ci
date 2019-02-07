@@ -538,7 +538,7 @@ job("${folderPath}/prod-kieAllBuild-${kieMainBranch}") {
         archiveArtifacts{
             onlyIfSuccessful(false)
             allowEmpty(true)
-            pattern("prodBranches.tgz")
+            pattern("prodBranches.tgz,**/target/business-central*wildfly*.war,**/target/business-central*eap*.war")
         }
         mailer('mbiarnes@redhat.com pszubiak@redhat.com anstephe@redhat.com', false, false)
         wsCleanup()
