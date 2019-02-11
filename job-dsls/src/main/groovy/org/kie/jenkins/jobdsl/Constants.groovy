@@ -22,7 +22,6 @@ class Constants {
     static final String JDK_VERSION = "kie-jdk1.8"
     static final String BRANCH = "7.14.x"
     static final String GITHUB_ORG_UNIT = "kiegroup"
-    static final String GITHUB_AUTH_TOKEN = "3e0e2db0-bf45-4c5b-b97f-9542aca56f44"
     static final String PULL_REQUEST_FOLDER = "pullrequest"
     static final String DEPLOY_FOLDER = "deployedRep"
     static final String ZANATA_VERSION = "7.14.0"
