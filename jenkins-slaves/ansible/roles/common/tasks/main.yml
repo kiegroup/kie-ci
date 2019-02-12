@@ -38,6 +38,7 @@
    - ansible
    - zip
    - python2-pip
+   - jq
 
 - name: Update all packages
   yum:
