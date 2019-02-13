@@ -32,13 +32,13 @@ exit \$returnCode
 
 // Creates or updates a free style job.
 def jobDefinition = job("github-api-limit") {
-    for ( i = 1; i <= Constants.NUMBER_OF_KIE_USERS.toInteger(); i++) {
 
-        // Adds pre/post actions to the job.
-        wrappers {
+    // Adds pre/post actions to the job.
+    wrappers {
 
-            // Binds environment variables to credentials.
-            credentialsBinding {
+        // Binds environment variables to credentials.
+        credentialsBinding {
+            for ( i = 1; i <= Constants.NUMBER_OF_KIE_USERS.toInteger(); i++) {
 
                 // Sets a variable to the text given in the credentials.
                 string("token$i", "kie-ci$i-token")
