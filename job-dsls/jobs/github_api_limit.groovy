@@ -18,7 +18,7 @@ ${arrayDeclaration}
 for i in {1..${Constants.NUMBER_OF_KIE_USERS}}
 do
     limit=`curl -s "https://api.github.com/rate_limit?access_token=\${tokensList[\$i]}" | jq ".rate.remaining"`
-    if [ limit -le 0 ]
+    if [ \$limit -le 0 ]
     then
         echo "kie-ci\$i limit is exceeded - \$limit"
         returnCode=1
@@ -66,7 +66,7 @@ def jobDefinition = job("github-api-limit") {
     // Adds post-build actions to the job.
     publishers {
         // Sends email notifications.
-        mailer('bxms-prod@redhat.com', false, false)
+        mailer('bxms-prod@redhat.com', true, false)
     }
 }
 
