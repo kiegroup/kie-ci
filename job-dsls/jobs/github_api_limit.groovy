@@ -17,7 +17,7 @@ ${arrayDeclaration}
 
 for i in {1..${Constants.NUMBER_OF_KIE_USERS}}
 do
-    limit=`curl -s "https://api.github.com/rate_limit?access_token=\${tokensList[\$iterator]}" | jq ".rate.remaining"`
+    limit=`curl -s "https://api.github.com/rate_limit?access_token=\${tokensList[\$i]}" | jq ".rate.remaining"`
     if [ limit -le 0 ]
     then
         echo "kie-ci\$i limit is exceeded - \$limit"
