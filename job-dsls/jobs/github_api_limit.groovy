@@ -49,8 +49,12 @@ def jobDefinition = job("github-api-limit") {
     // Label which specifies which nodes this job can run on.
     label("kie-linux&&kie-mem512m")
 
-    //  This field follows the syntax of cron (with minor differences). Specifically, each line consists of 5 fields separated by TAB or whitespace
-    cron("H/10 * * * *")
+    // Adds build triggers to the job.
+    triggers {
+
+        //  This field follows the syntax of cron (with minor differences).
+        cron("H/10 * * * *")
+    }
 
     // Adds build steps to the jobs.
     steps {
