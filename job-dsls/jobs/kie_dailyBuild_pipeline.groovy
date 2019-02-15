@@ -467,10 +467,23 @@ cd ..
 ./droolsjbpm-build-bootstrap/script/git-all.sh add .
 ./droolsjbpm-build-bootstrap/script/git-all.sh commit -m "upgraded version"
 
+cat > "$WORKSPACE/clean-up.sh" << EOT
+cd \\$1
+# Add test reports to the index to prevent their removal in the following step
+git add --force **target/*-reports/TEST-*.xml
+
+# Add eap7 and wildfly17 war
+git add --force **target/business-central-*-eap*.war
+git add --force **target/business-central-*-wildfly*.war
+
+# Remove all build artifacts to save space
+git clean -ffdx
+EOT
+
 # do a full build
 ./droolsjbpm-build-bootstrap/script/mvn-all.sh -B -e -U clean install -Dfull -Drelease -Dproductized -s $SETTINGS_XML_FILE\\
  -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true\\
- -Dgwt.memory.settings="-Xmx10g"
+ -Dgwt.memory.settings="-Xmx10g" --clean-up-script="$WORKSPACE/clean-up.sh"
  
 # creates a tarball with all repositories and saves it on Jenkins master
 tar czf prodBranches.tgz *
