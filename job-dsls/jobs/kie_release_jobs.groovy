@@ -11,7 +11,7 @@ def mvnOpts="-Xms2g -Xmx3g"
 def kieMainBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir="\$HOME/.m2/repository"
-String EAP7_DOWNLOAD_URL = "http://download-ipv4.eng.brq.redhat.com/released/JBoss-middleware/eap7/7.1.4/jboss-eap-7.1.4-full-build.zip"
+String EAP7_DOWNLOAD_URL = "http://download-ipv4.eng.brq.redhat.com/released/JBoss-middleware/eap7/7.2.0/jboss-eap-7.2.0.zip"
 
 // creation of folder
 folder("KIE")
@@ -80,7 +80,7 @@ sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/errai-productiz
 
 job("${folderPath}/createProdErraiVersion-kieReleases-${kieMainBranch}") {
 
-    description("This job: <br> checksout the right source- upgrades the version in poms <br> - pushes the generated release branche to gerrit <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
+    description("This job: <br> checks out the right source- upgrades the version in poms <br> - pushes the generated release branche to gerrit <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
         stringParam("erraiBranch", "base branch", "please select the base branch for errai<br> ******************************************************** <br> ")
