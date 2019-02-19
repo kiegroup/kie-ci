@@ -61,10 +61,10 @@ for (repoConfig in REPO_CONFIGS) {
     String ghAuthTokenId = get("ghAuthTokenId")
 
     // Creation of folders where jobs are stored
-    folder("pullrequest")
+    folder(Constants.PULL_REQUEST_FOLDER)
 
     // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? "pullrequest" + "/$repo-compile-downstream-build" : "pullrequest" + "/$repo-compile-downstream-build-$repoBranch"
+    String jobName = (repoBranch == "master") ? Constants.PULL_REQUEST_FOLDER + "/$repo-compile-downstream-build" : Constants.PULL_REQUEST_FOLDER + "/$repo-compile-downstream-build-$repoBranch"
     job(jobName) {
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
