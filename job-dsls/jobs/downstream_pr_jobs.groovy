@@ -141,7 +141,7 @@ for (repoConfig in REPO_CONFIGS) {
 
         wrappers {
             xvnc {
-                useXauthority(false)
+                useXauthority(true)
             }
 
             timeout {
