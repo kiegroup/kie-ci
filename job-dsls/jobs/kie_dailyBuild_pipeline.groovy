@@ -118,6 +118,8 @@ pipeline {
 
 pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
 
+    disabled()
+    
     description('this is a pipeline job that triggers all other jobs with it\'s parameters needed for the kieAllBuild')
     
 
