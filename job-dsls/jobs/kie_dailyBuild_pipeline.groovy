@@ -474,7 +474,6 @@ git add --force **target/*-reports/TEST-*.xml
 
 # Add eap7 and wildfly17 war
 git add --force **target/business-central-*-eap*.war
-git add --force **target/business-central-*-wildfly*.war
 
 # Remove all build artifacts to save space
 git clean -ffdx
@@ -543,7 +542,7 @@ job("${folderPath}/prod-kieAllBuild-${kieMainBranch}") {
         archiveArtifacts{
             onlyIfSuccessful(false)
             allowEmpty(true)
-            pattern("prodBranches.tgz, **/target/business-central-*-eap*.war, **/target/business-central-*-wildfly*.war")
+            pattern("prodBranches.tgz, **/target/business-central-*-eap*.war")
         }
         mailer('mbiarnes@redhat.com pszubiak@redhat.com anstephe@redhat.com', false, false)
         wsCleanup()
