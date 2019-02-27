@@ -179,7 +179,7 @@ for (repoConfig in REPO_CONFIGS) {
             githubPullRequest {
                 orgWhitelist(["appformer", "kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
-                cron("H/5 * * * *")
+                cron("H/7 * * * *")
                 whiteListTargetBranches([repoBranch])
                 extensions {
                     commitStatus {
