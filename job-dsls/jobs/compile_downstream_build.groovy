@@ -34,7 +34,6 @@ def final REPO_CONFIGS = [
         "appformer"                 : [],
         "droolsjbpm-build-bootstrap": [],
         "droolsjbpm-knowledge"      : [],
-        "drlx-parser"               : [],
         "drools"                    : [],
         "optaplanner"               : [],
         "jbpm"                      : [],
