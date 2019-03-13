@@ -50,9 +50,6 @@ def final REPO_CONFIGS = [
         "droolsjbpm-knowledge"      : [
                 label: "kie-rhel7 && kie-mem4g"
         ],
-        "drlx-parser"               : [
-                label: "kie-rhel7 && kie-mem4g"
-        ],
         "drools"                    : [],
         "optaplanner"               : [],
         "optaweb-employee-rostering" : [
