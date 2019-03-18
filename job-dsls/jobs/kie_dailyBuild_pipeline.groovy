@@ -161,8 +161,8 @@ pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
 def erraiVersionBuild='''#!/bin/bash -e
 # removing UF and errai artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
-rm -rf $MAVEN_REPO_LOCAL/org/jboss/errai/
-       fi
+  rm -rf $MAVEN_REPO_LOCAL/org/jboss/errai/
+fi
 # clone the Errai repository
 git clone https://github.com/errai/errai.git -b $erraiBranch --depth 100
 # checkout the release branch
@@ -255,6 +255,7 @@ if [ -d $MAVEN_REPO_LOCAL ]; then
     rm -rf $MAVEN_REPO_LOCAL/org/drools/
     rm -rf $MAVEN_REPO_LOCAL/org/jbpm/
     rm -rf $MAVEN_REPO_LOCAL/org/optaplanner/
+    rm -rf $MAVEN_REPO_LOCAL/org/optaweb
     rm -rf $MAVEN_REPO_LOCAL/org/uberfire/
     rm -rf $MAVEN_REPO_LOCAL/org/dashbuilder/
 fi
@@ -424,15 +425,14 @@ echo "erraiVersionNew:" $erraiVersionNew
 echo "kieMainBranch:" $kieMainBranch
 
 # removing KIE artifacts from local maven repo (basically all possible SNAPSHOTs)
-if [ -d $MAVEN_REPO_LOCAL ]; then
     rm -rf $MAVEN_REPO_LOCAL/org/jboss/tools/
     rm -rf $MAVEN_REPO_LOCAL/org/kie/
     rm -rf $MAVEN_REPO_LOCAL/org/drools/
     rm -rf $MAVEN_REPO_LOCAL/org/jbpm/
     rm -rf $MAVEN_REPO_LOCAL/org/optaplanner/
+    rm -rf $MAVEN_REPO_LOCAL/org/optaweb
     rm -rf $MAVEN_REPO_LOCAL/org/uberfire/
     rm -rf $MAVEN_REPO_LOCAL/org/dashbuilder/
-fi
 
 #switch to the right droolsjbpm-build-bootstrap master branch
 cd $WORKSPACE/droolsjbpm-build-bootstrap
