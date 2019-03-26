@@ -138,8 +138,14 @@ pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
         daysToKeep(10)
     }
 
-    triggers {
-        cron("H 18 * * *")
+    configure { project ->
+        project / triggers << 'com.redhat.jenkins.plugins.ci.CIBuildTrigger' {
+            spec ''
+            providerName 'Red Hat UMB'
+            overrides {
+                topic 'Consumer.rh-jenkins-ci-plugin.${JENKINS_UMB_ID}-prod-daily-7-18-x-trigger.VirtualTopic.qe.ci.ba.daily-7-18-x.trigger'
+            }
+        }
     }
 
     definition {
