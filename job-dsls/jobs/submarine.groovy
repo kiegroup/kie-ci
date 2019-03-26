@@ -66,7 +66,7 @@ pipelineJob("$folderPath/submarine-pipeline-${mainBranch}") {
     }
 
     triggers {
-        cron("H 23 * * *")
+        cron("H 20 * * *")
     }
 
     definition {
@@ -89,7 +89,7 @@ fi
 git clone https://github.com/$ghOrgUnit/submarine-bom.git -b $mainBranch --depth 50
 # build the project
 cd submarine-bom
-mvn -U -B -e clean install -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true'''
+mvn -U -B -e clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE '''
 
 
 job("${folderPath}/submarine-bom-${mainBranch}") {
@@ -160,7 +160,7 @@ fi
 git clone https://github.com/$ghOrgUnit/submarine-runtimes.git -b $mainBranch --depth 50
 # build the project
 cd submarine-runtimes
-mvn -U -B -e clean install -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true'''
+mvn -U -B -e clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true'''
 
 
 job("${folderPath}/submarine-runtimes-${mainBranch}") {
@@ -231,7 +231,7 @@ fi
 git clone https://github.com/$ghOrgUnit/submarine-examples.git -b $mainBranch --depth 50
 # build the project
 cd submarine-examples
-mvn -U -B -e clean install -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true'''
+mvn -U -B -e clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE '''
 
 
 job("${folderPath}/submarine-examples-${mainBranch}") {
