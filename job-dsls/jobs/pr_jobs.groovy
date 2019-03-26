@@ -9,7 +9,7 @@ def final DEFAULTS = [
         timeoutMins            : 90,
         ghAuthTokenId          : "kie-ci2-token",
         label                  : "kie-rhel7 && kie-mem8g",
-        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
+        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -spotbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-B -e -nsu -fae -Pwildfly clean install",
         mvnProps               : [
                 "full"                     : "true",
@@ -237,7 +237,7 @@ for (repoConfig in REPO_CONFIGS) {
             archiveJunit('**/target/*-reports/TEST-*.xml') {
                 allowEmptyResults()
             }
-            findbugs("**/findbugsXml.xml")
+            findbugs("**/spotbugsXml.xml")
 
             checkstyle("**/checkstyle-result.xml")
             def artifactsToArchive = get("artifactsToArchive")

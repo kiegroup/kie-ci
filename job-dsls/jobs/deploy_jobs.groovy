@@ -8,8 +8,8 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
-        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
-        mvnGoals               : "-e -nsu -fae -B -Pwildfly clean deploy findbugs:findbugs",
+        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
+        mvnGoals               : "-e -nsu -fae -B -Pwildfly clean deploy spotbugs:spotbugs",
         mvnProps: [
                 "full"                     : "true",
                 "container"                : "wildfly",
@@ -260,7 +260,7 @@ for (repoConfig in REPO_CONFIGS) {
             archiveJunit('**/target/*-reports/TEST-*.xml') {
                 allowEmptyResults()
             }
-            findbugs("**/findbugsXml.xml")
+            findbugs("**/spotbugsXml.xml")
 
             checkstyle("**/checkstyle-result.xml")
 
