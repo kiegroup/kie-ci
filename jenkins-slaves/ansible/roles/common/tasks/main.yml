@@ -140,6 +140,19 @@
   with_items:
     - "{{ maven_versions }}"
 
+### Packer ###
+
+- name: Create Packer folder
+  file:
+    path: /opt/packer/bin/
+    state: directory
+
+- name: Download Packer
+  get_url:
+    url: https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/packer
+    dest: /opt/packer/bin/
+    validate_certs: no
+
 ### Swap ###
 
 - name: Create swap file

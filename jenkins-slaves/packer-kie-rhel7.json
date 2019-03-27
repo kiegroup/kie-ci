@@ -24,7 +24,7 @@
       "ssh_keypair_name": "jenkins-slave",
       "ssh_private_key_file": "{{ user `ssh_private_key_file` }}",
       "user_data_file": "cloud-init-linux",
-      "domain_name": "Default"
+      "domain_name": "redhat.com"
     }
   ],
   "provisioners": [
