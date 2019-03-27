@@ -126,6 +126,7 @@ job("${folderPath}/submarine-bom-${mainBranch}") {
 
     publishers {
         mailer('mbiarnes@redhat.com', false, false)
+        mailer('mswiders@redhat.com', false, false)
         wsCleanup()
     }
 
@@ -197,6 +198,7 @@ job("${folderPath}/submarine-runtimes-${mainBranch}") {
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
+        mailer('mswiders@redhat.com', false, false)
         wsCleanup()
     }
 
@@ -268,6 +270,7 @@ job("${folderPath}/submarine-examples-${mainBranch}") {
 
     publishers {
         mailer('mbiarnes@redhat.com', false, false)
+        mailer('mswiders@redhat.com', false, false)
         wsCleanup()
     }
 
