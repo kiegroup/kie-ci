@@ -156,6 +156,8 @@ pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
 
     publishers {
         buildDescription ("KIE version ([^\\s]*)")
+        mailer('mbiarnes@redhat.com', false, false)
+        mailer('mswiders@redhat.com', false, false)
     }
 
 }
