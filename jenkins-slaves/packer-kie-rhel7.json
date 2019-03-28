@@ -21,7 +21,7 @@
         ],
       "insecure": "true",
       "ssh_username": "root",
-      "ssh_keypair_name": "jenkins-slave",
+      "ssh_keypair_name": "kie-jenkins",
       "ssh_private_key_file": "{{ user `ssh_private_key_file` }}",
       "user_data_file": "cloud-init-linux",
       "domain_name": "redhat.com"
