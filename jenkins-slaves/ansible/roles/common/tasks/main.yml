@@ -153,6 +153,11 @@
     dest: /opt/packer/bin/
     validate_certs: no
 
+- name: Set packer permissions
+  file:
+    path: /opt/packer/bin/packer
+    mode: 0755
+
 ### Swap ###
 
 - name: Create swap file
