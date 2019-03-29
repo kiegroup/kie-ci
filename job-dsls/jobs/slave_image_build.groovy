@@ -2,7 +2,7 @@ import org.kie.jenkins.jobdsl.Constants
 import org.kie.jenkins.jobdsl.templates.BasicJob
 
 // Job Description
-String jobDescription = "Job responsible for monitoring building slave image"
+String jobDescription = "Job responsible for building slave image"
 
 
 String command = """#!/bin/bash +x
