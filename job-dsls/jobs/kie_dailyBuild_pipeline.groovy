@@ -13,9 +13,7 @@ def kieMainBranch=Constants.BRANCH
 def kieVersion=Constants.KIE_PREFIX
 def kieProdBranch=Constants.KIE_PROD_BRANCH_PREFIX
 def appformerVersion=Constants.UBERFIRE_PREFIX
-def erraiBranch=Constants.ERRAI_BRANCH
-def erraiVersionOld=Constants.ERRAI_SNAPSHOT
-def erraiVersionNew=Constants.ERRAI_PREFIX
+def erraiVersion=Constants.ERRAI_VERSION
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir="\$HOME/.m2/repository"
 String EAP7_DOWNLOAD_URL = "http://download-ipv4.eng.brq.redhat.com/released/JBoss-middleware/eap7/7.2.0/jboss-eap-7.2.0.zip"
@@ -45,7 +43,7 @@ pipeline {
           appformerProdVersion = "${appformerVersion}.${dateProd}-prod"          
           kieVersion = "${kieVersion}.${date}"
           appformerVersion = "${appformerVersion}.${date}"
-          erraiVersionNew = "${erraiVersionNew}.${date}"
+          erraiVersion = "${erraiVersion}.${date}"
           kieProdBranch = "bsync-${kieProdBranch}-${dateProd}"
           sourceProductTag = ""
           targetProductBuild = ""
@@ -53,10 +51,8 @@ pipeline {
                   
           echo "kieVersion: ${kieVersion}"
           echo "appformerVersion: ${appformerVersion}"
-          echo "erraiVersionOld: ${erraiVersionOld}"
-          echo "erraiVersionNew: ${erraiVersionNew}"
+          echo "erraiVersion: ${erraiVersion}"
           echo "kieMainBranch: ${kieMainBranch}"
-          echo "erraiBranch: ${erraiBranch}"
           echo "organization: ${organization}"
           echo "sourceProductTag: ${sourceProductTag}"
           echo "targetProductBuild: ${targetProductBuild}"
@@ -66,26 +62,19 @@ pipeline {
              
         }
       }
-    }
-        
-    stage("start daily build errai") {
-      steps {
-        build job: "errai-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'erraiVersionOld', value: erraiVersionOld],
-        [$class: 'StringParameterValue', name: 'erraiVersionNew', value: erraiVersionNew],[$class: 'StringParameterValue', name: 'erraiBranch', value: erraiBranch, name: 'kieMainBranch', value: kieMainBranch]]                    
-      }
-    } 
-        
+    }      
+    
     stage('start daily kieAllBuilds for community and product') {
       steps {
         parallel (
           "communityBuild" : {
             build job: "kieAllBuild-${kieMainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion],
-              [$class: 'StringParameterValue', name: 'erraiVersionNew', value: erraiVersionNew],[$class: 'StringParameterValue', name: 'appformerVersion', value: appformerVersion],
+              [$class: 'StringParameterValue', name: 'erraiVersion', value: erraiVersion],[$class: 'StringParameterValue', name: 'appformerVersion', value: appformerVersion],
               [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]                    
           },
           "productBuild" : {
             build job: "prod-kieAllBuild-${kieMainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieProdVersion', value: kieProdVersion],
-            [$class: 'StringParameterValue', name: 'erraiVersionNew', value: erraiVersionNew], [$class: 'StringParameterValue', name: 'appformerProdVersion', value: appformerProdVersion],
+            [$class: 'StringParameterValue', name: 'erraiVersion', value: erraiVersion], [$class: 'StringParameterValue', name: 'appformerProdVersion', value: appformerProdVersion],
             [$class: 'StringParameterValue', name: 'kieProdBranch',value: kieProdBranch], [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]                
           }
         )
@@ -125,10 +114,8 @@ pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
         stringParam("kieVersion", "${kieVersion}", "Version of kie. This will be usually set automatically by the parent pipeline job. ")
         stringParam("kieProdBranch", "${kieProdBranch}", "The prod branch will get this value in it's name: bsync-value-date. " )
         stringParam("appformerVersion", "${appformerVersion}", "Version of appformer. This will be usually set automatically by the parent pipeline job. ")
-        stringParam("erraiVersionOld", "${erraiVersionOld}", "Old version of errai. This will be usually set automatically by the parent pipeline job. ")
-        stringParam("erraiVersionNew", "${erraiVersionNew}", "New version of errai. This will be usually set automatically by the parent pipeline job. ")
+        stringParam("erraiVersion", "${erraiVersion}", "New version of errai. This will be usually set automatically by the parent pipeline job. ")
         stringParam("kieMainBranch", "${kieMainBranch}", "kie branch. This will be usually set automatically by the parent pipeline job. ")
-        stringParam("erraiBranch", "${erraiBranch}", "errai branch. This will be usually set automatically by the parent pipeline job. ")
         stringParam("organization", "${organization}", "Name of organization. This will be usually set automatically by the parent pipeline job. ")
         stringParam("dockerPath", "${dockerPath}", "Path to kie-docker-ci-images-${kieMainBranch}. This will be usually set automatically by the parent pipeline job. ")
     }
@@ -163,95 +150,6 @@ pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
 }
 
 
-// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys errai ++++++++++++++++++++++++++++++++++++++++++++++++++
-
-// definition of errai script
-def erraiVersionBuild='''#!/bin/bash -e
-# removing UF and errai artifacts from local maven repo (basically all possible SNAPSHOTs)
-if [ -d $MAVEN_REPO_LOCAL ]; then
-  rm -rf $MAVEN_REPO_LOCAL/org/jboss/errai/
-fi
-# clone the Errai repository
-git clone https://github.com/errai/errai.git -b $erraiBranch --depth 100
-# checkout the release branch
-cd errai
-git checkout -b $erraiVersionNew $erraiBranch
-# update versions
-sh updateVersions.sh $erraiVersionOld $erraiVersionNew
-# build the repos & deploy into local dir (will be later copied into staging repo)
-deployDir=$WORKSPACE/deploy-dir
-# do a full build, but deploy only into local dir
-# we will deploy into remote staging repo only once the whole build passed (to save time and bandwith)
-mvn -U -B -e clean deploy -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$deployDir -s $SETTINGS_XML_FILE\\
- -Dmaven.test.failure.ignore=true -Dgwt.compiler.localWorkers=3
-# unpack zip to QA Nexus
-cd $deployDir
-zip -r kiegroup .
-curl --silent --upload-file kiegroup.zip -u $kieUnpack -v http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/service/local/repositories/kieAllBuild-$kieMainBranch/content-compressed
-'''
-
-
-job("${folderPath}/errai-kieAllBuild-${kieMainBranch}") {
-    description("Upgrades and builds the errai version")
-    parameters{
-        stringParam("erraiVersionNew", "${erraiVersionNew}", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("erraiVersionOld", "${erraiVersionOld}", "Version of Errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("erraiBranch", "${erraiBranch}", "Branch of errai. This will be usually set automatically by the parent trigger job. ")
-        stringParam("kieMainBranch", "${kieMainBranch}", "Branch of kie reps. This will be usually set automatically by the parent trigger job. ")
-    }
-
-    label("kie-rhel7&&kie-mem4g")
-
-    logRotator {
-        numToKeep(10)
-    }
-
-    jdk("${javadk}")
-
-    wrappers {
-        timeout {
-            elastic(250, 3, 90)
-        }
-        timestamps()
-        colorizeOutput()
-        toolenv("${mvnToolEnv}", "${javaToolEnv}")
-        preBuildCleanup()
-        configFiles {
-            mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
-                variable("SETTINGS_XML_FILE")
-                targetLocation("jenkins-settings.xml")
-            }
-        }
-        credentialsBinding {
-          usernamePassword("kieUnpack" , "unpacks-zip-on-qa-nexus")
-        }
-    }
-
-    publishers {
-        archiveJunit("**/target/*-reports/TEST-*.xml")
-        mailer('mbiarnes@redhat.com', false, false)
-        wsCleanup()
-    }
-
-    configure { project ->
-        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
-            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
-                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
-                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
-                username 'jenkins'
-            }
-        }
-    }
-
-    steps {
-        environmentVariables {
-            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", JAVA_HOME : "\$${javaHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
-        }
-        shell(erraiVersionBuild)
-    }
-
-}
-
 // +++++++++++++++++++++++++++++++++++++++++++ Build and deploy kie ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // definition of kie build  script
@@ -276,20 +174,20 @@ git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git --branch $k
 
 # upgrade version kiegroup 
 ./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieVersion $appformerVersion custom
-echo "errai version:" $erraiVersionNew
+echo "errai version:" $erraiVersion
 echo "appformer version:" $appformerVersion
 echo "kie version" $kieVersion
 # change properties via sed as they don't update automatically
 # appformer
 cd appformer
 sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieVersion<\\/version.org.kie>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
 cd ..
 #droolsjbpm-build-bootstrap
 cd droolsjbpm-build-bootstrap
 sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieVersion<\\/version.org.kie>/;P;D" pom.xml
 sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$appformerVersion<\\/version.org.uberfire>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
 sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$kieVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" pom.xml
 cd ..
 
@@ -360,7 +258,7 @@ job("${folderPath}/kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the kie version")
 
     parameters{
-        stringParam("erraiVersionNew", "${erraiVersionNew}", "Version of errai. This will be usually set automatically by the parent trigger job. ")
+        stringParam("erraiVersion", "${erraiVersion}", "Version of errai. This will be usually set automatically by the parent trigger job. ")
         stringParam("appformerVersion", "${appformerVersion}", "Version of appformer. This will be usually set automatically by the parent trigger job. ")
         stringParam("kieVersion", "${kieVersion}", "Version of kie. This will be usually set automatically by the parent trigger job. ")
         stringParam("kieMainBranch", "${kieMainBranch}", "branch of kie. This will be usually set automatically by the parent trigger job. ")
@@ -429,7 +327,7 @@ def kieProdBuild='''#!/bin/bash -e
 echo "kieProdVersion:" $kieProdVersion
 echo "kieProdBranch:" $kieProdBranch
 echo "appformerProdVersion:" $appformerProdVersion
-echo "erraiVersionNew:" $erraiVersionNew
+echo "erraiVersion:" $erraiVersion
 echo "kieMainBranch:" $kieMainBranch
 
 # removing KIE artifacts from local maven repo (basically all possible SNAPSHOTs)
@@ -463,13 +361,13 @@ cd $WORKSPACE
 # appformer
 cd appformer
 sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieProdVersion<\\/version.org.kie>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
 cd ..
 #droolsjbpm-build-bootstrap
 cd droolsjbpm-build-bootstrap
 sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieProdVersion<\\/version.org.kie>/;P;D" pom.xml
 sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$appformerProdVersion<\\/version.org.uberfire>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersionNew<\\/version.org.jboss.errai>/;P;D" pom.xml
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
 sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$kieProdVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" pom.xml
 cd ..
 
@@ -505,7 +403,7 @@ job("${folderPath}/prod-kieAllBuild-${kieMainBranch}") {
     parameters{
         stringParam("kieProdVersion", "${kieVersion}+<date>+suffix", "Prod kie version. This will be usually set automatically by the parent trigger job. ")
         stringParam("appformerProdVersion", "${appformerVersion}+<date>+suffix", "Prod appformer version (former uberfire version). This will be usually set automatically by the parent trigger job. ")
-        stringParam("erraiVersionNew", "${erraiVersionNew}+<date>+suffix", "Errai version. This will be usually set automatically by the parent trigger job. ")
+        stringParam("erraiVersion", "${erraiVersion}+<date>+suffix", "Errai version. This will be usually set automatically by the parent trigger job. ")
         stringParam("kieMainBranch", "${kieMainBranch}", "Name of kie branch. This will be usually set automatically by the parent trigger job. ")
         stringParam("kieProdBranch", "${kieProdBranch}", "Name of product branch. This will be usually set automatically by the parent trigger job. ")
     }
