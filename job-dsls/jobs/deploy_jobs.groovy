@@ -9,7 +9,7 @@ def final DEFAULTS = [
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
-        mvnGoals               : "-e -nsu -fae -B -Pwildfly clean deploy spotbugs:spotbugs",
+        mvnGoals               : "-e -nsu -fae -B -Pwildfly clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
         mvnProps: [
                 "full"                     : "true",
                 "container"                : "wildfly",
