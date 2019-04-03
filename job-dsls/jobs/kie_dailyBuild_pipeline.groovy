@@ -452,7 +452,7 @@ job("${folderPath}/prod-kieAllBuild-${kieMainBranch}") {
             allowEmpty(true)
             pattern("prodBranches.tgz, **/target/business-central-*-eap*.war")
         }
-        mailer('mbiarnes@redhat.com pszubiak@redhat.com anstephe@redhat.com', false, false)
+        mailer('mbiarnes@redhat.com almorale@redhat.com anstephe@redhat.com', false, false)
         wsCleanup()
     }
 

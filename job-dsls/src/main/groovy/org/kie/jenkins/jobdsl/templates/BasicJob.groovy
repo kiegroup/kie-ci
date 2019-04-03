@@ -70,7 +70,7 @@ class BasicJob {
                     primaryOwnerId("mbiarnes")
 
                     // Adds additional users, who have ownership privileges.
-                    coOwnerIds("anstephe", "mnovotny", "pszubiak")
+                    coOwnerIds("anstephe", "mnovotny", "almorale")
                 }
             }
 
