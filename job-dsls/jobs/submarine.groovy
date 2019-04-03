@@ -12,11 +12,9 @@ def mainBranch="master"
 def ghOrgUnit=Constants.GITHUB_ORG_UNIT
 
 // creation of folder
-folder("KIE")
-folder("KIE/${mainBranch}")
-folder("KIE/${mainBranch}/submarine")
+folder("submarine")
 
-def folderPath="KIE/${mainBranch}/submarine"
+def folderPath="submarine"
 
 def submarines = ''' 
 pipeline {
