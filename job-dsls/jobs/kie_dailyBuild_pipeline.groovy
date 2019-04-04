@@ -43,7 +43,7 @@ pipeline {
           appformerProdVersion = "${appformerVersion}.${dateProd}-prod"          
           kieVersion = "${kieVersion}.${date}"
           appformerVersion = "${appformerVersion}.${date}"
-          erraiVersion = "${erraiVersion}.${date}"
+          erraiVersion = "${erraiVersion}"
           kieProdBranch = "bsync-${kieProdBranch}-${dateProd}"
           sourceProductTag = ""
           targetProductBuild = ""
