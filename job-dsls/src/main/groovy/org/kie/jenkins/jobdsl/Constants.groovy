@@ -24,11 +24,11 @@ class Constants {
     static final String GITHUB_ORG_UNIT = "kiegroup"
     static final String PULL_REQUEST_FOLDER = "pullrequest"
     static final String DEPLOY_FOLDER = "deployedRep"
-    static final String ZANATA_VERSION = "7.20.0"
+    static final String ZANATA_VERSION = "7.21.0"
     static final String ERRAI_VERSION = "4.6.0.Final"
-    static final String KIE_PREFIX = "7.20.0"
-    static final String KIE_PROD_BRANCH_PREFIX = "7.20.x"
-    static final String UBERFIRE_PREFIX = "2.17.0"
+    static final String KIE_PREFIX = "7.21.0"
+    static final String KIE_PROD_BRANCH_PREFIX = "7.21.x"
+    static final String UBERFIRE_PREFIX = "2.18.0"
     static final String NUMBER_OF_KIE_USERS = "10"
 
 }
