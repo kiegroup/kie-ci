@@ -63,8 +63,14 @@ pipelineJob("$folderPath/submarine-pipeline-${mainBranch}") {
         daysToKeep(10)
     }
 
-    triggers {
-        cron("H 20 * * *")
+    configure { project ->
+        project / triggers << 'com.redhat.jenkins.plugins.ci.CIBuildTrigger' {
+            spec ''
+            providerName 'Red Hat UMB'
+            overrides {
+                topic 'Consumer.rh-jenkins-ci-plugin.${JENKINS_UMB_ID}-prod-daily-master-submarine-trigger.VirtualTopic.qe.ci.ba.daily-master-submarine.trigger'
+            }
+        }
     }
 
     definition {
