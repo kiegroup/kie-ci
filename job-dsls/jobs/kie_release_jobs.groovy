@@ -60,10 +60,6 @@ def pushTags="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-pushTag.sh
 """
 
-def updateVersions="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-updateToNextDevelopmentVersion.sh
-"""
-
 def createJbpmInstaller ="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-createJbpmInstaller.sh
 """
@@ -71,75 +67,6 @@ sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-createJbpmI
 def copyBinariesToFilemgmt="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-copyBinariesToFilemgmt.sh
 """
-
-def prodErrai="""
-sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/errai-productizedVersion.sh
-"""
-
-// **************************************************************************
-
-job("${folderPath}/createProdErraiVersion-kieReleases-${kieMainBranch}") {
-
-    description("This job: <br> checksout the right source- upgrades the version in poms <br> - pushes the generated release branche to gerrit <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
-
-    parameters {
-        stringParam("erraiBranch", "base branch", "please select the base branch for errai<br> ******************************************************** <br> ")
-        stringParam("erraiVersionNew", "new errai version", "please edit the name of the new errai version <br> i.e. typically <b> 4.2.0.yyymmdd-prod </b> <br> ******************************************************** <br> ")
-        stringParam("erraiVersionOld", "old errai version", "please edit the name of the old errai version <br> i.e. typically <b> 4.2.0-SNAPSHOT </b> <br> ******************************************************** <br> ")
-        stringParam("erraiTag", "tag for errai prod version", " please edit the tag version here for related kie release <br>  i.e. typically <b> sync-<branch>.yyyy.mm.dd </b> ******************************************************** <br> ")
-    };
-
-    scm {
-        git {
-            remote {
-                github("${organization}/droolsjbpm-build-bootstrap")
-            }
-            branch ("${kieMainBranch}")
-            extensions {
-                relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
-            }
-
-        }
-    }
-
-    label("kie-releases")
-
-    logRotator {
-        numToKeep(10)
-    }
-
-    jdk("${javadk}")
-
-    wrappers {
-        timestamps()
-        colorizeOutput()
-        toolenv("${mvnToolEnv}", "${javaToolEnv}")
-        preBuildCleanup()
-        configFiles {
-            mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
-                variable("SETTINGS_XML_FILE")
-                targetLocation("jenkins-settings.xml")
-            }
-        }
-    }
-
-    configure { project ->
-        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
-            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
-                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
-                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
-                username 'jenkins'
-            }
-        }
-    }
-
-    steps {
-        environmentVariables {
-            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
-        }
-        shell(prodErrai)
-    }
-}
 
 // **************************************************************************
 
@@ -360,9 +287,11 @@ job("${folderPath}/kie-auxiliary-reps-kieReleases-${kieMainBranch}") {
     description("This job: <br> - copies binaries from local dir to Nexus <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
+        choiceParam("proc", ["oneBranch", "twoBranches"], "please select if you want to upgrade only master or if you want to upgrade master and create a new branch<br> ******************************************************** <br> ")
         stringParam("newBranch", "name of branch you're going to create", "branch that needs to be branched from master <br> ******************************************************** <br> ")
-        stringParam("oldSnapshot", "old SNAPSHOT version", "please edit the old SNAPSHOT version of the branch <br> ******************************************************** <br> ")
-        stringParam("newSnapshot", "new SNAPSHOT version", "please edit the new SNAPSHOT version you are going to upgrade to <br> ******************************************************** <br> ")
+        stringParam("oldSnapshot", "old SNAPSHOT version", "please edit the old SNAPSHOT version of master branch <br> ******************************************************** <br> ")
+        stringParam("newSnapshot", "new SNAPSHOT version", "please edit the new SNAPSHOT version you are going to upgrade master to <br> ******************************************************** <br> ")
+        stringParam("newBranchSnapshot", "SNAPSHOT version of new branch", "please edit the new SNAPSHOT version of the new branch <br> ******************************************************** <br> ")
     };
 
     scm {
@@ -695,80 +624,6 @@ job("${folderPath}/pushTags-kieReleases-${kieMainBranch}") {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(pushTags)
-    }
-}
-
-// ***********************************************************************************
-
-job("${folderPath}/updateVersion-kieReleases-${kieMainBranch}") {
-
-
-
-    description("This job: <br> updates the KIE repositories to a new developmenmt version<br>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
-
-    parameters {
-        stringParam("baseBranch","master","Branch you want to upgrade")
-        stringParam("kieVersion", "new KIE version", "Edit the KIE development version")
-        stringParam("uberfireVersion", "uberfire version", "Edit the uberfire development version")
-        stringParam("erraiVersion", "errai version", "Edit the errai development version")
-    }
-
-    scm {
-        git {
-            remote {
-                github("${organization}/droolsjbpm-build-bootstrap")
-            }
-            branch ("${kieMainBranch}")
-            extensions {
-                relativeTargetDirectory("scripts/droolsjbpm-build-bootstrap")
-            }
-
-        }
-    }
-
-    label("kie-releases")
-
-    logRotator {
-        numToKeep(10)
-    }
-
-    jdk("${javadk}")
-
-    wrappers {
-        timeout {
-            absolute(30)
-        }
-        timestamps()
-        preBuildCleanup()
-        configFiles {
-            mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
-                variable("SETTINGS_XML_FILE")
-                targetLocation("jenkins-settings.xml")
-            }
-        }
-        colorizeOutput()
-        toolenv("${mvnToolEnv}", "${javaToolEnv}")
-    }
-
-    configure { project ->
-        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
-            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
-                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
-                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
-                username 'jenkins'
-            }
-        }
-    }
-
-    publishers {
-        mailer('mbiarnes@redhat.com', false, false)
-    }
-
-    steps {
-        environmentVariables {
-            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
-        }
-        shell(updateVersions)
     }
 }
 
