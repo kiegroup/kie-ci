@@ -11,6 +11,13 @@ download the file and extract it. Try to run `./packer --version` which should r
 
 . Make sure `ansible` is installed (e.g. `dnf install ansible` on Fedora).
 
+=== Adding support in the slave image for osbs builds
+Optional ansible roles and data have been created that allow a Jenkins slave to do
+osbs image builds for rhba images. However, the setup and configuration necessary
+to allow this references internal systems. To add in the additional ansible,
+run `add-osbs.sh` and specify the url for the bxms-jenkins git repo as
+the first (and only) argument *before* building the image.
+
 === Building the image
 [source,shell]
 ----
