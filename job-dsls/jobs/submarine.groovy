@@ -41,6 +41,11 @@ pipeline {
                build job: "submarine-runtimes-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
            }
        }
+       stage('submarine-cloud') {
+           steps {
+               build job: "submarine-cloud-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
+           }
+       }       
        stage('submarine-examples') {
            steps {
                build job: "submarine-examples-${mainBranch}", parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
@@ -215,6 +220,78 @@ job("${folderPath}/submarine-runtimes-${mainBranch}") {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", JAVA_HOME : "\$${javaHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(submarineRuntimes)
+    }
+
+}
+
+// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys submarine-cloud ++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// definition of submarine-cloud script
+def submarineCloud='''#!/bin/bash -e
+# removing submarine-runtimes artifacts from local maven repo (basically all possible SNAPSHOTs)
+if [ -d $MAVEN_REPO_LOCAL ]; then
+  rm -rf $MAVEN_REPO_LOCAL/org/kie/submarine-cloud/
+fi
+# clone the submarine-bom repository
+git clone https://github.com/$ghOrgUnit/submarine-cloud.git -b $mainBranch --depth 50
+# build the project
+cd submarine-runtimes
+mvn -U -B -e clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true'''
+
+
+job("${folderPath}/submarine-cloud-${mainBranch}") {
+    description("build project submarine-cloud")
+    parameters {
+        stringParam("mainBranch", "${mainBranch}", "Branch to clone. This will be usually set automatically by the parent trigger job. ")
+        stringParam("ghOrgUnit", "${ghOrgUnit}", "Name of organization. This will be usually set automatically by the parent trigger job. ")
+    }
+
+    label('submarine-static')
+
+    logRotator {
+        numToKeep(10)
+    }
+
+    jdk("${javadk}")
+
+    wrappers {
+        timeout {
+            elastic(250, 3, 90)
+        }
+        timestamps()
+        colorizeOutput()
+        toolenv("${mvnToolEnv}", "${javaToolEnv}")
+        preBuildCleanup()
+        configFiles {
+            mavenSettings("9239af2e-46e3-4ba3-8dd6-1a814fc8a56d"){
+                variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
+            }
+        }
+    }
+
+    publishers {
+        archiveJunit("**/target/*-reports/TEST-*.xml")
+        mailer('mbiarnes@redhat.com', false, false)
+        mailer('mswiders@redhat.com', false, false)
+        wsCleanup()
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+                username 'jenkins'
+            }
+        }
+    }
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", JAVA_HOME : "\$${javaHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
+        }
+        shell(submarineCloud)
     }
 
 }
