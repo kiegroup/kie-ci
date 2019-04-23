@@ -235,7 +235,7 @@ fi
 # clone the submarine-bom repository
 git clone https://github.com/$ghOrgUnit/submarine-cloud.git -b $mainBranch --depth 50
 # build the project
-cd submarine-runtimes
+cd submarine-cloud
 mvn -U -B -e clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true'''
 
 
