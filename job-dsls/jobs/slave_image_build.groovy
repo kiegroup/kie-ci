@@ -8,6 +8,9 @@ String jobDescription = "Job responsible for building slave image"
 String command = """#!/bin/bash +x
 cd jenkins-slaves
 
+# include functionality for osbs builds
+./add-osbs.sh https://code.engineering.redhat.com/gerrit/bxms-jenkins
+
 export ANSIBLE_SCP_IF_SSH=y
 /opt/packer/bin/packer build\\
  -var "openstack_endpoint=https://rhos-d.infra.prod.upshift.rdu2.redhat.com:13000/v3"\\
