@@ -17,18 +17,18 @@ package org.kie.jenkins.jobdsl
 
 
 class Constants {
-    static final String MAVEN_VERSION = "3.5.4"
-    static final String UPSTREAM_BUILD_MAVEN_VERSION = "3.5.4"
+    static final String MAVEN_VERSION = "3.5.2"
+    static final String UPSTREAM_BUILD_MAVEN_VERSION = "3.5.2"
     static final String JDK_VERSION = "kie-jdk1.8"
     static final String BRANCH = "master"
     static final String GITHUB_ORG_UNIT = "kiegroup"
     static final String PULL_REQUEST_FOLDER = "pullrequest"
     static final String DEPLOY_FOLDER = "deployedRep"
-    static final String ZANATA_VERSION = "7.21.0"
+    static final String ZANATA_VERSION = "7.22.0"
     static final String ERRAI_VERSION = "4.6.0.Final"
-    static final String KIE_PREFIX = "7.21.0"
-    static final String KIE_PROD_BRANCH_PREFIX = "7.21.x"
-    static final String UBERFIRE_PREFIX = "2.18.0"
+    static final String KIE_PREFIX = "7.22.0"
+    static final String KIE_PROD_BRANCH_PREFIX = "7.22.x"
+    static final String UBERFIRE_PREFIX = "2.19.0"
     static final String NUMBER_OF_KIE_USERS = "10"
 
 }
