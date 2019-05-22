@@ -51,7 +51,9 @@ def final REPO_CONFIGS = [
                 label: "kie-rhel7 && kie-mem4g"
         ],
         "drools"                    : [],
-        "optaplanner"               : [],
+        "optaplanner"               : [
+                sonarCloudProjectKey: "org.optaplanner:optaplanner"
+        ],
         "optaweb-employee-rostering" : [
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "**/target/configurations/cargo-profile/profile-log.txt"
@@ -114,6 +116,7 @@ def final REPO_CONFIGS = [
         ]
 ]
 
+def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner"]
 
 for (repoConfig in REPO_CONFIGS) {
     Closure<Object> get = { String key -> repoConfig.value[key] ?: DEFAULTS[key] }
@@ -209,6 +212,12 @@ for (repoConfig in REPO_CONFIGS) {
             }
             timestamps()
             colorizeOutput()
+
+            if (repo in SONARCLOUD_ENABLED_REPOSITORIES) {
+                credentialsBinding { // Injects SONARCLOUD_TOKEN credentials into an environment variable.
+                    string("SONARCLOUD_TOKEN", "SONARCLOUD_TOKEN")
+                }
+            }
         }
 
         steps {
@@ -223,12 +232,35 @@ for (repoConfig in REPO_CONFIGS) {
                     }
                 }
             }
-            maven {
-                mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
-                mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
-                goals(get("mvnGoals"))
-                properties(get("mvnProps"))
 
+            def mavenGoals =
+                repo in SONARCLOUD_ENABLED_REPOSITORIES ? "-Prun-code-coverage ${get('mvnGoals')}" : get("mvnGoals")
+
+            maven {
+                    mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
+                    mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
+                    goals(mavenGoals)
+                    properties(get("mvnProps"))
+            }
+
+            if (repo in SONARCLOUD_ENABLED_REPOSITORIES) { // additional maven build step to report results to SonarCloud
+                def sonarProperties = [
+                        "sonar.host.url" : "https://sonarcloud.io",
+                        "sonar.organization" : get('ghOrgUnit'),
+                        "sonar.projectKey" : get('sonarCloudProjectKey'),
+                        "sonar.login" : "\$SONARCLOUD_TOKEN",
+                        "sonar.pullrequest.base" : get('branch'),
+                        "sonar.pullrequest.branch" : "\$ghprbSourceBranch",
+                        "sonar.pullrequest.key" : "\$ghprbPullId",
+                        "sonar.pullrequest.provider" : "GitHub",
+                        "sonar.pullrequest.github.repository" : "\$ghprbAuthorRepoGitUrl"
+                ]
+                maven {
+                    mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
+                    mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
+                    goals("-B -e -nsu -fae jacoco:report jacoco:merge sonar:sonar -Preport-code-coverage")
+                    properties(sonarProperties)
+                }
             }
         }
 
