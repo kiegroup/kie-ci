@@ -50,7 +50,9 @@ def final REPO_CONFIGS = [
         "droolsjbpm-knowledge"      : [
                 label: "kie-rhel7 && kie-mem4g"
         ],
-        "drools"                    : [],
+        "drools"                    : [
+                sonarCloudProjectKey: "org.drools:drools"
+        ],
         "optaplanner"               : [
                 sonarCloudProjectKey: "org.optaplanner:optaplanner"
         ],
@@ -116,7 +118,7 @@ def final REPO_CONFIGS = [
         ]
 ]
 
-def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner"]
+def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools"]
 
 for (repoConfig in REPO_CONFIGS) {
     Closure<Object> get = { String key -> repoConfig.value[key] ?: DEFAULTS[key] }
