@@ -12,11 +12,11 @@ def mainBranch="master"
 def ghOrgUnit=Constants.GITHUB_ORG_UNIT
 
 // creation of folder
-folder("submarine")
+folder("kogito-deploy")
 
-def folderPath="submarine"
+def folderPath="kogito-deploy"
 
-def submarines = ''' 
+def kogitoPipeline = ''' 
 pipeline {
    agent {label('kie-rhel7&&kie-mem8g')}  
    stages {
@@ -31,32 +31,32 @@ pipeline {
                }
            }     
        }
-       stage('submarine-bom') {
+       stage('kogito-bom') {
            steps {
-               build job: "submarine-bom-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
+               build job: "kogito-bom-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
            }
        }
-       stage('submarine-runtimes') {
+       stage('kogito-runtimes') {
            steps {
-               build job: "submarine-runtimes-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
+               build job: "kogito-runtimes-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
            }
        }
-       stage('submarine-cloud') {
+       stage('kogito-cloud') {
            steps {
-               build job: "submarine-cloud-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
+               build job: "kogito-cloud-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
            }
        }       
-       stage('submarine-examples') {
+       stage('kogito-examples') {
            steps {
-               build job: "submarine-examples-${mainBranch}", parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
+               build job: "kogito-examples-${mainBranch}", parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
            }
        }              
    }
 }'''
 
-pipelineJob("$folderPath/submarine-pipeline-${mainBranch}") {
+pipelineJob("$folderPath/kogito-pipeline-${mainBranch}") {
 
-    description("pipeline for all relevant submarine projects build")
+    description("pipeline for all relevant kogito projects build")
 
     parameters {
         stringParam("mainBranch", "${mainBranch}", "edit the branch here. ")
@@ -80,29 +80,29 @@ pipelineJob("$folderPath/submarine-pipeline-${mainBranch}") {
 
     definition {
         cps {
-            script("${submarines}")
+            script("${kogitoPipeline}")
         }
     }
 
 }
 
-// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys submarine-bom ++++++++++++++++++++++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys kogito-bom ++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// definition of submarine-bom script
-def submarineBom='''#!/bin/bash -e
-# removing submarine-bom artifacts from local maven repo (basically all possible SNAPSHOTs)
+// definition of kogito-bom script
+def kogitoBom='''#!/bin/bash -e
+# removing kogito-bom artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
-  rm -rf $MAVEN_REPO_LOCAL/org/kie/submarine-bom/
+  rm -rf $MAVEN_REPO_LOCAL/org/kie/kogito-bom/
 fi
-# clone the submarine-bom repository
-git clone https://github.com/$ghOrgUnit/submarine-bom.git -b $mainBranch --depth 50
+# clone the kogito-bom repository
+git clone https://github.com/$ghOrgUnit/kogito-bom.git -b $mainBranch --depth 50
 # build the project
-cd submarine-bom
+cd kogito-bom
 mvn -U -B -e clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE '''
 
 
-job("${folderPath}/submarine-bom-${mainBranch}") {
-    description("build project submarine-bom")
+job("${folderPath}/kogito-bom-${mainBranch}") {
+    description("build project kogito-bom")
 
     parameters {
         stringParam("mainBranch", "${mainBranch}", "Branch to clone. This will be usually set automatically by the parent trigger job. ")
@@ -153,28 +153,28 @@ job("${folderPath}/submarine-bom-${mainBranch}") {
         environmentVariables {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", JAVA_HOME : "\$${javaHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
         }
-        shell(submarineBom)
+        shell(kogitoBom)
     }
 
 }
 
-// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys submarine-runtimes ++++++++++++++++++++++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys kogito-runtimes ++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// definition of submarine-runtimes script
-def submarineRuntimes='''#!/bin/bash -e
-# removing submarine-runtimes artifacts from local maven repo (basically all possible SNAPSHOTs)
+// definition of kogito-runtimes script
+def kogitoRuntimes='''#!/bin/bash -e
+# removing kogito-runtimes artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
-  rm -rf $MAVEN_REPO_LOCAL/org/kie/submarine-runtimes/
+  rm -rf $MAVEN_REPO_LOCAL/org/kie/kogito-runtimes/
 fi
-# clone the submarine-bom repository
-git clone https://github.com/$ghOrgUnit/submarine-runtimes.git -b $mainBranch --depth 50
+# clone the kogito-bom repository
+git clone https://github.com/$ghOrgUnit/kogito-runtimes.git -b $mainBranch --depth 50
 # build the project
-cd submarine-runtimes
+cd kogito-runtimes
 mvn -U -B -e clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true'''
 
 
-job("${folderPath}/submarine-runtimes-${mainBranch}") {
-    description("build project submarine-runtimes")
+job("${folderPath}/kogito-runtimes-${mainBranch}") {
+    description("build project kogito-runtimes")
     parameters {
         stringParam("mainBranch", "${mainBranch}", "Branch to clone. This will be usually set automatically by the parent trigger job. ")
         stringParam("ghOrgUnit", "${ghOrgUnit}", "Name of organization. This will be usually set automatically by the parent trigger job. ")
@@ -225,28 +225,28 @@ job("${folderPath}/submarine-runtimes-${mainBranch}") {
         environmentVariables {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", JAVA_HOME : "\$${javaHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
         }
-        shell(submarineRuntimes)
+        shell(kogitoRuntimes)
     }
 
 }
 
-// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys submarine-cloud ++++++++++++++++++++++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys kogito-cloud ++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// definition of submarine-cloud script
-def submarineCloud='''#!/bin/bash -e
-# removing submarine-runtimes artifacts from local maven repo (basically all possible SNAPSHOTs)
+// definition of kogito-cloud script
+def kogitoCloud='''#!/bin/bash -e
+# removing kogito-runtimes artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
-  rm -rf $MAVEN_REPO_LOCAL/org/kie/submarine-cloud/
+  rm -rf $MAVEN_REPO_LOCAL/org/kie/kogito-cloud/
 fi
-# clone the submarine-bom repository
-git clone https://github.com/$ghOrgUnit/submarine-cloud.git -b $mainBranch --depth 50
+# clone the kogito-bom repository
+git clone https://github.com/$ghOrgUnit/kogito-cloud.git -b $mainBranch --depth 50
 # build the project
-cd submarine-cloud
+cd kogito-cloud
 mvn -U -B -e clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true'''
 
 
-job("${folderPath}/submarine-cloud-${mainBranch}") {
-    description("build project submarine-cloud")
+job("${folderPath}/kogito-cloud-${mainBranch}") {
+    description("build project kogito-cloud")
     parameters {
         stringParam("mainBranch", "${mainBranch}", "Branch to clone. This will be usually set automatically by the parent trigger job. ")
         stringParam("ghOrgUnit", "${ghOrgUnit}", "Name of organization. This will be usually set automatically by the parent trigger job. ")
@@ -297,28 +297,28 @@ job("${folderPath}/submarine-cloud-${mainBranch}") {
         environmentVariables {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", JAVA_HOME : "\$${javaHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
         }
-        shell(submarineCloud)
+        shell(kogitoCloud)
     }
 
 }
 
-// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys submarine-examples ++++++++++++++++++++++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys kogito-examples ++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// definition of submarine-examples script
-def submarineExamples='''#!/bin/bash -e
-# removing submarine-examples artifacts from local maven repo (basically all possible SNAPSHOTs)
+// definition of kogito-examples script
+def kogitoExamples='''#!/bin/bash -e
+# removing kogito-examples artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
-  rm -rf $MAVEN_REPO_LOCAL/org/kie/submarine-examples
+  rm -rf $MAVEN_REPO_LOCAL/org/kie/kogito-examples
 fi
-# clone the submarine-bom repository
-git clone https://github.com/$ghOrgUnit/submarine-examples.git -b $mainBranch --depth 50
+# clone the kogito-bom repository
+git clone https://github.com/$ghOrgUnit/kogito-examples.git -b $mainBranch --depth 50
 # build the project
-cd submarine-examples
+cd kogito-examples
 mvn -U -B -e clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE '''
 
 
-job("${folderPath}/submarine-examples-${mainBranch}") {
-    description("build project submarine-examples")
+job("${folderPath}/kogito-examples-${mainBranch}") {
+    description("build project kogito-examples")
 
     parameters {
         stringParam("mainBranch", "${mainBranch}", "Branch to clone. This will be usually set automatically by the parent trigger job. ")
@@ -369,7 +369,7 @@ job("${folderPath}/submarine-examples-${mainBranch}") {
         environmentVariables {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", JAVA_HOME : "\$${javaHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
         }
-        shell(submarineExamples)
+        shell(kogitoExamples)
     }
 
 }
