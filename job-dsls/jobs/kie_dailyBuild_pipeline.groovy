@@ -19,13 +19,11 @@ def m2Dir="\$HOME/.m2/repository"
 String EAP7_DOWNLOAD_URL = "http://download-ipv4.eng.brq.redhat.com/released/JBoss-middleware/eap7/7.2.0/jboss-eap-7.2.0.zip"
 
 // creation of folder
-folder("KIE")
-folder("KIE/${kieMainBranch}")
-folder("KIE/${kieMainBranch}/dailyBuild")
-folder("KIE/Docker")
+folder("dailyBuild")
+folder("Docker")
 
-def folderPath="KIE/${kieMainBranch}/dailyBuild"
-def dockerPath="KIE/Docker"
+def folderPath="dailyBuild"
+def dockerPath="Docker"
 
 // definition of pipeline jobs
 
