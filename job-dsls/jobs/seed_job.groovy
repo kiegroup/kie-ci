@@ -69,7 +69,7 @@ job("${folderPath}/a-seed-job-${kieMainBranch}") {
         shell(seedJob)
 
         jobDsl {
-            targets("job-dsls/jobs/**/bxms_patch_tools_pr.groovy job-dsls/jobs/**/kie_docs_pr.groovy job-dsls/jobs/**/kie_build_helper_jenkins_plugin_pr_job.groovy job-dsls/jobs/**/pr_jobs.groovy job-dsls/jobs/**/downstream_pr_jobs.groovy job-dsls/jobs/**/deploy_jobs.groovy job-dsls/jobs/**/compile_downstream_build.groovy job-dsls/jobs/**/sonarcloud_daily.groovy job-dsls/jobs/**/springboot_pr_job.groovy job-dsls/jobs/**/springboot_pr_job.groovy job-dsls/jobs/**/kogito.groovy")
+            targets("job-dsls/jobs/**/*.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)
