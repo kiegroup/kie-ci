@@ -3,11 +3,6 @@ import org.kie.jenkins.jobdsl.Constants
 // definition of parameters
 
 def javaToolEnv="KIE_JDK1_8"
-def mvnToolEnv="KIE_MAVEN_3_5_4"
-def mvnHome="${mvnToolEnv}_HOME"
-def javaHome="${javaToolEnv}_HOME"
-def mvnOpts="-Xms1g -Xmx3g"
-def m2Dir="\$HOME/.m2/repository"
 def kieMainBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_VERSION
@@ -44,10 +39,6 @@ job("${folderPath}/a-seed-job-${kieMainBranch}") {
                 github("${organization}/kie-jenkins-scripts")
             }
             branch ("${kieMainBranch}")
-            extensions {
-                relativeTargetDirectory("scripts/kie-jenkins-scripts")
-            }
-
         }
     }
 
@@ -58,18 +49,27 @@ job("${folderPath}/a-seed-job-${kieMainBranch}") {
     wrappers {
         timestamps()
         colorizeOutput()
-        toolenv("${mvnToolEnv}", "${javaToolEnv}")
+        toolenv("${javaToolEnv}")
         preBuildCleanup()
     }
 
     steps {
-        environmentVariables {
-            envs(MAVEN_OPTS: "${mvnOpts}", MAVEN_HOME: "\$${mvnHome}", JAVA_HOME: "\$${javaHome}", MAVEN_REPO_LOCAL: "${m2Dir}", JENKINS_SETTINGS_XML_FILE: "\$SETTINGS_XML_FILE", PATH: "\$${mvnHome}/bin:\$PATH")
-        }
         shell(seedJob)
 
         jobDsl {
-            targets("job-dsls/jobs/**/*.groovy")
+            targets("job-dsls/jobs/**/bxms_patch_tools_pr.groovy\n" +
+                    "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
+                    "job-dsls/jobs/**/kie_build_helper_jenkins_plugin_pr_job.groovy\n" +
+                    "job-dsls/jobs/**/pr_jobs.groovy\n" +
+                    "job-dsls/jobs/**/downstream_pr_jobs.groovy\n" +
+                    "job-dsls/jobs/**/deploy_jobs.groovy\n" +
+                    "job-dsls/jobs/**/compile_downstream_build.groovy\n" +
+                    "job-dsls/jobs/**/sonarcloud_daily.groovy\n" +
+                    "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
+                    "job-dsls/jobs/**/kogito.groovy\n" +
+                    "job-dsls/jobs/**/kie_dailyBuild_pipeline.groovy\n" +
+                    "job-dsls/jobs/**/kie_release_jobs.groovy\n" +
+                    "job-dsls/jobs/**/zanata*.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)
