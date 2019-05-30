@@ -14,10 +14,9 @@ def mvnOpts="-Xms2g -Xmx3g"
 def m2Dir="/home/jenkins/.m2"
 
 // creation of folder
-folder("KIE")
-folder("KIE/Zanata")
+folder("Zanata")
 
-def folderPath="KIE/Zanata"
+def folderPath="Zanata"
 
 def zanataPullModules="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/zanata/zanata-pullModules.sh
