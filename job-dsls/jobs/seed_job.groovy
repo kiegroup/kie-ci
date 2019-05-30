@@ -3,11 +3,6 @@ import org.kie.jenkins.jobdsl.Constants
 // definition of parameters
 
 def javaToolEnv="KIE_JDK1_8"
-def mvnToolEnv="KIE_MAVEN_3_5_4"
-def mvnHome="${mvnToolEnv}_HOME"
-def javaHome="${javaToolEnv}_HOME"
-def mvnOpts="-Xms1g -Xmx3g"
-def m2Dir="\$HOME/.m2/repository"
 def kieMainBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_VERSION
@@ -44,10 +39,6 @@ job("${folderPath}/a-seed-job-${kieMainBranch}") {
                 github("${organization}/kie-jenkins-scripts")
             }
             branch ("${kieMainBranch}")
-            extensions {
-                relativeTargetDirectory("scripts/kie-jenkins-scripts")
-            }
-
         }
     }
 
@@ -58,14 +49,11 @@ job("${folderPath}/a-seed-job-${kieMainBranch}") {
     wrappers {
         timestamps()
         colorizeOutput()
-        toolenv("${mvnToolEnv}", "${javaToolEnv}")
+        toolenv("${javaToolEnv}")
         preBuildCleanup()
     }
 
     steps {
-        environmentVariables {
-            envs(MAVEN_OPTS: "${mvnOpts}", MAVEN_HOME: "\$${mvnHome}", JAVA_HOME: "\$${javaHome}", MAVEN_REPO_LOCAL: "${m2Dir}", JENKINS_SETTINGS_XML_FILE: "\$SETTINGS_XML_FILE", PATH: "\$${mvnHome}/bin:\$PATH")
-        }
         shell(seedJob)
 
         jobDsl {
