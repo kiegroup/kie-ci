@@ -14,11 +14,9 @@ def m2Dir="\$HOME/.m2/repository"
 String EAP7_DOWNLOAD_URL = "http://download-ipv4.eng.brq.redhat.com/released/JBoss-middleware/eap7/7.2.0/jboss-eap-7.2.0.zip"
 
 // creation of folder
-folder("KIE")
-folder("KIE/${kieMainBranch}")
-folder("KIE/${kieMainBranch}/release")
+folder("release")
 
-def folderPath="KIE/${kieMainBranch}/release"
+def folderPath="release"
 
 
 def createReleaseBranches="""
