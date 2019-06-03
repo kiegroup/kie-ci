@@ -64,9 +64,7 @@ job("${folderPath}/a-seed-job-${kieMainBranch}") {
                     "job-dsls/jobs/**/downstream_pr_jobs.groovy\n" +
                     "job-dsls/jobs/**/deploy_jobs.groovy\n" +
                     "job-dsls/jobs/**/compile_downstream_build.groovy\n" +
-                    "job-dsls/jobs/**/sonarcloud_daily.groovy\n" +
                     "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
-                    "job-dsls/jobs/**/kogito.groovy\n" +
                     "job-dsls/jobs/**/kie_dailyBuild_pipeline.groovy\n" +
                     "job-dsls/jobs/**/kie_release_jobs.groovy\n" +
                     "job-dsls/jobs/**/zanata*.groovy")
