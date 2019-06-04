@@ -44,6 +44,7 @@ dependencies {
     testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}"
     testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
     testCompile 'org.jenkins-ci.plugins:structs:1.2@jar'
+    testCompile 'org.jenkins-ci.plugins:cloudbees-folder:5.12@jar'
     testCompile "org.jenkins-ci.plugins:config-file-provider:2.15.7@jar"
     testCompile 'org.jenkins-ci.plugins:credentials:2.1.13@jar'
 
@@ -54,6 +55,7 @@ dependencies {
     testPlugins 'org.jenkins-ci.main:maven-plugin:2.15.1'
     testPlugins 'org.jenkins-ci.plugins:ansicolor:0.5.0'
     testPlugins 'org.jenkins-ci.plugins:build-timeout:1.18'
+    testPlugins 'org.jenkins-ci.plugins:cloudbees-folder:5.12'
     testPlugins 'org.jenkins-ci.plugins:config-file-provider:2.15.7'
     testPlugins 'org.jenkins-ci.plugins:credentials:2.1.13'
     testPlugins 'org.jenkins-ci.plugins:git:3.2.0'
