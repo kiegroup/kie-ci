@@ -28,7 +28,7 @@ class Constants {
     static final String ERRAI_VERSION = "4.6.0.Final"
     static final String KIE_PREFIX = "7.23.1"
     static final String KIE_PROD_BRANCH_PREFIX = "7.23.x"
-    static final String UBERFIRE_PREFIX = "2.20.0"
+    static final String UBERFIRE_PREFIX = "2.20.1"
     static final String NUMBER_OF_KIE_USERS = "10"
     static final String SONARCLOUD_FOLDER = "sonarcloud"
 }
