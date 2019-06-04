@@ -16,4 +16,8 @@ package org.kie.jenkins.jobdsl
 
 class Constants {
     static final String MAVEN_VERSION="3.2.3"
+    static final String BRANCH = "6.5.x"
+    static final String GITHUB_ORG_UNIT = "kiegroup"
+    static final String DEPLOY_FOLDER = "deployedRep"
+    static final String PULL_REQUEST_FOLDER = "pullrequest"
 }

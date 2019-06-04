@@ -4,10 +4,10 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
-        ghOrgUnit              : "kiegroup",
-        branch                 : "6.5.x",
-        timeoutMins            : 60,
-        label                  : "rhel7 && mem8g",
+        ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
+        branch                 : Constants.BRANCH,
+        timeoutMins            : 90,
+        label                  : "kie-rhel7 && kie-mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnOpts                : "-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled",
         mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly10 clean install",
@@ -114,8 +114,12 @@ for (repoConfig in REPO_CONFIGS) {
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
 
+    // Creation of folders where jobs are stored
+    folder(Constants.PULL_REQUEST_FOLDER)
+
     // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? "$repo-pullrequests" : "$repo-pullrequests-$repoBranch"
+    String jobName = (repoBranch == "master") ? Constants.PULL_REQUEST_FOLDER + "/$repo" : Constants.PULL_REQUEST_FOLDER + "/$repo-$repoBranch"
+
     job(jobName) {
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
