@@ -30,23 +30,23 @@ def final REPO_CONFIGS = [
         "uberfire"                     : [
                 ghOrgUnit: "appformer",
                 branch   : "0.9.x",
-                label    : "rhel7 && mem16g"
+                label    : "kie-rhel7 && kie-mem16g"
         ],
         "uberfire-extensions"          : [
                 ghOrgUnit: "appformer",
                 branch   : "0.9.x",
-                label    : "rhel7 && mem16g"
+                label    : "kie-rhel7 && kie-mem16g"
         ],
         "dashbuilder"                  : [
                 ghOrgUnit: "dashbuilder",
-                label    : "rhel7 && mem16g"
+                label    : "kie-rhel7 && kie-mem16g"
         ],
         "droolsjbpm-build-bootstrap"   : [
                 timeoutMins: 30,
-                label      : "rhel7 && mem4g"
+                label      : "kie-rhel7 && kie-mem4g"
         ],
         "droolsjbpm-knowledge"         : [
-                label: "rhel7 && mem4g"
+                label: "kie-rhel7 && kie-mem4g"
         ],
         "drools"                       : [],
         "optaplanner"                  : [],
@@ -58,29 +58,29 @@ def final REPO_CONFIGS = [
         ],
         "droolsjbpm-tools"             : [],
         "kie-uberfire-extensions"      : [
-                label: "rhel7 && mem4g"
+                label: "kie-rhel7 && kie-mem4g"
         ],
         "guvnor"                       : [],
         "kie-wb-common"                : [
-                label: "rhel7 && mem16g"
+                label: "kie-rhel7 && kie-mem16g"
         ],
         "jbpm-form-modeler"            : [],
         "drools-wb"                    : [
-                label: "rhel7 && mem16g"
+                label: "kie-rhel7 && kie-mem16g"
         ],
         "jbpm-designer"                : [
-                label: "rhel7 && mem16g"
+                label: "kie-rhel7 && kie-mem16g"
         ],
         "jbpm-wb"                      : [
-                label: "rhel7 && mem16g"
+                label: "kie-rhel7 && kie-mem16g"
         ],
         "optaplanner-wb"               : [
-                label: "rhel7 && mem16g",
+                label: "kie-rhel7 && kie-mem16g",
         ],
         "dashboard-builder"            : [],
         "jbpm-dashboard"               : [],
         "kie-docs"                     : [
-                label             : "rhel7 && mem4g",
+                label             : "kie-rhel7 && kie-mem4g",
                 artifactsToArchive: DEFAULTS["artifactsToArchive"] + [
                         "**/target/generated-docs/**"
                 ]
