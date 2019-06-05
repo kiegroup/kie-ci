@@ -56,7 +56,7 @@ def final REPO_CONFIGS = [
         ],
         "droolsjbpm-build-bootstrap"   : [
                 timeoutMins            : 20,
-                label                  : "rhel7 && mem4g",
+                label                  : "kie-rhel7 && kie-mem4g",
                 ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : ["droolsjbpm-knowledge-6.5.x"]
         ],
@@ -101,7 +101,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["kie-wb-common-6.5.x"]
         ],
         "kie-wb-common"                : [
-                label                  : "rhel7 && mem16g",
+                label                  : "kie-rhel7 && kie-mem16g",
                 ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["jbpm-form-modeler-6.5.x"]
         ],
@@ -110,7 +110,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["drools-wb-6.5.x"]
         ],
         "drools-wb"                    : [
-                label                  : "rhel7 && mem16g",
+                label                  : "kie-rhel7 && kie-mem16g",
                 ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["jbpm-designer-6.5.x"]
         ],
@@ -122,7 +122,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["jbpm-wb-6.5.x"]
         ],
         "jbpm-wb"                      : [
-                label                  : "rhel7 && mem16g",
+                label                  : "kie-rhel7 && kie-mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1"
                 ],
@@ -130,17 +130,17 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["optaplanner-wb-6.5.x"]
         ],
         "optaplanner-wb"               : [
-                label                  : "rhel7 && mem16g",
+                label                  : "kie-rhel7 && kie-mem16g",
                 ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["dashboard-builder-6.5.x"]
         ],
         "dashboard-builder"            : [
-                label                  : "rhel7 && mem8g",
+                label                  : "kie-rhel7 && kie-mem8g",
                 ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["jbpm-dashboard-6.5.x"]
         ],
         "jbpm-dashboard"               : [
-                label                  : "rhel7 && mem8g",
+                label                  : "kie-rhel7 && kie-mem8g",
                 ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["kie-wb-distributions-6.5.x, kie-docs-6.5.x"]
         ],
@@ -151,7 +151,7 @@ def final REPO_CONFIGS = [
         ],
         "kie-wb-distributions"         : [
                 timeoutMins            : 120,
-                label                  : "rhel7 && mem16g",
+                label                  : "kie-rhel7 && kie-mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"] +" -Pkie-wb",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1",
@@ -162,13 +162,13 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["droolsjbpm-build-distribution-6.5.x"]
         ],
         "droolsjbpm-build-distribution": [
-                label                  : "rhel7 && mem4g",
+                label                  : "kie-rhel7 && kie-mem4g",
                 ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : ["kie-eap-modules-6.5.x"]
         ],
         "kie-eap-modules"              : [
                 ghOrgUnit              : "jboss-integration",
-                label                  : "rhel7 && mem8g",
+                label                  : "kie-rhel7 && kie-mem8g",
                 mvnOpts                : "-Xms1g -Xmx4g -XX:+CMSClassUnloadingEnabled",
                 ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : []
