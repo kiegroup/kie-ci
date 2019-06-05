@@ -79,7 +79,7 @@ for (repoConfig in REPO_CONFIGS) {
     folder(Constants.PULL_REQUEST_FOLDER)
 
     // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? Constants.PULL_REQUEST_FOLDER + "/$repo" : Constants.PULL_REQUEST_FOLDER + "/$repo-$repoBranch"
+    String jobName = (repoBranch == "master") ? Constants.PULL_REQUEST_FOLDER + "/$repo-downstream-pullrequests" : Constants.PULL_REQUEST_FOLDER + "/$repo-downstream-pullrequests-$repoBranch"
 
     job(jobName) {
 
