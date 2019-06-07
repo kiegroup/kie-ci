@@ -222,7 +222,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        jdk("jdk1.8")
+        jdk("kie-jdk1.8")
 
         label(get("label"))
 
