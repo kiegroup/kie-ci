@@ -7,6 +7,7 @@ def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
+        ghAuthTokenId          : "kie-ci3-token",
         label                  : "kie-rhel7 && kie-mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnOpts                : "-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled",
@@ -113,6 +114,7 @@ for (repoConfig in REPO_CONFIGS) {
     String repo = repoConfig.key
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
+    String ghAuthTokenId = get("ghAuthTokenId")
 
     // Creation of folders where jobs are stored
     folder(Constants.PULL_REQUEST_FOLDER)
