@@ -53,6 +53,9 @@ def final REPO_CONFIGS = [
         "drools"                    : [
                 sonarCloudProjectKey: "org.drools:drools"
         ],
+        "kie-jpmml-integration"     : [
+                label: "kie-rhel7 && kie-mem4g"
+        ],
         "optaplanner"               : [
                 sonarCloudProjectKey: "org.optaplanner:optaplanner"
         ],
