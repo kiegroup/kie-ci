@@ -239,7 +239,7 @@ job("${folderPath}/copyBinariesToNexus-kieReleases-${kieMainBranch}") {
 
     jdk("${javadk}")
 
-    customWorkspace("\$HOME/workspace/${folderPath}/buildAndDeployLocally-kieReleases-${kieMainBranch}")
+    customWorkspace("\$HOME/workspace/KIE/${kieMainBranch}/${folderPath}/buildAndDeployLocally-kieReleases-${kieMainBranch}")
 
     wrappers {
         timestamps()
@@ -657,7 +657,7 @@ job("${folderPath}/create-jbpm-installers-kieReleases-${kieMainBranch}") {
 
     jdk("${javadk}")
 
-    customWorkspace("\$HOME/workspace/${folderPath}/buildAndDeployLocally-kieReleases-${kieMainBranch}")
+    customWorkspace("\$HOME/workspace/KIE/${kieMainBranch}/${folderPath}/buildAndDeployLocally-kieReleases-${kieMainBranch}")
 
     wrappers {
         timeout {
@@ -726,7 +726,7 @@ job("${folderPath}/copyBinariesToFilemgmt-kieReleases-${kieMainBranch}") {
 
     jdk("${javadk}")
 
-    customWorkspace("\$HOME/workspace/${folderPath}/buildAndDeployLocally-kieReleases-${kieMainBranch}")
+    customWorkspace("\$HOME/workspace/KIE/${kieMainBranch}/${folderPath}/buildAndDeployLocally-kieReleases-${kieMainBranch}")
 
     wrappers {
         timeout {
