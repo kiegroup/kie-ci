@@ -27,7 +27,7 @@ def final REPO_CONFIGS = [
         "uberfire"                     : [
                 ghOrgUnit              : "appformer",
                 branch                 : "0.9.x",
-                label                  : "linux && mem16g",
+                label                  : "kie-linux && kie-mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
                 ],
@@ -37,7 +37,7 @@ def final REPO_CONFIGS = [
         "uberfire-extensions"          : [
                 ghOrgUnit              : "appformer",
                 branch                 : "0.9.x",
-                label                  : "linux && mem16g",
+                label                  : "kie-linux && kie-mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
                 ],
@@ -47,7 +47,7 @@ def final REPO_CONFIGS = [
         "dashbuilder"                  : [
                 ghOrgUnit              : "dashbuilder",
                 branch                 : "0.5.x",
-                label                  : "linux && mem16g",
+                label                  : "kie-linux && kie-mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
                 ],
