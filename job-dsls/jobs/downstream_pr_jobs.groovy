@@ -10,8 +10,8 @@ def final DEFAULTS = [
         timeoutMins            : 300,
         ghAuthTokenId          : "kie-ci3-token",
         label                  : "kie-rhel7 && kie-mem8g",
-        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
-        downstreamMvnGoals     : "-e -nsu -fae -B -T1C -Pkie-wb,wildfly10 clean install",
+        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true -s \$CUSTOM_MAVEN_SETTINGS clean install",
+        downstreamMvnGoals     : "-e -nsu -fae -B -T1C -Pkie-wb,wildfly10 -s \$CUSTOM_MAVEN_SETTINGS clean install",
         downstreamMvnProps     : [
                 "full"                               : "true",
                 "container"                          : "wildfly10",
@@ -145,6 +145,12 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         wrappers {
+            configFiles {
+                mavenSettings('771ff52a-a8b4-40e6-9b22-d54c7314aa1e') {
+                    targetLocation('custom-maven-settings.xml')
+                    variable('CUSTOM_MAVEN_SETTINGS')
+                }
+            }
             xvnc {
                 useXauthority(false)
             }
@@ -168,7 +174,7 @@ for (repoConfig in REPO_CONFIGS) {
                 project / 'builders' << 'hudson.tasks.Maven' {
                     mavenName("apache-maven-${Constants.MAVEN_VERSION}")
                     jvmOptions("-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled")
-                    targets("-e -fae -nsu -B -T1C clean install -Dfull -DskipTests")
+                    targets("-e -fae -nsu -B -T1C clean install -Dfull -DskipTests -s \$CUSTOM_MAVEN_SETTINGS")
                 }
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
                     mavenBuildConfig {

@@ -9,9 +9,9 @@ def final DEFAULTS = [
         timeoutMins            : 90,
         ghAuthTokenId          : "kie-ci3-token",
         label                  : "kie-rhel7 && kie-mem8g",
-        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
+        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true -s \$CUSTOM_MAVEN_SETTINGS clean install",
         mvnOpts                : "-Xms1g -Xmx2g -XX:+CMSClassUnloadingEnabled",
-        mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly10 clean install",
+        mvnGoals               : "-e -nsu -fae -B -T1C -Pwildfly10 -s \$CUSTOM_MAVEN_SETTINGS clean install",
         mvnProps               : [
                 "full"                     : "true",
                 "container"                : "wildfly10",
@@ -87,7 +87,7 @@ def final REPO_CONFIGS = [
                 ]
         ],
         "kie-wb-distributions"         : [
-                label             : "kie-linux && kie-mem16g && kie-gui-testing",
+                label             : "kie-linux && kie-mem16g && gui-testing",
                 timeoutMins       : 120,
                 mvnGoals          : DEFAULTS["mvnGoals"] + " -Pkie-wb",
                 mvnProps          : DEFAULTS["mvnProps"] + [
@@ -192,6 +192,12 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         wrappers {
+            configFiles {
+                mavenSettings('771ff52a-a8b4-40e6-9b22-d54c7314aa1e') {
+                    targetLocation('custom-maven-settings.xml')
+                    variable('CUSTOM_MAVEN_SETTINGS')
+                }
+            }
             if (repo == "kie-wb-distributions") {
                 xvnc {
                     useXauthority(false)
