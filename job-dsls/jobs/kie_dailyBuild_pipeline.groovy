@@ -45,6 +45,7 @@ pipeline {
           kieProdBranch = "bsync-${kieProdBranch}-${dateProd}"
           sourceProductTag = ""
           targetProductBuild = ""
+          dockerAbsPath = "KIE/${kieMainBranch}/Docker"
 
                   
           echo "kieVersion: ${kieVersion}"
@@ -95,7 +96,7 @@ pipeline {
             build job: "kieServerMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]
           },
           "kie-docker-ci-images" : {
-            build job: "${dockerPath}/kie-docker-ci-images-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
+            build job: "${dockerAbsPath}/kie-docker-ci-images-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
           }
         )    
       } 
@@ -115,7 +116,6 @@ pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
         stringParam("erraiVersion", "${erraiVersion}", "New version of errai. This will be usually set automatically by the parent pipeline job. ")
         stringParam("kieMainBranch", "${kieMainBranch}", "kie branch. This will be usually set automatically by the parent pipeline job. ")
         stringParam("organization", "${organization}", "Name of organization. This will be usually set automatically by the parent pipeline job. ")
-        stringParam("dockerPath", "${dockerPath}", "Path to kie-docker-ci-images-${kieMainBranch}. This will be usually set automatically by the parent pipeline job. ")
     }
 
     logRotator {
