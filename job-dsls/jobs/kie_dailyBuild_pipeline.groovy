@@ -45,7 +45,6 @@ pipeline {
           kieProdBranch = "bsync-${kieProdBranch}-${dateProd}"
           sourceProductTag = ""
           targetProductBuild = ""
-          dockerAbsPath = "KIE/${kieMainBranch}/Docker"
 
                   
           echo "kieVersion: ${kieVersion}"
@@ -96,7 +95,7 @@ pipeline {
             build job: "kieServerMatrix-kieAllBuild-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]
           },
           "kie-docker-ci-images" : {
-            build job: "${dockerAbsPath}/kie-docker-ci-images-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
+            build job: "kie-docker-ci-images-${kieMainBranch}", parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
           }
         )    
       } 
