@@ -128,7 +128,7 @@ pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
             spec ''
             providerName 'Red Hat UMB'
             overrides {
-                topic 'Consumer.rh-jenkins-ci-plugin.${JENKINS_UMB_ID}-prod-daily-master-trigger.VirtualTopic.qe.ci.ba.daily-master.trigger'
+                topic 'Consumer.rh-jenkins-ci-plugin.${JENKINS_UMB_ID}-prod-daily-${kieMainBranch}-trigger.VirtualTopic.qe.ci.ba.daily-${kieMainBranch}.trigger'
             }
         }
     }
