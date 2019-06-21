@@ -9,14 +9,19 @@ String command = """#!/bin/bash +x
 cd jenkins-slaves
 
 # include functionality for osbs builds
-./add-osbs.sh https://code.engineering.redhat.com/gerrit/bxms-jenkins
+# clone from gerrit moved to scm, not needed here: ./add-osbs.sh https://code.engineering.redhat.com/gerrit/bxms-jenkins
+
+rsync -av bxms-jenkins/jenkins-image-extra-bits/rhba-osbs/ansible/ ansible
+
+wget --no-check-certificate https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/packer 
+chmod u+x packer
 
 export ANSIBLE_SCP_IF_SSH=y
-/opt/packer/bin/packer build\\
+./packer build\\
  -var "openstack_endpoint=https://rhos-d.infra.prod.upshift.rdu2.redhat.com:13000/v3"\\
  -var "openstack_username=psi-rhba-jenkins"\\
  -var "openstack_password=\$PSI_PASSWORD"\\
- -var "image_name=kie-rhel7-\$BUILD_NUMBER"\\
+ -var "image_name=kie-rhel7-with-osbs-\$BUILD_NUMBER"\\
  -var "ssh_private_key_file=\$PSI_PRIVATE_KEY"\\
  packer-kie-rhel7.json
 """
@@ -25,7 +30,7 @@ export ANSIBLE_SCP_IF_SSH=y
 def jobDefinition = job("slave-image-build") {
 
     // Allows a job to check out sources from an SCM provider.
-    scm {
+    multiscm {
 
         // Adds a Git SCM source.
         git {
@@ -40,6 +45,23 @@ def jobDefinition = job("slave-image-build") {
                 github("kiegroup/kie-jenkins-scripts")
             }
         }
+
+        git {
+
+            // Specify the branches to examine for changes and to build.
+            branch("master")
+
+            // Adds a remote.
+            remote {
+                // Sets a remote URL for a GitHub repository.
+                url('ssh://jb-ip-tooling-jenkins@code.engineering.redhat.com/bxms-jenkins')
+                credentials('code.engineering.redhat.com')
+            }
+            extensions {
+                relativeTargetDirectory('jenkins-slaves/bxms-jenkins')
+            }
+        }
+
     }
 
     // Adds pre/post actions to the job.
@@ -52,7 +74,7 @@ def jobDefinition = job("slave-image-build") {
             string("PSI_PASSWORD", "psi-rhba-jenkins-password")
 
             // Copies the file given in the credentials to a temporary location, then sets the variable to that location.
-            file("PSI_PRIVATE_KEY", "kie-jenkins.pem")
+            file("PSI_PRIVATE_KEY", "kie-jenkis.pem")
         }
     }
 

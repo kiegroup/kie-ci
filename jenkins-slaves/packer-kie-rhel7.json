@@ -34,6 +34,12 @@
       "groups": [
         "packer"
       ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "rm -rf /home/jenkins/.ansible"
+      ]
     }
   ]
 }
