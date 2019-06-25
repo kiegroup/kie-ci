@@ -30,8 +30,11 @@ def final DEFAULTS = [
 
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
-        "drools"                    : [
-                sonarCloudProjectKey: "org.drools:drools"
+        "drools": [
+                sonarCloudProjectKey: "org.drools:drools",
+                mvnProps            : [
+                        "runTurtleTests": "true"
+                ]
         ],
         "optaplanner"               : [
                 sonarCloudProjectKey: "org.optaplanner:optaplanner"
