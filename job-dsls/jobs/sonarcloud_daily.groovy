@@ -30,15 +30,12 @@ def final DEFAULTS = [
 
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
-        "drools": [
-                sonarCloudProjectKey: "org.drools:drools",
-                mvnProps            : [
+        "drools"     : [
+                mvnProps: [
                         "runTurtleTests": "true"
                 ]
         ],
-        "optaplanner"               : [
-                sonarCloudProjectKey: "org.optaplanner:optaplanner"
-        ]
+        "optaplanner": []
 ]
 
 for (repoConfig in REPO_CONFIGS) {
@@ -113,18 +110,10 @@ for (repoConfig in REPO_CONFIGS) {
                     properties(get("mvnProps"))
             }
 
-            // additional maven build step to report results to SonarCloud
-            def sonarProperties = [
-                    "sonar.host.url"    : "https://sonarcloud.io",
-                    "sonar.organization": get('ghOrgUnit'),
-                    "sonar.projectKey"  : get('sonarCloudProjectKey'),
-                    "sonar.login"       : "\$SONARCLOUD_TOKEN"
-            ]
             maven {
                 mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                 mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
-                goals("-B -e -nsu -fae jacoco:report jacoco:merge sonar:sonar -Preport-code-coverage")
-                properties(sonarProperties)
+                goals("-B -e -nsu -fae generate-resources -Psonarcloud-analysis")
             }
         }
 
