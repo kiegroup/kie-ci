@@ -37,24 +37,21 @@ def final REPO_CONFIGS = [
                 timeoutMins: 30,
                 label: "kie-rhel7 && kie-mem4g"
         ],
+        "droolsjbpm-build-bootstrap": [
+                timeoutMins: 30,
+                label      : "kie-rhel7 && kie-mem4g"
+        ],
         "kie-soup"                  : [
                 label: "kie-rhel7 && kie-mem4g"
         ],
         "appformer"                 : [
                 label    : "kie-rhel7 && kie-mem16g"
         ],
-        "droolsjbpm-build-bootstrap": [
-                timeoutMins: 30,
-                label      : "kie-rhel7 && kie-mem4g"
-        ],
         "droolsjbpm-knowledge"      : [
                 label: "kie-rhel7 && kie-mem4g"
         ],
         "drools"                    : [
                 sonarCloudProjectKey: "org.drools:drools"
-        ],
-        "kie-jpmml-integration"     : [
-                label: "kie-rhel7 && kie-mem4g"
         ],
         "optaplanner"               : [
                 sonarCloudProjectKey: "org.optaplanner:optaplanner"
@@ -66,6 +63,9 @@ def final REPO_CONFIGS = [
         ],
         "jbpm"                      : [
                 timeoutMins: 120
+        ],
+        "kie-jpmml-integration"     : [
+                label: "kie-rhel7 && kie-mem4g"
         ],
         "droolsjbpm-integration"    : [
                 timeoutMins: 120,
