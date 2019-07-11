@@ -39,6 +39,12 @@ def final REPO_CONFIGS = [
                 label                  : "kie-rhel7 && kie-mem4g",
                 downstreamRepos        : ["kie-soup"]
         ],
+        "droolsjbpm-build-bootstrap": [
+                timeoutMins            : 30,
+                label                  : "kie-rhel7 && kie-mem4g",
+                ircNotificationChannels: ["#logicabyss"],
+                downstreamRepos        : ["kie-soup"]
+        ],
         "kie-soup"                  : [
                 label                  : "kie-rhel7 && kie-mem4g",
                 ircNotificationChannels: ["#logicabyss", "#appformer"],
@@ -50,12 +56,6 @@ def final REPO_CONFIGS = [
                         "gwt.compiler.localWorkers": "2"
                 ],
                 ircNotificationChannels: ["#appformer"],
-                downstreamRepos        : ["droolsjbpm-build-bootstrap"]
-        ],
-        "droolsjbpm-build-bootstrap": [
-                timeoutMins            : 30,
-                label                  : "kie-rhel7 && kie-mem4g",
-                ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : ["droolsjbpm-knowledge"]
         ],
         "droolsjbpm-knowledge"      : [
@@ -68,9 +68,6 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["optaplanner", "jbpm","kie-jpmml-integration"],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
-        "kie-jpmml-integration"     :[
-                ircNotificationChannels: ["#droolsdev"]
-        ],
         "optaplanner"               : [
                 ircNotificationChannels: ["#optaplanner-dev"],
                 downstreamRepos        : ["optaplanner-wb"]
@@ -79,7 +76,11 @@ def final REPO_CONFIGS = [
                 timeoutMins            : 120,
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly",
                 ircNotificationChannels: ["#jbpmdev"],
-                downstreamRepos        : ["droolsjbpm-integration", "jbpm-work-items"]
+                downstreamRepos        : ["jbpm-work-items", "kie-jpmml-integration"]
+        ],
+        "kie-jpmml-integration"     :[
+                ircNotificationChannels: ["#droolsdev"],
+                downstreamRepos        : ["droolsjbpm-integration"]
         ],
         "droolsjbpm-integration"    : [
                 timeoutMins            : 120,

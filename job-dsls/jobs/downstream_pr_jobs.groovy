@@ -41,13 +41,14 @@ def final DEFAULTS = [
 def final REPO_CONFIGS = [
         "lienzo-core"               : [],
         "lienzo-tests"              : [],
+        "droolsjbpm-build-bootstrap": [],
         "kie-soup"                  : [],
         "appformer"                 : [],
-        "droolsjbpm-build-bootstrap": [],
         "droolsjbpm-knowledge"      : [],
         "drools"                    : [],
         "optaplanner"               : [],
         "jbpm"                      : [],
+        "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [
                 downstreamMvnGoals  : DEFAULTS["downstreamMvnGoals"] + " -Pjenkins-pr-builder "
                                       ],
