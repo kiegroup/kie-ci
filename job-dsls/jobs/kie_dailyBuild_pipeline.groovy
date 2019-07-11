@@ -176,19 +176,6 @@ git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git --branch $k
 echo "errai version:" $erraiVersion
 echo "appformer version:" $appformerVersion
 echo "kie version" $kieVersion
-# change properties via sed as they don't update automatically
-# appformer
-cd appformer
-sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieVersion<\\/version.org.kie>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
-cd ..
-#droolsjbpm-build-bootstrap
-cd droolsjbpm-build-bootstrap
-sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieVersion<\\/version.org.kie>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$appformerVersion<\\/version.org.uberfire>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
-sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$kieVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" pom.xml
-cd ..
 
 # build the repos & deploy into local dir (will be later copied into staging repo)
 deployDir=$WORKSPACE/deploy-dir
@@ -355,20 +342,6 @@ cd $WORKSPACE
 
 # upgrade version kiegroup 
 ./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieProdVersion $appformerProdVersion custom
-
-# change properties via sed as they don't update automatically
-# appformer
-cd appformer
-sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieProdVersion<\\/version.org.kie>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
-cd ..
-#droolsjbpm-build-bootstrap
-cd droolsjbpm-build-bootstrap
-sed -i "$!N;s/<version.org.kie>.*.<\\/version.org.kie>/<version.org.kie>$kieProdVersion<\\/version.org.kie>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.uberfire>.*.<\\/version.org.uberfire>/<version.org.uberfire>$appformerProdVersion<\\/version.org.uberfire>/;P;D" pom.xml
-sed -i "$!N;s/<version.org.jboss.errai>.*.<\\/version.org.jboss.errai>/<version.org.jboss.errai>$erraiVersion<\\/version.org.jboss.errai>/;P;D" pom.xml
-sed -i "$!N;s/<latestReleasedVersionFromThisBranch>.*.<\\/latestReleasedVersionFromThisBranch>/<latestReleasedVersionFromThisBranch>$kieProdVersion<\\/latestReleasedVersionFromThisBranch>/;P;D" pom.xml
-cd ..
 
 # git add and commit changes
 ./droolsjbpm-build-bootstrap/script/git-all.sh add .
