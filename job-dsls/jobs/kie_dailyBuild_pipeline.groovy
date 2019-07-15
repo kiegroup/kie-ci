@@ -69,6 +69,7 @@ pipeline {
           },
           "productBuild" : {
             build job: "prod-kieAllBuild-${kieMainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieProdVersion', value: kieProdVersion],
+            [$class: 'StringParameterValue', name: 'appformerProdVersion', value: appformerProdVersion],
             [$class: 'StringParameterValue', name: 'kieProdBranch',value: kieProdBranch], [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]                
           }
         )
