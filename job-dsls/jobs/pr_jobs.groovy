@@ -249,22 +249,10 @@ for (repoConfig in REPO_CONFIGS) {
             }
 
             if (repo in SONARCLOUD_ENABLED_REPOSITORIES) { // additional maven build step to report results to SonarCloud
-                def sonarProperties = [
-                        "sonar.host.url" : "https://sonarcloud.io",
-                        "sonar.organization" : get('ghOrgUnit'),
-                        "sonar.projectKey" : get('sonarCloudProjectKey'),
-                        "sonar.login" : "\$SONARCLOUD_TOKEN",
-                        "sonar.pullrequest.base" : get('branch'),
-                        "sonar.pullrequest.branch" : "\$ghprbSourceBranch",
-                        "sonar.pullrequest.key" : "\$ghprbPullId",
-                        "sonar.pullrequest.provider" : "GitHub",
-                        "sonar.pullrequest.github.repository" : "\$ghprbAuthorRepoGitUrl"
-                ]
                 maven {
                     mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                     mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
-                    goals("-B -e -nsu -fae jacoco:report jacoco:merge sonar:sonar -Preport-code-coverage")
-                    properties(sonarProperties)
+                    goals("-B -e -nsu -fae generate-resources -Psonarcloud-analysis")
                 }
             }
         }
