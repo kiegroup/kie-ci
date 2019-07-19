@@ -65,7 +65,8 @@ pipeline {
         parallel (
           "communityBuild" : {
             build job: "kieAllBuild-${kieMainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion],
-              [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]                    
+            [$class: 'StringParameterValue', name: 'appformerVersion', value: appformerVersion],
+            [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]                    
           },
           "productBuild" : {
             build job: "prod-kieAllBuild-${kieMainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieProdVersion', value: kieProdVersion],
