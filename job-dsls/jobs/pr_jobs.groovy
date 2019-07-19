@@ -118,7 +118,12 @@ def final REPO_CONFIGS = [
                         "**/target/business-central*eap*.war",
                         "**/target/jbpm-server*dist*.zip"
                 ]
+        ],
+        "openshift-drools-hacep"           : [
+                label      : "kie-linux && kie-mem4g",
+                timeoutMins: 15
         ]
+
 ]
 
 def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools"]
