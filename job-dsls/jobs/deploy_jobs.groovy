@@ -163,6 +163,10 @@ def final REPO_CONFIGS = [
                         "**/target/configurations/cargo-profile/profile-log.txt"
                 ]
         ],
+        "openshift-drools-hacep" : [
+                label      : "kie-linux && kie-mem4g",
+                timeoutMins: 15
+        ]
 ]
 
 for (repoConfig in REPO_CONFIGS) {
