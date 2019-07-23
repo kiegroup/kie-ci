@@ -65,9 +65,11 @@ def final REPO_CONFIGS = [
         ],
         "drools"                    : [
                 ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["optaplanner", "jbpm","kie-jpmml-integration"],
+                downstreamRepos        : ["optaplanner", "jbpm","kie-jpmml-integration", "openshift-drools-hacep"],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
+        "openshift-drools-hacep" : [],
+
         "optaplanner"               : [
                 ircNotificationChannels: ["#optaplanner-dev"],
                 downstreamRepos        : ["optaplanner-wb"]
@@ -162,10 +164,6 @@ def final REPO_CONFIGS = [
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "**/target/configurations/cargo-profile/profile-log.txt"
                 ]
-        ],
-        "openshift-drools-hacep" : [
-                label      : "kie-linux && kie-mem4g",
-                timeoutMins: 15
         ]
 ]
 
