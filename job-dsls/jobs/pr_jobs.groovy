@@ -51,7 +51,6 @@ def final REPO_CONFIGS = [
                 label: "kie-rhel7 && kie-mem4g"
         ],
         "drools"                    : [],
-        "openshift-drools-hacep"           : [],
         "optaplanner"               : [],
         "optaweb-employee-rostering" : [
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
@@ -121,7 +120,7 @@ def final REPO_CONFIGS = [
 
 ]
 
-def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools", "appformer"]
+def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools", "appformer", "jbpm"]
 
 for (repoConfig in REPO_CONFIGS) {
     Closure<Object> get = { String key -> repoConfig.value[key] ?: DEFAULTS[key] }
