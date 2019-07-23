@@ -53,6 +53,8 @@ def final REPO_CONFIGS = [
         "drools"                    : [
                 sonarCloudProjectKey: "org.drools:drools"
         ],
+        "openshift-drools-hacep"           : [],
+
         "optaplanner"               : [
                 sonarCloudProjectKey: "org.optaplanner:optaplanner"
         ],
@@ -118,10 +120,6 @@ def final REPO_CONFIGS = [
                         "**/target/business-central*eap*.war",
                         "**/target/jbpm-server*dist*.zip"
                 ]
-        ],
-        "openshift-drools-hacep"           : [
-                label      : "kie-linux && kie-mem4g",
-                timeoutMins: 15
         ]
 
 ]
