@@ -126,7 +126,7 @@ def final REPO_CONFIGS = [
 
 ]
 
-def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools"]
+def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools", "appformer"]
 
 for (repoConfig in REPO_CONFIGS) {
     Closure<Object> get = { String key -> repoConfig.value[key] ?: DEFAULTS[key] }

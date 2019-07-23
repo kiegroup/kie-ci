@@ -35,7 +35,8 @@ def final REPO_CONFIGS = [
                         "runTurtleTests": "true"
                 ]
         ],
-        "optaplanner": []
+        "optaplanner": [],
+        "appformer" : []
 ]
 
 for (repoConfig in REPO_CONFIGS) {
