@@ -50,12 +50,9 @@ def final REPO_CONFIGS = [
         "droolsjbpm-knowledge"      : [
                 label: "kie-rhel7 && kie-mem4g"
         ],
-        "drools"                    : [
-                sonarCloudProjectKey: "org.drools:drools"
-        ],
-        "optaplanner"               : [
-                sonarCloudProjectKey: "org.optaplanner:optaplanner"
-        ],
+        "drools"                    : [],
+        "openshift-drools-hacep"           : [],
+        "optaplanner"               : [],
         "optaweb-employee-rostering" : [
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "**/target/configurations/cargo-profile/profile-log.txt"
