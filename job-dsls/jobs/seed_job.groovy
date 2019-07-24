@@ -66,6 +66,7 @@ job("${folderPath}/a-seed-job-${kieMainBranch}") {
                     "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
                     "job-dsls/jobs/**/kogito.groovy\n" +
                     "job-dsls/jobs/**/kie*.groovy\n" +
+                    "job-dsls/jobs/**/turtleTests.groovy\n" +
                     "job-dsls/jobs/**/zanata*.groovy")
 
             useScriptText(false)
