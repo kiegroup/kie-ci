@@ -65,11 +65,9 @@ def final REPO_CONFIGS = [
         ],
         "drools"                    : [
                 ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["optaplanner", "jbpm","kie-jpmml-integration", "openshift-drools-hacep"],
+                downstreamRepos        : ["optaplanner", "jbpm","kie-jpmml-integration"],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
-        "openshift-drools-hacep" : [],
-
         "optaplanner"               : [
                 ircNotificationChannels: ["#optaplanner-dev"],
                 downstreamRepos        : ["optaplanner-wb"]
@@ -87,8 +85,9 @@ def final REPO_CONFIGS = [
         "droolsjbpm-integration"    : [
                 timeoutMins            : 120,
                 ircNotificationChannels: ["#droolsdev", "#jbpmdev"],
-                downstreamRepos        : ["droolsjbpm-tools", "kie-uberfire-extensions"]
+                downstreamRepos        : ["droolsjbpm-tools", "kie-uberfire-extensions","openshift-drools-hacep"]
         ],
+        "openshift-drools-hacep"       : [],
         "droolsjbpm-tools"          : [
                 ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : []
