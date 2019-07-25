@@ -39,6 +39,7 @@
    - zip
    - python2-pip
    - jq
+   - libXScrnSaver
 
 - name: Update all packages
   yum:
