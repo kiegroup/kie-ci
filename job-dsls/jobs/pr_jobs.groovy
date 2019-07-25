@@ -63,6 +63,7 @@ def final REPO_CONFIGS = [
                         "**/target/configurations/cargo-profile/profile-log.txt"
                 ]
         ],
+        "optaweb-vehicle-routing" : [],
         "jbpm"                      : [
                 timeoutMins: 120
         ],

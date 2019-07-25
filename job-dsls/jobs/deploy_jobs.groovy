@@ -72,7 +72,7 @@ def final REPO_CONFIGS = [
 
         "optaplanner"               : [
                 ircNotificationChannels: ["#optaplanner-dev"],
-                downstreamRepos        : ["optaplanner-wb"]
+                downstreamRepos        : ["optaplanner-wb, optaweb-employee-rostering"]
         ],
         "jbpm"                      : [
                 timeoutMins            : 120,
@@ -158,7 +158,6 @@ def final REPO_CONFIGS = [
                 ],
                 downstreamRepos        : []
         ],
-        // following repos are not in repository-list.txt, but we want a deploy jobs for them
         "optaweb-employee-rostering" : [
                 ircNotificationChannels: ["#optaplanner-dev"],
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
