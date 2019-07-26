@@ -53,8 +53,6 @@ def final REPO_CONFIGS = [
         "drools"                    : [
                 sonarCloudProjectKey: "org.drools:drools"
         ],
-        "openshift-drools-hacep"           : [],
-
         "optaplanner"               : [
                 sonarCloudProjectKey: "org.optaplanner:optaplanner"
         ],
@@ -77,6 +75,7 @@ def final REPO_CONFIGS = [
                         "**/target/kie-server-*webc.war"
                 ]
         ],
+        "openshift-drools-hacep"    : [],
         "droolsjbpm-tools"          : [],
         "kie-uberfire-extensions"   : [
                 label: "kie-rhel7 && kie-mem4g"
