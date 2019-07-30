@@ -36,7 +36,8 @@ def final REPO_CONFIGS = [
                 ]
         ],
         "optaplanner": [],
-        "appformer" : []
+        "appformer" : [],
+        "jbpm" : []
 ]
 
 for (repoConfig in REPO_CONFIGS) {
