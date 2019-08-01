@@ -606,8 +606,8 @@ matrixJob("${folderPath}/kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
     }
 
     axes {
-        labelExpression("label_exp", "kie-linux&&kie-mem8g&&gui-testing")
-        text("container", "wildfly", "eap7")
+        labelExpression("label_exp", "kie-rhel7&&kie-mem8g&&gui-testing")
+        text("container", "wildfly")
         text("war","business-central")
         jdk("${javadk}")
         text("browser","firefox")
@@ -675,7 +675,6 @@ matrixJob("${folderPath}/kieWbTestsMatrix-kieAllBuild-${kieMainBranch}") {
             properties("deployment.timeout.millis":"240000")
             properties("container.startstop.timeout.millis":"240000")
             properties("webdriver.firefox.bin":"/opt/tools/firefox-60esr/firefox-bin")
-            properties("eap7.download.url":EAP7_DOWNLOAD_URL)
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e")
         }
