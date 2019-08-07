@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Hardcoded this as it was overwritten with a version that killed the session in the end.
+# Good: tigervnc-1.8.0-5.el7. Bad: tigervnc-1.8.0-13.el7
+# https://projects.engineering.redhat.com/browse/CID-3759
+
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+exec /etc/X11/xinit/xinitrc
