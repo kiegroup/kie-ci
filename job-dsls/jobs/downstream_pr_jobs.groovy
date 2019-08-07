@@ -9,7 +9,7 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 600,
         label                  : "kie-rhel7 && kie-mem24g",
-        ghAuthTokenId          : "kie-ci3-token",
+        ghAuthTokenId          : "kie-ci6-token",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
         downstreamMvnGoals     : "-B -e -nsu -fae -Pbusiness-central,wildfly,sourcemaps,no-showcase clean install",
         downstreamMvnProps     : [
