@@ -64,6 +64,14 @@
     group: jenkins
     mode: 0600
 
+- name: Copy VNC xstartup file
+  copy:
+    src: data/config/vnc/xstartup
+    dest: /home/jenkins/.vnc/xstartup
+    owner: jenkins
+    group: jenkins
+    mode: 0700
+
 ### Maven repository ###
 
 - name: Copy Maven extensions
