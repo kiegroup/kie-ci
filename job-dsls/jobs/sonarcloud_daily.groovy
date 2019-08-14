@@ -37,7 +37,8 @@ def final REPO_CONFIGS = [
         ],
         "optaplanner": [],
         "appformer" : [],
-        "jbpm" : []
+        "jbpm" : [],
+        "drools-wb": []
 ]
 
 for (repoConfig in REPO_CONFIGS) {
