@@ -16,30 +16,10 @@
 
 - name: Install packages
   yum:
-    pkg: "{{item}}"
+    pkg: ['git', 'tig', 'wget', 'mc', 'vim', 'unzip', 'iputils', 'bind-utils', 'findutils',
+          'htop', 'hub', 'screen', 'lsof', 'bash-completion', 'bzip2', 'rng-tools',
+          'ansible', 'zip', 'python2-pip', 'jq', 'libXScrnSaver']
     state: latest
-  with_items:
-   - git
-   - tig
-   - wget
-   - mc
-   - vim
-   - unzip
-   - iputils
-   - bind-utils
-   - findutils
-   - htop
-   - hub
-   - screen
-   - lsof
-   - bash-completion
-   - bzip2
-   - rng-tools
-   - ansible
-   - zip
-   - python2-pip
-   - jq
-   - libXScrnSaver
 
 - name: Update all packages
   yum:

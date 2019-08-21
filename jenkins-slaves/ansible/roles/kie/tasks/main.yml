@@ -3,13 +3,8 @@
 
 - name: Install packages
   yum:
-    pkg: "{{item}}"
+    pkg: ['firefox', 'tigervnc', 'tigervnc-server', 'docker']
     state: latest
-  with_items:
-   - firefox
-   - tigervnc
-   - tigervnc-server
-   - docker
 
 ### Bash ###
 
