@@ -120,7 +120,7 @@ def final REPO_CONFIGS = [
 
 ]
 
-def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools", "appformer", "jbpm", " drools-wb", "kie-soup"]
+def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools", "appformer", "jbpm", " drools-wb", "kie-soup", "droolsjbpm-integration"]
 
 for (repoConfig in REPO_CONFIGS) {
     Closure<Object> get = { String key -> repoConfig.value[key] ?: DEFAULTS[key] }
