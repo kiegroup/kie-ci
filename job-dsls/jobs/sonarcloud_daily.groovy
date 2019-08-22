@@ -39,7 +39,8 @@ def final REPO_CONFIGS = [
         "appformer" : [],
         "jbpm" : [],
         "drools-wb": [],
-        "kie-soup" : []
+        "kie-soup" : [],
+        "droolsjbpm-integration" : []
 ]
 
 for (repoConfig in REPO_CONFIGS) {
