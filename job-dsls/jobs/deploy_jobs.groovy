@@ -65,12 +65,12 @@ def final REPO_CONFIGS = [
         ],
         "drools"                    : [
                 ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["optaplanner", "jbpm","kie-jpmml-integration"],
+                downstreamRepos        : ["optaplanner", "jbpm", "kie-jpmml-integration"],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
         "optaplanner"               : [
                 ircNotificationChannels: ["#optaplanner-dev"],
-                downstreamRepos        : ["optaplanner-wb, optaweb-employee-rostering"]
+                downstreamRepos        : ["optaplanner-wb", "optaweb-employee-rostering"]
         ],
         "jbpm"                      : [
                 timeoutMins            : 120,
@@ -87,7 +87,7 @@ def final REPO_CONFIGS = [
                 ircNotificationChannels: ["#droolsdev", "#jbpmdev"],
                 downstreamRepos        : ["droolsjbpm-tools", "kie-uberfire-extensions","openshift-drools-hacep"]
         ],
-        "openshift-drools-hacep"       : [],
+        "openshift-drools-hacep"       : [:],
         "droolsjbpm-tools"          : [
                 ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : []
@@ -303,8 +303,12 @@ for (repoConfig in REPO_CONFIGS) {
                         downstreamRepo
                     } else {
                         // non-master job names are in the format <repo>-<branch>
-                        def downstreamRepoBranch = REPO_CONFIGS.get(downstreamRepo).get("branch", DEFAULTS["branch"])
-                        "$downstreamRepo-$downstreamRepoBranch"
+                        try {
+                            def downstreamRepoBranch = REPO_CONFIGS.get(downstreamRepo).get("branch", DEFAULTS["branch"])
+                            "$downstreamRepo-$downstreamRepoBranch"
+                        } catch (RuntimeException e) {
+                            throw new IllegalStateException("Invalid configuration for $downstreamRepo from downstreamRepos $downstreamRepos, see cause.", e)
+                        }
                     }
                 }
                 downstream(jobNames, 'UNSTABLE')
