@@ -8,7 +8,7 @@ def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_VERSION
 def repo="kie-jenkins-scripts"
 def ghAuthTokenId="kie-ci3-token"
-def folderPath="pullrequest/"
+def folderPath=Constants.PULL_REQUEST_FOLDER + "/"
 
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -18,6 +18,9 @@ def kieJenkins_PR='''#!/bin/bash -e
 cd job-dsls
 ./gradlew clean test'''
 
+
+// Creation of folders where jobs are stored
+folder(Constants.PULL_REQUEST_FOLDER)
 
 // jobs for master branch don't use the branch in the name
 String jobName = (kieMainBranch == "master") ? folderPath + repo + "-pullrequests" : folderPath + repo + "-pullrequests-" + kieMainBranch
