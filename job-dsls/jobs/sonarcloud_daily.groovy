@@ -40,7 +40,9 @@ def final REPO_CONFIGS = [
         "jbpm" : [],
         "drools-wb": [],
         "kie-soup" : [],
-        "droolsjbpm-integration" : []
+        "droolsjbpm-integration" : [
+                timeoutMins: 240
+        ]
 ]
 
 for (repoConfig in REPO_CONFIGS) {
