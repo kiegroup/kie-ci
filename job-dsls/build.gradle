@@ -16,6 +16,9 @@ repositories {
     maven {
         url 'https://repo.jenkins-ci.org/releases/'
     }
+    maven {
+        url 'https://repo.spring.io/plugins-release/'
+    }
 }
 
 configurations {
@@ -36,9 +39,9 @@ dependencies {
     testCompile 'cglib:cglib-nodep:2.2.2' // used by Spock
 
     // Jenkins test harness dependencies
-    testCompile 'org.jenkins-ci.main:jenkins-test-harness:2.33'
+    testCompile 'org.jenkins-ci.main:jenkins-test-harness:2.55'
     testCompile "org.jenkins-ci.main:jenkins-war:${jenkinsVersion}"
-    testCompile "org.jenkins-ci.main:jenkins-war:${jenkinsVersion}:war-for-test@jar"
+    //testCompile "org.jenkins-ci.main:jenkins-war:${jenkinsVersion}:war-for-test@jar"
 
     // Job DSL plugin including plugin dependencies
     testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}"
@@ -67,6 +70,7 @@ dependencies {
     testPlugins 'org.jenkins-ci.plugins:git:3.2.0'
     testPlugins 'org.jenkins-ci.plugins:ghprb:1.36.1'
     testPlugins 'org.jenkins-ci.plugins:junit:1.20'
+    testPlugins 'org.jenkins-ci.plugins:multiple-scms:0.6'
     testPlugins 'org.jenkins-ci.plugins:nested-view:1.14'
     testPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26'
     testPlugins 'org.jenkins-ci.plugins:script-security:1.27'

@@ -65,12 +65,12 @@ def final REPO_CONFIGS = [
         ],
         "drools"                    : [
                 ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["optaplanner", "jbpm","kie-jpmml-integration"],
+                downstreamRepos        : ["optaplanner", "jbpm", "kie-jpmml-integration"],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
         "optaplanner"               : [
                 ircNotificationChannels: ["#optaplanner-dev"],
-                downstreamRepos        : ["optaplanner-wb, optaweb-employee-rostering"]
+                downstreamRepos        : ["optaplanner-wb", "optaweb-employee-rostering"]
         ],
         "jbpm"                      : [
                 timeoutMins            : 120,
@@ -85,9 +85,9 @@ def final REPO_CONFIGS = [
         "droolsjbpm-integration"    : [
                 timeoutMins            : 120,
                 ircNotificationChannels: ["#droolsdev", "#jbpmdev"],
-                downstreamRepos        : ["droolsjbpm-tools", "kie-uberfire-extensions","openshift-drools-hacep"]
+                downstreamRepos        : ["droolsjbpm-tools", "kie-uberfire-extensions", "openshift-drools-hacep"]
         ],
-        "openshift-drools-hacep"       : [],
+        "openshift-drools-hacep"       : [:],
         "droolsjbpm-tools"          : [
                 ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : []
@@ -140,6 +140,20 @@ def final REPO_CONFIGS = [
         "kie-docs"                  : [
                 ircNotificationChannels: ["#logicabyss"],
                 artifactsToArchive     : ["**/generated-docs/**"],
+                downstreamRepos        : ["optaweb-employee-rostering"]
+        ],
+        "optaweb-employee-rostering" : [
+                ircNotificationChannels: ["#optaplanner-dev"],
+                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
+                        "**/target/configurations/cargo-profile/profile-log.txt"
+                ],
+                downstreamRepos        : ["optaweb-vehicle-routing"]
+        ],
+        "optaweb-vehicle-routing" : [
+                ircNotificationChannels: ["#optaplanner-dev"],
+                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
+                        "**/target/configurations/cargo-profile/profile-log.txt"
+                ],
                 downstreamRepos        : ["kie-wb-distributions"]
         ],
         "kie-wb-distributions"      : [
@@ -156,12 +170,6 @@ def final REPO_CONFIGS = [
                         "business-central-tests/business-central-tests-gui/target/screenshots/**"
                 ],
                 downstreamRepos        : []
-        ],
-        "optaweb-employee-rostering" : [
-                ircNotificationChannels: ["#optaplanner-dev"],
-                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
-                        "**/target/configurations/cargo-profile/profile-log.txt"
-                ]
         ]
 ]
 
@@ -303,8 +311,12 @@ for (repoConfig in REPO_CONFIGS) {
                         downstreamRepo
                     } else {
                         // non-master job names are in the format <repo>-<branch>
-                        def downstreamRepoBranch = REPO_CONFIGS.get(downstreamRepo).get("branch", DEFAULTS["branch"])
-                        "$downstreamRepo-$downstreamRepoBranch"
+                        try {
+                            def downstreamRepoBranch = REPO_CONFIGS.get(downstreamRepo).get("branch", DEFAULTS["branch"])
+                            "$downstreamRepo-$downstreamRepoBranch"
+                        } catch (RuntimeException e) {
+                            throw new IllegalStateException("Invalid configuration for $downstreamRepo from downstreamRepos $downstreamRepos, see cause.", e)
+                        }
                     }
                 }
                 downstream(jobNames, 'UNSTABLE')
