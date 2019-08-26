@@ -64,7 +64,6 @@ job("${folderPath}/a-seed-job-${kieMainBranch}") {
                     "job-dsls/jobs/**/compile_downstream_build.groovy\n" +
                     "job-dsls/jobs/**/sonarcloud_daily.groovy\n" +
                     "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
-                    "job-dsls/jobs/**/kogito.groovy\n" +
                     "job-dsls/jobs/**/kie*.groovy\n" +
                     "job-dsls/jobs/**/turtleTests.groovy\n" +
                     "job-dsls/jobs/**/zanata*.groovy")
@@ -75,8 +74,8 @@ job("${folderPath}/a-seed-job-${kieMainBranch}") {
             ignoreMissingFiles(false)
             failOnMissingPlugin(true)
             unstableOnDeprecation(true)
-            removedJobAction('DELETE')
-            removedViewAction('DELETE')
+            removedJobAction('DISABLE')
+            removedViewAction('IGNORE')
             //removedConfigFilesAction('IGNORE')
             lookupStrategy('SEED_JOB')
             additionalClasspath("job-dsls/src/main/groovy")
