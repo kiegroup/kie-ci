@@ -73,7 +73,7 @@ pipelineJob("$folderPath/kogito-pipeline-${mainBranch}") {
             spec ''
             providerName 'Red Hat UMB'
             overrides {
-                topic 'Consumer.rh-jenkins-ci-plugin.${JENKINS_UMB_ID}-prod-daily-master-submarine-trigger.VirtualTopic.qe.ci.ba.daily-master-submarine.trigger'
+                topic 'Consumer.rh-jenkins-ci-plugin.${JENKINS_UMB_ID}-prod-daily-7-26-x-submarine-trigger.VirtualTopic.qe.ci.ba.daily-7-26-x-submarine.trigger'
             }
         }
     }
