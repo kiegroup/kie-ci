@@ -106,6 +106,8 @@ pipeline {
 
 pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
 
+    disabled ()
+
     description('this is a pipeline job that triggers all other jobs with it\'s parameters needed for the kieAllBuild')
     
 
@@ -121,17 +123,6 @@ pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
     logRotator {
         numToKeep(10)
         daysToKeep(10)
-    }
-
-    // the UMB trigger has to have the branch name hard coded - could not have a parameter
-    configure { project ->
-        project / triggers << 'com.redhat.jenkins.plugins.ci.CIBuildTrigger' {
-            spec ''
-            providerName 'Red Hat UMB'
-            overrides {
-                topic 'Consumer.rh-jenkins-ci-plugin.${JENKINS_UMB_ID}-prod-daily-7-23-x-trigger.VirtualTopic.qe.ci.ba.daily-7-23-x.trigger'
-            }
-        }
     }
 
     definition {
