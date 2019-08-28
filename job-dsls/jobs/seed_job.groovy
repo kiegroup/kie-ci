@@ -1,3 +1,8 @@
+/**
+ * Please look at the *.groovy jobs that have to be in this branch.
+ * Remove not needed ones or add new and needed ones.
+ */
+
 import org.kie.jenkins.jobdsl.Constants
 
 // definition of parameters
