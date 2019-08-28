@@ -1,3 +1,8 @@
+/**
+ * Please look at the *.groovy jobs that have to be in this branch.
+ * Remove not needed ones or add new and needed ones.
+ */
+
 import org.kie.jenkins.jobdsl.Constants
 
 // definition of parameters
@@ -57,9 +62,7 @@ job("${folderPath}/a-seed-job-${kieMainBranch}") {
         shell(seedJob)
 
         jobDsl {
-            targets("job-dsls/jobs/**/bxms_patch_tools_pr.groovy\n" +
-                    "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
-                    "job-dsls/jobs/**/kie_build_helper_jenkins_plugin_pr_job.groovy\n" +
+            targets("job-dsls/jobs/**/kie_docs_pr.groovy\n" +
                     "job-dsls/jobs/**/pr_jobs.groovy\n" +
                     "job-dsls/jobs/**/downstream_pr_jobs.groovy\n" +
                     "job-dsls/jobs/**/deploy_jobs.groovy\n" +
@@ -67,6 +70,8 @@ job("${folderPath}/a-seed-job-${kieMainBranch}") {
                     "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
                     "job-dsls/jobs/**/kie_dailyBuild_pipeline.groovy\n" +
                     "job-dsls/jobs/**/kie_release_jobs.groovy\n" +
+                    "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
+                    "job-dsls/jobs/**/seed_job.groovy\n" +
                     "job-dsls/jobs/**/zanata*.groovy")
             useScriptText(false)
             sandbox(false)
