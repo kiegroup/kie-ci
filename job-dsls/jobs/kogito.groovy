@@ -75,7 +75,7 @@ pipelineJob("$folderPath/kogito-pipeline-${mainBranch}") {
             overrides {
                 topic 'Consumer.rh-jenkins-ci-plugin.${JENKINS_UMB_ID}-prod-daily-7-26-x-submarine-trigger.VirtualTopic.qe.ci.ba.daily-7-26-x-submarine.trigger'
             }
-            selector 'origin = \'rhba\''
+            selector 'label = \'rhba-ci\''
         }
     }
 
