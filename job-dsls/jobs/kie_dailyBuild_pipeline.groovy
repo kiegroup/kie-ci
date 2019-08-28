@@ -127,7 +127,7 @@ pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
             overrides {
                 topic 'Consumer.rh-jenkins-ci-plugin.${JENKINS_UMB_ID}-prod-daily-master-trigger.VirtualTopic.qe.ci.ba.daily-master.trigger'
             }
-            selector 'origin = \'rhba\''
+            selector 'label = \'rhba-ci\''
         }
     }
 
