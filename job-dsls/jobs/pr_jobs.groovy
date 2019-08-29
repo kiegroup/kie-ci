@@ -120,8 +120,6 @@ def final REPO_CONFIGS = [
 
 ]
 
-def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools", "appformer", "jbpm", " drools-wb", "kie-soup", "droolsjbpm-integration"]
-
 for (repoConfig in REPO_CONFIGS) {
     Closure<Object> get = { String key -> repoConfig.value[key] ?: DEFAULTS[key] }
 
@@ -217,11 +215,6 @@ for (repoConfig in REPO_CONFIGS) {
             timestamps()
             colorizeOutput()
 
-            if (repo in SONARCLOUD_ENABLED_REPOSITORIES) {
-                credentialsBinding { // Injects SONARCLOUD_TOKEN credentials into an environment variable.
-                    string("SONARCLOUD_TOKEN", "SONARCLOUD_TOKEN")
-                }
-            }
         }
 
         steps {
@@ -237,23 +230,13 @@ for (repoConfig in REPO_CONFIGS) {
                 }
             }
 
-            def mavenGoals =
-                repo in SONARCLOUD_ENABLED_REPOSITORIES ? "-Prun-code-coverage ${get('mvnGoals')}" : get("mvnGoals")
-
             maven {
                     mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                     mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
-                    goals(mavenGoals)
+                    goals(get("mvnGoals"))
                     properties(get("mvnProps"))
             }
 
-            if (repo in SONARCLOUD_ENABLED_REPOSITORIES) { // additional maven build step to report results to SonarCloud
-                maven {
-                    mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
-                    mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
-                    goals("-B -e -nsu -fae generate-resources -Psonarcloud-analysis")
-                }
-            }
         }
 
         publishers {
