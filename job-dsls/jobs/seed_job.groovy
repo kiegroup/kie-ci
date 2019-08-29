@@ -57,18 +57,7 @@ job("${folderPath}/a-seed-job-${kieMainBranch}") {
         shell(seedJob)
 
         jobDsl {
-            targets("job-dsls/jobs/**/bxms_patch_tools_pr.groovy\n" +
-                    "job-dsls/jobs/**/pr_jobs.groovy\n" +
-                    "job-dsls/jobs/**/downstream_pr_jobs.groovy\n" +
-                    "job-dsls/jobs/**/deploy_jobs.groovy\n" +
-                    "job-dsls/jobs/**/compile_downstream_build.groovy\n" +
-                    "job-dsls/jobs/**/sonarcloud_daily.groovy\n" +
-                    "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
-                    "job-dsls/jobs/**/kogito.groovy\n" +
-                    "job-dsls/jobs/**/kie*.groovy\n" +
-                    "job-dsls/jobs/**/turtleTests.groovy\n" +
-                    "job-dsls/jobs/**/zanata*.groovy")
-
+            targets("job-dsls/jobs/**/*.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)
