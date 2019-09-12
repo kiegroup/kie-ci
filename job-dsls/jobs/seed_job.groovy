@@ -7,12 +7,6 @@ def kieMainBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_VERSION
 
-// creation of folder
-folder("KIE")
-folder("KIE/${kieMainBranch}")
-
-def folderPath="KIE/${kieMainBranch}"
-
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // create seed job script
@@ -21,7 +15,7 @@ def seedJob='''#!/bin/bash -e
 cd job-dsls
 ./gradlew clean test'''
 
-job("${folderPath}/a-seed-job-${kieMainBranch}") {
+job("a-seed-job-${kieMainBranch}") {
 
     description("this job creates all needed Jenkins jobs")
 
