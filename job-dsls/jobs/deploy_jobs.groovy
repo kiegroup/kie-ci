@@ -89,6 +89,7 @@ def final REPO_CONFIGS = [
         ],
         "openshift-drools-hacep"       : [:],
         "droolsjbpm-tools"          : [
+                label                  : "kie-linux && kie-mem24g",
                 ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : []
         ],
