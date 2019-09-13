@@ -66,6 +66,10 @@ def copyBinariesToFilemgmt="""
 sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-copyBinariesToFilemgmt.sh
 """
 
+def removeReleaseBranches="""
+sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/release/kie-removeReleaseBranchesGerrit.sh
+"""
+
 // **************************************************************************
 
 job("${folderPath}/createAndPushReleaseBranches-kieReleases-${kieMainBranch}") {
@@ -622,6 +626,7 @@ job("${folderPath}/pushTags-kieReleases-${kieMainBranch}") {
             envs(MAVEN_OPTS : "${mvnOpts}", MAVEN_HOME : "\$${mvnHome}", MAVEN_REPO_LOCAL : "${m2Dir}", PATH : "\$${mvnHome}/bin:\$PATH")
         }
         shell(pushTags)
+        shell(removeReleaseBranches)
     }
 }
 
