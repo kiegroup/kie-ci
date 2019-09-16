@@ -280,6 +280,30 @@ for (repoConfig in REPO_CONFIGS) {
                     }
                 }
             }
+
+            extendedEmail {
+                recipientList('$ghprbActualCommitAuthorEmail')
+                defaultSubject('$DEFAULT_SUBJECT')
+                defaultContent('$DEFAULT_CONTENT')
+                contentType('default')
+                triggers {
+                    failure{
+                        subject('PR build FAILED: $JOB_BASE_NAME #$ghprbPullId')
+                        content('$ghprbPullTitle \nPlease go to $BUILD_URL \n(IMPORTANT: you need have access to RedHat VPM to access this link) \n\n${BUILD_LOG, maxLines=500} \n\n${FAILED_TESTS}')
+                        sendTo {
+                            recipientList()
+                        }
+                    }
+                    unstable {
+                        subject('PR build UNSTABLE: $JOB_BASE_NAME #$ghprbPullId')
+                        content('$ghprbPullTitle \nPlease go to $BUILD_URL \n(IMPORTANT: you need have access to RedHat VPM to access this link) \n\n${BUILD_LOG, maxLines=500} \n\n${FAILED_TESTS}')
+                        sendTo {
+                            recipientList()
+                        }
+                    }
+                }
+            }
+
             wsCleanup()
             configure { project ->
                 project / 'publishers' << 'org.jenkinsci.plugins.emailext__template.ExtendedEmailTemplatePublisher' {
