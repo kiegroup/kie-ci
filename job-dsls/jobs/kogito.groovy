@@ -317,7 +317,7 @@ def kogitoCloudS2i='''#!/bin/bash -e
 # clone the kogito-cloud repository
 git clone https://github.com/$ghOrgUnit/kogito-cloud.git -b $mainBranch 
 # build the project
-cd kogito-cloud-s2i
+cd kogito-cloud/s2i
 make build
 make test'''
 
@@ -336,7 +336,6 @@ job("${folderPath}/kogito-cloud-s2i-images-${mainBranch}") {
     }
 
     publishers {
-        archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
         mailer('mswiders@redhat.com', false, false)
         mailer('fspolti@redhat.com', false, false)
