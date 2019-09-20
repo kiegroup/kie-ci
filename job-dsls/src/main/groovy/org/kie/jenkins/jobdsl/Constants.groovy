@@ -27,7 +27,6 @@ class Constants {
     static final String ZANATA_VERSION = "7.27.0"
     static final String KIE_PREFIX = "7.28.0"
     static final String KIE_PROD_BRANCH_PREFIX = "7.28.x"
-    static final String UBERFIRE_PREFIX = "2.25.0"
     static final String NUMBER_OF_KIE_USERS = "10"
     static final String SONARCLOUD_FOLDER = "sonarcloud"
 }
