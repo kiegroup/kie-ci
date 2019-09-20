@@ -12,7 +12,6 @@ def mvnOpts="-Xms1g -Xmx3g"
 def kieMainBranch=Constants.BRANCH
 def kieVersion=Constants.KIE_PREFIX
 def kieProdBranch=Constants.KIE_PROD_BRANCH_PREFIX
-def appformerVersion=Constants.UBERFIRE_PREFIX
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir="\$HOME/.m2/repository"
 String EAP7_DOWNLOAD_URL = "http://download-ipv4.eng.brq.redhat.com/released/JBoss-middleware/eap7/7.2.0/jboss-eap-7.2.0.zip"
@@ -37,9 +36,7 @@ pipeline {
           date = new Date().format('yyyyMMdd-hhMMss')
           dateProd = new Date().format('yyyyMMdd')
           kieProdVersion = "${kieVersion}.${dateProd}-prod"
-          appformerProdVersion = "${appformerVersion}.${dateProd}-prod"          
           kieVersion = "${kieVersion}.${date}"
-          appformerVersion = "${appformerVersion}.${date}"
           kieProdBranch = "bsync-${kieProdBranch}-${dateProd}"
           sourceProductTag = ""
           targetProductBuild = ""
@@ -47,13 +44,11 @@ pipeline {
 
                   
           echo "kieVersion: ${kieVersion}"
-          echo "appformerVersion: ${appformerVersion}"
           echo "kieMainBranch: ${kieMainBranch}"
           echo "organization: ${organization}"
           echo "sourceProductTag: ${sourceProductTag}"
           echo "targetProductBuild: ${targetProductBuild}"
           echo "kieProdVersion: ${kieProdVersion}"
-          echo "appformerProdVersion: ${appformerProdVersion}"
           echo "kieProdBranch: ${kieProdBranch}"
              
         }
@@ -65,12 +60,10 @@ pipeline {
         parallel (
           "communityBuild" : {
             build job: "kieAllBuild-${kieMainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion],
-            [$class: 'StringParameterValue', name: 'appformerVersion', value: appformerVersion],
             [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]                    
           },
           "productBuild" : {
             build job: "prod-kieAllBuild-${kieMainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieProdVersion', value: kieProdVersion],
-            [$class: 'StringParameterValue', name: 'appformerProdVersion', value: appformerProdVersion],
             [$class: 'StringParameterValue', name: 'kieProdBranch',value: kieProdBranch], [$class: 'StringParameterValue', name: 'kieMainBranch', value: kieMainBranch]]                
           }
         )
@@ -109,7 +102,6 @@ pipelineJob("${folderPath}/kieAllBuildPipeline-${kieMainBranch}") {
     parameters{
         stringParam("kieVersion", "${kieVersion}", "Version of kie. This will be usually set automatically by the parent pipeline job. ")
         stringParam("kieProdBranch", "${kieProdBranch}", "The prod branch will get this value in it's name: bsync-value-date. " )
-        stringParam("appformerVersion", "${appformerVersion}", "Version of appformer. This will be usually set automatically by the parent pipeline job. ")
         stringParam("kieMainBranch", "${kieMainBranch}", "kie branch. This will be usually set automatically by the parent pipeline job. ")
         stringParam("organization", "${organization}", "Name of organization. This will be usually set automatically by the parent pipeline job. ")
     }
@@ -169,8 +161,7 @@ git clone https://github.com/kiegroup/droolsjbpm-build-bootstrap.git --branch $k
 ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $kieVersion $kieMainBranch
 
 # upgrade version kiegroup 
-./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieVersion $appformerVersion custom
-echo "appformer version:" $appformerVersion
+./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieVersion custom
 echo "kie version" $kieVersion
 
 # build the repos & deploy into local dir (will be later copied into staging repo)
@@ -240,7 +231,6 @@ job("${folderPath}/kieAllBuild-${kieMainBranch}") {
     description("Upgrades and builds the kie version")
 
     parameters{
-        stringParam("appformerVersion", "${appformerVersion}", "Version of appformer. This will be usually set automatically by the parent trigger job. ")
         stringParam("kieVersion", "${kieVersion}", "Version of kie. This will be usually set automatically by the parent trigger job. ")
         stringParam("kieMainBranch", "${kieMainBranch}", "branch of kie. This will be usually set automatically by the parent trigger job. ")
     }
@@ -305,11 +295,6 @@ job("${folderPath}/kieAllBuild-${kieMainBranch}") {
 // definition of prod-build
 
 def kieProdBuild='''#!/bin/bash -e
-echo "kieProdVersion:" $kieProdVersion
-echo "kieProdBranch:" $kieProdBranch
-echo "appformerProdVersion:" $appformerProdVersion
-echo "kieMainBranch:" $kieMainBranch
-
 # removing KIE artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
     rm -rf $MAVEN_REPO_LOCAL/org/jboss/tools/
@@ -335,7 +320,7 @@ cd $WORKSPACE
 ./droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $kieProdBranch $kieMainBranch
 
 # upgrade version kiegroup 
-./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieProdVersion $appformerProdVersion custom
+./droolsjbpm-build-bootstrap/script/release/update-version-all.sh $kieProdVersion custom
 
 # git add and commit changes
 ./droolsjbpm-build-bootstrap/script/git-all.sh add .
@@ -368,7 +353,6 @@ job("${folderPath}/prod-kieAllBuild-${kieMainBranch}") {
 
     parameters{
         stringParam("kieProdVersion", "${kieVersion}+<date>+suffix", "Prod kie version. This will be usually set automatically by the parent trigger job. ")
-        stringParam("appformerProdVersion", "${appformerVersion}+<date>+suffix", "Prod appformer version (former uberfire version). This will be usually set automatically by the parent trigger job. ")
         stringParam("kieMainBranch", "${kieMainBranch}", "Name of kie branch. This will be usually set automatically by the parent trigger job. ")
         stringParam("kieProdBranch", "${kieProdBranch}", "Name of product branch. This will be usually set automatically by the parent trigger job. ")
     }
@@ -764,82 +748,6 @@ matrixJob("${folderPath}/kieServerMatrix-kieAllBuild-${kieMainBranch}") {
     }
 }
 
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//  run additional test: kieAlBuild-windows
-
-def windowsTests='''set repo_list=droolsjbpm-build-bootstrap droolsjbpm-knowledge drools optaplanner jbpm droolsjbpm-integration droolsjbpm-tools kie-appformer-extensions guvnor kie-wb-common jbpm-form-modeler drools-wb jbpm-designer jbpm-console-ng optaplanner-wb kie-wb-distributions
-for %%x in (%repo_list%) do (
-    if "%%x" == "kie-wb-common" (
-        rem clone the kie-wb-common into directory with shortest name possible to avoid long path issues
-        git clone --depth 10 https://github.com/kiegroup/%%x.git k
-    ) else (
-        git clone --depth 10 https://github.com/kiegroup/%%x.git
-    )
-)
-for %%x in (%repo_list%) do (
-    if "%%x" == "kie-wb-common" (
-        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f k\\pom.xml clean install -Dfull -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 || exit \\b
-    ) else (
-        c:\\tools\\apache-maven-3.2.5\\bin\\mvn.bat -U -e -B -f %%x\\pom.xml clean install -Dfull -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx2g -Xms1g -XX:MaxPermSize=256m -Xss1M" -Dgwt.compiler.localWorkers=1 -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true || exit \\b
-    )
-)'''
-
-job("${folderPath}/windows-kieAllBuild-${kieMainBranch}") {
-    disabled ()
-    description("Builds all repos specified in\n" +
-            "<a href=\"https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/script/repository-list.txt\">repository-list.txt</a> (master branch) on Windows machine.\n" +
-            "It does not deploy the artifacts to staging repo (or any other remote). It just checks our repositories can be build and tested on Windows, so that \n" +
-            "contributors do not hit issues when using Windows machines for development.<br/>\n" +
-            "<br/>\n" +
-            "<b>Important:</b> the workspace is under c:\\x, instead of c:\\jenkins\\workspace\\kie-all-build-windows-master. This is to decrease the path prefix as much as possible\n" +
-            "to avoid long path issues on Windows (limit there is 260 chars).")
-
-    label("windows")
-
-    logRotator {
-        numToKeep(10)
-    }
-
-    jdk("${javadk}")
-
-    wrappers {
-        timeout {
-            absolute(300)
-        }
-        timestamps()
-        colorizeOutput()
-        preBuildCleanup()
-    }
-
-    triggers {
-        cron("H 22 * * *")
-    }
-
-    publishers {
-        archiveJunit("**/target/*-reports/TEST-*.xml")
-        mailer('mbiarnes@redhat.com', false, false)
-        wsCleanup()
-    }
-
-    configure { project ->
-        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
-            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
-                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
-                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
-                username 'jenkins'
-            }
-        }
-    }
-
-    steps {
-        environmentVariables {
-            envs(MAVEN_OPTS : "-Xms2g -Xmx3g")
-        }
-        shell(windowsTests)
-    }
-
-
-}
 // *****************************************************************************************************
 // definition of kieDockerCi  script
 
