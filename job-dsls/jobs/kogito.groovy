@@ -318,8 +318,10 @@ def kogitoCloudS2i='''#!/bin/bash -e
 git clone https://github.com/$ghOrgUnit/kogito-cloud.git -b $mainBranch 
 # build the project
 cd kogito-cloud/s2i
+source ~/virtenvs/cekit/bin/activate
 make build
-make test'''
+make test
+deactivate'''
 
 
 job("${folderPath}/kogito-cloud-s2i-images-${mainBranch}") {
