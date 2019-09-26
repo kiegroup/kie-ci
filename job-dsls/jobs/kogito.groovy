@@ -319,6 +319,8 @@ git clone https://github.com/$ghOrgUnit/kogito-cloud.git -b $mainBranch
 # build the project
 cd kogito-cloud/s2i
 source ~/virtenvs/cekit/bin/activate
+## Login on registry.redhat.io
+docker login -u ${OSE_USER} -p ${OSE_PASSWORD} registry.redhat.io
 make build
 make test
 deactivate'''
