@@ -245,6 +245,7 @@ for (repoConfig in REPO_CONFIGS) {
                     mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                     goals(mavenGoals)
                     properties(get("mvnProps"))
+                    providedSettings("settings-local-maven-repo-nexus")
             }
 
             if (repo in SONARCLOUD_ENABLED_REPOSITORIES) { // additional maven build step to report results to SonarCloud
