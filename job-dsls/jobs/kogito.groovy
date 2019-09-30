@@ -314,13 +314,11 @@ job("${folderPath}/kogito-cloud-${mainBranch}") {
 // definition of kogito-cloud-s2i-images script
 def kogitoCloudS2i='''#!/bin/bash -e
 
-# clone the kogito-cloud repository
-git clone https://github.com/$ghOrgUnit/kogito-cloud.git -b $mainBranch 
 # build the project
 cd kogito-cloud/s2i
 source ~/virtenvs/cekit/bin/activate
 ## Login on registry.redhat.io
-docker login -u ${OSE_USER} -p ${OSE_PASSWORD} registry.redhat.io
+docker login --username "${OSE_USER}" --password "${OSE_PASSWORD}" registry.redhat.io
 make build
 make test
 deactivate'''
@@ -357,9 +355,31 @@ job("${folderPath}/kogito-cloud-s2i-images-${mainBranch}") {
         }
     }
 
+    multiscm {
+        // Adds a Git SCM source.
+        git {
+            // Specify the branches to examine for changes and to build.
+            branch('$mainBranch')
+            // Adds a remote.
+            remote {
+                // Sets a remote URL for a GitHub repository.
+                url('https://github.com/$ghOrgUnit/kogito-cloud.git')
+            }
+            extensions {
+                relativeTargetDirectory('kogito-cloud')
+            }
+        }
+    }
+
+    wrappers {
+        credentialsBinding {
+            usernamePassword('OSE_USER', 'OSE_PASSWORD', 'rhba-ose-user')
+        }
+    }
+
     steps {
         environmentVariables {
-            envs(MAVEN_MIRROR_URL : '${LOCAL_NEXUS_IP}/nexus/content/groups/public')
+            envs(MAVEN_MIRROR_URL : 'http://${LOCAL_NEXUS_IP}:8081/nexus/content/groups/public')
         }
         shell(kogitoCloudS2i)
     }
