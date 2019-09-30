@@ -171,6 +171,7 @@ for (repoConfig in REPO_CONFIGS) {
                         mavenHome("/opt/tools/apache-maven-${Constants.MAVEN_VERSION}")
                         delegate.mavenOpts("-Xmx3g")
                         mavenArgs(get("downstreamMvnGoals") + " " + get("downstreamMvnProps").collect { k, v -> "-D$k=$v" }.join(" "))
+                        providedSettings("settings-local-maven-repo-nexus")
                     }
                 }
             }
