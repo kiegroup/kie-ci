@@ -140,6 +140,13 @@ for (repoConfig in REPO_CONFIGS) {
                 elastic(180, 3, get("timeoutMins"))
             }
 
+            configFiles {
+                mavenSettings("settings-local-maven-repo-nexus"){
+                    variable("SETTINGS_XML_FILE")
+                    targetLocation("jenkins-settings.xml")
+                }
+            }
+
             timestamps()
             colorizeOutput()
         }
@@ -156,8 +163,7 @@ for (repoConfig in REPO_CONFIGS) {
                 project / 'builders' << 'hudson.tasks.Maven' {
                     mavenName("kie-maven-${Constants.MAVEN_VERSION}")
                     jvmOptions("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
-                    targets("-e -fae -nsu -B -T1C clean install -Dfull -DskipTests")
-                    providedSettings("settings-local-maven-repo-nexus")
+                    targets("-e -fae -nsu -B -T1C clean install -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Dfull -DskipTests")
                 }
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
                     mavenBuildConfig {
