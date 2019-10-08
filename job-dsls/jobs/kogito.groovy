@@ -45,7 +45,12 @@ pipeline {
            steps {
                build job: "kogito-cloud-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
            }
-       }       
+       } 
+       stage('kogito-cloud-s2i-images') {
+           steps {
+               build job: "kogito-cloud-s2i-images-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
+           }
+       }         
        stage('kogito-examples') {
            steps {
                build job: "kogito-examples-${mainBranch}", parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
@@ -301,6 +306,83 @@ job("${folderPath}/kogito-cloud-${mainBranch}") {
         shell(kogitoCloud)
     }
 
+}
+
+
+// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys kogito-cloud-s2i-images ++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// definition of kogito-cloud-s2i-images script
+def kogitoCloudS2i='''#!/bin/bash -e
+
+# build the project
+cd kogito-cloud/s2i
+source ~/virtenvs/cekit/bin/activate
+## Login on registry.redhat.io
+docker login --username "${OSE_USER}" --password "${OSE_PASSWORD}" registry.redhat.io
+make build
+make test
+deactivate'''
+
+
+job("${folderPath}/kogito-cloud-s2i-images-${mainBranch}") {
+    description("build project kogito-cloud-s2i")
+    parameters {
+        stringParam("mainBranch", "${mainBranch}", "Branch to clone. This will be usually set automatically by the parent trigger job. ")
+        stringParam("ghOrgUnit", "${ghOrgUnit}", "Name of organization. This will be usually set automatically by the parent trigger job. ")
+    }
+
+    label('osbs-builder')
+
+    logRotator {
+        numToKeep(10)
+    }
+
+    publishers {
+        mailer('mbiarnes@redhat.com', false, false)
+        mailer('mswiders@redhat.com', false, false)
+        mailer('fspolti@redhat.com', false, false)
+        mailer('zanini@redhat.com', false, false)
+        wsCleanup()
+    }
+
+    configure { project ->
+        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
+            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
+                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
+                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
+                username 'jenkins'
+            }
+        }
+    }
+
+    multiscm {
+        // Adds a Git SCM source.
+        git {
+            // Specify the branches to examine for changes and to build.
+            branch('$mainBranch')
+            // Adds a remote.
+            remote {
+                // Sets a remote URL for a GitHub repository.
+                url('https://github.com/$ghOrgUnit/kogito-cloud.git')
+            }
+            extensions {
+                relativeTargetDirectory('kogito-cloud')
+            }
+        }
+    }
+
+    wrappers {
+        credentialsBinding {
+            usernamePassword('OSE_USER', 'OSE_PASSWORD', 'rhba-ose-user')
+        }
+    }
+
+    steps {
+        environmentVariables {
+            envs(MAVEN_MIRROR_URL : 'http://${LOCAL_NEXUS_IP}:8081/nexus/content/groups/public')
+        }
+        shell(kogitoCloudS2i)
+    }
 }
 
 // ++++++++++++++++++++++++++++++++++++++++++ Build and deploys kogito-examples ++++++++++++++++++++++++++++++++++++++++++++++++++

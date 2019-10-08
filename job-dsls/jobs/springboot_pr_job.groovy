@@ -10,7 +10,7 @@ def final CONFIG = [
         timeoutMins            : 120,
         ghAuthTokenId          : "kie-ci2-token",
         label                  : "kie-rhel7 && kie-mem8g",
-        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
+        upstreamMvnArgs        : "-B -e -T1C -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -DskipTests -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-B -e -nsu -fae clean install -Pspringboot",
         ITTestsParent          : "kie-server-parent/kie-server-tests",
         skippedITTestsModules  : ["kie-server-integ-tests-case-id-generator",
@@ -118,6 +118,12 @@ job(jobName) {
         }
         timestamps()
         colorizeOutput()
+        configFiles {
+            mavenSettings("settings-local-maven-repo-nexus"){
+                variable("SETTINGS_XML_FILE")
+                targetLocation("jenkins-settings.xml")
+            }
+        }
     }
 
     steps {

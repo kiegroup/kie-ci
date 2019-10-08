@@ -96,28 +96,6 @@
     - settings.xml
     - settings-consume-staging-repos.xml
 
-- name: Ensure local Maven repo directory exists
-  file:
-    path: /home/jenkins/.m2/repository
-    state: directory
-    owner: jenkins
-    group: jenkins
-
-- name: Download Maven repo cache
-  get_url:
-    url: https://kie-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/maven-repo-cache-master/lastSuccessfulBuild/artifact/maven-repo-cache.tar.gz
-    dest: /tmp/downloads/maven-repo-cache.tar.gz
-    validate_certs: no
-    owner: jenkins
-    group: jenkins
-    follow: yes
-
-- name: Extract Maven repo cache
-  unarchive:
-    src: /tmp/downloads/maven-repo-cache.tar.gz
-    dest: /home/jenkins/.m2/repository
-    copy: no
-
 ### Groovy ###
 
 - name: Download Groovy 2.x archive

@@ -9,7 +9,7 @@ def final DEFAULTS = [
         timeoutMins            : 90,
         ghAuthTokenId          : "kie-ci2-token",
         label                  : "kie-rhel7 && kie-mem8g",
-        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
+        upstreamMvnArgs        : "-B -e -T1C -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE-DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-B -e -nsu -fae -Pwildfly clean install",
         mvnProps               : [
                 "full"                     : "true",
@@ -65,7 +65,7 @@ def final REPO_CONFIGS = [
                 label: "kie-rhel7 && kie-mem4g"
         ],
         "droolsjbpm-integration"    : [
-                timeoutMins: 120,
+                timeoutMins: 180,
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "**/target/kie-server-*ee7.war",
                         "**/target/kie-server-*webc.war"
@@ -120,7 +120,7 @@ def final REPO_CONFIGS = [
 
 ]
 
-def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools", "appformer", "jbpm", " drools-wb", "kie-soup", "droolsjbpm-integration"]
+def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools", "appformer", "jbpm", " drools-wb", "kie-soup", "droolsjbpm-integration", "kie-wb-common"]
 
 for (repoConfig in REPO_CONFIGS) {
     Closure<Object> get = { String key -> repoConfig.value[key] ?: DEFAULTS[key] }
@@ -217,6 +217,13 @@ for (repoConfig in REPO_CONFIGS) {
             timestamps()
             colorizeOutput()
 
+            configFiles {
+                mavenSettings("settings-local-maven-repo-nexus"){
+                    variable("SETTINGS_XML_FILE")
+                    targetLocation("jenkins-settings.xml")
+                }
+            }
+            
             if (repo in SONARCLOUD_ENABLED_REPOSITORIES) {
                 credentialsBinding { // Injects SONARCLOUD_TOKEN credentials into an environment variable.
                     string("SONARCLOUD_TOKEN", "SONARCLOUD_TOKEN")
@@ -245,6 +252,7 @@ for (repoConfig in REPO_CONFIGS) {
                     mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                     goals(mavenGoals)
                     properties(get("mvnProps"))
+                    providedSettings("settings-local-maven-repo-nexus")
             }
 
             if (repo in SONARCLOUD_ENABLED_REPOSITORIES) { // additional maven build step to report results to SonarCloud
@@ -280,6 +288,34 @@ for (repoConfig in REPO_CONFIGS) {
                     }
                 }
             }
+
+            extendedEmail {
+                recipientList('$ghprbActualCommitAuthorEmail')
+                defaultSubject('$DEFAULT_SUBJECT')
+                defaultContent('$DEFAULT_CONTENT')
+                contentType('default')
+                triggers {
+                    failure{
+                        subject('PR build FAILED: $JOB_BASE_NAME #$ghprbPullId')
+
+                        content('$ghprbPullTitle \nPlease go to $BUILD_URL \n(IMPORTANT: you need have access to Red Hat VPN to access this link) \n\n${BUILD_LOG_REGEX, regex="(?i)\\\\b(error|exception|fatal|fail(ed|ure)|un(defined|resolved))\\\\b", linesBefore=500, linesAfter=250} \n\n${FAILED_TESTS}')
+
+                        sendTo {
+                            recipientList()
+                        }
+                    }
+                    unstable {
+                        subject('PR build UNSTABLE: $JOB_BASE_NAME #$ghprbPullId')
+
+                        content('$ghprbPullTitle \nPlease go to $BUILD_URL \n(IMPORTANT: you need have access to Red Hat VPN to access this link) \n\n${BUILD_LOG_REGEX, regex="(?i)\\\\b(error|exception|fatal|fail(ed|ure)|un(defined|resolved))\\\\b", linesBefore=500, linesAfter=250} \n\n${FAILED_TESTS}')
+
+                        sendTo {
+                            recipientList()
+                        }
+                    }
+                }
+            }
+
             wsCleanup()
             configure { project ->
                 project / 'publishers' << 'org.jenkinsci.plugins.emailext__template.ExtendedEmailTemplatePublisher' {
