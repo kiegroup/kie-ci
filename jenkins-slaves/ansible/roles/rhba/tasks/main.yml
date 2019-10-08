@@ -62,7 +62,7 @@
   with_items:
   - "{{ maven_versions }}"
 
-  ### Prepare Maven repositories ###
+### Prepare Maven repositories ###
 
 - name: Create 70 repository
   file:
@@ -71,4 +71,32 @@
     recurse: yes
     owner: jenkins
     group: jenkins
+
+### Download and Generate PiG/PFG ###
+
+- name: Create tools directory for PiG
+  file:
+    path: /opt/tools/pig
+    state: directory
+    recurse: yes
+    owner: root
+    group: root
+
+- name: Git SSL verify to False
+  command: "git config --global http.sslVerify false"
+
+- name: Clone Product Files Generator
+  command: "git clone https://gitlab.cee.redhat.com/middleware/product-files-generator.git /opt/tools/pig/product-files-generator"
+
+- name: Package Product Files Generator
+  command: "/qa/tools/opt/maven-3.6.0-prod/bin/mvn -f /opt/tools/pig/product-files-generator/pom.xml clean install -DskipTests=true -Dmaven.repo.local=/m2/70"
+  environment:
+    JAVA_HOME: /opt/tools/jdk1.8
+
+- name: Create Product Files Generator JAR symlinks
+  file:
+    src: /opt/tools/pig/product-files-generator/core/target/product-files-generator.jar
+    dest: /opt/tools/pig/product-files-generator.jar
+    state: link
+    mode: 0644
 ...
