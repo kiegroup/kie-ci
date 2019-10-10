@@ -58,6 +58,6 @@ job(jobName) {
     jdk("kie-jdk1.8")
 
     steps {
-        shell("sh java -DskipBranchCheck -jar core/target/product-files-generator.jar -c ${repoFolder}\/\${buildConfiguration} -v scmRevision=\${scmRevision} \${additionalParameters}")
+        shell("sh java -DskipBranchCheck -jar core/target/product-files-generator.jar -c ${repoFolder}/\${buildConfiguration} -v scmRevision=\${scmRevision} \${additionalParameters}")
     }
 }
