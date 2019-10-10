@@ -7,14 +7,14 @@ def final DEFAULTS = [
         repoFolder             : "/home/jenkins/git-repos/build-configuration.git",
         productFileGenerator   : " /opt/tools/pig/product-files-generator.jar"        
 ]
-
+Closure<Object> get = { String key -> DEFAULTS[key] }
 String repoFolder = get("repoFolder")
 
 // Creation of folders where jobs are stored
 folder(Constants.DEPLOY_FOLDER)
 
 // jobs for master branch don't use the branch in the name
-String jobName = "pigExecution-" + repoBranch
+String jobName = "pigExecution"
 
 job(jobName) {
 
