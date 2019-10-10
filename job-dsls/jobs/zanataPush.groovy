@@ -24,6 +24,8 @@ sh \$WORKSPACE/scripts/droolsjbpm-build-bootstrap/script/zanata/zanata-pushModul
 
 job("${folderPath}/zanataPushModules-${zanataVersion}") {
 
+    disabled ()
+
     description("This job: <br> pushes the i18n files to https://vendors.zanata.redhat.com<br>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
     parameters {
