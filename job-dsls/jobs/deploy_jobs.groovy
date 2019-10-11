@@ -242,7 +242,7 @@ for (repoConfig in REPO_CONFIGS) {
             colorizeOutput()
             
             configFiles {
-                mavenSettings("settings-local-maven-repo-nexus"){
+                mavenSettings("7774c60d-cab3-425a-9c3b-26653e5feba1"){
                     variable("SETTINGS_XML_FILE")
                     targetLocation("jenkins-settings.xml")
                 }
