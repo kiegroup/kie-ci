@@ -8,7 +8,7 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
-        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
+        upstreamMvnArgs        : "-B -e -T1C -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE  -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-e -nsu -fae -B -Pwildfly clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
         mvnProps: [
                 "full"                     : "true",
@@ -232,6 +232,14 @@ for (repoConfig in REPO_CONFIGS) {
             }
             timestamps()
             colorizeOutput()
+
+            configFiles {
+                mavenSettings("settings-local-maven-repo-nexus"){
+                    variable("SETTINGS_XML_FILE")
+                    targetLocation("jenkins-settings.xml")
+                }
+            }
+
         }
         steps {
             configure { project ->

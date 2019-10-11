@@ -10,8 +10,8 @@ def final DEFAULTS = [
         timeoutMins            : 600,
         label                  : "kie-rhel7 && kie-mem24g",
         ghAuthTokenId          : "kie-ci9-token",
-        upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
-        downstreamMvnGoals     : "-B -e -nsu -fae -Pbusiness-central,wildfly,sourcemaps,no-showcase clean install",
+        upstreamMvnArgs        : "-B -e -T1C -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
+        downstreamMvnGoals     : "-B -e -nsu -fae -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Pbusiness-central,wildfly,sourcemaps,no-showcase clean install",
         downstreamMvnProps     : [
                 "full"                               : "true",
                 "container"                          : "wildfly",
