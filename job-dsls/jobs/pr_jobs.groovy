@@ -260,6 +260,7 @@ for (repoConfig in REPO_CONFIGS) {
                     mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                     mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                     goals("-B -e -nsu -fae generate-resources -Psonarcloud-analysis")
+                    providedSettings("settings-local-maven-repo-nexus")
                 }
             }
         }
