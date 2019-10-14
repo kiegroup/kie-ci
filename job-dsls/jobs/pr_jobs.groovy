@@ -215,6 +215,12 @@ for (repoConfig in REPO_CONFIGS) {
             timestamps()
             colorizeOutput()
 
+            configFiles {
+                mavenSettings("settings-local-maven-repo-nexus"){
+                    variable("SETTINGS_XML_FILE")
+                    targetLocation("jenkins-settings.xml")
+                }
+            }
         }
 
         steps {
