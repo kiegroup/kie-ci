@@ -61,7 +61,7 @@ pipeline {
         }
         stage('Clone all other reps') {
             steps {
-                sh "sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh"
+                sh "sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch"
             }
         }
         stage('Update versions') {
@@ -203,7 +203,7 @@ job ("${folderPath}/DailyBuild-trigger-${baseBranch}"){
 
     publishers {
         downstream ("DailyBuild-pipeline-${baseBranch}", threshHoldName = 'SUCCESS')
-        downstream ("../DailyBuild-Prod/DailyBuild-prod-pipeline-${baseBranch}", threshHoldName = 'SUCCESS')
+        downstream ("../DailyBuild-prod/DailyBuild-prod-pipeline-${baseBranch}", threshHoldName = 'SUCCESS')
         wsCleanup()
     }
 }
@@ -223,7 +223,7 @@ mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
 '''
 
-matrixJob("${folderPath}/jbpmTestCoverageMatrix-kieAllBuild-${baseBranch}") {
+matrixJob("${folderPath}/jbpmTestCoverageMatrix-${baseBranch}") {
     description("This job: <br> - Test coverage Matrix for jbpm <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
