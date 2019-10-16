@@ -53,7 +53,7 @@ pipeline {
         }
         stage('Clone all other reps') {
             steps {
-                sh "sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh"
+                sh "sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch"
             }
         }
         stage('Update versions') {
