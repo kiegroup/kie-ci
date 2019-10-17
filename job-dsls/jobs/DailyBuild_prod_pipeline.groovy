@@ -83,7 +83,7 @@ pipeline {
             steps {
                 emailext body: 'prod daily build #${BUILD_NUMBER} of ${baseBranch}:' + "${currentBuild.currentResult}" +  '\\n' +
                     'Please look here: ${BUILD_URL} \\n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'daily build of ${baseBranch} ', to: 'mbiarnes@redhat.com, almope@redhat.com'
+                    '${BUILD_LOG, maxLines=750}', subject: 'prod daily build of ${baseBranch} ', to: 'bsig@redhat.com'
             }    
         }        
         stage('Publish JUnit test results reports') {
