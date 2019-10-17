@@ -87,6 +87,11 @@ pipeline {
                 }
             }
         }
+        stage('Publish JUnit test results reports') {
+            steps {
+              junit '**/target/*-reports/TEST-*.xml'    
+            }
+        }        
         stage ('Send mail') {
             steps {
                 emailext body: 'daily build #${BUILD_NUMBER} of ${baseBranch}:' + "${currentBuild.currentResult}" +  '\\n' +
@@ -103,16 +108,6 @@ pipeline {
                             'curl --silent --upload-file kiegroup.zip -u $kieUnpack -v http://\${LOCAL_NEXUS_IP}:8081/nexus/service/local/repositories/kieAllBuild-$baseBranch/content-compressed\\n' +
                             'cd ..'
                 }
-            }
-        }
-        stage('Publish JUnit test results reports') {
-            steps {
-              junit '**/target/*-reports/TEST-*.xml'    
-            }
-        }
-        stage('Delete workspace when build is done') {
-            steps {
-                cleanWs()
             }
         }
         stage('Additional tests') {
@@ -135,7 +130,12 @@ pipeline {
                     }
                 )    
             } 
-        }                         
+        }
+        stage('Delete workspace when build is done') {
+            steps {
+                cleanWs()
+            }
+        }                                 
     }
 }
 '''

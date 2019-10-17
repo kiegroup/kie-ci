@@ -1,6 +1,5 @@
 import org.kie.jenkins.jobdsl.Constants
 
-def kieProdVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def kieVersion=Constants.KIE_PREFIX
@@ -79,6 +78,11 @@ pipeline {
                 }
             }
         }
+        stage('Publish JUnit test results reports') {
+            steps {
+              junit '**/target/*-reports/TEST-*.xml'    
+            }
+        }        
         stage ('Send mail') {
             steps {
                 emailext body: 'prod daily build #${BUILD_NUMBER} of ${baseBranch}:' + "${currentBuild.currentResult}" +  '\\n' +
@@ -86,11 +90,6 @@ pipeline {
                     '${BUILD_LOG, maxLines=750}', subject: 'prod daily build of ${baseBranch} ', to: 'bsig@redhat.com'
             }    
         }        
-        stage('Publish JUnit test results reports') {
-            steps {
-              junit '**/target/*-reports/TEST-*.xml'    
-            }
-        }
         stage('Delete workspace when build is done') {
             steps {
                 cleanWs()
