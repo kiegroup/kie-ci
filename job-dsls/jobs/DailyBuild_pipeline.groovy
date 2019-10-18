@@ -94,9 +94,9 @@ pipeline {
         }        
         stage ('Send mail') {
             steps {
-                emailext body: 'daily build #${BUILD_NUMBER} of ${baseBranch}:' + "${currentBuild.currentResult}" +  '\\n' +
+                emailext body: 'daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
                     'Please look here: ${BUILD_URL} \\n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'daily build of ${baseBranch} ', to: 'bsig@redhat.com'
+                    '${BUILD_LOG, maxLines=750}', subject: 'daily build of  #${BUILD_NUMBER} of ${baseBranch}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com'
             }    
         }        
         stage('Unpack zip of artifacts to QA Nexus') {
