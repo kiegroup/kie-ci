@@ -21,6 +21,7 @@
   roles:
     - common
     - kie
+    - kogito
     - rhba
     - rhba-osbs
 

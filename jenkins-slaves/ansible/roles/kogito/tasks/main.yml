@@ -1,0 +1,11 @@
+---
+### Install NodeJS package ###
+
+- name: Install NodeJS package
+  yum:
+    pkg: 'nodejs'
+    state: latest
+
+- name: Install Yarn
+  shell: npm install -g yarn --registry=${NPM_REGISTRY_URL}
+...
