@@ -78,6 +78,7 @@ dependencies {
     testPlugins 'org.jenkins-ci.plugins:token-macro:2.1'
     testPlugins 'org.jenkins-ci.plugins:ws-cleanup:0.32'
     testPlugins 'org.jenkins-ci.plugins:xvnc:1.24'
+    testPlugins 'org.jenkins-ci.plugins:hidden-parameter:0.0.4'
     testPlugins 'org.jvnet.hudson.plugins:checkstyle:3.48'
     testPlugins 'org.jvnet.hudson.plugins:findbugs:4.70'
     testPlugins 'org.jvnet.hudson.plugins:ircbot:2.27'
