@@ -137,6 +137,16 @@ pipeline {
             }
         }                                 
     }
+    post {
+        failure{
+            script {
+                currentBuild.result = 'FAILURE\\\'
+            }            
+            emailext body: 'status of daily build #${BUILD_NUMBER} (${baseBranch} branch) was: ' + "${currentBuild.currentResult}" +  '\\\\n' +
+                    'Please look here: ${BUILD_URL} \\\\n' +
+                    '${BUILD_LOG, maxLines=750}', subject: 'daily build #${BUILD_NUMBER} of ${baseBranch}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com\\\'
+        }
+    }    
 }
 '''
 
