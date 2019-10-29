@@ -202,12 +202,12 @@ pipeline {
             }
         }
         stage('Create jbpm installers') {
-            step {
+            steps {
                 sh 'sh droolsjbpm-build-bootstrap/script/release/09_createjBPM_installers.sh $kieVersion'
             }
         }        
         stage('Push binaries to filemgmgt.jboss.org') {
-            step {
+            steps {
                 sshagent(['jenkins-ci-filemgmt']) {
                     sh 'sh droolsjbpm-build-bootstrap/script/release/10_uploadBinariesToFilemgmt.sh $kieVersion'
                 }    
