@@ -46,18 +46,7 @@ pipeline {
             steps {
                 sh "sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch"
             }
-        }
-        stage ('Remove npm and yarn files'){
-            steps {
-                sh "sh droolsjbpm-build-bootstrap/script/release/kie-deleteNpmLockFiles.sh"
-            }
-        }
-        stage ('Add and commit removed npm/yarn files') {
-            steps {
-                echo 'commitMsg: $commitMsg_1'
-                sh 'sh droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$commitMsg_1" '
-            }
-        }     
+        }    
         stage('Update versions') {
             steps {
                 echo 'kieVersion: $kieVersion'
