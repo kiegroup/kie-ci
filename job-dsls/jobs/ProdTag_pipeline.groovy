@@ -131,7 +131,7 @@ pipeline {
                 'Component versions: \\n' +
                 'kieVersion:' + "${kieVersion}" + '\\n' +
                 '\\n' +
-                'Test Results: https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/KIE/job/' + "${baseBranch}" + '/job/release/job/buildAndDeployLocally-kieReleases-' + "${baseBranch}" + '/' + "${BUILD_NUMBER}" + '/testReport/',
+                'Test Results: https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/KIE/job/' + "${baseBranch}" + '/job/ProdTag/job/prodTag-pipeline-' + "${baseBranch}" + '/' + "${BUILD_NUMBER}" + '/testReport/',
                 subject: '${TPB} tag available ', to: 'mbiarnes@redhat.com'
             }    
         }                                                     
