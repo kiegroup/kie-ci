@@ -25,7 +25,7 @@ class Constants {
     static final String PULL_REQUEST_FOLDER = "pullrequest"
     static final String DEPLOY_FOLDER = "deployedRep"
     static final String ZANATA_VERSION = "7.27.0"
-    static final String KIE_PREFIX = "7.29.0"
+    static final String KIE_PREFIX = "7.30.0"
     static final String NUMBER_OF_KIE_USERS = "10"
     static final String SONARCLOUD_FOLDER = "sonarcloud"
     static final String REPORT_BRANCH = "7.x"
