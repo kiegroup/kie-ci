@@ -167,28 +167,25 @@ pipeline {
                     'The artifacts are available here \\n' +
                     ' \\n' +
                     'business-central artifacts: (wildfly14.war) \\n' +
-                    'https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
+                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
                     '\\n' +
                     'business-central-webapp: \\n' +
-                    'https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/' + "${kieVersion}" + '\\n'+
+                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/' + "${kieVersion}" + '\\n'+
                     '\\n' +
                     'business-monitoring-webapp: \\n' +
                     'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/' + "${kieVersion}" + '\\n'+
                     ' \\n' +
                     'Please download for sanity checks: \\n' +
-                    'jbpm-server-distribution.zip: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/' + "${kieVersion}" + '\\n'+
+                    'jbpm-server-distribution.zip: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/' + "${kieVersion}" + '\\n'+
                     ' \\n' +                    
                     ' \\n' +
                     'Please download the needed binaries, fill in your assigned test scenarios and check the failing tests \\n' +
                     'sanity checks: https://docs.google.com/spreadsheets/d/1jPtRilvcOji__qN0QmVoXw6KSi4Nkq8Nz_coKIVfX6A/edit#gid=167259416 \\n' +
                     ' \\n' +
-                    'Please download for sanity checks: \\n' +
-                    'jbpm-server-distribution.zip: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/' + "${kieVersion}" + '\\n'+
-                    ' \\n' +
                     'KIE version: ' + "${kieVersion}" + '\\n' +
                     ' \\n' +
                     ' \\n' +                    
-                    '${BUILD_LOG, maxLines=750}', subject: 'community ${kieVersion} status and artefacts for sanity checks', to: 'mbiarnes@redhat.com'
+                    '${BUILD_LOG, maxLines=750}', subject: 'community ${kieVersion} status and artefacts for sanity checks', to: 'bsig@redhat.com'
             }    
         }
         stage('Approval (Point of NO return)') {
@@ -291,6 +288,11 @@ matrixJob("${folderPath}/communityRelease-jbpmTestCoverageMatrix-${baseBranch}")
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
         stringParam("baseBranch", "${baseBranch}", "please edit the branch of the KIE release <br> Will be supplied by the parent job. <br> Normally the baseBranch will be supplied by parent job <br> ******************************************************** <br> ")
+        wHideParameterDefinition {
+            name('target')
+            defaultValue("community")
+            description("community")
+        }
     }
 
     axes {
@@ -362,7 +364,11 @@ matrixJob("${folderPath}/communityRelease-kieWbTestsMatrix-${baseBranch}") {
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
         stringParam("baseBranch", "${baseBranch}", "please edit the branch of the KIE release <br> Will be supplied by the parent job. <br> Normally the baseBranch will be supplied by parent job <br> ******************************************************** <br> ")
-
+        wHideParameterDefinition {
+            name('target')
+            defaultValue("community")
+            description("community")
+        }
     }
 
     axes {
@@ -460,7 +466,11 @@ matrixJob("${folderPath}/communityRelease-kieServerMatrix-${baseBranch}") {
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
         stringParam("baseBranch", "${baseBranch}", "please edit the branch of the KIE release <br> Will be supplied by the parent job. <br> Normally the baseBranch will be supplied by parent job <br> ******************************************************** <br> ")
-
+        wHideParameterDefinition {
+            name('target')
+            defaultValue("community")
+            description("community")
+        }
     }
 
     axes {
