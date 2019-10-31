@@ -87,7 +87,7 @@ pipeline {
             steps {
                 emailext body: 'prod daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
                     'Please look here: ${BUILD_URL} \\n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'prod daily build #${BUILD_NUMBER} of ${baseBranch}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com'
+                    '${BUILD_LOG, maxLines=750}', subject: 'prod-daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com'
             }    
         }        
         stage('Delete workspace when build is done') {
@@ -103,12 +103,11 @@ pipeline {
             }            
             emailext body: 'status of prod daily build #${BUILD_NUMBER} (${baseBranch} branch) was: ' + "${currentBuild.currentResult}" +  '\\n' +
                     'Please look here: ${BUILD_URL} \\n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'prod daily build #${BUILD_NUMBER} of ${baseBranch}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com\'
+                    '${BUILD_LOG, maxLines=750}', subject: 'prod-daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com\'
         }
     }    
 }
 '''
-
 
 pipelineJob("${folderPath}/DailyBuild-prod-pipeline-${baseBranch}") {
 
@@ -132,12 +131,5 @@ pipelineJob("${folderPath}/DailyBuild-prod-pipeline-${baseBranch}") {
             sandbox()
         }
     }
-
-    publishers {
-        buildDescription ("KIE version ([^\\s]*)")
-        mailer('mbiarnes@redhat.com', false, false)
-    }
-
 }
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

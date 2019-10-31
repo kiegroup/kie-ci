@@ -185,7 +185,7 @@ pipeline {
                     'KIE version: ' + "${kieVersion}" + '\\n' +
                     ' \\n' +
                     ' \\n' +                    
-                    '${BUILD_LOG, maxLines=750}', subject: 'community ${kieVersion} status and artefacts for sanity checks', to: 'bsig@redhat.com'
+                    '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} status and artefacts for sanity checks', to: 'bsig@redhat.com'
             }    
         }
         stage('Approval (Point of NO return)') {
@@ -225,7 +225,7 @@ pipeline {
                 'jbpm-server-distribution (single zip): https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
                  '\\n' +
                  'Component version:\\n' +
-                 'kie = $kieVersion', subject: 'community $kieVersion was released', to: 'bsig@redhat.com'
+                 'kie = $kieVersion', subject: 'community-release-${baseBranch} $kieVersion was released', to: 'bsig@redhat.com'
             }
         }                                                                        
     }
