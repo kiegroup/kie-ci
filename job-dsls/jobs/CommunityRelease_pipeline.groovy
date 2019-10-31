@@ -274,10 +274,8 @@ pipelineJob("${folderPath}/communityRelease-pipeline-${baseBranch}") {
 
 // definition of jbpmTestCoverageMatrix test
 def jbpmTestCoverage='''#!/bin/bash -e
-STAGING_REP=kie-internal-group
-echo "KIE version: $kieVersion"
 # wget the tar.gz sources
-wget -q http://\${LOCAL_NEXUS_IP}:8081/nexus/content/repositories/kieAllBuild-$baseBranch/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q https://repository.jboss.org/nexus/content/groups/kie-group/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
@@ -312,7 +310,7 @@ matrixJob("${folderPath}/communityRelease-jbpmTestCoverageMatrix-${baseBranch}")
         colorizeOutput()
         preBuildCleanup()
         configFiles {
-            mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e"){
+            mavenSettings("3f317dd7-4d08-4ee4-b9bb-969c309e782c"){
                 variable("SETTINGS_XML_FILE")
                 targetLocation("jenkins-settings.xml")
             }
@@ -342,7 +340,7 @@ matrixJob("${folderPath}/communityRelease-jbpmTestCoverageMatrix-${baseBranch}")
             goals("clean verify -e -B -Dmaven.test.failure.ignore=true -Dintegration-tests")
             rootPOM("jbpm-test-coverage/pom.xml")
             mavenOpts("-Xmx3g")
-            providedSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e")
+            providedSettings("3f317dd7-4d08-4ee4-b9bb-969c309e782c")
         }
     }
 }
@@ -351,9 +349,8 @@ matrixJob("${folderPath}/communityRelease-jbpmTestCoverageMatrix-${baseBranch}")
 
 //  run additional test: kieWbTestsMatrix
 def kieWbTest='''#!/bin/bash -e
-echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q http://\${LOCAL_NEXUS_IP}:8081/nexus/content/repositories/kieAllBuild-$baseBranch/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz  -O sources.tar.gz
 tar xzf sources.tar.gz
 mv kie-wb-distributions-$kieVersion/* .
 rmdir kie-wb-distributions-$kieVersion'''
@@ -405,7 +402,7 @@ matrixJob("${folderPath}/communityRelease-kieWbTestsMatrix-${baseBranch}") {
         colorizeOutput()
         preBuildCleanup()
         configFiles {
-            mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e") {
+            mavenSettings("3f317dd7-4d08-4ee4-b9bb-969c309e782c") {
                 variable("SETTINGS_XML_FILE")
                 targetLocation("jenkins-settings.xml")
             }
@@ -442,7 +439,7 @@ matrixJob("${folderPath}/communityRelease-kieWbTestsMatrix-${baseBranch}") {
             properties("container.startstop.timeout.millis":"240000")
             properties("webdriver.firefox.bin":"/opt/tools/firefox-60esr/firefox-bin")
             mavenOpts("-Xms1024m -Xmx1536m")
-            providedSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e")
+            providedSettings("3f317dd7-4d08-4ee4-b9bb-969c309e782c")
         }
     }
 }
@@ -450,9 +447,8 @@ matrixJob("${folderPath}/communityRelease-kieWbTestsMatrix-${baseBranch}") {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  run additional test: kieServerMatrix
 def kieServerTest='''#!/bin/bash -e
-echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q http://\${LOCAL_NEXUS_IP}:8081/nexus/content/repositories/kieAllBuild-$baseBranch/org/drools/droolsjbpm-integration/$kieVersion/droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q https://repository.jboss.org/nexus/content/groups/kie-group/org/drools/droolsjbpm-integration/$kieVersion/droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv droolsjbpm-integration-$kieVersion/* .
 rmdir droolsjbpm-integration-$kieVersion'''
@@ -493,7 +489,7 @@ matrixJob("${folderPath}/communityRelease-kieServerMatrix-${baseBranch}") {
         colorizeOutput()
         preBuildCleanup()
         configFiles {
-            mavenSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e") {
+            mavenSettings("3f317dd7-4d08-4ee4-b9bb-969c309e782c") {
                 variable("SETTINGS_XML_FILE")
                 targetLocation("jenkins-settings.xml")
             }
@@ -528,7 +524,7 @@ matrixJob("${folderPath}/communityRelease-kieServerMatrix-${baseBranch}") {
             properties("container.startstop.timeout.millis":"240000")
             properties("eap7.download.url":EAP7_DOWNLOAD_URL)
             mavenOpts("-Xms1024m -Xmx1536m")
-            providedSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e")
+            providedSettings("3f317dd7-4d08-4ee4-b9bb-969c309e782c")
         }
     }
 }
