@@ -13,11 +13,11 @@ def commitMsg_1="Remove npm and yarn files "
 def commitMsg_2="Upgraded version to "
 
 // creation of folder
-folder("ProdTag")
+folder("prod-tag")
 
-def folderPath="ProdTag"
+def folderPath="prod-tag"
 
-def prodTag='''
+def productTag='''
 pipeline {
     agent {
         label 'kie-releases'
@@ -140,7 +140,7 @@ pipeline {
 '''
 
 
-pipelineJob("${folderPath}/prodTag-pipeline-${baseBranch}") {
+pipelineJob("${folderPath}/prod-tag-pipeline-${baseBranch}") {
 
     description('this is a pipeline job for a tag for productization of all reps')
 
@@ -185,8 +185,9 @@ pipelineJob("${folderPath}/prodTag-pipeline-${baseBranch}") {
 
     definition {
         cps {
-            script("${prodTag}")
+            script("${productTag}")
             sandbox()
         }
     }
+
 }

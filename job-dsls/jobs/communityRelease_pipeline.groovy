@@ -12,9 +12,9 @@ def mvnVersion="kie-maven-3.5.2"
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.2.0/jboss-eap-7.2.0.zip"
 
 // creation of folder
-folder("Release")
+folder("community-release")
 
-def folderPath="Release"
+def folderPath="community-release"
 
 def comRelease='''
 pipeline {
@@ -145,14 +145,14 @@ pipeline {
         stage('Additional tests') {
             steps {
                 parallel (
-                    "communityRelease-jbpmTestCoverageMatrix" : {
-                        build job: "communityRelease-jbpmTestCoverageMatrix-${baseBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
+                    "community-release-jbpmTestCoverageMatrix" : {
+                        build job: "community-release-${baseBranch}-jbpmTestCoverageMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
                     },
-                    "communityRelease-kieWbTestsMatrix" : {
-                            build job: "communityRelease-kieWbTestsMatrix-${baseBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
+                    "community-release-kieWbTestsMatrix" : {
+                            build job: "community-release-${baseBranch}-kieWbTestsMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
                      },
-                    "communityRelease-kieServerMatrix" : {
-                            build job: "communityRelease-kieServerMatrix-${baseBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
+                    "community-release-kieServerMatrix" : {
+                            build job: "community-release-${baseBranch}-kieServerMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
                     }
                 )    
             } 
@@ -233,7 +233,7 @@ pipeline {
 '''
 
 
-pipelineJob("${folderPath}/communityRelease-pipeline-${baseBranch}") {
+pipelineJob("${folderPath}/community-release-pipeline-${baseBranch}") {
 
     description('this is a pipeline job for a community release /tag of all reps')
 
@@ -281,7 +281,7 @@ mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
 '''
 
-matrixJob("${folderPath}/communityRelease-jbpmTestCoverageMatrix-${baseBranch}") {
+matrixJob("${folderPath}/community-release-${baseBranch}-jbpmTestCoverageMatrix") {
     description("This job: <br> - Test coverage Matrix for jbpm <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
@@ -355,7 +355,7 @@ tar xzf sources.tar.gz
 mv kie-wb-distributions-$kieVersion/* .
 rmdir kie-wb-distributions-$kieVersion'''
 
-matrixJob("${folderPath}/communityRelease-kieWbTestsMatrix-${baseBranch}") {
+matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
@@ -453,7 +453,7 @@ tar xzf sources.tar.gz
 mv droolsjbpm-integration-$kieVersion/* .
 rmdir droolsjbpm-integration-$kieVersion'''
 
-matrixJob("${folderPath}/communityRelease-kieServerMatrix-${baseBranch}") {
+matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     // Label which specifies which nodes this job can run on.

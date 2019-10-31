@@ -7,9 +7,9 @@ def m2Dir="\$HOME/.m2/repository"
 
 
 // creation of folder
-folder("DailyBuild-prod")
+folder("daily-build-prod")
 
-def folderPath="DailyBuild-prod"
+def folderPath="daily-build-prod"
 
 def dailyProdBuild='''
 pipeline {
@@ -109,7 +109,7 @@ pipeline {
 }
 '''
 
-pipelineJob("${folderPath}/DailyBuild-prod-pipeline-${baseBranch}") {
+pipelineJob("${folderPath}/daily-build-prod-pipeline-${baseBranch}") {
 
     description('this is a prod-pipeline job for the daily build of all reps')
 
@@ -132,4 +132,5 @@ pipelineJob("${folderPath}/DailyBuild-prod-pipeline-${baseBranch}") {
         }
     }
 }
+
 
