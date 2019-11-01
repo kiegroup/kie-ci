@@ -118,12 +118,14 @@ for (repoConfig in REPO_CONFIGS) {
                     mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                     goals(get('mvnGoals'))
                     properties(get("mvnProps"))
+                    providedSettings('771ff52a-a8b4-40e6-9b22-d54c7314aa1e')
             }
 
             maven {
                 mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                 mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                 goals("-B -e -nsu -fae generate-resources -Psonarcloud-analysis")
+                providedSettings('771ff52a-a8b4-40e6-9b22-d54c7314aa1e')
             }
         }
 
