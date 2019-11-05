@@ -106,7 +106,7 @@ pipeline {
             }        
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/04_pushReleaseBranches.sh $baseBranch'
+                    sh 'sh droolsjbpm-build-bootstrap/script/release/04_pushReleaseBranches.sh $releaseBranch'
                 }    
             }
         }
@@ -195,18 +195,18 @@ pipeline {
         }
         stage('Push community tag') {
             steps {
-                sh 'sh droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh $kieVersion'
+                sh 'sh droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
             }
         }
         stage('Create jbpm installers') {
             steps {
-                sh 'sh droolsjbpm-build-bootstrap/script/release/09_createjBPM_installers.sh $kieVersion'
+                sh 'sh droolsjbpm-build-bootstrap/script/release/09_createjBPM_installers.sh'
             }
         }        
         stage('Push binaries to filemgmgt.jboss.org') {
             steps {
                 sshagent(['jenkins-ci-filemgmt']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/10_uploadBinariesToFilemgmt.sh $kieVersion'
+                    sh 'sh droolsjbpm-build-bootstrap/script/release/10_uploadBinariesToFilemgmt.sh'
                 }    
             }
         }
