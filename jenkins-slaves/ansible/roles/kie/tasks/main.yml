@@ -153,49 +153,6 @@
     path: /home/jenkins/git-repos
     state: directory
 
-- name: Create local Git cache
-  shell: cd /home/jenkins/git-repos && git clone --bare https://github.com/{{ item }}
-  with_items:
-   - kiegroup/lienzo-core
-   - kiegroup/lienzo-tests
-   - errai/errai
-   - dashbuilder/dashbuilder
-   - kiegroup/kie-soup
-   - kiegroup/appformer
-   - kiegroup/droolsjbpm-build-bootstrap
-   - kiegroup/droolsjbpm-knowledge
-   - kiegroup/drools
-   - kiegroup/optaplanner
-   - kiegroup/optaweb-employee-rostering
-   - kiegroup/jbpm
-   - kiegroup/jbpm-work-items
-   - kiegroup/droolsjbpm-integration
-   - kiegroup/droolsjbpm-tools
-   - kiegroup/kie-uberfire-extensions
-   - kiegroup/guvnor
-   - kiegroup/kie-wb-playground
-   - kiegroup/kie-wb-common
-   - kiegroup/jbpm-form-modeler
-   - kiegroup/drools-wb
-   - kiegroup/optaplanner-wb
-   - kiegroup/jbpm-designer
-   - kiegroup/jbpm-wb
-   - kiegroup/dashboard-builder
-   - kiegroup/jbpm-dashboard
-   - kiegroup/kie-docs
-   - kiegroup/kie-wb-distributions
-   - kiegroup/droolsjbpm-build-distribution
-   - jboss-integration/kie-eap-modules
-
-- name: Owner of Git cache is Jenkins
-  file:
-    path: /home/jenkins/git-repos
-    state: directory
-    owner: jenkins
-    group: jenkins
-    mode: 0755
-    recurse: yes
-
 - name: Symlink jbpm-console-ng -> jbpm-wb
   file:
     path: /home/jenkins/git-repos/jbpm-console-ng.git
