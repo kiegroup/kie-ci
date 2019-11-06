@@ -145,5 +145,59 @@
   with_together:
     - "{{ firefox_long_versions }}"
     - "{{ firefox_short_versions }}"
-    
+### Git repositories ###
+
+- name: Create git-repos dir
+  file:
+    path: /home/jenkins/git-repos
+    state: directory
+
+- name: Create local Git cache
+  shell: cd /home/jenkins/git-repos && git clone --bare https://github.com/{{ item }}
+  with_items:
+   - kiegroup/lienzo-core
+   - kiegroup/lienzo-tests
+   - kiegroup/droolsjbpm-build-bootstrap
+   - kiegroup/kie-soup
+   - kiegroup/appformer
+   - kiegroup/droolsjbpm-knowledge
+   - kiegroup/drools
+   - kiegroup/optaplanner
+   - kiegroup/jbpm
+   - kiegroup/kie-jpmml-integration
+   - kiegroup/droolsjbpm-integration
+   - kiegroup/openshift-drools-hacep
+   - kiegroup/droolsjbpm-tools
+   - kiegroup/kie-uberfire-extensions
+   - kiegroup/kie-wb-playground
+   - kiegroup/kie-wb-common
+   - kiegroup/drools-wb
+   - kiegroup/optaplanner-wb
+   - kiegroup/jbpm-designer
+   - kiegroup/jbpm-wb
+   - kiegroup/dashboard-builder
+   - kiegroup/jbpm-dashboard
+   - kiegroup/kie-docs
+   - kiegroup/optaweb-employee-rostering
+   - kiegroup/optaweb-vehicle-routing
+   - kiegroup/kie-wb-distributions
+
+- name: Owner of Git cache is Jenkins
+  file:
+    path: /home/jenkins/git-repos
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: 0755
+    recurse: yes
+
+- name: Symlink jbpm-console-ng -> jbpm-wb
+  file:
+    path: /home/jenkins/git-repos/jbpm-console-ng.git
+    src: /home/jenkins/git-repos/jbpm-wb.git
+    state: link
+    owner: jenkins
+    group: jenkins
+    mode: 0755
+...
 ...
