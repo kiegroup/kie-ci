@@ -51,7 +51,19 @@ job("a-seed-job-${kieMainBranch}") {
         shell(seedJob)
 
         jobDsl {
-            targets("job-dsls/jobs/**/*.groovy")
+            targets("job-dsls/jobs/**/DailyBuild_pipeline.groovy" +
+                    "DailyBuild_prod_pipeline.groovy" +
+                    "ProdTag_pipeline.groovy" +
+                    "compile_downstream_build.groovy" +
+                    "deploy_jobs.groovy" +
+                    "downstream_pr_jobs.groovy" +
+                    "kie_build_helper_jenkins_plugin_pr_job.groovy" +
+                    "kie_docs_pr.groovy" +
+                    "kie_jenkinsScripts_PR.groovy" +
+                    "pr_jobs.groovy" +
+                    "seed_job.groovy" +
+                    "springboot_pr_job.groovy" +
+                    "turtleTests.groovy")
 
             useScriptText(false)
             sandbox(false)
