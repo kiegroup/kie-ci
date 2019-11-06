@@ -145,20 +145,5 @@
   with_together:
     - "{{ firefox_long_versions }}"
     - "{{ firefox_short_versions }}"
-
-### Git repositories ###
-
-- name: Create git-repos dir
-  file:
-    path: /home/jenkins/git-repos
-    state: directory
-
-- name: Symlink jbpm-console-ng -> jbpm-wb
-  file:
-    path: /home/jenkins/git-repos/jbpm-console-ng.git
-    src: /home/jenkins/git-repos/jbpm-wb.git
-    state: link
-    owner: jenkins
-    group: jenkins
-    mode: 0755
+    
 ...
