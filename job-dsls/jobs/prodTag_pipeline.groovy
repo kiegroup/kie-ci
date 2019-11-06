@@ -84,7 +84,7 @@ pipeline {
                     ' \\n' +
                     'Please look here: ${BUILD_URL} \\n' +
                     ' \\n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'prod-tag for ${TPB}', to: 'bxms-prod@redhat.com'
+                    '${BUILD_LOG, maxLines=750}', subject: 'prod-tag-${baseBranch} for ${TPB}', to: 'bxms-prod@redhat.com'
             }    
         }
         stage('Approval (Point of NO return)') {
@@ -132,7 +132,7 @@ pipeline {
                 'kieVersion:' + "${kieVersion}" + '\\n' +
                 '\\n' +
                 'Test Results: https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/KIE/job/' + "${baseBranch}" + '/job/ProdTag/job/prodTag-pipeline-' + "${baseBranch}" + '/' + "${BUILD_NUMBER}" + '/testReport/',
-                subject: 'prod-tag for ${TPB}', to: 'bsig@redhat.com, bxms-prod@redhat.com, bpms-pm-list@redhat.com'
+                subject: 'prod-tag-${baseBranch} for ${TPB}', to: 'bsig@redhat.com, bxms-prod@redhat.com, bpms-pm-list@redhat.com'
             }    
         }                                                     
     }
