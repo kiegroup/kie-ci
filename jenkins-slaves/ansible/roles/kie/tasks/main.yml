@@ -145,7 +145,6 @@
   with_together:
     - "{{ firefox_long_versions }}"
     - "{{ firefox_short_versions }}"
-
 ### Git repositories ###
 
 - name: Create git-repos dir
@@ -158,24 +157,22 @@
   with_items:
    - kiegroup/lienzo-core
    - kiegroup/lienzo-tests
-   - errai/errai
-   - dashbuilder/dashbuilder
+   - errata/errata
+   - kiegroup/droolsjbpm-build-bootstrap
    - kiegroup/kie-soup
    - kiegroup/appformer
-   - kiegroup/droolsjbpm-build-bootstrap
    - kiegroup/droolsjbpm-knowledge
    - kiegroup/drools
    - kiegroup/optaplanner
-   - kiegroup/optaweb-employee-rostering
    - kiegroup/jbpm
    - kiegroup/jbpm-work-items
+   - kiegroup/kie-jpmml-integration
    - kiegroup/droolsjbpm-integration
+   - kiegroup/openshift-drools-hacep
    - kiegroup/droolsjbpm-tools
    - kiegroup/kie-uberfire-extensions
-   - kiegroup/guvnor
    - kiegroup/kie-wb-playground
    - kiegroup/kie-wb-common
-   - kiegroup/jbpm-form-modeler
    - kiegroup/drools-wb
    - kiegroup/optaplanner-wb
    - kiegroup/jbpm-designer
@@ -183,9 +180,9 @@
    - kiegroup/dashboard-builder
    - kiegroup/jbpm-dashboard
    - kiegroup/kie-docs
+   - kiegroup/optaweb-employee-rostering
+   - kiegroup/optaweb-vehicle-routing
    - kiegroup/kie-wb-distributions
-   - kiegroup/droolsjbpm-build-distribution
-   - jboss-integration/kie-eap-modules
 
 - name: Owner of Git cache is Jenkins
   file:
