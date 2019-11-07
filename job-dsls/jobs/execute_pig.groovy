@@ -41,7 +41,7 @@ job(jobName) {
             }
             extensions {
                 cloneOptions {
-                    reference("/home/jenkins/git-repos/${repo}.git")
+                    reference("/home/jenkins/git-repos/build-configurations.git")
                 }
             }
         }
@@ -59,6 +59,6 @@ job(jobName) {
     jdk("kie-jdk1.8")
 
     steps {
-        shell("java -DskipBranchCheck -jar /opt/tools/pig/product-files-generator.jar -c /home/jenkins/git-repos/${repo}.git/\${buildConfiguration} -v scmRevision=\${scmRevision} \${additionalParameters}")
+        shell("java -DskipBranchCheck -jar /opt/tools/pig/product-files-generator.jar -c /home/jenkins/git-repos/build-configurations.git/\${buildConfiguration} -v scmRevision=\${scmRevision} \${additionalParameters}")
     }
 }
