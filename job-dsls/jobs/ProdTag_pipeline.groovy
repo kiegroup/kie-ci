@@ -84,6 +84,8 @@ pipeline {
                     ' \\n' +
                     'Please look here: ${BUILD_URL} \\n' +
                     ' \\n' +
+                    'Failed tests: ${BUILD_URL}/testReport \\n' +
+                    ' \\n' +
                     '${BUILD_LOG, maxLines=750}', subject: 'prod-tag for ${TPB}', to: 'bxms-prod@redhat.com'
             }    
         }

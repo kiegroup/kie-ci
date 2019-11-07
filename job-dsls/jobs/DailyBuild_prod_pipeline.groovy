@@ -87,6 +87,9 @@ pipeline {
             steps {
                 emailext body: 'prod daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
                     'Please look here: ${BUILD_URL} \\n' +
+                    ' \\n' +
+                    'Failed tests: ${BUILD_URL}/testReport \\n' +
+                    ' \\n' +                    
                     '${BUILD_LOG, maxLines=750}', subject: 'prod-daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com'
             }    
         }        
