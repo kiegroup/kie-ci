@@ -103,6 +103,9 @@ pipeline {
             }            
             emailext body: 'status of prod daily build #${BUILD_NUMBER} (${baseBranch} branch) was: ' + "${currentBuild.currentResult}" +  '\\n' +
                     'Please look here: ${BUILD_URL} \\n' +
+                    ' \\n' +
+                    'Failed tests: ${BUILD_URL}/testReport \\n' +
+                    ' \\n' +                    
                     '${BUILD_LOG, maxLines=750}', subject: 'prod-daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com\'
         }
     }    
