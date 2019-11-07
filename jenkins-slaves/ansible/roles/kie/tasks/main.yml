@@ -157,7 +157,7 @@
   with_items:
    - kiegroup/lienzo-core
    - kiegroup/lienzo-tests
-   - errata/errata
+   - errai/errai
    - kiegroup/droolsjbpm-build-bootstrap
    - kiegroup/kie-soup
    - kiegroup/appformer
