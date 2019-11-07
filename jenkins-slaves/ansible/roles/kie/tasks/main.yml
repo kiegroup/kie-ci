@@ -157,6 +157,7 @@
   with_items:
    - kiegroup/lienzo-core
    - kiegroup/lienzo-tests
+   - errata/errata
    - kiegroup/droolsjbpm-build-bootstrap
    - kiegroup/kie-soup
    - kiegroup/appformer
@@ -164,6 +165,7 @@
    - kiegroup/drools
    - kiegroup/optaplanner
    - kiegroup/jbpm
+   - kiegroup/jbpm-work-items
    - kiegroup/kie-jpmml-integration
    - kiegroup/droolsjbpm-integration
    - kiegroup/openshift-drools-hacep
@@ -199,5 +201,4 @@
     owner: jenkins
     group: jenkins
     mode: 0755
-...
 ...
