@@ -76,7 +76,7 @@
 
 - name: Create tools directory for PiG
   file:
-    path: /opt/tools/pig
+    path: /opt/tools/pig/product-files-generator
     state: directory
     recurse: yes
     owner: root

@@ -9,6 +9,7 @@ def final DEFAULTS = [
 ]
 Closure<Object> get = { String key -> DEFAULTS[key] }
 String repoFolder = get("repoFolder")
+def javadk=Constants.JDK_VERSION
 
 // Creation of folders where jobs are stored
 folder(Constants.DEPLOY_FOLDER)
@@ -25,11 +26,11 @@ job(jobName) {
     }
 
     parameters {
-        stringParam("repo")
-        stringParam("repoBranch")
-        stringParam("buildConfiguration")
-        stringParam("scmRevision")
-        stringParam("additionalParameters")
+        stringParam("repo", "https://gitlab.cee.redhat.com/middleware/build-configurations.git", "the build configuration repo")
+        stringParam("repoBranch", "master", "the build configuration branch to be checked out")
+        stringParam("buildConfiguration", "rhba/7.5.1", "the build configuration folder")
+        stringParam("scmRevision", "", "the revision `sync-7.26.x-2019.10.29` for instance")
+        stringParam("additionalParameters", "--skipBuilds --skipPncUpdate", "")
     }
 
     scm {
@@ -40,9 +41,7 @@ job(jobName) {
             }
             extensions {
                 cloneOptions {
-                    // git repo cache which is present on the slaves
-                    // it significantly reduces the clone time and also saves a lot of bandwidth
-                    reference("${repoFolder}")
+                    reference("/home/jenkins/git-repos/${repo}.git")
                 }
             }
         }
@@ -55,9 +54,11 @@ job(jobName) {
         }
     }
 
+    label("kie-linux&&kie-mem4g")
+
     jdk("kie-jdk1.8")
 
     steps {
-        shell("sh java -DskipBranchCheck -jar core/target/product-files-generator.jar -c ${repoFolder}/\${buildConfiguration} -v scmRevision=\${scmRevision} \${additionalParameters}")
+        shell("java -DskipBranchCheck -jar /opt/tools/pig/product-files-generator.jar -c /home/jenkins/git-repos/${repo}.git/\${buildConfiguration} -v scmRevision=\${scmRevision} \${additionalParameters}")
     }
 }
