@@ -40,7 +40,7 @@ pipeline {
                 script {
                     data = new Date().format('yyyyMMdd-hhMMss')
                     kieVersion = "${kieVersion}.${data}"
-                    dockerAbsPath = "KIE/${baseBranch}/Docker"
+                    dockerAbsPath = "KIE/${baseBranch}/docker"
 
                     echo "data: ${data}"
                     echo "kieVersion: ${kieVersion}"
