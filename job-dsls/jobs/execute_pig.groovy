@@ -59,6 +59,6 @@ job(jobName) {
     jdk("kie-jdk1.8")
 
     steps {
-        shell("java -DskipBranchCheck -jar /opt/tools/pig/product-files-generator.jar -c $WORKSPACE/git-repos/build-configurations.git/\${buildConfiguration} -v scmRevision=\${scmRevision} \${additionalParameters}")
+        shell("java -DskipBranchCheck -jar /opt/tools/pig/product-files-generator.jar -c \$WORKSPACE/git-repos/build-configurations.git/\${buildConfiguration} -v scmRevision=\${scmRevision} \${additionalParameters}")
     }
 }
