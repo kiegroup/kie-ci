@@ -51,20 +51,20 @@ job("a-seed-job") {
         shell(seedJob)
 
         jobDsl {
-            targets("job-dsls/jobs/**/communityRelease_pipeline.groovy" +
-                    "job-dsls/jobs/**/compile_downstream_build.groovy" +
-                    "job-dsls/jobs/**/dailyBuild_pipeline.groovy" +
-                    "job-dsls/jobs/**/dailyBuild_prod_pipeline.groovy" +
-                    "job-dsls/jobs/**/deploy_jobs.groovy" +
-                    "job-dsls/jobs/**/downstream_pr_jobs.groovy" +
-                    "job-dsls/jobs/**/kie_docs_pr.groovy" +
-                    "job-dsls/jobs/**/kie_jenkinsScripts_PR.groovy" +
-                    "job-dsls/jobs/**/kogito.groovy" +
-                    "job-dsls/jobs/**/pr_jobs.groovy" +
-                    "job-dsls/jobs/**/prodTag_pipeline.groovy" +
-                    "job-dsls/jobs/**/seed_job.groovy" +
-                    "job-dsls/jobs/**/sonarcloud_daily.groovy" +
-                    "job-dsls/jobs/**/springboot_pr_job.groovy" +
+            targets("job-dsls/jobs/**/communityRelease_pipeline.groovy \\n" +
+                    "job-dsls/jobs/**/compile_downstream_build.groovy \\n" +
+                    "job-dsls/jobs/**/dailyBuild_pipeline.groovy \\n" +
+                    "job-dsls/jobs/**/dailyBuild_prod_pipeline.groovy \\n" +
+                    "job-dsls/jobs/**/deploy_jobs.groovy \\n" +
+                    "job-dsls/jobs/**/downstream_pr_jobs.groovy \\n" +
+                    "job-dsls/jobs/**/kie_docs_pr.groovy \\n" +
+                    "job-dsls/jobs/**/kie_jenkinsScripts_PR.groovy \\n" +
+                    "job-dsls/jobs/**/kogito.groovy \\n" +
+                    "job-dsls/jobs/**/pr_jobs.groovy \\n" +
+                    "job-dsls/jobs/**/prodTag_pipeline.groovy \\n" +
+                    "job-dsls/jobs/**/seed_job.groovy \\n" +
+                    "job-dsls/jobs/**/sonarcloud_daily.groovy \\n" +
+                    "job-dsls/jobs/**/springboot_pr_job.groovy \\n" +
                     "job-dsls/jobs/**/turtleTests.groovy")
             useScriptText(false)
             sandbox(false)
