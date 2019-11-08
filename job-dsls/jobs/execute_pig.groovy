@@ -40,9 +40,7 @@ job(jobName) {
                 branch("\${repoBranch}")
             }
             extensions {
-                cloneOptions {
-                    reference("/home/jenkins/git-repos/build-configurations.git")
-                }
+                relativeTargetDirectory('git-repos/build-configurations.git')
             }
         }
     }
@@ -59,6 +57,7 @@ job(jobName) {
     jdk("kie-jdk1.8")
 
     steps {
-        shell("java -DskipBranchCheck -jar /opt/tools/pig/product-files-generator.jar -c /home/jenkins/git-repos/build-configurations.git/\${buildConfiguration} -v scmRevision=\${scmRevision} \${additionalParameters}")
+        shell("pip install pnc_cli --user")
+        shell("java -DskipBranchCheck -jar /opt/tools/pig/product-files-generator.jar -c \$WORKSPACE/git-repos/build-configurations.git/\${buildConfiguration} -v scmRevision=\${scmRevision} \${additionalParameters}")
     }
 }
