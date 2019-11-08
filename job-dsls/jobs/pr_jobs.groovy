@@ -66,6 +66,7 @@ def final REPO_CONFIGS = [
         ],
         "droolsjbpm-integration"    : [
                 timeoutMins: 180,
+                label    : "kie-rhel7 && kie-mem16g",
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "**/target/kie-server-*ee7.war",
                         "**/target/kie-server-*webc.war"
