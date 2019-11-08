@@ -51,19 +51,19 @@ job("a-seed-job-${kieMainBranch}") {
         shell(seedJob)
 
         jobDsl {
-            targets("job-dsls/jobs/**/DailyBuild_pipeline.groovy" +
-                    "DailyBuild_prod_pipeline.groovy" +
-                    "ProdTag_pipeline.groovy" +
-                    "compile_downstream_build.groovy" +
-                    "deploy_jobs.groovy" +
-                    "downstream_pr_jobs.groovy" +
-                    "kie_build_helper_jenkins_plugin_pr_job.groovy" +
-                    "kie_docs_pr.groovy" +
-                    "kie_jenkinsScripts_PR.groovy" +
-                    "pr_jobs.groovy" +
-                    "seed_job.groovy" +
-                    "springboot_pr_job.groovy" +
-                    "turtleTests.groovy")
+            targets("job-dsls/jobs/**/DailyBuild_pipeline.groovy \\n" +
+                    "job-dsls/jobs/**/DailyBuild_prod_pipeline.groovy \\n" +
+                    "job-dsls/jobs/**/ProdTag_pipeline.groovy \\n" +
+                    "job-dsls/jobs/**/compile_downstream_build.groovy \\n" +
+                    "job-dsls/jobs/**/deploy_jobs.groovy \\n" +
+                    "job-dsls/jobs/**/downstream_pr_jobs.groovy \\n" +
+                    "job-dsls/jobs/**/kie_build_helper_jenkins_plugin_pr_job.groovy \\n" +
+                    "job-dsls/jobs/**/kie_docs_pr.groovy \\n" +
+                    "job-dsls/jobs/**/kie_jenkinsScripts_PR.groovy \\n" +
+                    "job-dsls/jobs/**/pr_jobs.groovy \\n" +
+                    "job-dsls/jobs/**/seed_job.groovy \\n" +
+                    "job-dsls/jobs/**/springboot_pr_job.groovy \\n" +
+                    "job-dsls/jobs/**/turtleTests.groovy")
 
             useScriptText(false)
             sandbox(false)
