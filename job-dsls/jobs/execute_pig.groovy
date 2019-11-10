@@ -44,6 +44,13 @@ job(jobName) {
             }
         }
     }
+    wrappers {
+            configFiles{
+            file('rhba-pnc-cli.conf') {
+                targetLocation('~/.config/pnc-cli/pnc-cli.conf')
+            }
+        }
+    }
 
     properties {
         ownership {
@@ -57,6 +64,8 @@ job(jobName) {
     jdk("kie-jdk1.8")
 
     steps {
+        shell("mkdir ~/.config/pnc-cli -p")
+        shell("cp \$WORKSPACE/~/.config/pnc-cli/pnc-cli.conf ~/.config/pnc-cli/pnc-cli.conf")
         shell("java -DskipBranchCheck -jar /opt/tools/pig/product-files-generator.jar -c \$WORKSPACE/git-repos/build-configurations.git/\${buildConfiguration} -v scmRevision=\${scmRevision} \${additionalParameters}")
     }
 }
