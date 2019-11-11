@@ -74,6 +74,9 @@
 
 ### Download and Generate PiG/PFG ###
 
+- name: Install PNC CLI
+  command: "pip install pnc_cli"
+
 - name: Create tools directory for PiG
   file:
     path: /opt/tools/pig/product-files-generator
