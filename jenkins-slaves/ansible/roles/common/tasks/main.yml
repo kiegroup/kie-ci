@@ -18,7 +18,7 @@
   yum:
     pkg: ['git', 'tig', 'wget', 'mc', 'vim', 'unzip', 'iputils', 'bind-utils', 'findutils',
           'htop', 'hub', 'screen', 'lsof', 'bash-completion', 'bzip2', 'rng-tools',
-          'ansible', 'zip', 'python2-pip', 'jq', 'libXScrnSaver', 'xorg-x11-server-Xvfb']
+          'ansible', 'zip', 'python2-pip', 'jq', 'libXScrnSaver']
     state: latest
 
 - name: Update all packages
