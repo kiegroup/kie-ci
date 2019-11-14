@@ -182,46 +182,6 @@ pipelineJob("${folderPath}/daily-build-pipeline-${baseBranch}") {
     }
 }
 
-// *****************************************************************************************************
-// definition of triggering script
-
-job ("${folderPath}/daily-build-trigger-${baseBranch}"){
-
-    description('This job triggers the two pipeline jobs ')
-
-    label("kie-linux&&kie-rhel7&&kie-mem8g")
-
-    logRotator {
-        numToKeep(10)
-    }
-
-    jdk("${javadk}")
-
-    // the UMB trigger has to have the branch name hard coded - could not have a parameter
-    configure { project ->
-        project / triggers << 'com.redhat.jenkins.plugins.ci.CIBuildTrigger' {
-            spec ''
-            providerName 'Red Hat UMB'
-            overrides {
-                topic 'Consumer.rh-jenkins-ci-plugin.${JENKINS_UMB_ID}-prod-daily-master-trigger.VirtualTopic.qe.ci.ba.daily-master.trigger'
-            }
-            selector 'label = \'rhba-ci\''
-        }
-    }
-    wrappers{
-        timestamps()
-        colorizeOutput()
-        preBuildCleanup()
-    }
-
-    publishers {
-        downstream ("daily-build-pipeline-${baseBranch}", threshHoldName = 'SUCCESS')
-        downstream ("../daily-build-prod/daily-build-prod-pipeline-${baseBranch}", threshHoldName = 'SUCCESS')
-        wsCleanup()
-    }
-}
-
-
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Additional tests
 
