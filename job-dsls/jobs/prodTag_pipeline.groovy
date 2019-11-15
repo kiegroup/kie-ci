@@ -20,7 +20,7 @@ def folderPath="prod-tag"
 def productTag='''
 pipeline {
     agent {
-        label 'kie-releases'
+        label 'kie-linux&&kie-rhel7&&kie-mem24g'
     }
     tools {
         maven 'kie-maven-3.5.2'
