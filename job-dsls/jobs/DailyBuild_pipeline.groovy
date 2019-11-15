@@ -407,7 +407,7 @@ matrixJob("${folderPath}/DailyBuild-kieWbTestsMatrix-${baseBranch}") {
 
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml, **/target/screenshots/*")
-        mailer('bsigs@redhat.com', false, false)
+        mailer('bsig@redhat.com', false, false)
         wsCleanup()
     }
 
