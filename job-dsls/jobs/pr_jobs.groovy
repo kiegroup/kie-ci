@@ -53,11 +53,17 @@ def final REPO_CONFIGS = [
         "drools"                    : [],
         "optaplanner"               : [],
         "optaweb-employee-rostering" : [
-                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
-                        "**/target/configurations/cargo-profile/profile-log.txt"
+                artifactsToArchive: DEFAULTS["artifactsToArchive"] + [
+                        "**/cypress/screenshots/**",
+                        "**/cypress/videos/**"
                 ]
         ],
-        "optaweb-vehicle-routing" : [],
+        "optaweb-vehicle-routing" : [
+                artifactsToArchive: DEFAULTS["artifactsToArchive"] + [
+                        "**/cypress/screenshots/**",
+                        "**/cypress/videos/**"
+                ]
+        ],
         "jbpm"                      : [
                 timeoutMins: 120
         ],
