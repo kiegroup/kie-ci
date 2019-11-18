@@ -141,7 +141,8 @@ job(jobName) {
         maven {
             mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
             mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
-            goals("-e -fae -nsu -B -T1C clean install -Dfull -DskipTests") // Goals taken from
+            goals("-e -fae -nsu -B -T1C clean install -Dfull -DskipTests")
+            providedSettings("settings-local-maven-repo-nexus")
         }
 
         // Integration tests invocation
@@ -151,6 +152,7 @@ job(jobName) {
             goals(get("mvnGoals") + " -pl " + CONFIG["skippedITTestsModules"].collect { "!:$it"}.join(","))
             properties(get("mvnProps"))
             rootPOM(CONFIG["ITTestsParent"])
+            providedSettings("settings-local-maven-repo-nexus")
         }
     }
 
