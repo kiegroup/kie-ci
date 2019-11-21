@@ -137,7 +137,7 @@ pipeline {
             steps {
                 configFileProvider([configFile(fileId: '3f317dd7-4d08-4ee4-b9bb-969c309e782c', targetLocation: 'uploadNexus-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
                     dir("${WORKSPACE}" + '/community-deploy-dir') {
-                        sh '../droolsjbpm-build-bootstrap/script/release/06_uploadBinariesToNexus.sh $kieVersion'
+                        sh '../droolsjbpm-build-bootstrap/script/release/06_uploadBinariesToNexus.sh $SETTINGS_XML_FILE $kieVersion'
                     }
                 }    
             }
