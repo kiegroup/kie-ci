@@ -122,6 +122,9 @@ pipeline {
             }
         } 
         stage('Build & deploy repositories locally'){
+            when{
+                expression { myVar == '1' && repBuild == 'YES'}
+            }        
             steps {
                 configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
                     sh './droolsjbpm-build-bootstrap/script/release/05a_communityDeployLocally.sh $SETTINGS_XML_FILE'
@@ -129,15 +132,21 @@ pipeline {
             }
         }    
         stage('Publish JUnit test results reports') {
+            when{
+                expression { myVar == '1' && repBuild == 'YES'}
+            }         
             steps {
               junit '**/target/*-reports/TEST-*.xml'    
             }
         }         
         stage('Upload binaries to staging repository to Nexus') {
+            when{
+                expression { myVar == '1' && repBuild == 'YES'}
+            }         
             steps {
                 configFileProvider([configFile(fileId: '3f317dd7-4d08-4ee4-b9bb-969c309e782c', targetLocation: 'uploadNexus-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
                     dir("${WORKSPACE}" + '/community-deploy-dir') {
-                        sh '../droolsjbpm-build-bootstrap/script/release/06_uploadBinariesToNexus.sh $SETTINGS_XML_FILE $kieVersion'
+                        sh '../droolsjbpm-build-bootstrap/script/release/06_uploadBinariesToNexus.sh $SETTINGS_XML_FILE'
                     }
                 }    
             }
@@ -242,7 +251,8 @@ pipelineJob("${folderPath}/community-release-pipeline-${baseBranch}") {
         stringParam("kieVersion", "${kieVersion}", "Please edit the version of kie i.e 7.28.0.Final ")
         stringParam("baseBranch", "${baseBranch}", "Please edit the name of the kie branch ")
         stringParam("releaseBranch", "${releaseBranch}", "Please edit name of the releaseBranch - i.e. r7.28.0.Final ")
-        stringParam("organization", "${organization}", "Please edit the name of organization.")
+        stringParam("organization", "${organization}", "Please edit the name of organization ")
+        choiceParam("repBuild",["YES", "NO"],"Please select if<br>you want to do a new build = YES<br>a new build is not required and artifacts are already uploaded to Nexus = NO ")
         wHideParameterDefinition {
             name('MAVEN_OPTS')
             defaultValue("${MAVEN_OPTS}")
