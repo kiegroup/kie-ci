@@ -166,7 +166,10 @@ pipeline {
                 )    
             } 
         }               
-        stage ('Send email with BUILD result') {
+        stage ('1st email send with BUILD result') {
+            when{
+                expression { myVar == '0' && repBuild == 'YES'}
+            }        
             steps {
                 emailext body: 'Build of community ${kieVersion} was:  ' + "${currentBuild.currentResult}" +  '\\n' +
                     ' \\n' +
@@ -197,6 +200,36 @@ pipeline {
                     '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} status and artefacts for sanity checks', to: 'bsig@redhat.com'
             }    
         }
+        stage ('2nd email send with BUILD result') {
+            when{
+                expression { myVar == '1' && repBuild == 'YES'}
+            }        
+            steps {
+                emailext body: 're-build of community ${kieVersion} after sanity checks was:  ' + "${currentBuild.currentResult}" +  '\\n' +
+                    ' \\n' +
+                    'PLEASE CHECK IF THE BLOCKERS DETECTED DURING SANITY CHECKS ARE FIXED NOW \\n' +
+                    ' \\n' +
+                    'Failed tests: $BUILD_URL/testReport \\n' +
+                    ' \\n' +
+                    ' \\n' +
+                    'The artifacts are available here \\n' +
+                    ' \\n' +
+                    'business-central artifacts: (wildfly14.war) \\n' +
+                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
+                    '\\n' +
+                    'business-central-webapp: \\n' +
+                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/' + "${kieVersion}" + '\\n'+
+                    '\\n' +
+                    'business-monitoring-webapp: \\n' +
+                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/' + "${kieVersion}" + '\\n'+
+                    ' \\n' +
+                    'Please download for sanity checks: \\n' +
+                    'jbpm-server-distribution.zip: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/' + "${kieVersion}" + '\\n'+
+                    ' \\n' +                    
+                    ' \\n' +                    
+                    '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} re-build after sanity checks', to: 'bsig@redhat.com\'
+            }    
+        }        
         stage('Approval (Point of NO return)') {
             steps {
                 input message: 'Was the build stable enough to do a release', ok: 'Continue with releasing'
