@@ -46,17 +46,23 @@ pipeline {
             steps {
                 sh "sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch"
             }
-        }    
+        }
+        stage ('Global git conf') {
+            steps{
+                sh 'git config --global user.name "kie-ci" '
+                sh 'git config --global user.email "kieciuser@gmail.com" '                
+            }
+        }            
         stage('Update versions') {
             steps {
-                echo 'kieVersion: $kieVersion'
+                echo 'kieVersion: ' + "$kieVersion"
                 sh 'sh droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion'
             }
         }
         stage ('Add and commit version upgrades') {
             steps {
-                echo 'kieVersion: $kieVersion'
-                echo 'commitMsg: $commitMsg_2'                
+                echo 'kieVersion: ' + "$kieVersion"
+                echo 'commitMsg: ' + "$commitMsg_2"                
                 sh 'sh droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$commitMsg_2" $kieVersion'
             }
         }
@@ -102,8 +108,7 @@ pipeline {
         }  
         stage ('Create & push tags to Gerrit') {
             steps {
-                echo 'Name of the tag: $tagName\'
-                sh 'git config --global push.default simple'
+                echo 'Name of the tag: ' + "$tagName"
                 sshagent(['code.engineering.redhat.com']) {
                     sh './droolsjbpm-build-bootstrap/script/release/08b_prodPushTags.sh $tagName'
                 } 
