@@ -51,7 +51,14 @@ def final REPO_CONFIGS = [
                 label: "kie-rhel7 && kie-mem4g"
         ],
         "drools"                    : [],
-        "optaplanner"               : [],
+        "optaplanner"               : [
+                mvnGoals: "-B -e -nsu -fae clean install",
+                mvnProps: [
+                    "full"                     : "true",
+                    "integration-tests"        : "true",
+                    "maven.test.failure.ignore": "true"
+                ]
+        ],
         "optaweb-employee-rostering" : [
                 artifactsToArchive: DEFAULTS["artifactsToArchive"] + [
                         "**/cypress/screenshots/**",
