@@ -176,7 +176,7 @@ fi
 git clone https://github.com/$ghOrgUnit/kogito-runtimes.git -b $mainBranch --depth 50
 # build the project
 cd kogito-runtimes
-mvn -U -B -e clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true'''
+mvn -U -B -e clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dinfinispan'''
 
 
 job("${folderPath}/kogito-runtimes-${mainBranch}") {
