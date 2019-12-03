@@ -70,7 +70,7 @@ def final REPO_CONFIGS = [
         ],
         "optaplanner"               : [
                 ircNotificationChannels: ["#optaplanner-dev"],
-                downstreamRepos        : ["optaplanner-wb", "optaweb-employee-rostering"],
+                downstreamRepos        : ["optaplanner-wb", "optaweb-employee-rostering", "optaweb-vehicle-routing"],
                 mvnGoals: "-e -nsu -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
                 mvnProps: [
                         "full"                     : "true",
