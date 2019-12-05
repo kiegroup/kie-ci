@@ -1,3 +1,5 @@
+import org.kie.jenkins.jobdsl.Constants
+
 // Job Description
 String jobDescription = "Job responsible for seed jobs to building rhpm/rhdm openshift image"
 
