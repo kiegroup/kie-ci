@@ -38,6 +38,7 @@ def final REPO_CONFIGS = [
         "optaplanner": [],
         "appformer" : [],
         "jbpm" : [],
+        "openshift-drools-hacep" : [],
         "drools-wb": [],
         "kie-soup" : [],
         "kie-wb-common": [
