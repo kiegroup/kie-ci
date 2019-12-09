@@ -7,29 +7,45 @@ String jobDescription = "Job responsible for seed jobs to building rhpm/rhdm ope
 def folderPath = 'OSBS'
 def prodComponent = ['rhpam-businesscentral','rhpam-businesscentral-monitoring','rhpam-controller','rhpam-kieserver','rhpam-smartrouter','rhdm-decisioncentral','rhdm-controller','rhdm-kieserver','rhdm-optaweb-employee-rostering']
 
+def buildDate=Constants.BUILD_DATE
+def prodVersion=Constants.PROD_VERSION
+def osbsBuildTarget=Constants.OSBS_BUILD_TARGET
+def cekitBuildOptions=Constants.CEKIT_BUILD_OPTIONS
+def kerberosPrincipal=Constants.KERBEROS_PRINCIPAL
+def osbsBuildUser=Constants.OSBS_BUILD_USER
+def kerberosKeytab=Constants.KERBEROS_KEYTAB
+def kerberosCred=Constants.KERBEROS_CRED
+def imageRepo=Constants.IMAGE_REPO
+def imageBranch=Constants.IMAGE_BRANCH
+def imageSubdir=Constants.IMAGE_SUBDIR
+def gitUser=Constants.GIT_USER
+def gitEmail=Constants.GIT_EMAIL
+def cekitCacheLocal=Constants.CEKIT_CACHE_LOCAL
+def verbose=Constants.VERBOSE
+
 folder(folderPath) 
       
-prodComponent.each { COMPONENT ->
+prodComponent.each { Component ->
             
-   pipelineJob("${folderPath}/${COMPONENT}")  {
+   pipelineJob("${folderPath}/${Component}")  {
 
     parameters {
-        stringParam("BUILD_DATE", "${BUILD_DATE}")
-        stringParam("PROD_VERSION", "${PROD_VERSION}")
-        stringParam("PROD_COMPONENT", "${COMPONENT}")
-        stringParam("OSBS_BUILD_TARGET", "${OSBS_BUILD_TARGET}")
-        stringParam("CEKIT_BUILD_OPTIONS", "${CEKIT_BUILD_OPTIONS}")
-        stringParam("KERBEROS_PRINCIPAL", "${KERBEROS_PRINCIPAL}")
-        stringParam("OSBS_BUILD_USER", "${OSBS_BUILD_USER}")
-        stringParam("KERBEROS_KEYTAB", "${KERBEROS_KEYTAB}")
-        stringParam("KERBEROS_CRED", "${KERBEROS_CRED}")
-        stringParam("IMAGE_REPO", "${IMAGE_REPO}")
-        stringParam("IMAGE_BRANCH", "${IMAGE_BRANCH}")
-        stringParam("IMAGE_SUBDIR", "${IMAGE_SUBDIR}")
-        stringParam("GIT_USER", "${GIT_USER}")
-        stringParam("GIT_EMAIL", "${GIT_EMAIL}")
-        stringParam("CEKIT_CACHE_LOCAL", "${CEKIT_CACHE_LOCAL}")
-        stringParam("VERBOSE", "${VERBOSE}")
+        stringParam("BUILD_DATE", "${buildDate}")
+        stringParam("PROD_VERSION", "${prodVersion}")
+        stringParam("PROD_COMPONENT", "${Component}")
+        stringParam("OSBS_BUILD_TARGET", "${osbsBuildTarget}")
+        stringParam("CEKIT_BUILD_OPTIONS", "${cekitBuildOptions}")
+        stringParam("KERBEROS_PRINCIPAL", "${kerberosPrincipal}")
+        stringParam("OSBS_BUILD_USER", "${osbsBuildUser}")
+        stringParam("KERBEROS_KEYTAB", "${kerberosKeytab}")
+        stringParam("KERBEROS_CRED", "${kerberosCred}")
+        stringParam("IMAGE_REPO", "${imageRepo}")
+        stringParam("IMAGE_BRANCH", "${imageBranch}")
+        stringParam("IMAGE_SUBDIR", "${imageSubdir}")
+        stringParam("GIT_USER", "${gitUser}")
+        stringParam("GIT_EMAIL", "${gitEmail}")
+        stringParam("CEKIT_CACHE_LOCAL", "${cekitCacheLocal}")
+        stringParam("VERBOSE", "${verbose}")
     }
     
   definition {
