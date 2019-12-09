@@ -123,7 +123,7 @@ pipeline {
         } 
         stage('Build & deploy repositories locally'){
             when{
-                expression { myVar == '1' && repBuild == 'YES'}
+                expression { repBuild == 'YES'}
             }        
             steps {
                 configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
@@ -133,7 +133,7 @@ pipeline {
         }    
         stage('Publish JUnit test results reports') {
             when{
-                expression { myVar == '1' && repBuild == 'YES'}
+                expression { repBuild == 'YES'}
             }         
             steps {
               junit '**/target/*-reports/TEST-*.xml'    
@@ -141,7 +141,7 @@ pipeline {
         }         
         stage('Upload binaries to staging repository to Nexus') {
             when{
-                expression { myVar == '1' && repBuild == 'YES'}
+                expression { repBuild == 'YES'}
             }         
             steps {
                 configFileProvider([configFile(fileId: '3f317dd7-4d08-4ee4-b9bb-969c309e782c', targetLocation: 'uploadNexus-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
