@@ -4,7 +4,6 @@ import org.kie.jenkins.jobdsl.Constants
 String jobDescription = "Job responsible for seed jobs to building rhpm/rhdm openshift image"
 
 //Define Variables
-def folderPath = 'OSBS'
 def prodComponent = ['rhpam-businesscentral','rhpam-businesscentral-monitoring','rhpam-controller','rhpam-kieserver','rhpam-smartrouter','rhdm-decisioncentral','rhdm-controller','rhdm-kieserver','rhdm-optaweb-employee-rostering']
 
 def buildDate=Constants.BUILD_DATE
@@ -23,11 +22,10 @@ def gitEmail=Constants.GIT_EMAIL
 def cekitCacheLocal=Constants.CEKIT_CACHE_LOCAL
 def verbose=Constants.VERBOSE
 
-folder(folderPath) 
-      
+
 prodComponent.each { Component ->
             
-   pipelineJob("${folderPath}/${Component}")  {
+   pipelineJob("${Component}")  {
 
     parameters {
         stringParam("BUILD_DATE", "${buildDate}")
