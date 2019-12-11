@@ -79,10 +79,11 @@ def final REPO_CONFIGS = [
         ],
         "droolsjbpm-integration"    : [
                 timeoutMins: 180,
-                label    : "kie-rhel7 && kie-mem16g",
+                label    : "kie-rhel7 && kie-mem24g", // once https://github.com/kiegroup/kie-jenkins-scripts/pull/652 is reverted it will switch back to 16GB
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "**/target/kie-server-*ee7.war",
-                        "**/target/kie-server-*webc.war"
+                        "**/target/kie-server-*webc.war",
+                        "**/gclog" // this is a temporary file used to do some analysis: Once https://github.com/kiegroup/kie-jenkins-scripts/pull/652 is reverted this will disappear
                 ]
         ],
         "openshift-drools-hacep"    : [],
@@ -151,6 +152,7 @@ for (repoConfig in REPO_CONFIGS) {
     // jobs for master branch don't use the branch in the name
     String jobName = (repoBranch == "master") ? Constants.PULL_REQUEST_FOLDER + "/$repo-pullrequests" : Constants.PULL_REQUEST_FOLDER + "/$repo-pullrequests-$repoBranch"
     job(jobName) {
+        
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
                     |
@@ -261,13 +263,29 @@ for (repoConfig in REPO_CONFIGS) {
             def mavenGoals =
                 repo in SONARCLOUD_ENABLED_REPOSITORIES ? "-Prun-code-coverage ${get('mvnGoals')}" : get("mvnGoals")
 
-            maven {
+
+            // this is a temporary solution, once https://github.com/kiegroup/kie-jenkins-scripts/pull/652 was reverted this will disappear
+
+            if  (repo == "droolsjbpm-integration") {
+                maven {
                     mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
-                    mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
+                    mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:gclog")
                     goals(mavenGoals)
                     properties(get("mvnProps"))
                     providedSettings("settings-local-maven-repo-nexus")
-            }
+                }
+
+            } else {
+                maven {
+                        mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
+                        mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
+                        goals(mavenGoals)
+                        properties(get("mvnProps"))
+                        providedSettings("settings-local-maven-repo-nexus")
+                    }
+             }
+
+
 
             if (repo in SONARCLOUD_ENABLED_REPOSITORIES) { // additional maven build step to report results to SonarCloud
                 maven {
