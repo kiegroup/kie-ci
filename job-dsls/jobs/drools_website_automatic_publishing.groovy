@@ -26,7 +26,7 @@ docker run --cap-add net_raw --cap-add net_admin -i --rm --volume /home/jenkins/
 
 job("${folderPath}/drools_website_automatic_publishing") {
 
-            description("Builds <b>optaplanner-website</b> inside a Docker container (which has all the needed deps like ruby and awestruct).\n" +
+            description("Builds <b>drools-website</b> inside a Docker container (which has all the needed deps like ruby and awestruct).\n" +
             "<br>The end goal is to automatically deploy the site once the build succeeds.<br><br> <b>IMPORTANT</b>: because of keys this job only can run on \"kie-releases\".<br>\n" +
             "<b>TODO</b>: this job is not yet prepared to run on an arbitral slave.")
 
