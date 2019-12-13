@@ -121,6 +121,22 @@ pipeline {
                 }            
             }
         } 
+        // checks if the directories of the zipped community-deploy-dir and binaries from a previous build are existing
+        // if so - all *tar.gz will be removed 
+        stage ('check if a zip is already existing') {
+            when{
+                expression { repBuild == 'YES'}
+            }         
+            steps {
+                sh 'FILE=/home/jenkins/workspace/deployedArtifacts/"${kieVersion}"_deployDir.tar.gz \\n' +
+                    'if [ -f "$FILE" ]; then \\n' +
+                    '   echo "$FILE exist and will be removed" \\n' +
+                    '   rm /home/jenkins/workspace/deployedArtifacts/* \\n' +
+                    'else \\n' +
+                    '   echo "$FILE does not exist" \\n' +
+                    'fi'
+            }
+        }        
         stage('Build & deploy repositories locally'){
             when{
                 expression { repBuild == 'YES'}
@@ -130,7 +146,33 @@ pipeline {
                     sh './droolsjbpm-build-bootstrap/script/release/05a_communityDeployLocally.sh $SETTINGS_XML_FILE'
                 }
             }
-        }    
+        }
+        // the deployed repository will be compressed and copied to an directory outsite the workspace  
+        stage('tar.gz & copy deploy dir'){
+            when{
+                expression { repBuild == 'YES'}
+            }         
+            steps {
+                sh 'tar -czvf "${kieVersion}"_deployDir.tar.gz community-deploy-dir \\n' +
+                   'cp "${kieVersion}"_deployDir.tar.gz /home/jenkins/workspace/deployedArtifacts'
+            }
+        }
+        // some artifacts and docs are only available after a build in its /target directories
+        // these binaries or docs will be compressed and copied to an directory outsite the workspace
+        stage('tar.gz some docs in targets'){
+            when{
+                expression { repBuild == 'YES'}
+            } 
+            //        
+            steps {
+                sh 'tar -czvf "${kieVersion}"_jbpmWorkItems.tar.gz jbpm-work-items/repository/target/repository-${kieVersion}/* \\n' +
+                   'cp "${kieVersion}"_jbpmWorkItems.tar.gz /home/jenkins/workspace/deployedArtifacts \\n' +
+                   'tar -czvf "${kieVersion}"_optaplannerJavaDocs.tar.gz optaplanner/optaplanner-distribution/target/optaplanner-distribution-${kieVersion}/optaplanner-distribution-${kieVersion}/javadocs/* \\n' +
+                   'cp "${kieVersion}"_optaplannerJavaDocs.tar.gz /home/jenkins/workspace/deployedArtifacts \\n' +
+                   'tar -czvf "${kieVersion}"_optaplannerWB_es.tar.gz kie-docs/doc-content/optaplanner-wb-es-docs/target/generated-docs/* \\n' +
+                   'cp "${kieVersion}"_optaplannerWB_es.tar.gz /home/jenkins/workspace/deployedArtifacts'                                   
+            }
+        }                             
         stage('Publish JUnit test results reports') {
             when{
                 expression { repBuild == 'YES'}
@@ -238,6 +280,21 @@ pipeline {
                 sh 'sh droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
             }
         }
+        // the comminity-deploy-dir and other binaries and docs, saved in a previous stage will be untared and are available for uploading them to filemgmt.jboss.org
+        stage('copy binaries from local rep and untar'){
+            when{
+                expression { repBuild == 'NO'}
+            }        
+            steps {
+                sh 'cp /home/jenkins/workspace/deployedArtifacts/* . \\n' +
+                   'ls -al \\n' +
+                   'tar -xzvf "${kieVersion}"_deployDir.tar.gz \\n' +
+                   'tar -xzvf ${kieVersion}"_jbpmWorkItems.tar.gz \\n' +
+                   'tar -xzvf ${kieVersion}"_optaplannerJavaDocs.tar.gz \\n' +
+                   'tar -xzvf ${kieVersion}"_optaplannerWB_es.tar.gz \\n' +
+                   'ls -al'
+            }
+        }        
         stage('Create jbpm installers') {
             steps {
                 sh 'sh droolsjbpm-build-bootstrap/script/release/09_createjBPM_installers.sh'
