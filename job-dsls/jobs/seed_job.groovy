@@ -65,6 +65,7 @@ job("a-seed-job") {
                     "job-dsls/jobs/**/seed_job.groovy\n" +
                     "job-dsls/jobs/**/sonarcloud_daily.groovy\n" +
                     "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
+                    "job-dsls/jobs/**/*_website_automatic_*.groovy\n" +
                     "job-dsls/jobs/**/turtleTests.groovy")
             useScriptText(false)
             sandbox(false)
