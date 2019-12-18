@@ -4,10 +4,9 @@ def javadk=Constants.JDK_VERSION
 def organization=Constants.GITHUB_ORG_UNIT
 
 // creation of folder
-folder("KIE")
-folder("KIE/websites")
+folder("websites")
 
-def folderPath="KIE/websites"
+def folderPath="websites"
 
 // definition of website publishing script
 def websitePublish='''#!/bin/bash -e
