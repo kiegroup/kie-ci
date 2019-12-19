@@ -115,6 +115,8 @@ pipeline {
 
 pipelineJob("${folderPath}/DailyBuild-prod-pipeline-${baseBranch}") {
 
+    disabled ()
+
     description('this is a prod-pipeline job for the daily build of all reps')
 
 
