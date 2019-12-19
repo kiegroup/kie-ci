@@ -155,6 +155,8 @@ pipeline {
 
 pipelineJob("${folderPath}/DailyBuild-pipeline-${baseBranch}") {
 
+    disabled()
+
     description('this is a pipeline job for the daily build of all reps')
 
 
