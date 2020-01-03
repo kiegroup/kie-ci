@@ -139,7 +139,7 @@ pipeline {
                 'Component versions: \\n' +
                 'kieVersion:' + "${kieVersion}" + '\\n' +
                 '\\n' +
-                'Test Results: https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/KIE/job/' + "${baseBranch}" + '/job/ProdTag/job/prodTag-pipeline-' + "${baseBranch}" + '/' + "${BUILD_NUMBER}" + '/testReport/',
+                'Test Results: https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/KIE/job/' + "${baseBranch}" + '/job/prod-tag/job/prod-tag-pipeline-' + "${baseBranch}" + '/' + "${BUILD_NUMBER}" + '/testReport/',
                 subject: 'prod-tag-${baseBranch} for ${TPB}', to: 'bsig@redhat.com, bxms-prod@redhat.com, bpms-pm-list@redhat.com'
             }    
         }                                                     
