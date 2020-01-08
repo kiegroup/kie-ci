@@ -3,7 +3,7 @@ import org.kie.jenkins.jobdsl.Constants
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def kieVersion=Constants.KIE_PREFIX
-def m2Dir="\$HOME/.m2/repository"
+def m2Dir = Constants.LOCAL_MVN_REP
 
 
 // creation of folder
@@ -55,6 +55,11 @@ pipeline {
                 sh "sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch"
             }
         }
+        stage ('Remove M2') {
+            steps {
+                sh "sh droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
+            }
+        }         
         stage('Update versions') {
             steps {
                 sh "echo 'kieVersion: $kieVersion'"
@@ -121,6 +126,11 @@ pipelineJob("${folderPath}/daily-build-prod-pipeline-${baseBranch}") {
         stringParam("kieVersion", "${kieVersion}", "Version of kie. This will be usually set automatically by the parent pipeline job. ")
         stringParam("baseBranch", "${baseBranch}", "kie branch. This will be usually set automatically by the parent pipeline job. ")
         stringParam("organization", "${organization}", "Name of organization. This will be usually set automatically by the parent pipeline job. ")
+        wHideParameterDefinition {
+            name('m2Dir')
+            defaultValue("${m2Dir}")
+            description('Path to .m2/repository')
+        }
     }
 
     logRotator {

@@ -4,7 +4,7 @@ def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
 def releaseBranch="r7.29.0.Final"
 def organization=Constants.GITHUB_ORG_UNIT
-def m2Dir="\$HOME/.m2/repository"
+def m2Dir = Constants.LOCAL_MVN_REP
 def MAVEN_OPTS="-Xms1g -Xmx3g"
 def commitMsg="Upgraded version to "
 def javadk=Constants.JDK_VERSION
@@ -80,7 +80,12 @@ pipeline {
                     sh 'sh droolsjbpm-build-bootstrap/script/release/02_createReleaseBranches.sh $releaseBranch $baseBranch'
                 }    
             }
-        }                  
+        } 
+        stage ('Remove M2') {
+            steps {
+                sh "sh droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
+            }
+        }                         
         stage('Update versions') {
             when{
                 expression { myVar == '0'}
@@ -350,6 +355,11 @@ pipelineJob("${folderPath}/community-release-pipeline-${baseBranch}") {
             name('commitMsg')
             defaultValue("${commitMsg}")
             description('Please edit the commitMsg')
+        }
+        wHideParameterDefinition {
+            name('m2Dir')
+            defaultValue("${m2Dir}")
+            description('Path to .m2/repository')
         }
     }
 
