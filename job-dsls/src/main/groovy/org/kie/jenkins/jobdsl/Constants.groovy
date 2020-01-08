@@ -43,4 +43,5 @@ class Constants {
     static final String GIT_EMAIL = ""
     static final String CEKIT_CACHE_LOCAL = ""
     static final String VERBOSE	= "false"
+    static final String LOCAL_MVN_REP = "/home/jenkins/.m2/repository"
 }

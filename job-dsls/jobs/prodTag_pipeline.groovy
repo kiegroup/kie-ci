@@ -3,14 +3,13 @@ import org.kie.jenkins.jobdsl.Constants
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
+def m2Dir = Constants.LOCAL_MVN_REP
 def TPB="target product build"
 def tagName="sync-xxx-date"
-def m2Dir="\$HOME/.m2/repository"
 def reportBranch=Constants.REPORT_BRANCH
 def MAVEN_OPTS="-Xms1g -Xmx3g"
 def cutOffDate = new Date().format('yyyy-MM-dd')
-def commitMsg_1="Remove npm and yarn files "
-def commitMsg_2="Upgraded version to "
+def commitMsg="Upgraded version to "
 
 // creation of folder
 folder("prod-tag")
@@ -33,7 +32,7 @@ pipeline {
             }
         }
         stage('Checkout droolsjbpm-build-bootstrap') {
-        steps {
+            steps {
                 checkout([$class: 'GitSCM', branches: [[name: '$baseBranch']], browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/$organization/droolsjbpm-build-bootstrap'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'droolsjbpm-build-bootstrap']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/$organization/droolsjbpm-build-bootstrap.git']]])
                 dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
                     sh 'pwd \\n' +
@@ -52,7 +51,12 @@ pipeline {
                 sh 'git config --global user.name "kie-ci"'
                 sh 'git config --global user.email "kieciuser@gmail.com"'                
             }
-        }           
+        }
+        stage ('Remove M2') {
+            steps {
+                sh "sh droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
+            }
+        }                   
         stage('Update versions') {
             steps {
                 echo 'kieVersion: ' + "$kieVersion"
@@ -62,8 +66,8 @@ pipeline {
         stage ('Add and commit version upgrades') {
             steps {
                 echo 'kieVersion: ' + "$kieVersion"
-                echo 'commitMsg: ' + "$commitMsg_2"                
-                sh 'sh droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$commitMsg_2" $kieVersion'
+                echo 'commitMsg: ' + "$commitMsg"                
+                sh 'sh droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$commitMsg" $kieVersion'
             }
         }
         stage('Clean install repositories '){
@@ -175,14 +179,14 @@ pipelineJob("${folderPath}/prod-tag-pipeline-${baseBranch}") {
             description('Please edit the cutOffDate')
         }
         wHideParameterDefinition {
-            name('commitMsg_1')
-            defaultValue("${commitMsg_1}")
-            description('Please edit the commitMsg')
+            name('commitMsg')
+            defaultValue("${commitMsg}")
+            description('Upgraded version to ')
         }
         wHideParameterDefinition {
-            name('commitMsg_2')
-            defaultValue("${commitMsg_2}")
-            description('Please edit the commitMsg')
+            name('m2Dir')
+            defaultValue("${m2Dir}")
+            description('Path to .m2/repository')
         }
     }
 

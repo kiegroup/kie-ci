@@ -9,7 +9,7 @@ def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def deployDir="deploy-dir"
-def m2Dir="\$HOME/.m2/repository"
+def m2Dir = Constants.LOCAL_MVN_REP
 
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.2.0/jboss-eap-7.2.0.zip"
 
@@ -64,6 +64,11 @@ pipeline {
                 sh "sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch"
             }
         }
+        stage ('Remove M2') {
+            steps {
+                sh "sh droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
+            }
+        }         
         stage('Update versions') {
             steps {
                 sh "echo 'kieVersion: $kieVersion'"
@@ -166,6 +171,11 @@ pipelineJob("${folderPath}/daily-build-pipeline-${baseBranch}") {
             name('deployDir')
             defaultValue("${deployDir}")
             description('Please edit the deployDir')
+        }
+        wHideParameterDefinition {
+            name('m2Dir')
+            defaultValue("${m2Dir}")
+            description('Path to .m2/repository')
         }
     }
 
