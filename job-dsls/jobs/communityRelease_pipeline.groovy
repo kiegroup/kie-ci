@@ -9,6 +9,7 @@ def MAVEN_OPTS="-Xms1g -Xmx3g"
 def commitMsg="Upgraded version to "
 def javadk=Constants.JDK_VERSION
 def mvnVersion="kie-maven-3.5.2"
+def binariesNR=1
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.2.0/jboss-eap-7.2.0.zip"
 
 // creation of folder
@@ -44,7 +45,7 @@ pipeline {
         stage ('Clone others'){
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/git-clone-others.sh'
+                    sh 'sh droolsjbpm-build-bootstrap/script/git-clone-others.sh -b $baseBranch'
                 }    
             }
         }
@@ -53,7 +54,7 @@ pipeline {
                 sshagent(['kie-ci-user-key']) {
                     dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
                         script {
-                            myVar = sh(script: 'git ls-remote --heads origin ${releaseBranch} | wc -l', returnStdout: true).trim()
+                            branchExists = sh(script: 'git ls-remote --heads origin ${releaseBranch} | wc -l', returnStdout: true).trim()
                         } 
                     }
                 }
@@ -61,9 +62,9 @@ pipeline {
         }
         stage ('log results') {
             steps {
-                echo 'myVar: ' + "$myVar"
+                echo 'branchExists: ' + "$branchExists"
                 script {
-                    if ( "$myVar" == "1") {
+                    if ( "$branchExists" == "1") {
                         echo "branch exists"
                     } else {
                         echo "branch does not exist"
@@ -73,7 +74,7 @@ pipeline {
         }
         stage('Create release branches') {
             when{
-                expression { myVar == '0'}
+                expression { branchExists == '0'}
             }        
             steps {
                 sshagent(['kie-ci-user-key']) {
@@ -88,7 +89,7 @@ pipeline {
         }                         
         stage('Update versions') {
             when{
-                expression { myVar == '0'}
+                expression { branchExists == '0'}
             }
             steps {
                 echo 'kieVersion: ' + "{$kieVersion}"
@@ -97,7 +98,7 @@ pipeline {
         }
         stage ('Add and commit version upgrades') {
             when{
-                expression { myVar == '0'}
+                expression { branchExists == '0'}
             }        
             steps {
                 echo 'kieVersion: ' + "{$kieVersion}"
@@ -107,7 +108,7 @@ pipeline {
         }
         stage('Push release branches') {
             when{
-                expression { myVar == '0'}
+                expression { branchExists == '0'}
             }        
             steps {
                 sshagent(['kie-ci-user-key']) {
@@ -117,7 +118,7 @@ pipeline {
         }
         stage('Pull from existing release Branches') {
             when{
-                expression { myVar == '1'}
+                expression { branchExists == '1'}
             }         
             steps {
                 sshagent(['kie-ci-user-key']) {
@@ -125,23 +126,7 @@ pipeline {
                     sh 'sh droolsjbpm-build-bootstrap/script/git-all.sh checkout ' + "$releaseBranch"
                 }            
             }
-        } 
-        // checks if the directories of the zipped community-deploy-dir and binaries from a previous build are existing
-        // if so - all *tar.gz will be removed 
-        stage ('check if a zip is already existing') {
-            when{
-                expression { repBuild == 'YES'}
-            }         
-            steps {
-                sh 'FILE=/home/jenkins/workspace/deployedArtifacts/"${kieVersion}"_deployDir.tar.gz \\n' +
-                    'if [ -f "$FILE" ]; then \\n' +
-                    '   echo "$FILE exist and will be removed" \\n' +
-                    '   rm /home/jenkins/workspace/deployedArtifacts/* \\n' +
-                    'else \\n' +
-                    '   echo "$FILE does not exist" \\n' +
-                    'fi'
-            }
-        }        
+        }       
         stage('Build & deploy repositories locally'){
             when{
                 expression { repBuild == 'YES'}
@@ -153,31 +138,20 @@ pipeline {
             }
         }
         // the deployed repository will be compressed and copied to an directory outsite the workspace  
-        stage('tar.gz & copy deploy dir'){
+        stage('tar.gz binaries & archive artifacts'){
             when{
                 expression { repBuild == 'YES'}
             }         
             steps {
                 sh 'tar -czvf "${kieVersion}"_deployDir.tar.gz community-deploy-dir \\n' +
-                   'cp "${kieVersion}"_deployDir.tar.gz /home/jenkins/workspace/deployedArtifacts'
-            }
-        }
-        // some artifacts and docs are only available after a build in its /target directories
-        // these binaries or docs will be compressed and copied to an directory outsite the workspace
-        stage('tar.gz some docs in targets'){
-            when{
-                expression { repBuild == 'YES'}
-            } 
-            //        
-            steps {
-                sh 'tar -czvf "${kieVersion}"_jbpmWorkItems.tar.gz jbpm-work-items/repository/target/repository-${kieVersion}/* \\n' +
-                   'cp "${kieVersion}"_jbpmWorkItems.tar.gz /home/jenkins/workspace/deployedArtifacts \\n' +
+                   // some artifacts and docs are only available after a build in its /target directories
+                   // these binaries or docs will be compressed
+                   'tar -czvf "${kieVersion}"_jbpmWorkItems.tar.gz jbpm-work-items/repository/target/repository-${kieVersion}/* \\n' +
                    'tar -czvf "${kieVersion}"_optaplannerJavaDocs.tar.gz optaplanner/optaplanner-distribution/target/optaplanner-distribution-${kieVersion}/optaplanner-distribution-${kieVersion}/javadocs/* \\n' +
-                   'cp "${kieVersion}"_optaplannerJavaDocs.tar.gz /home/jenkins/workspace/deployedArtifacts \\n' +
-                   'tar -czvf "${kieVersion}"_optaplannerWB_es.tar.gz kie-docs/doc-content/optaplanner-wb-es-docs/target/generated-docs/* \\n' +
-                   'cp "${kieVersion}"_optaplannerWB_es.tar.gz /home/jenkins/workspace/deployedArtifacts'                                   
+                   'tar -czvf "${kieVersion}"_optaplannerWB_es.tar.gz kie-docs/doc-content/optaplanner-wb-es-docs/target/generated-docs/* '
+                archiveArtifacts '*.tar.gz'        
             }
-        }                             
+        }                           
         stage('Publish JUnit test results reports') {
             when{
                 expression { repBuild == 'YES'}
@@ -213,7 +187,7 @@ pipeline {
         }               
         stage ('1st email send with BUILD result') {
             when{
-                expression { myVar == '0' && repBuild == 'YES'}
+                expression { branchExists == '0' && repBuild == 'YES'}
             }        
             steps {
                 emailext body: 'Build of community ${kieVersion} was:  ' + "${currentBuild.currentResult}" +  '\\n' +
@@ -247,7 +221,7 @@ pipeline {
         }
         stage ('2nd email send with BUILD result') {
             when{
-                expression { myVar == '1' && repBuild == 'YES'}
+                expression { branchExists == '1' && repBuild == 'YES'}
             }        
             steps {
                 emailext body: 're-build of community ${kieVersion} after sanity checks was:  ' + "${currentBuild.currentResult}" +  '\\n' +
@@ -285,19 +259,43 @@ pipeline {
                 sh 'sh droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
             }
         }
-        // the comminity-deploy-dir and other binaries and docs, saved in a previous stage will be untared and are available for uploading them to filemgmt.jboss.org
-        stage('copy binaries from local rep and untar'){
+        stage('BUILD NUMBER of desired binaries') {
             when{
                 expression { repBuild == 'NO'}
-            }        
+            }            
             steps {
-                sh 'cp /home/jenkins/workspace/deployedArtifacts/* . \\n' +
-                   'ls -al \\n' +
-                   'tar -xzvf "${kieVersion}"_deployDir.tar.gz \\n' +
-                   'tar -xzvf ${kieVersion}"_jbpmWorkItems.tar.gz \\n' +
-                   'tar -xzvf ${kieVersion}"_optaplannerJavaDocs.tar.gz \\n' +
-                   'tar -xzvf ${kieVersion}"_optaplannerWB_es.tar.gz \\n' +
+                script {
+                    binariesNR = input id: 'binariesID', message: 'Which build number has the desired binaries \\n DBN (desired build number)', parameters: [string(defaultValue: '', description: '', name: 'DBN')]
+                    echo 'BUILD_NUMBER= ' + "$binariesNR"
+                }    
+            }
+        }
+        // the comminity-deploy-dir and other binaries and docs, saved in a previous build will be untared and are available for uploading them to filemgmt.jboss.org
+        stage('Pull binaries of previous build') {
+            when{
+                expression { repBuild == 'NO'}
+            } 
+            steps {
+                echo 'BUILD NUMBER= ' + "$binariesNR"
+                step([  $class: 'CopyArtifact',
+                    filter: '*.tar.gz',
+                    fingerprintArtifacts: true,
+                    projectName: '${JOB_NAME}',
+                    selector: [$class: 'SpecificBuildSelector', buildNumber: "$binariesNR"]
+                ])
+                sh 'tar -xzvf "${kieVersion}"_deployDir.tar.gz \\n' +
+                   'tar -xzvf "${kieVersion}"_jbpm*.tar.gz \\n' +
+                   'tar -xzvf "${kieVersion}"_optaplannerJava*.tar.gz \\n' +
+                   'tar -xzvf "${kieVersion}"_optaplannerWB*.tar.gz \\n' +
                    'ls -al'
+            }        
+        }
+        stage('Archive artifacts') {
+            when{
+                expression { repBuild == 'NO'}
+            }            
+            steps {
+                archiveArtifacts '*.tar.gz\'
             }
         }        
         stage('Create jbpm installers') {
@@ -360,6 +358,11 @@ pipelineJob("${folderPath}/community-release-pipeline-${baseBranch}") {
             name('m2Dir')
             defaultValue("${m2Dir}")
             description('Path to .m2/repository')
+        }
+        wHideParameterDefinition {
+            name('binariesNR')
+            defaultValue("${binariesNR}")
+            description('')
         }
     }
 
@@ -586,7 +589,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
     childCustomWorkspace("\${SHORT_COMBINATION}")
 
     logRotator {
-        numToKeep(10)
+        numToKeep(5)
     }
 
     wrappers {
