@@ -82,14 +82,7 @@ pipeline {
             steps {
               junit '**/target/*-reports/TEST-*.xml'    
             }
-        }        
-        stage ('Send mail') {
-            steps {
-                emailext body: 'prod daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
-                    'Please look here: ${BUILD_URL} \\n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'prod-daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com'
-            }    
-        }        
+        }                
         stage('Delete workspace when build is done') {
             steps {
                 cleanWs()
@@ -97,17 +90,24 @@ pipeline {
         }                
     }
     post {
-        failure{
-            script {
-                currentBuild.result = 'FAILURE\'
-            }            
-            emailext body: 'status of prod daily build #${BUILD_NUMBER} (${baseBranch} branch) was: ' + "${currentBuild.currentResult}" +  '\\n' +
-                    'Please look here: ${BUILD_URL} \\n' +
-                    ' \\n' +
-                    'Failed tests: ${BUILD_URL}/testReport \\n' +
-                    ' \\n' +                    
-                    '${BUILD_LOG, maxLines=750}', subject: 'prod-daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com\'
+        failure{           
+            emailext body: 'prod daily build #${BUILD_NUMBER} (${baseBranch} branch) was: ' + "${currentBuild.currentResult}" +  '\\n' +
+                'Please look here: ${BUILD_URL} \\n' +
+                ' \\n' +                 
+                '${BUILD_LOG, maxLines=750}', subject: 'prod-daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com'
         }
+        unstable{
+            emailext body: 'prod daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
+                'Please look here: ${BUILD_URL} \\n' +
+                ' \\n' +                
+                'Failed tests: ${BUILD_URL}/testReport \\n' +
+                ' \\n' +                 
+                '${BUILD_LOG, maxLines=750}', subject: 'prod-daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com'    
+        }
+        success{
+            emailext body: 'prod daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
+                'Please look here: ${BUILD_URL},subject: 'prod-daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}" to: 'mbiarnes@redhat.com, mnovotny@redhat.com'            
+        }        
     }    
 }
 '''
