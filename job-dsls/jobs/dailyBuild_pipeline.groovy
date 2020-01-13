@@ -96,17 +96,7 @@ pipeline {
             steps {
               junit '**/target/*-reports/TEST-*.xml'    
             }
-        }        
-        stage ('Send mail') {
-            steps {
-                emailext body: 'daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
-                    'Please look here: ${BUILD_URL} \\n' +
-                    ' \\n' +
-                    'Failed tests: ${BUILD_URL}/testReport \\n' +
-                    ' \\n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com'
-            }    
-        }        
+        }            
         stage('Unpack zip of artifacts to QA Nexus') {
             steps {
                 withCredentials([usernameColonPassword(credentialsId: 'unpacks-zip-on-qa-nexus', variable: 'kieUnpack')]) {
@@ -146,14 +136,26 @@ pipeline {
         }                                    
     }
     post {
-        failure{
-            script {
-                currentBuild.result = 'FAILURE\'
-            }            
-            emailext body: 'status of daily build #${BUILD_NUMBER} (${baseBranch} branch) was: ' + "${currentBuild.currentResult}" +  '\\n' +
+        failure{        
+            emailext body: 'daily build #${BUILD_NUMBER} (${baseBranch} branch) was: ' + "${currentBuild.currentResult}" +  '\\n' +
                     'Please look here: ${BUILD_URL} \\n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com\'
+                    ' \\n' +                    
+                    '${BUILD_LOG, maxLines=750}', subject: 'daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com'
         }
+        unstable{
+            emailext body: 'daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
+                    'Please look here: ${BUILD_URL} \\n' +
+                    ' \\n' +
+                    'Failed tests: ${BUILD_URL}/testReport \\n' +
+                    ' \\n' +
+                    '${BUILD_LOG, maxLines=750}', subject: 'daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig@redhat.com'
+            }    
+        }
+        success{
+            emailext body: 'daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
+                    'Please look here: ${BUILD_URL}, subject: 'daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'mbiarnes@redhat.com.com, mnovotny@redhat.com'
+            }             
+        }            
     }    
 }
 '''
