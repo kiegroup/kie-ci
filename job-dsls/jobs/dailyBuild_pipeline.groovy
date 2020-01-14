@@ -152,7 +152,7 @@ pipeline {
         }
         success{
             emailext body: 'daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
-                    'Please look here: ${BUILD_URL}', subject: 'daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'mbiarnes@redhat.com, mnovotny@redhat.com'             
+                    'Please look here: ${BUILD_URL}', subject: 'daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'             
         }            
     }    
 }
@@ -239,7 +239,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestCoverageMatrix") {
 
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml")
-        mailer('bsig@redhat.com', false, false)
+        mailer('kie-jenkins-builds@redhat.com', false, false)
         wsCleanup()
     }
 
@@ -313,7 +313,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestContainerMatrix") {
 
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml")
-        mailer('bsig@redhat.com', false, false)
+        mailer('kie-jenkins-builds@redhat.com', false, false)
         wsCleanup()
     }
 
@@ -417,7 +417,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
 
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml, **/target/screenshots/*")
-        mailer('bsig@redhat.com', false, false)
+        mailer('kie-jenkins-builds@redhat.com', false, false)
         wsCleanup()
     }
 
@@ -498,7 +498,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieServerMatrix") {
 
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml")
-        mailer('bsig@redhat.com', false, false)
+        mailer('kie-jenkins-builds@redhat.com', false, false)
         wsCleanup()
     }
 

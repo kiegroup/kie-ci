@@ -216,7 +216,7 @@ pipeline {
                     'KIE version: ' + "${kieVersion}" + '\\n' +
                     ' \\n' +
                     ' \\n' +                    
-                    '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} status and artefacts for sanity checks', to: 'bsig@redhat.com'
+                    '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} status and artefacts for sanity checks', to: 'kie-jenkins-builds@redhat.com'
             }    
         }
         stage ('2nd email send with BUILD result') {
@@ -246,7 +246,7 @@ pipeline {
                     'jbpm-server-distribution.zip: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/' + "${kieVersion}" + '\\n'+
                     ' \\n' +                    
                     ' \\n' +                    
-                    '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} re-build after sanity checks', to: 'bsig@redhat.com\'
+                    '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} re-build after sanity checks', to: 'kie-jenkins-builds@redhat.com\'
             }    
         }        
         stage('Approval (Point of NO return)') {
@@ -430,7 +430,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-jbpmTestCoverageMatrix"
 
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml")
-        mailer('bsig@redhat.com', false, false)
+        mailer('kie-jenkins-builds@redhat.com', false, false)
         wsCleanup()
     }
 
@@ -535,7 +535,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
 
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml, **/target/screenshots/*")
-        mailer('bsig@redhat.com', false, false)
+        mailer('kie-jenkins-builds@redhat.com', false, false)
         wsCleanup()
     }
 
@@ -619,7 +619,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
 
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml")
-        mailer('bsig@redhat.com', false, false)
+        mailer('kie-jenkins-builds@redhat.com', false, false)
         wsCleanup()
     }
 
