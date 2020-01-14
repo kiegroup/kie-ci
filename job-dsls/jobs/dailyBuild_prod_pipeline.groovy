@@ -106,7 +106,7 @@ pipeline {
         }
         success{
             emailext body: 'prod daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
-                'Please look here: ${BUILD_URL}', subject: 'prod-daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'mbiarnes@redhat.com, mnovotny@redhat.com'            
+                'Please look here: ${BUILD_URL}', subject: 'prod-daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'            
         }        
     }    
 }
