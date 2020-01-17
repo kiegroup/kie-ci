@@ -132,22 +132,22 @@ pipeline {
     }
     post {
         failure{        
-            emailext body: 'daily build #${BUILD_NUMBER} (${baseBranch} branch) was: ' + "${currentBuild.currentResult}" +  '\\n' +
+            emailext body: '${baseBranch}:daily-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\\n' +
                     'Please look here: ${BUILD_URL} \\n' +
                     ' \\n' +                    
-                    '${BUILD_LOG, maxLines=750}', subject: 'daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
+                    '${BUILD_LOG, maxLines=750}', subject: '${baseBranch}:daily-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
         }
         unstable{
-            emailext body: 'daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
+            emailext body: '${baseBranch}:daily-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\\n' +
                     'Please look here: ${BUILD_URL} \\n' +
                     ' \\n' +
                     'Failed tests: ${BUILD_URL}/testReport \\n' +
                     ' \\n' +
-                    '${BUILD_LOG, maxLines=750}', subject: 'daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'   
+                    '${BUILD_LOG, maxLines=750}', subject: '${baseBranch}:daily-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'   
         }
         success{
-            emailext body: 'daily build #${BUILD_NUMBER} of ${baseBranch} was:' + "${currentBuild.currentResult}" +  '\\n' +
-                    'Please look here: ${BUILD_URL}', subject: 'daily-build-${baseBranch} #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'             
+            emailext body: '${baseBranch}:daily-build #${BUILD_NUMBER} was:' + "${currentBuild.currentResult}" +  '\\n' +
+                    'Please look here: ${BUILD_URL}', subject: '${baseBranch}:daily-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'             
         }            
     }    
 }
