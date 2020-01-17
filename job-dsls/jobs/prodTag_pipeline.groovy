@@ -148,6 +148,14 @@ pipeline {
             }    
         }                                                     
     }
+    post {
+        failure{        
+            emailext body: 'Build of prod tag #${BUILD_NUMBER} of ${baseBranch} branch for ${TPB} failed \\n' +
+                    'Please look here: ${BUILD_URL} \\n' +
+                    ' \\n' +                    
+                    '${BUILD_LOG, maxLines=750}', subject: 'prod-tag-${baseBranch} for ${TPB}: ' + "${currentBuild.currentResult}", to: 'bxms-prod@redhat.com'
+        }
+    }       
 }
 '''
 
