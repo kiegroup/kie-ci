@@ -113,7 +113,7 @@ for (repoConfig in REPO_CONFIGS) {
                 orgWhitelist(["appformer", "kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
                 cron("H/5 * * * *")
-                triggerPhrase(".*[j|J]enkins,?.*execute compile downstream build.*")
+                triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) compile downstream build.*")
 
                 // execute build for drools and appformer by default
                 if ((repo != "drools") && (repo !="droolsjbpm-knowledge") && (repo != "appformer")) {
