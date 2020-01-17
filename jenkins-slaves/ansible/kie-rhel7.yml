@@ -16,7 +16,7 @@
     jdk_symlink_names: [jdk1.8, jdk9, jdk10, jdk11]
     firefox_short_versions: [45esr, 52esr, 60esr]
     firefox_long_versions: [45.9.0esr, 52.9.0esr, 60.2.0esr]
-    pme_version: 2.13.1
+    pme_version: 3.8.1
 
   roles:
     - common
