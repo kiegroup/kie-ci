@@ -29,7 +29,7 @@
 
 - name: Dowload PME extension
   get_url:
-    url: http://central.maven.org/maven2/org/commonjava/maven/ext/pom-manipulation-ext/{{pme_version}}/pom-manipulation-ext-{{pme_version}}.jar
+    url: https://repo.maven.apache.org/maven2/org/commonjava/maven/ext/pom-manipulation-cli/{{pme_version}}/pom-manipulation-cli-{{pme_version}}.jar
     dest: /opt/tools/pme
     owner: root
     group: root
@@ -38,8 +38,8 @@
 
 - name: Add PME extension to Maven
   file:
-    src: /opt/tools/pme/pom-manipulation-ext-{{pme_version}}.jar
-    dest: /opt/tools/apache-maven-{{ item }}/lib/ext/pom-manipulation-ext-{{pme_version}}.jar
+    src: /opt/tools/pme/pom-manipulation-cli-{{pme_version}}.jar
+    dest: /opt/tools/apache-maven-{{ item }}/lib/ext/pom-manipulation-cli-{{pme_version}}.jar
     state: link
     mode: 0644
   with_items:
