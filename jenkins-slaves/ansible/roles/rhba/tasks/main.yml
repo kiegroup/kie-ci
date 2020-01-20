@@ -34,6 +34,33 @@
     owner: root
     group: root
 
+### Download and install PiG/PFG ###
+
+- name: Install PNC CLI
+  command: "pip install pnc_cli"
+
+- name: Create tools directory for PiG
+  file:
+    path: /opt/tools/pig/product-files-generator
+    state: directory
+    recurse: yes
+    owner: root
+    group: root
+
+- name: Dowload PiG extension
+  get_url:
+    url: https://repository-basic.engineering.redhat.com/nexus/repository/jb-prod-tooling-releases/org/jboss/prod/prod-files-generator/{{pig_version}}/prod-files-generator-{{pig_version}}-shaded.jar
+    dest: /opt/tools/pig/product-files-generator
+    owner: root
+    group: root
+
+- name: Create PiG JAR symlinks
+  file:
+    src: /opt/tools/pig/product-files-generator/prod-files-generator-{{pig_version}}-shaded.jar
+    dest: /opt/tools/pig/product-files-generator.jar
+    state: link
+    mode: 0644
+
 ### Configure Maven ###
 
 - name: Add PME extension to Maven
@@ -71,35 +98,4 @@
     recurse: yes
     owner: jenkins
     group: jenkins
-
-### Download and Generate PiG/PFG ###
-
-- name: Install PNC CLI
-  command: "pip install pnc_cli"
-
-- name: Create tools directory for PiG
-  file:
-    path: /opt/tools/pig/product-files-generator
-    state: directory
-    recurse: yes
-    owner: root
-    group: root
-
-- name: Git SSL verify to False
-  command: "git config --global http.sslVerify false"
-
-- name: Clone Product Files Generator
-  command: "git clone https://gitlab.cee.redhat.com/middleware/product-files-generator.git /opt/tools/pig/product-files-generator"
-
-- name: Package Product Files Generator
-  command: "/qa/tools/opt/maven-3.6.0-prod/bin/mvn -f /opt/tools/pig/product-files-generator/pom.xml clean install -DskipTests=true -Dmaven.repo.local=/m2/70"
-  environment:
-    JAVA_HOME: /opt/tools/jdk1.8
-
-- name: Create Product Files Generator JAR symlinks
-  file:
-    src: /opt/tools/pig/product-files-generator/core/target/product-files-generator.jar
-    dest: /opt/tools/pig/product-files-generator.jar
-    state: link
-    mode: 0644
 ...
