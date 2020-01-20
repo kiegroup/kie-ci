@@ -51,6 +51,7 @@
   get_url:
     url: https://repository-basic.engineering.redhat.com/nexus/repository/jb-prod-tooling-releases/org/jboss/prod/prod-files-generator/{{pig_version}}/prod-files-generator-{{pig_version}}-shaded.jar
     dest: /opt/tools/pig/product-files-generator
+    validate_certs: False
     owner: root
     group: root
 
