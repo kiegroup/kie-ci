@@ -64,15 +64,6 @@
 
 ### Configure Maven ###
 
-- name: Add PME extension to Maven
-  file:
-    src: /opt/tools/pme/pom-manipulation-cli-{{pme_version}}.jar
-    dest: /opt/tools/apache-maven-{{ item }}/lib/ext/pom-manipulation-cli-{{pme_version}}.jar
-    state: link
-    mode: 0644
-  with_items:
-  - "{{ maven_versions }}"
-
 - name: Create qa tools directory
   file:
     path: /qa/tools/opt
