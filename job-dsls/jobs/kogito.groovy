@@ -12,6 +12,7 @@ def mainBranch="master"
 def ghOrgUnit=Constants.GITHUB_ORG_UNIT
 
 // creation of folder
+
 folder("kogito-deploy")
 
 def folderPath="kogito-deploy"

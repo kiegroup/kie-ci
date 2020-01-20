@@ -44,4 +44,5 @@ class Constants {
     static final String CEKIT_CACHE_LOCAL = ""
     static final String VERBOSE	= "false"
     static final String LOCAL_MVN_REP = "/home/jenkins/.m2/repository"
+    static final String KOGITO_PREFIX = "0.7.0"
 }
