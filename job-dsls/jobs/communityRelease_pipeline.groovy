@@ -49,6 +49,7 @@ pipeline {
                 }    
             }
         }
+        // checks if release branch already exists
         stage ('Check if branch exists') {
             steps{
                 sshagent(['kie-ci-user-key']) {
@@ -72,6 +73,7 @@ pipeline {
                 }
             }
         }
+        // if release branches doesn't exist they will be created
         stage('Create release branches') {
             when{
                 expression { branchExists == '0'}
@@ -82,11 +84,13 @@ pipeline {
                 }    
             }
         } 
+        // part of the Maven rep will be erased
         stage ('Remove M2') {
             steps {
                 sh "sh droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
             }
-        }                         
+        }
+        // poms will be upgraded to new version ($kieVersion)                         
         stage('Update versions') {
             when{
                 expression { branchExists == '0'}
@@ -106,6 +110,7 @@ pipeline {
                 sh 'sh droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$commitMsg" $kieVersion'
             }
         }
+        //release branches are pushed to github
         stage('Push release branches') {
             when{
                 expression { branchExists == '0'}
@@ -116,6 +121,7 @@ pipeline {
                 }    
             }
         }
+        // if the release branches already exist they will be fetched from github
         stage('Pull from existing release Branches') {
             when{
                 expression { branchExists == '1'}
@@ -126,7 +132,8 @@ pipeline {
                     sh 'sh droolsjbpm-build-bootstrap/script/git-all.sh checkout ' + "$releaseBranch"
                 }            
             }
-        }       
+        }
+        // mvn clean deploy of each repository to a locally directory that will be uploaded later on - this saves time        
         stage('Build & deploy repositories locally'){
             when{
                 expression { repBuild == 'YES'}
@@ -137,18 +144,30 @@ pipeline {
                 }
             }
         }
-        // the deployed repository will be compressed and copied to an directory outsite the workspace  
-        stage('tar.gz binaries & archive artifacts'){
+        // create a directory where the binaries to upload to filemgmt.jboss.org are stored 
+        stage('Create upload dir') {
+            when{
+                expression { repBuild == 'YES'}
+            }        
+            steps {
+                script {
+                    sh 'deployPath=$(pwd)'
+                    sh 'sh droolsjbpm-build-bootstrap/script/release/prepareUploadDir.sh $deployPath'
+                    sh 'cd "${kieVersion}"_uploadBinaries \\n' +
+                       'totSize=$(du -sh) \\n' +
+                       'echo "Total size of directory: " $totSize >> dirSize.txt \\n' +
+                       'echo "" >> dirSize.txt \\n' +
+                       'ls -l >> dirSize.txt'          
+                }
+            }        
+        }
+        // the directory of binaries will be compressed  
+        stage('tar.gz uploadDir & archive artifacts'){
             when{
                 expression { repBuild == 'YES'}
             }         
             steps {
-                sh 'tar -czvf "${kieVersion}"_deployDir.tar.gz community-deploy-dir \\n' +
-                   // some artifacts and docs are only available after a build in its /target directories
-                   // these binaries or docs will be compressed
-                   'tar -czvf "${kieVersion}"_jbpmWorkItems.tar.gz jbpm-work-items/repository/target/repository-${kieVersion}/* \\n' +
-                   'tar -czvf "${kieVersion}"_optaplannerJavaDocs.tar.gz optaplanner/optaplanner-distribution/target/optaplanner-distribution-${kieVersion}/optaplanner-distribution-${kieVersion}/javadocs/* \\n' +
-                   'tar -czvf "${kieVersion}"_optaplannerWB_es.tar.gz kie-docs/doc-content/optaplanner-wb-es-docs/target/generated-docs/* '
+                sh 'tar -czvf "${kieVersion}"_uploadBinaries.tar.gz "${kieVersion}"_uploadBinaries'
                 archiveArtifacts '*.tar.gz'        
             }
         }                           
@@ -160,6 +179,7 @@ pipeline {
               junit '**/target/*-reports/TEST-*.xml'    
             }
         }         
+        // binaries created in previous step will be uploaded to Nexus
         stage('Upload binaries to staging repository to Nexus') {
             when{
                 expression { repBuild == 'YES'}
@@ -170,6 +190,7 @@ pipeline {
                 }    
             }
         }
+        // additional tests in separate Jenkins jobs will be exucuted
         stage('Additional tests') {
             steps {
                 parallel (
@@ -184,7 +205,8 @@ pipeline {
                     }
                 )    
             } 
-        }               
+        }
+        // after a first build this email will be send               
         stage ('1st email send with BUILD result') {
             when{
                 expression { branchExists == '0' && repBuild == 'YES'}
@@ -219,6 +241,7 @@ pipeline {
                     '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} status and artefacts for sanity checks', to: 'kie-jenkins-builds@redhat.com'
             }    
         }
+        // if after sanity checks a second build is requested this mail will be send
         stage ('2nd email send with BUILD result') {
             when{
                 expression { branchExists == '1' && repBuild == 'YES'}
@@ -249,20 +272,24 @@ pipeline {
                     '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} re-build after sanity checks', to: 'kie-jenkins-builds@redhat.com\'
             }    
         }        
+        // user interaction required: continue or abort
         stage('Approval (Point of NO return)') {
             steps {
                 input message: 'Was the build stable enough to do a release', ok: 'Continue with releasing'
             }
         }
+        // the tags of the release will be created and pushed to github
         stage('Push community tag') {
             steps {
                 sh 'sh droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
             }
         }
+        // if a the pipeline job was executed again but without building the binaries from uploading to filemgmt.jboss.org are needed
         stage('BUILD NUMBER of desired binaries') {
             when{
                 expression { repBuild == 'NO'}
-            }            
+            }
+            //interactive step: user should select the BUILD Nr of the rtifacts to restore            
             steps {
                 script {
                     binariesNR = input id: 'binariesID', message: 'Which build number has the desired binaries \\n DBN (desired build number)', parameters: [string(defaultValue: '', description: '', name: 'DBN')]
@@ -270,7 +297,7 @@ pipeline {
                 }    
             }
         }
-        // the comminity-deploy-dir and other binaries and docs, saved in a previous build will be untared and are available for uploading them to filemgmt.jboss.org
+        // binaries to upload to filemgmt.jbosss.org, saved in a previous build will be untared
         stage('Pull binaries of previous build') {
             when{
                 expression { repBuild == 'NO'}
@@ -283,10 +310,7 @@ pipeline {
                     projectName: '${JOB_NAME}',
                     selector: [$class: 'SpecificBuildSelector', buildNumber: "$binariesNR"]
                 ])
-                sh 'tar -xzvf "${kieVersion}"_deployDir.tar.gz \\n' +
-                   'tar -xzvf "${kieVersion}"_jbpm*.tar.gz \\n' +
-                   'tar -xzvf "${kieVersion}"_optaplannerJava*.tar.gz \\n' +
-                   'tar -xzvf "${kieVersion}"_optaplannerWB*.tar.gz \\n' +
+                sh 'tar -xzvf "${kieVersion}"_uploadBinaries.tar.gz \\n' +
                    'ls -al'
             }        
         }
@@ -295,7 +319,7 @@ pipeline {
                 expression { repBuild == 'NO'}
             }            
             steps {
-                archiveArtifacts '*.tar.gz\'
+                archiveArtifacts '*.tar.gz'
             }
         }        
         stage('Create jbpm installers') {
@@ -364,11 +388,15 @@ pipelineJob("${folderPath}/community-release-pipeline-${baseBranch}") {
             defaultValue("${binariesNR}")
             description('')
         }
+        wHideParameterDefinition {
+            name('deployPath')
+            defaultValue('')
+            description('')
+        }
     }
 
     logRotator {
-        numToKeep(10)
-        daysToKeep(10)
+        numToKeep(3)
     }
 
     definition {
