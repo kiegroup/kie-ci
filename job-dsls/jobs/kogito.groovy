@@ -12,10 +12,10 @@ def mainBranch="master"
 def ghOrgUnit=Constants.GITHUB_ORG_UNIT
 
 // creation of folder
+folder("kogito")
+folder("kogito/kogito-deploy")
 
-folder("kogito-deploy")
-
-def folderPath="kogito-deploy"
+def folderPath="kogito/kogito-deploy"
 
 def kogitoPipeline = ''' 
 pipeline {
@@ -60,7 +60,7 @@ pipeline {
    }
 }'''
 
-pipelineJob("$folderPath/kogito-pipeline-${mainBranch}") {
+pipelineJob("$folderPath/kogito-deploy-pipeline-${mainBranch}") {
 
     description("pipeline for all relevant kogito projects build")
 

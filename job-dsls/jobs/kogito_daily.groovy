@@ -104,7 +104,7 @@ pipeline {
 }
 '''
 
-pipelineJob("${folderPath}/kogito-daily-build-pipeline") {
+pipelineJob("${folderPath}/kogito-daily-build-pipeline-${baseBranch}") {
 
     description('this is a pipeline job for the daily build of all reps')
 
