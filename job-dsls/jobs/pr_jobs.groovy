@@ -253,7 +253,7 @@ for (repoConfig in REPO_CONFIGS) {
                     project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.UpstreamReposBuilder' {
                         mavenBuildConfig {
                             mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
-                            delegate.mavenOpts("-Xmx3g")
+                            delegate.mavenOpts("-Xmx4g")
                             mavenArgs(get("upstreamMvnArgs"))
                         }
                     }
@@ -269,7 +269,7 @@ for (repoConfig in REPO_CONFIGS) {
             if  (repo == "droolsjbpm-integration") {
                 maven {
                     mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
-                    mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:gclog")
+                    mavenOpts("-Xms1g -Xmx4g -XX:+CMSClassUnloadingEnabled -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:gclog")
                     goals(mavenGoals)
                     properties(get("mvnProps"))
                     providedSettings("settings-local-maven-repo-nexus")
@@ -278,7 +278,7 @@ for (repoConfig in REPO_CONFIGS) {
             } else {
                 maven {
                         mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
-                        mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
+                        mavenOpts("-Xms1g -Xmx4g -XX:+CMSClassUnloadingEnabled")
                         goals(mavenGoals)
                         properties(get("mvnProps"))
                         providedSettings("settings-local-maven-repo-nexus")
@@ -290,7 +290,7 @@ for (repoConfig in REPO_CONFIGS) {
             if (repo in SONARCLOUD_ENABLED_REPOSITORIES) { // additional maven build step to report results to SonarCloud
                 maven {
                     mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
-                    mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
+                    mavenOpts("-Xms1g -Xmx4g -XX:+CMSClassUnloadingEnabled")
                     goals("-B -e -nsu -fae generate-resources -Psonarcloud-analysis")
                     providedSettings("settings-local-maven-repo-nexus")
                 }
