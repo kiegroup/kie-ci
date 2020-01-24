@@ -126,7 +126,7 @@ for (repoConfig in REPO_CONFIGS) {
                 orgWhitelist(["appformer", "kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
                 cron("H/5 * * * *")
-                triggerPhrase(".*[j|J]enkins,?.*execute full downstream build.*")
+                triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) full downstream build.*")
                 onlyTriggerPhrase()
                 whiteListTargetBranches([repoBranch])
                 extensions {
