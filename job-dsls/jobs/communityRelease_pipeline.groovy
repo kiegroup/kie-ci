@@ -151,8 +151,7 @@ pipeline {
             }        
             steps {
                 script {
-                    sh 'deployPath=$(pwd)'
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/prepareUploadDir.sh $deployPath'
+                    sh 'sh droolsjbpm-build-bootstrap/script/release/prepareUploadDir.sh'
                     sh 'cd "${kieVersion}"_uploadBinaries \\n' +
                        'totSize=$(du -sh) \\n' +
                        'echo "Total size of directory: " $totSize >> dirSize.txt \\n' +
@@ -386,11 +385,6 @@ pipelineJob("${folderPath}/community-release-pipeline-${baseBranch}") {
         wHideParameterDefinition {
             name('binariesNR')
             defaultValue("${binariesNR}")
-            description('')
-        }
-        wHideParameterDefinition {
-            name('deployPath')
-            defaultValue('')
             description('')
         }
     }
