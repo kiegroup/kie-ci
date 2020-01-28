@@ -17,6 +17,8 @@ cd job-dsls
 
 job("a-seed-job") {
 
+    disabled()
+
     description("this job creates all needed Jenkins jobs")
 
     label("kieci-02-docker")

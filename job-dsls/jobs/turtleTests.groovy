@@ -45,6 +45,8 @@ for (repoConfig in REPO_CONFIGS) {
 
     mavenJob(jobName) {
 
+        disabled()
+
         description(get("jobDesc"))
 
         logRotator {
