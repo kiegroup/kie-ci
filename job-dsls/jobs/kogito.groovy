@@ -115,7 +115,7 @@ job("${folderPath}/kogito-bom-${mainBranch}") {
         stringParam("ghOrgUnit", "${ghOrgUnit}", "Name of organization. This will be usually set automatically by the parent trigger job. ")
     }
 
-    label('submarine-static')
+    label('kogito-static')
 
     logRotator {
         numToKeep(10)
@@ -186,7 +186,7 @@ job("${folderPath}/kogito-runtimes-${mainBranch}") {
         stringParam("ghOrgUnit", "${ghOrgUnit}", "Name of organization. This will be usually set automatically by the parent trigger job. ")
     }
 
-    label('submarine-static')
+    label('kogito-static')
 
     logRotator {
         numToKeep(10)
@@ -258,7 +258,7 @@ job("${folderPath}/kogito-cloud-${mainBranch}") {
         stringParam("ghOrgUnit", "${ghOrgUnit}", "Name of organization. This will be usually set automatically by the parent trigger job. ")
     }
 
-    label('submarine-static')
+    label('kogito-static')
 
     logRotator {
         numToKeep(10)
@@ -408,7 +408,7 @@ job("${folderPath}/kogito-examples-${mainBranch}") {
         stringParam("ghOrgUnit", "${ghOrgUnit}", "Name of organization. This will be usually set automatically by the parent trigger job. ")
     }
 
-    label('submarine-static')
+    label('kogito-static')
 
     logRotator {
         numToKeep(10)
