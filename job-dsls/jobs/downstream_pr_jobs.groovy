@@ -168,17 +168,25 @@ for (repoConfig in REPO_CONFIGS) {
                         mavenArgs(get("upstreamMvnArgs"))
                     }
                 }
-                project / 'builders' << 'hudson.tasks.Maven' {
-                    mavenName("kie-maven-${Constants.MAVEN_VERSION}")
-                    jvmOptions("-Xms1g -Xmx4g -XX:+CMSClassUnloadingEnabled")
-                    targets("-e -fae -nsu -B -T1C clean install -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Dfull -DskipTests")
+                if (repo != "kie-wb-common") {
+                    project / 'builders' << 'hudson.tasks.Maven' {
+                        mavenName("kie-maven-${Constants.MAVEN_VERSION}")
+                        jvmOptions("-Xms1g -Xmx4g -XX:+CMSClassUnloadingEnabled")
+                        targets("-e -fae -nsu -B -T1C clean install -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Dfull -DskipTests")
+                    }
+                } else {
+                    project / 'builders' << 'hudson.tasks.Maven' {
+                        mavenName("kie-maven-${Constants.MAVEN_VERSION}")
+                        jvmOptions("-Xms1g -Xmx11g -XX:+CMSClassUnloadingEnabled")
+                        targets("-e -fae -nsu -B clean install -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Dfull -DskipTests")
+                    }
                 }
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
-                    mavenBuildConfig {
-                        mavenHome("/opt/tools/apache-maven-${Constants.MAVEN_VERSION}")
-                        delegate.mavenOpts("-Xmx4g")
-                        mavenArgs(get("downstreamMvnGoals") + " " + get("downstreamMvnProps").collect { k, v -> "-D$k=$v" }.join(" "))
-                    }
+                        mavenBuildConfig {
+                            mavenHome("/opt/tools/apache-maven-${Constants.MAVEN_VERSION}")
+                            delegate.mavenOpts("-Xmx4g")
+                            mavenArgs(get("downstreamMvnGoals") + " " + get("downstreamMvnProps").collect { k, v -> "-D$k=$v" }.join(" "))
+                        }
                 }
             }
         }
