@@ -166,7 +166,7 @@ pipelineJob("${folderPath}/prod-tag-pipeline-${baseBranch}") {
 
 
     parameters{
-        stringParam("kieVersion", "${kieVersion}", "Please edit the version of kie i.e 7.26.1.2019.09.26.prod ")
+        stringParam("kieVersion", "${kieVersion}", "Please edit the version of kie i.e 7.26.1.20190926-prod ")
         stringParam("baseBranch", "${baseBranch}", "Please edit the name of the kie branch ")
         stringParam("organization", "${organization}", "Please edit the name of organization.")
         stringParam("tagName", "${tagName}", "Please edit name of the prod tag - i.e. sync-XXX-yyyy.dd.mm ")
