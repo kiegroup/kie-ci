@@ -20,7 +20,7 @@ class Constants {
     static final String MAVEN_VERSION = "3.5.2"
     static final String UPSTREAM_BUILD_MAVEN_VERSION = "3.5.2"
     static final String JDK_VERSION = "kie-jdk1.8"
-    static final String BRANCH = "master"
+    static final String BRANCH = "7.33.x"
     static final String GITHUB_ORG_UNIT = "kiegroup"
     static final String PULL_REQUEST_FOLDER = "pullrequest"
     static final String DEPLOY_FOLDER = "deployedRep"
