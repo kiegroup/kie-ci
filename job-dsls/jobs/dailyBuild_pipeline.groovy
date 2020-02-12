@@ -416,7 +416,8 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
     }
 
     publishers {
-        archiveJunit("**/target/*-reports/TEST-*.xml, **/target/screenshots/*")
+        archiveJunit("**/target/*-reports/TEST-*.xml")
+        archiveArtifacts("**/target/screenshots/*")
         mailer('kie-jenkins-builds@redhat.com', false, false)
         wsCleanup()
     }
