@@ -331,7 +331,12 @@ for (repoConfig in REPO_CONFIGS) {
                     failure{
                         subject('PR build FAILED: $JOB_BASE_NAME #$ghprbPullId')
 
-                        content('$ghprbPullTitle \nPlease go to $BUILD_URL \n(IMPORTANT: you need have access to Red Hat VPN to access this link) \n\n${BUILD_LOG_REGEX, regex="(?i)\\\\b(error|exception|fatal|fail(ed|ure)|un(defined|resolved))\\\\b", linesBefore=500, linesAfter=250} \n\n${FAILED_TESTS}')
+                        content('$ghprbPullTitle \nPlease go to $BUILD_URL \n\n' +
+                                'IMPORTANT: you need have access to Red Hat VPN to access this link \n' +
+                                'OTHERWISE: see attached zipped log')
+
+                        attachBuildLog()
+                        compressBuildLog ()
 
                         sendTo {
                             recipientList()
@@ -340,7 +345,12 @@ for (repoConfig in REPO_CONFIGS) {
                     unstable {
                         subject('PR build UNSTABLE: $JOB_BASE_NAME #$ghprbPullId')
 
-                        content('$ghprbPullTitle \nPlease go to $BUILD_URL \n(IMPORTANT: you need have access to Red Hat VPN to access this link) \n\n${BUILD_LOG_REGEX, regex="(?i)\\\\b(error|exception|fatal|fail(ed|ure)|un(defined|resolved))\\\\b", linesBefore=500, linesAfter=250} \n\n${FAILED_TESTS}')
+                        content('$ghprbPullTitle \nPlease go to $BUILD_URL \n\n' +
+                                'IMPORTANT: you need have access to Red Hat VPN to access this link \n' +
+                                'OTHERWISE: see attached zipped log')
+
+                        attachBuildLog()
+                        compressBuildLog ()
 
                         sendTo {
                             recipientList()
