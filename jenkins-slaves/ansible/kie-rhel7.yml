@@ -17,6 +17,11 @@
     firefox_short_versions: [45esr, 52esr, 60esr]
     firefox_long_versions: [45.9.0esr, 52.9.0esr, 60.2.0esr]
     pme_version: 3.8.1
+    jenkins_script_security_approved_signatures_present:
+      - method java.util.regex.Matcher find
+      - method org.yaml.snakeyaml.Yaml load java.lang.String
+      - new java.util.Properties
+      - new org.yaml.snakeyaml.Yaml    
 
   roles:
     - common
