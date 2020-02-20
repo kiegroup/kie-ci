@@ -22,7 +22,8 @@
       - method java.util.regex.Matcher find
       - method org.yaml.snakeyaml.Yaml load java.lang.String
       - new java.util.Properties
-      - new org.yaml.snakeyaml.Yaml    
+      - new org.yaml.snakeyaml.Yaml
+      - staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.lang.Object java.lang.String
 
   roles:
     - common
