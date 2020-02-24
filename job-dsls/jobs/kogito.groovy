@@ -31,14 +31,14 @@ pipeline {
                }
            }     
        }
-       stage('kogito-bom') {
-           steps {
-               build job: "kogito-bom-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
-           }
-       }
        stage('kogito-runtimes') {
            steps {
                build job: "kogito-runtimes-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
+           }
+       }
+       stage('kogito-apps') {
+           steps {
+               build job: "kogito-apps-${mainBranch}", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'mainBranch', value: mainBranch], [$class: 'StringParameterValue', name: 'ghOrgUnit', value: ghOrgUnit]] 
            }
        }
        stage('kogito-cloud') {
@@ -92,23 +92,23 @@ pipelineJob("$folderPath/kogito-pipeline-${mainBranch}") {
 
 }
 
-// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys kogito-bom ++++++++++++++++++++++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++++++++++++++ Build and deploys kogito-apps ++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// definition of kogito-bom script
+// definition of kogito-apps script
 def kogitoBom='''#!/bin/bash -e
-# removing kogito-bom artifacts from local maven repo (basically all possible SNAPSHOTs)
+# removing kogito-apps artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
-  rm -rf $MAVEN_REPO_LOCAL/org/kie/kogito-bom/
+  rm -rf $MAVEN_REPO_LOCAL/org/kie/kogito-apps/
 fi
-# clone the kogito-bom repository
-git clone https://github.com/$ghOrgUnit/kogito-bom.git -b $mainBranch --depth 50
+# clone the kogito-apps repository
+git clone https://github.com/$ghOrgUnit/kogito-apps.git -b $mainBranch --depth 50
 # build the project
-cd kogito-bom
+cd kogito-apps
 mvn -U -B -e clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE '''
 
 
-job("${folderPath}/kogito-bom-${mainBranch}") {
-    description("build project kogito-bom")
+job("${folderPath}/kogito-apps-${mainBranch}") {
+    description("build project kogito-apps")
 
     parameters {
         stringParam("mainBranch", "${mainBranch}", "Branch to clone. This will be usually set automatically by the parent trigger job. ")
@@ -141,7 +141,7 @@ job("${folderPath}/kogito-bom-${mainBranch}") {
 
     publishers {
         mailer('mbiarnes@redhat.com', false, false)
-        mailer('mswiders@redhat.com', false, false)
+        mailer('cnicolai@redhat.com', false, false)
         wsCleanup()
     }
 
@@ -213,7 +213,7 @@ job("${folderPath}/kogito-runtimes-${mainBranch}") {
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
-        mailer('mswiders@redhat.com', false, false)
+        mailer('cnicolai@redhat.com', false, false)
         wsCleanup()
     }
 
@@ -240,11 +240,11 @@ job("${folderPath}/kogito-runtimes-${mainBranch}") {
 
 // definition of kogito-cloud script
 def kogitoCloud='''#!/bin/bash -e
-# removing kogito-runtimes artifacts from local maven repo (basically all possible SNAPSHOTs)
+# removing kogito-cloud artifacts from local maven repo (basically all possible SNAPSHOTs)
 if [ -d $MAVEN_REPO_LOCAL ]; then
   rm -rf $MAVEN_REPO_LOCAL/org/kie/kogito-cloud/
 fi
-# clone the kogito-bom repository
+# clone the kogito-cloud repository
 git clone https://github.com/$ghOrgUnit/kogito-cloud.git -b $mainBranch --depth 50
 # build the project
 cd kogito-cloud
@@ -285,7 +285,7 @@ job("${folderPath}/kogito-cloud-${mainBranch}") {
     publishers {
         archiveJunit("**/target/*-reports/TEST-*.xml")
         mailer('mbiarnes@redhat.com', false, false)
-        mailer('mswiders@redhat.com', false, false)
+        mailer('cnicolai@redhat.com', false, false)
         wsCleanup()
     }
 
@@ -339,7 +339,7 @@ job("${folderPath}/kogito-cloud-s2i-images-${mainBranch}") {
 
     publishers {
         mailer('mbiarnes@redhat.com', false, false)
-        mailer('mswiders@redhat.com', false, false)
+        mailer('cnicolai@redhat.com', false, false)
         mailer('fspolti@redhat.com', false, false)
         mailer('zanini@redhat.com', false, false)
         wsCleanup()
@@ -393,7 +393,7 @@ def kogitoExamples='''#!/bin/bash -e
 if [ -d $MAVEN_REPO_LOCAL ]; then
   rm -rf $MAVEN_REPO_LOCAL/org/kie/kogito-examples
 fi
-# clone the kogito-bom repository
+# clone the kogito-examples repository
 git clone https://github.com/$ghOrgUnit/kogito-examples.git -b $mainBranch --depth 50
 # build the project
 cd kogito-examples
@@ -434,7 +434,7 @@ job("${folderPath}/kogito-examples-${mainBranch}") {
 
     publishers {
         mailer('mbiarnes@redhat.com', false, false)
-        mailer('mswiders@redhat.com', false, false)
+        mailer('cnicolai@redhat.com', false, false)
         wsCleanup()
     }
 
