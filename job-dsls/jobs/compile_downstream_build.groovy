@@ -92,6 +92,7 @@ for (repoConfig in REPO_CONFIGS) {
                     cloneOptions {
                         reference("/home/jenkins/git-repos/${repo}.git")
                     }
+                    relativeTargetDirectory("${repo}")
                 }
             }
         }
@@ -163,6 +164,7 @@ for (repoConfig in REPO_CONFIGS) {
                 project / 'builders' << 'hudson.tasks.Maven' {
                     mavenName("kie-maven-${Constants.MAVEN_VERSION}")
                     jvmOptions("-Xms1g -Xmx4g -XX:+CMSClassUnloadingEnabled")
+                    pom("${repo}")
                     targets("-e -fae -nsu -B -T1C clean install -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Dfull -DskipTests")
                 }
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
