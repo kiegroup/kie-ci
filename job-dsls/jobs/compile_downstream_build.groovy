@@ -92,7 +92,6 @@ for (repoConfig in REPO_CONFIGS) {
                     cloneOptions {
                         reference("/home/jenkins/git-repos/${repo}.git")
                     }
-                    relativeTargetDirectory("${repo}")
                 }
             }
         }
