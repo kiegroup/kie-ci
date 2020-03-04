@@ -59,7 +59,6 @@ job("a-seed-job") {
                     "job-dsls/jobs/**/downstream_pr_jobs.groovy\n" +
                     "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
                     "job-dsls/jobs/**/kie_jenkinsScripts_PR.groovy\n" +
-                    "job-dsls/jobs/**/kogito.groovy\n" +
                     "job-dsls/jobs/**/pr_jobs.groovy\n" +
                     "job-dsls/jobs/**/prodTag_pipeline.groovy\n" +
                     "job-dsls/jobs/**/seed_job.groovy\n" +
