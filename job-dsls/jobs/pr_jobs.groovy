@@ -179,6 +179,7 @@ for (repoConfig in REPO_CONFIGS) {
                     cloneOptions {
                         reference("/home/jenkins/git-repos/${repo}.git")
                     }
+                    relativeTargetDirectory("${repo}")
                 }
             }
         }
@@ -273,6 +274,7 @@ for (repoConfig in REPO_CONFIGS) {
                     goals(mavenGoals)
                     properties(get("mvnProps"))
                     providedSettings("settings-local-maven-repo-nexus")
+                    rootPOM("${repo}")
                 }
 
             } else {
@@ -282,6 +284,7 @@ for (repoConfig in REPO_CONFIGS) {
                         goals(mavenGoals)
                         properties(get("mvnProps"))
                         providedSettings("settings-local-maven-repo-nexus")
+                        rootPOM("${repo}")
                     }
              }
 
@@ -293,6 +296,7 @@ for (repoConfig in REPO_CONFIGS) {
                     mavenOpts("-Xms1g -Xmx4g -XX:+CMSClassUnloadingEnabled")
                     goals("-B -e -nsu -fae generate-resources -Psonarcloud-analysis")
                     providedSettings("settings-local-maven-repo-nexus")
+                    rootPOM("${repo}")
                 }
             }
         }
