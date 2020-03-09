@@ -286,6 +286,24 @@ pipeline {
                 sh 'sh droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
             }
         }
+        stage ('Send email to BSIG') {
+            steps {
+                emailext body: 'The community ${kieVersion} was released. \\n' +
+                ' \\n' +
+                'The tags are pushed and the binaries for the webs were uploaded to filemgmt.jboss.org. \\n' +
+                ' \\n' +
+                ' \\n' +
+                'You can download the artefacts..: \\n' +
+                ' \\n' +
+                'business-central artifacts: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/ \\n' +
+                'business-central-webapp: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central-webapp/$kieVersion/ \\n' +
+                'business-monitoring-webapp: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/kieVersion/ \\n' +
+                'jbpm-server-distribution (single zip): https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
+                 '\\n' +
+                 'Component version:\\n' +
+                 'kie = $kieVersion', subject: 'community-release-${baseBranch} $kieVersion was released', to: 'bsig@redhat.com\'
+            }
+        }         
         // if a the pipeline job was executed again but without building the binaries from uploading to filemgmt.jboss.org are needed
         stage('BUILD NUMBER of desired binaries') {
             when{
@@ -335,25 +353,7 @@ pipeline {
                     sh 'sh droolsjbpm-build-bootstrap/script/release/10_uploadBinariesToFilemgmt.sh'
                 }    
             }
-        }
-        stage ('Send email to BSIG') {
-            steps {
-                emailext body: 'The community ${kieVersion} was released. \\n' +
-                ' \\n' +
-                'The tags are pushed and the binaries for the webs were uploaded to filemgmt.jboss.org. \\n' +
-                ' \\n' +
-                ' \\n' +
-                'You can download the artefacts..: \\n' +
-                ' \\n' +
-                'business-central artifacts: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/ \\n' +
-                'business-central-webapp: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central-webapp/$kieVersion/ \\n' +
-                'business-monitoring-webapp: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/kieVersion/ \\n' +
-                'jbpm-server-distribution (single zip): https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
-                 '\\n' +
-                 'Component version:\\n' +
-                 'kie = $kieVersion', subject: 'community-release-${baseBranch} $kieVersion was released', to: 'bsig@redhat.com'
-            }
-        }                                                                        
+        }                                                                      
     }
 }
 '''
