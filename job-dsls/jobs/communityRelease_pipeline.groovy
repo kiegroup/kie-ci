@@ -192,6 +192,9 @@ pipeline {
         // additional tests in separate Jenkins jobs will be exucuted
         stage('Additional tests') {
             steps {
+            when{
+                expression { repBuild == 'YES'}
+            }            
                 parallel (
                     "community-release-jbpmTestCoverageMatrix" : {
                         build job: "community-release-${baseBranch}-jbpmTestCoverageMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
