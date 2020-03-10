@@ -96,7 +96,10 @@ def final REPO_CONFIGS = [
         ],
         "kie-wb-common"             : [
                 timeoutMins: 120,
-                label: "kie-rhel7 && kie-mem16g"
+                label: "kie-rhel7 && kie-mem16g && gui-testing",
+                mvnProps          : DEFAULTS["mvnProps"] + [
+                        "webdriver.firefox.bin"    : "/opt/tools/firefox-60esr/firefox-bin"
+                ],
         ],
         "drools-wb"                 : [
                 label: "kie-rhel7 && kie-mem16g"
@@ -152,7 +155,6 @@ for (repoConfig in REPO_CONFIGS) {
     // jobs for master branch don't use the branch in the name
     String jobName = (repoBranch == "master") ? Constants.PULL_REQUEST_FOLDER + "/$repo-pullrequests" : Constants.PULL_REQUEST_FOLDER + "/$repo-pullrequests-$repoBranch"
     job(jobName) {
-        
 
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
                     |
@@ -223,7 +225,7 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         wrappers {
-            if (repo == "kie-wb-distributions") {
+            if (repo == "kie-wb-distributions" || repo == "kie-wb-common") {
                 xvnc {
                     useXauthority(false)
                 }
