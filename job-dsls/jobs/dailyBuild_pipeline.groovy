@@ -345,15 +345,22 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestContainerMatrix") {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //  run additional test: kieWbTestsMatrix
 def kieWbTest='''#!/bin/bash -e
-echo "KIE version $kieVersion"
-# wget the tar.gz sources
+echo "KIE version $kieVersion - kie-wb-distributions"
 wget -q http://\${LOCAL_NEXUS_IP}:8081/nexus/content/repositories/kieAllBuild-$baseBranch/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
+rm sources.tar.gz
 mv kie-wb-distributions-$kieVersion/* .
-rmdir kie-wb-distributions-$kieVersion'''
+rmdir kie-wb-distributions-$kieVersion
+
+echo "KIE version $kieVersion - kie-wb-common"
+wget -q http://\\${LOCAL_NEXUS_IP}:8081/nexus/content/repositories/kieAllBuild-$baseBranch/org/kie/kie-wb-common/$kieVersion/kie-wb-common-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+tar xzf sources.tar.gz
+rm sources.tar.gz
+mv kie-wb-common-$kieVersion/* .
+rmdir kie-wb-common-$kieVersion'''
 
 matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
-    description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
+    description("This job: <br> - Runs the KIE wb integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
@@ -431,6 +438,14 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
             properties("maven.test.failure.ignore": true)
             properties("deployment.timeout.millis":"240000")
             properties("container.startstop.timeout.millis":"240000")
+            properties("webdriver.firefox.bin":"/opt/tools/firefox-60esr/firefox-bin")
+            mavenOpts("-Xms1024m -Xmx1536m")
+            providedSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e")
+        }
+        maven{
+            mavenInstallation("${mvnVersion}")
+            goals("-nsu -B -e -fae clean verify")
+            rootPOM("kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/pom.xml")
             properties("webdriver.firefox.bin":"/opt/tools/firefox-60esr/firefox-bin")
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e")
