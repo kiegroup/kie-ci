@@ -353,7 +353,7 @@ mv kie-wb-distributions-$kieVersion/* .
 rmdir kie-wb-distributions-$kieVersion
 
 echo "KIE version $kieVersion - kie-wb-common"
-wget -q http://\\${LOCAL_NEXUS_IP}:8081/nexus/content/repositories/kieAllBuild-$baseBranch/org/kie/kie-wb-common/$kieVersion/kie-wb-common-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q http://\\${LOCAL_NEXUS_IP}:8081/nexus/content/repositories/kieAllBuild-$baseBranch/org/kie/workbench/kie-wb-common/$kieVersion/kie-wb-common-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 rm sources.tar.gz
 mv kie-wb-common-$kieVersion/* .
@@ -444,7 +444,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
         }
         maven{
             mavenInstallation("${mvnVersion}")
-            goals("-nsu -B -e -fae clean verify")
+            goals("-nsu -B -e -fae clean verify -Dintegration-tests=true")
             rootPOM("kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/pom.xml")
             properties("webdriver.firefox.bin":"/opt/tools/firefox-60esr/firefox-bin")
             mavenOpts("-Xms1024m -Xmx1536m")

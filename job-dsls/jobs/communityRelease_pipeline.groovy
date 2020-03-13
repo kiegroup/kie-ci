@@ -489,10 +489,17 @@ def kieWbTest='''#!/bin/bash -e
 wget -q https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz  -O sources.tar.gz
 tar xzf sources.tar.gz
 mv kie-wb-distributions-$kieVersion/* .
-rmdir kie-wb-distributions-$kieVersion'''
+rmdir kie-wb-distributions-$kieVersion
+
+echo "KIE version $kieVersion - kie-wb-common"
+wget -q https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/workbench/kie-wb-common/$kieVersion/kie-wb-common-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+tar xzf sources.tar.gz
+rm sources.tar.gz
+mv kie-wb-common-$kieVersion/* .
+rmdir kie-wb-common-$kieVersion'''
 
 matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
-    description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
+    description("This job: <br> - Runs the KIE WB integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
@@ -574,6 +581,14 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
             properties("maven.test.failure.ignore": true)
             properties("deployment.timeout.millis":"240000")
             properties("container.startstop.timeout.millis":"240000")
+            properties("webdriver.firefox.bin":"/opt/tools/firefox-60esr/firefox-bin")
+            mavenOpts("-Xms1024m -Xmx1536m")
+            providedSettings("3f317dd7-4d08-4ee4-b9bb-969c309e782c")
+        }
+        maven{
+            mavenInstallation("${mvnVersion}")
+            goals("-nsu -B -e -fae clean verify -Dintegration-tests=true")
+            rootPOM("kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/pom.xml")
             properties("webdriver.firefox.bin":"/opt/tools/firefox-60esr/firefox-bin")
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("3f317dd7-4d08-4ee4-b9bb-969c309e782c")
