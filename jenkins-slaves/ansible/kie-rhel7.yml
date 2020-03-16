@@ -31,7 +31,6 @@
     - kogito
     - rhba
     - rhba-osbs
-    - rhba-sourceclear-integration
 
   tasks:
   ### Clean up ###
