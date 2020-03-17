@@ -55,9 +55,7 @@ def final REPO_CONFIGS = [
         //"droolsjbpm-tools"          : [], // no other repo depends on droolsjbpm-tools
         "kie-uberfire-extensions"   : [],
         "kie-wb-playground"         : [],
-        "kie-wb-common"             : [
-                label                  : "kie-rhel7&&kie-mem24g&&gui-testing"
-        ],
+        "kie-wb-common"             : [],
         "drools-wb"                 : [],
         "optaplanner-wb"            : [],
         "jbpm-designer"             : [],
