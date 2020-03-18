@@ -60,6 +60,7 @@
     src: /opt/tools/pig/product-files-generator/prod-files-generator-{{pig_version}}-shaded.jar
     dest: /opt/tools/pig/product-files-generator.jar
     state: link
+    follow: no
     mode: 0644
 
 ### Configure Maven ###
@@ -77,6 +78,7 @@
     src: /opt/tools/apache-maven-{{ item }}
     dest: /qa/tools/opt/maven-{{ item }}-prod
     state: link
+    follow: no
     mode: 0644
   with_items:
   - "{{ maven_versions }}"

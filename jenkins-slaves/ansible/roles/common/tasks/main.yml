@@ -90,8 +90,8 @@
     src: /tmp/downloads/jdk-{{ item }}-linux-x64.tar.gz
     dest: /opt/tools
     copy: no
-    # owner: root
-    # group: root
+    owner: root
+    group: root
   with_items:
    - "{{ jdk_short_versions }}"
 
@@ -100,6 +100,7 @@
     src: /opt/tools/{{ item.0 }}
     dest: /opt/tools/{{ item.1 }}
     state: link
+    follow: no
     mode: 0644
   with_together:
   - "{{ jdk_long_versions }}"
@@ -117,7 +118,12 @@
    - "{{ maven_versions }}"
 
 - name: Extract Maven archives
-  unarchive: copy=no src=/tmp/downloads/apache-maven-{{ item }}-bin.tar.gz dest=/opt/tools owner=root group=root
+  unarchive:
+    copy: no
+    src: /tmp/downloads/apache-maven-{{ item }}-bin.tar.gz
+    dest: /opt/tools
+    owner: root
+    group: root
   with_items:
     - "{{ maven_versions }}"
 
@@ -134,7 +140,7 @@
     dest: /opt/packer/bin/
     validate_certs: no
 
-- name: Set packer permissions
+- name: Set Packer permissions
   file:
     path: /opt/packer/bin/packer
     mode: 0755

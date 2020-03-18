@@ -114,6 +114,7 @@
     src: /opt/tools/groovy-2.4.7
     dest: /opt/tools/groovy-2.x
     state: link
+    follow: no
     mode: 0644
 
 ### Firefox ###
@@ -198,6 +199,7 @@
     path: /home/jenkins/git-repos/jbpm-console-ng.git
     src: /home/jenkins/git-repos/jbpm-wb.git
     state: link
+    follow: no
     owner: jenkins
     group: jenkins
     mode: 0755
