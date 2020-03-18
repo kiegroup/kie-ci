@@ -12,8 +12,9 @@ cd jenkins-slaves
 # clone from gerrit moved to scm, not needed here: ./add-osbs.sh https://code.engineering.redhat.com/gerrit/bxms-jenkins
 
 rsync -av bxms-jenkins/jenkins-image-extra-bits/rhba-osbs/ansible/ ansible
+rsync -av bxms-jenkins/jenkins-image-extra-bits/rhba-sourceclear-integration/ansible/ ansible
 
-wget --no-check-certificate https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/packer 
+wget --no-check-certificate https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/packer
 chmod u+x packer
 
 export ANSIBLE_SCP_IF_SSH=y
