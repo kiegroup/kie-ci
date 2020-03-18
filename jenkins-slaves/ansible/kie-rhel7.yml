@@ -4,7 +4,7 @@
   gather_facts: false
 
   vars :
-    maven_versions: [3.3.9,3.5.0,3.5.2,3.5.4,3.6.0]
+    maven_versions: [3.3.9,3.5.0,3.5.2,3.5.4,3.6.0,3.6.2]
     jdk_download_urls: [
       "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-8u202-linux-x64.tar.gz",
       "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-9.0.4-linux-x64.tar.gz",
