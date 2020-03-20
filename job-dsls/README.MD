@@ -37,3 +37,9 @@ Manually create a job:
 
 Note that starting with Job DSL 1.60 the "Additional classpath" setting is not available when
 [Job DSL script security](https://github.com/jenkinsci/job-dsl-plugin/wiki/Script-Security) is enabled.
+
+## Jobs for UI testing
+Remember jobs for UI/selenium testing needs to be started:
+- on node with label:  **gui-testing**
+- with set path to the browser: **webdriver.firefox.bin**
+- with xvnc: **xvnc { useXauthority(true) }**
