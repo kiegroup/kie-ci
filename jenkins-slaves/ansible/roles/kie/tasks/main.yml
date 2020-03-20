@@ -76,7 +76,7 @@
     owner: root
     group: root
   with_items:
-   - "{{ maven_versions }}"
+   - "{{ maven_versions_needing_extension }}"
 
 - name: Create ~/.m2 directory
   file:
