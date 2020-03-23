@@ -6,15 +6,18 @@ String jobDescription = "Job responsible for SourceClear verification"
 def jobDefinition = job("srcclr-scan") {
 
 
-    String debug = config.debug?.toBoolean() ? '-d' : ''
-    String scanType = config.scanType?.trim()
-    String product = config.product?.trim() ?: ''
-    String version = config.version?.trim() ?: ''
-    String packageName = config.packageName ? "--package=${config.packageName.trim()}" : ''
-    String url = config.url?.trim()
-    String extra = config.extra ?: ''
-    String recurse = config.recurse?.trim() ? '--recursive' : ''
-    String scmVersionParam = ''
+    parameters {
+        choiceParam('SCAN_TYPE', ['scm', 'binary'])
+        stringParam('URL','')
+        stringParam('VERSION', '')
+        stringParam('PACKAGE','')
+        stringParam('NAME', '')
+        stringParam('MVNPARAMS', '')
+        choiceParam('PROCESSOR_TYPE', ['cve', 'cvss'])
+        booleanParam('RECURSIVE', false)
+        booleanParam('DEBUGGING', false)
+        booleanParam('TRACING', false)
+    }
 
 
     label("kie-rhel7")
@@ -25,7 +28,9 @@ def jobDefinition = job("srcclr-scan") {
         }
     }
 
+    String params = $MVNPARAMS.trim()
     steps {
+        shell('echo $params')
         maven {
             goals("-version")
         }
