@@ -20,7 +20,7 @@ def jobDefinition = job("srcclr-scan") {
     }
 
 
-    label("kie-rhel7")
+
 
     wrappers {
         credentialsBinding {
@@ -28,7 +28,7 @@ def jobDefinition = job("srcclr-scan") {
         }
     }
 
-    String params = $MVNPARAMS.trim()
+    String params = ${MVNPARAMS}.trim()
     steps {
         shell('echo $params')
         maven {
