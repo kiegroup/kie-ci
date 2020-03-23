@@ -1,7 +1,7 @@
 import org.kie.jenkins.jobdsl.Constants
 import org.kie.jenkins.jobdsl.templates.BasicJob
 
-
+String jobDescription = "Job responsible for SourceClear verification"
 
 def jobDefinition = job("srcclr-scan") {
 
@@ -19,3 +19,5 @@ def jobDefinition = job("srcclr-scan") {
 
 
 }
+
+BasicJob.addCommonConfiguration(jobDefinition, jobDescription)
