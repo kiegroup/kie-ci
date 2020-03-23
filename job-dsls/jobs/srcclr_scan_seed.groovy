@@ -14,7 +14,9 @@ def jobDefinition = job("srcclr-scan") {
     }
 
     steps {
-        sh "mvn -version"
+        maven {
+            goals("-version")
+        }
     }
 
 
