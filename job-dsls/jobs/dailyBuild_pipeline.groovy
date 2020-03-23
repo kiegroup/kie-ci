@@ -150,7 +150,7 @@ pipeline {
                     ' \\n' +
                     '${BUILD_LOG, maxLines=750}', subject: '${baseBranch}:daily-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'   
         }
-        success{
+        fixed{
             emailext body: '${baseBranch}:daily-build #${BUILD_NUMBER} was:' + "${currentBuild.currentResult}" +  '\\n' +
                     'Please look here: ${BUILD_URL}', subject: '${baseBranch}:daily-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'             
         }            
