@@ -191,22 +191,26 @@ pipeline {
         }
         // additional tests in separate Jenkins jobs will be exucuted
         stage('Additional tests') {
-            steps {
-            when{
-                expression { repBuild == 'YES'}
-            }            
-                parallel (
-                    "community-release-jbpmTestCoverageMatrix" : {
-                        build job: "community-release-${baseBranch}-jbpmTestCoverageMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
-                    },
-                    "community-release-kieWbTestsMatrix" : {
-                            build job: "community-release-${baseBranch}-kieWbTestsMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
-                     },
-                    "community-release-kieServerMatrix" : {
-                            build job: "community-release-${baseBranch}-kieServerMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
+        when{
+            expression { repBuild == 'YES'}
+        }            
+            parallel {
+                stage('jbpmTestCoverageMatrix') {
+                    steps {
+                        build job: "community-release-${baseBranch}-jbpmTestCoverageMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]    
                     }
-                )    
-            } 
+                }
+                stage('kieWbTestsMatrix') {
+                    steps {
+                        build job: "community-release-${baseBranch}-kieWbTestsMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
+                    }
+                } 
+                stage('kieServerMatrix') {
+                    steps {
+                        build job: "community-release-${baseBranch}-kieServerMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]    
+                    }
+                }                     
+            }    
         }
         // after a first build this email will be send               
         stage ('1st email send with BUILD result') {
