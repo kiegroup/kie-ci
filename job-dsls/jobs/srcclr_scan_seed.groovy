@@ -28,7 +28,7 @@ def jobDefinition = job("srcclr-scan") {
         }
     }
 
-    String params = ${MVNPARAMS}.trim()
+    String params = ${MVNPARAMS}
     steps {
         shell('echo $params')
         maven {
