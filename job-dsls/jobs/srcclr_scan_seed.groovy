@@ -86,8 +86,8 @@ def jobDefinition = job("srcclr-scan") {
                 name('origin')
                 url('https://github.com/project-ncl/sourceclear-invoker')
             }
+            branch('master')
         }
-        branch('master')
     }
     steps {
         maven {
