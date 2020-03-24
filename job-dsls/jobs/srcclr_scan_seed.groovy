@@ -20,6 +20,58 @@ def jobDefinition = job("srcclr-scan") {
     }
 
 
+    environmentVariables{
+        groovy('''
+          def map = [:]
+          
+          if ( "${RECURSIVE}" == "true" ) {
+            
+            map.put("RECURSE"," --recursive ")
+            
+          } else {
+            
+            map.put("RECURSE","")
+          
+          }
+          
+          if ( "${DEBUGGING}" == "true" ) {
+            map.put("DEBUG"," -d ")
+          } else {
+          
+            map.put("DEBUG","")
+          
+          }
+          if ( "${TRACING}" == "true" ) {
+            
+            map.put("TRACE"," --trace ")
+          
+          } else {
+            
+            map.put("TRACE","")
+            
+          }
+          if ( "${MVNPARAMS}" != "" )
+          {
+          
+            map.put("MVNPARAMETER","--maven-param=\\"${MVNPARAMS}\\"")
+            
+          } else {
+          
+            map.put("MVNPARAMETER", "")
+            
+          }
+          
+          if ( "${SCAN_TYPE}" == "scm" ) {
+          
+            map.put("SCMVERSIONPARAM"," --ref=${SCMVERSION}")
+            
+          } else {
+            map.put("SCMVERSIONPARAM","")
+            
+        ''')
+    }
+
+
 
 
     wrappers {
@@ -28,11 +80,18 @@ def jobDefinition = job("srcclr-scan") {
         }
     }
 
-    String params = ${MVNPARAMS}
+    scm {
+        git {
+            remote {
+                name('origin')
+                url('https://github.com/project-ncl/sourceclear-invoker')
+            }
+        }
+        branch('master')
+    }
     steps {
-        shell('echo $params')
         maven {
-            goals("-version")
+            goals("-Pjenkins test -Dmaven.buildNumber.skip=true -DargLine='' -Dsourceclear=\${DEBUG} \${TRACE} --processor=\${PROCESSOR_TYPE} --product-version=\${VERSION} --package=\${PACKAGE} --product=\"\${NAME}\" \${SCAN_TYPE} --url=\${URL} \${MVNPARAMETER} \${SCMVERSIONPARAM} \${RECURSE}")
         }
     }
 
