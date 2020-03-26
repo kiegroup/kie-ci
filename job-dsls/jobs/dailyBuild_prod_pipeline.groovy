@@ -14,7 +14,7 @@ def folderPath="daily-build-prod"
 def dailyProdBuild='''
 pipeline {
     agent {
-        label 'kie-linux&&kie-rhel7&&kie-mem24g'
+        label 'kie-linux&&kie-rhel7&&kie-mem24g
     }
     tools {
         maven 'kie-maven-3.5.2'

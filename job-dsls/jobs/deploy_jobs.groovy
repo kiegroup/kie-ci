@@ -4,7 +4,7 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
-        ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
+        ghOrgUnit              : Constants.GITHUB_ORG_UNIT
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
