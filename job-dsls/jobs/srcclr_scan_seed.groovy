@@ -17,6 +17,8 @@ def jobDefinition = job("srcclr-scan") {
         booleanParam('RECURSIVE', false)
         booleanParam('DEBUGGING', false)
         booleanParam('TRACING', false)
+        stringParam('SCMVERSION', '')
+        stringParam('THRESHOLD', '1','Threshold from 1 to 10 for cvss processor')
     }
 
 
@@ -67,12 +69,15 @@ def jobDefinition = job("srcclr-scan") {
             
           } else {
             map.put("SCMVERSIONPARAM","")
-            
+          }
+          
+          return map
+           
         ''')
     }
 
 
-
+    label("kie-rhel7")
 
     wrappers {
         credentialsBinding {
@@ -91,7 +96,8 @@ def jobDefinition = job("srcclr-scan") {
     }
     steps {
         maven {
-            goals("-Pjenkins test -Dmaven.buildNumber.skip=true -DargLine='' -Dsourceclear=\${DEBUG} \${TRACE} --processor=\${PROCESSOR_TYPE} --product-version=\${VERSION} --package=\${PACKAGE} --product=\"\${NAME}\" \${SCAN_TYPE} --url=\${URL} \${MVNPARAMETER} \${SCMVERSIONPARAM} \${RECURSE}")
+            mavenInstallation("kie-maven-3.5.0")
+            goals("-Pjenkins test -Dmaven.buildNumber.skip=true -DargLine='' -Dsourceclear=\"${DEBUG} ${TRACE} --processor=${PROCESSOR_TYPE} --product-version=${VERSION} --package=${PACKAGE} --product=\"${NAME}\" --threshold=${THRESHOLD} ${SCAN_TYPE} --url=${URL} ${MVNPARAMETER} ${SCMVERSIONPARAM} ${RECURSE}\"")
         }
     }
 
