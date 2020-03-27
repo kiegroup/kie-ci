@@ -101,7 +101,17 @@ def jobDefinition = job("srcclr-scan") {
         }
     }
 
-
+    publishers {
+        archiveJunit("**/target/*-reports/*.xml") {
+            retainLongStdout()
+            healthScaleFactor(1.0)
+            allowEmptyResults()
+        }
+        archiveArtifacts {
+            pattern("**/target/screenshots/*")
+            allowEmpty()
+        }
+    }
 }
 
 BasicJob.addCommonConfiguration(jobDefinition, jobDescription)
