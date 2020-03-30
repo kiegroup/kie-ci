@@ -152,8 +152,7 @@ pipeline {
                 emailext body: 'Status of community build for ${kieVersion} was: ' + "${currentBuild.currentResult}" +  '\\n' +
                     'Please look here: ${BUILD_URL} \\n' +
                     ' \\n' +                    
-                    '${BUILD_LOG, maxLines=750}', subject: 'community-release for ${kieVersion} failed', to: 'kie-jenkins-builds@redhat.com'
-                }    
+                    '${BUILD_LOG, maxLines=750}', subject: 'community-release for ${kieVersion} failed', to: 'kie-jenkins-builds@redhat.com' 
             }
         }        
         // create a directory where the binaries to upload to filemgmt.jboss.org are stored 
