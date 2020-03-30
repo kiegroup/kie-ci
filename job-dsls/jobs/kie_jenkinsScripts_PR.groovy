@@ -18,9 +18,17 @@ def kieJenkins_PR='''#!/bin/bash -e
 cd job-dsls
 ./gradlew clean test'''
 
+def errorSh='''
+touch trace.sh
+chmod 755 trace.sh
+echo "wget ${BUILD_URL}consoleText" >> trace.sh
+echo "tail -n 750 consoleText >> error.log" >> trace.sh
+echo "gzip error.log" >> trace.sh
+cat trace.sh
+'''
+
 // Creation of folders where jobs are stored
 folder(Constants.PULL_REQUEST_FOLDER)
-
 
 
 // jobs for master branch don't use the branch in the name
@@ -103,16 +111,79 @@ job(jobName) {
         archiveJunit('job-dsls/build/test-results/**/*.xml') {
             allowEmptyResults()
         }
+        // adds POST BUILD scripts
+        configure { project ->
+            project / 'publishers' << 'org.jenkinsci.plugins.postbuildscript.PostBuildScript' {
+                'config' {
+                    'scriptFiles' {
+                        'org.jenkinsci.plugins.postbuildscript.model.ScriptFile '{
+                            'results' {
+                                'string'('SUCCESS')
+                                'string'('FAILURE')
+                                'string'('UNSTABLE')
+                            }
+                            'filePath'('trace.sh')
+                            'scriptType'('GENERIC')
+                        }
+                    }
+                    'groovyScripts'()
+                    'buildSteps'()
+                    'executeOn'('BOTH')
+                    'markBuildUnstable'(false)
+                    'sandboxed'(true)
+                }
+            }
+        }
         // Adds authentication token id for github.
         configure { node ->
             node / 'triggers' / 'org.jenkinsci.plugins.ghprb.GhprbTrigger' <<
                     'gitHubAuthId'(ghAuthTokenId)
 
         }
+        extendedEmail{
+            recipientList('$ghprbActualCommitAuthorEmail')
+            defaultSubject('$DEFAULT_SUBJECT')
+            defaultContent('$DEFAULT_CONTENT')
+            contentType('default')
+            triggers {
+                failure {
+                    attachmentPatterns('error.log.gz')
+                    subject('PR build: #$ghprbPullId $ghprbPullTitle')
+                    content('The Pull Request: $ghprbGhRepository #$ghprbPullId $ghprbPullTitle FAILED\n' +
+                            'Build log: ${BUILD_URL}consoleText\n' +
+                            'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\n' +
+                            '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you don\'t have access to RedHat VPN please download and decompress attached file.)')
+                    sendTo {
+                        recipientList()
+                    }
+                }
+                unstable {
+                    attachmentPatterns('error.log.gz')
+                    subject('PR build: #$ghprbPullId $ghprbPullTitle')
+                    content('The Pull Request: $ghprbGhRepository #$ghprbPullId $ghprbPullTitle was UNSTABLE\n' +
+                            'Build log: ${BUILD_URL}consoleText\n' +
+                            'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\n' +
+                            '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you don\'t have access to RedHat VPN please download and decompress attached file.)\n' +
+                            '***********************************************************************************************************************************************************\n' +
+                            '${FAILED_TESTS}')
+                    sendTo {
+                        recipientList()
+                    }
+                }
+                fixed {
+                    subject('PR build: #$ghprbPullId $ghprbPullTitle')
+                    content('The Pull Request: $ghprbGhRepository #$ghprbPullId $ghprbPullTitle is fixed and was SUCCESSFUL')
+                    sendTo {
+                        recipientList()
+                    }
+                }
+            }
+        }
         wsCleanup()
     }
 
     steps {
+        shell(errorSh)
         shell(kieJenkins_PR)
     }
 }
