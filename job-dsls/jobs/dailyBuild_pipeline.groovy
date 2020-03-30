@@ -11,7 +11,7 @@ def organization=Constants.GITHUB_ORG_UNIT
 def deployDir="deploy-dir"
 def m2Dir = Constants.LOCAL_MVN_REP
 
-String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.2.0/jboss-eap-7.2.0.z
+String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.2.0/jboss-eap-7.2.0.zip"
 
 // creation of folder
 folder("daily-build")
