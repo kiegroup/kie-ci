@@ -26,6 +26,18 @@ pipeline {
                 cleanWs()
             }
         }
+        stage('build sh script') {
+            steps {
+                script {
+                    sh 'touch trace.sh'
+                    sh 'chmod 755 trace.sh'
+                    sh 'echo "wget --no-check-certificate ${BUILD_URL}consoleText" >> trace.sh'
+                    sh 'echo "tail -n 1000 consoleText >> error.log" >> trace.sh'
+                    sh 'echo "gzip error.log" >> trace.sh'
+                    sh 'cat trace.sh'                
+                }
+            }
+        }        
         stage('Calculate versions') {
             steps {
                 script {
@@ -82,38 +94,44 @@ pipeline {
                     sh "sh droolsjbpm-build-bootstrap/script/release/05d_dailyBuildProdInstall.sh $SETTINGS_XML_FILE"
                 }
             }
-        }
-        stage('Publish JUnit test results reports') {
-            steps {
-              junit '**/target/*-reports/TEST-*.xml'    
-            }
-        }                
-        stage('Delete workspace when build is done') {
-            steps {
-                cleanWs()
-            }
-        }                
+        }                             
     }
     post {
-        failure{           
-            emailext body: '${baseBranch}:prod-daily-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\\n' +
-                'Please look here: ${BUILD_URL} \\n' +
-                ' \\n' +                 
-                '${BUILD_LOG, maxLines=750}', subject: '${baseBranch}:prod-daily-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
+        always {
+            script {
+                sh './trace.sh\'
+            }
+            junit '**/target/surefire-reports/**/*.xml\'
+        }
+        failure{
+            emailext body: 'Build log: ${BUILD_URL}consoleText\\n' +
+                           'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
+                           '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download and decompress attached file.)',
+                     subject: 'Build #${BUILD_NUMBER} of prod-daily-builds ${baseBranch} branch FAILED',
+                     to: 'kie-jenkins-builds@redhat.com',
+                     attachmentsPattern: 'error.log.gz\'
+            cleanWs()                     
         }
         unstable{
-            emailext body: '${baseBranch}:prod-daily-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\\n' +
-                'Please look here: ${BUILD_URL} \\n' +
-                ' \\n' +                
-                'Failed tests: ${BUILD_URL}/testReport \\n' +
-                ' \\n' +                 
-                '${BUILD_LOG, maxLines=750}', subject: '${baseBranch}:prod-daily-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'    
+            emailext body: 'Build log: ${BUILD_URL}consoleText\\n' +
+                           'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
+                           '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download and decompress attached file.)\\n' +
+                           '***********************************************************************************************************************************************************\\n' +
+                           '${FAILED_TESTS}',
+                     subject: 'Build #${BUILD_NUMBER} of prod-daily-builds ${baseBranch} branch was UNSTABLE',
+                     to: 'kie-jenkins-builds@redhat.com',
+                     attachmentsPattern: 'error.log.gz\'
+            cleanWs()         
         }
-        fixed{
-            emailext body: '${baseBranch}:prod-daily-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\\n' +
-                'Please look here: ${BUILD_URL}', subject: '${baseBranch}:prod-daily-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'            
-        }        
-    }    
+        fixed {
+            emailext body: '',
+                 subject: 'Build #${BUILD_NUMBER} of prod-daily-builds ${baseBranch} branch is fixed and was SUCCESSFUL',
+                 to: 'kie-jenkins-builds@redhat.com'
+        }
+        success {
+            cleanWs()
+        }                    
+    }       
 }
 '''
 
