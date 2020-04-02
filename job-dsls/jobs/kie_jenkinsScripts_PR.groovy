@@ -21,7 +21,7 @@ cd job-dsls
 def errorSh='''
 touch trace.sh
 chmod 755 trace.sh
-echo "wget ${BUILD_URL}consoleText" >> trace.sh
+echo "wget  --no-check-certificate ${BUILD_URL}consoleText" >> trace.sh
 echo "tail -n 750 consoleText >> error.log" >> trace.sh
 echo "gzip error.log" >> trace.sh
 cat trace.sh
