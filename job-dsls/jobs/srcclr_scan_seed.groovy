@@ -25,24 +25,11 @@ def jobDefinition = job("srcclr-scan") {
     environmentVariables{
         groovy('''
           def map = [:]
+               
+          map.put("RECURSE", Boolean.valueOf("${RECURSIVE}") ? "--recursive" : "")
           
-          if ( "${RECURSIVE}" == "true" ) {
-            
-            map.put("RECURSE"," --recursive ")
-            
-          } else {
-            
-            map.put("RECURSE","")
+          map.put("DEBUG", Boolean.valueOf("${DEBUGGING}") ? "-d" : "");
           
-          }
-          
-          if ( "${DEBUGGING}" == "true" ) {
-            map.put("DEBUG"," -d ")
-          } else {
-          
-            map.put("DEBUG","")
-          
-          }
           if ( "${TRACING}" == "true" ) {
             
             map.put("TRACE"," --trace ")
@@ -52,6 +39,9 @@ def jobDefinition = job("srcclr-scan") {
             map.put("TRACE","")
             
           }
+          
+          map.put("TRACE", Boolean.valueOf("${TRACING}") ? "--trace" : "")
+          
           if ( "${MVNPARAMS}" != "" )
           {
           
@@ -72,6 +62,8 @@ def jobDefinition = job("srcclr-scan") {
           }
           
           return map
+          
+          return []
            
         ''')
     }
@@ -96,7 +88,7 @@ def jobDefinition = job("srcclr-scan") {
     }
     steps {
         maven {
-            mavenInstallation("kie-maven-3.5.0")
+            mavenInstallation("kie-maven-3.5.4")
             goals("-Pjenkins test -Dmaven.buildNumber.skip=true -DargLine='' -Dsourceclear=\"\${DEBUG} \${TRACE} --processor=\${PROCESSOR_TYPE} --product-version=\${VERSION} --package=\${PACKAGE} --product=\"\${NAME}\" --threshold=\${THRESHOLD} \${SCAN_TYPE} --url=\${URL} \${MVNPARAMETER} \${SCMVERSIONPARAM} \${RECURSE}\"")
         }
     }
