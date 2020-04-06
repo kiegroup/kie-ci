@@ -30,16 +30,6 @@ def jobDefinition = job("srcclr-scan") {
           
           map.put("DEBUG", Boolean.valueOf("${DEBUGGING}") ? "-d" : "");
           
-          if ( "${TRACING}" == "true" ) {
-            
-            map.put("TRACE"," --trace ")
-          
-          } else {
-            
-            map.put("TRACE","")
-            
-          }
-          
           map.put("TRACE", Boolean.valueOf("${TRACING}") ? "--trace" : "")
           
           if ( "${MVNPARAMS}" != "" )
