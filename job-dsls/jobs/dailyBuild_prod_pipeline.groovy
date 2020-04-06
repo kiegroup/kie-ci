@@ -115,12 +115,10 @@ pipeline {
         unstable{
             emailext body: 'Build log: ${BUILD_URL}consoleText\\n' +
                            'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
-                           '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download and decompress attached file.)\\n' +
                            '***********************************************************************************************************************************************************\\n' +
                            '${FAILED_TESTS}',
                      subject: 'Build #${BUILD_NUMBER} of prod-daily-builds ${baseBranch} branch was UNSTABLE',
-                     to: 'kie-jenkins-builds@redhat.com',
-                     attachmentsPattern: 'error.log.gz\'
+                     to: 'kie-jenkins-builds@redhat.com'
             cleanWs()         
         }
         fixed {
