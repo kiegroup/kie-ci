@@ -138,6 +138,15 @@ def final REPO_CONFIGS = [
 
 ]
 
+//creation of script for log compression
+def errorSh='''#!/bin/bash -e
+cd $WORKSPACE
+touch trace.sh
+chmod 755 trace.sh
+echo "wget  --no-check-certificate  ${BUILD_URL}consoleText" >> trace.sh
+echo "tail -n 1000 consoleText >> error.log" >> trace.sh
+echo "gzip error.log" >> trace.sh'''
+
 def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools", "appformer", "jbpm", "drools-wb", "kie-soup", "droolsjbpm-integration", "kie-wb-common", "openshift-drools-hacep"]
 
 for (repoConfig in REPO_CONFIGS) {
@@ -198,6 +207,11 @@ for (repoConfig in REPO_CONFIGS) {
 
         label(get("label"))
 
+        // creates script for building error.log.gz
+        steps {
+            shell(errorSh)
+        }
+
         triggers {
             githubPullRequest {
                 orgWhitelist(["appformer", "kiegroup"])
@@ -248,6 +262,7 @@ for (repoConfig in REPO_CONFIGS) {
                     string("SONARCLOUD_TOKEN", "SONARCLOUD_TOKEN")
                 }
             }
+            preBuildCleanup()
         }
 
         steps {
@@ -328,40 +343,26 @@ for (repoConfig in REPO_CONFIGS) {
                 }
             }
 
-            extendedEmail {
-                recipientList('$ghprbActualCommitAuthorEmail')
-                defaultSubject('$DEFAULT_SUBJECT')
-                defaultContent('$DEFAULT_CONTENT')
-                contentType('default')
-                triggers {
-                    failure{
-                        subject('PR build FAILED: $JOB_BASE_NAME #$ghprbPullId')
-
-                        content('$ghprbPullTitle \nPlease go to $BUILD_URL \n(IMPORTANT: you need have access to Red Hat VPN to access this link) \n\n${BUILD_LOG_REGEX, regex="(?i)\\\\b(error|exception|fatal|fail(ed|ure)|un(defined|resolved))\\\\b", linesBefore=500, linesAfter=250} \n\n${FAILED_TESTS}')
-
-                        sendTo {
-                            recipientList()
-                        }
-                    }
-                    unstable {
-                        subject('PR build UNSTABLE: $JOB_BASE_NAME #$ghprbPullId')
-
-                        content('$ghprbPullTitle \nPlease go to $BUILD_URL \n(IMPORTANT: you need have access to Red Hat VPN to access this link) \n\n${BUILD_LOG_REGEX, regex="(?i)\\\\b(error|exception|fatal|fail(ed|ure)|un(defined|resolved))\\\\b", linesBefore=500, linesAfter=250} \n\n${FAILED_TESTS}')
-
-                        sendTo {
-                            recipientList()
-                        }
-                    }
-                }
-            }
-
-            wsCleanup()
+            // adds POST BUILD scripts
             configure { project ->
-                project / 'publishers' << 'org.jenkinsci.plugins.emailext__template.ExtendedEmailTemplatePublisher' {
-                    'templateIds' {
-                        'org.jenkinsci.plugins.emailext__template.TemplateId' {
-                            'templateId'('emailext-template-1441717935622')
+                project / 'publishers' << 'org.jenkinsci.plugins.postbuildscript.PostBuildScript' {
+                    'config' {
+                        'scriptFiles' {
+                            'org.jenkinsci.plugins.postbuildscript.model.ScriptFile '{
+                                'results' {
+                                    'string'('SUCCESS')
+                                    'string'('FAILURE')
+                                    'string'('UNSTABLE')
+                                }
+                                'filePath'('trace.sh')
+                                'scriptType'('GENERIC')
+                            }
                         }
+                        'groovyScripts'()
+                        'buildSteps'()
+                        'executeOn'('BOTH')
+                        'markBuildUnstable'(false)
+                        'sandboxed'(true)
                     }
                 }
             }
@@ -372,6 +373,46 @@ for (repoConfig in REPO_CONFIGS) {
                         'gitHubAuthId'(ghAuthTokenId)
 
             }
+
+            extendedEmail{
+                recipientList('$ghprbActualCommitAuthorEmail')
+                defaultSubject('$DEFAULT_SUBJECT')
+                defaultContent('$DEFAULT_CONTENT')
+                contentType('default')
+                triggers {
+                    failure {
+                        subject('Pull request #$ghprbPullId of $ghprbGhRepository: $ghprbPullTitle failed')
+                        content('Pull request #$ghprbPullId of $ghprbGhRepository: $ghprbPullTitle  FAILED\n' +
+                                'Build log: ${BUILD_URL}consoleText\n' +
+                                'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\n' +
+                                '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you don\'t have access to RedHat VPN please download and decompress attached file.)')
+                        attachmentPatterns('error.log.gz')
+                        sendTo {
+                            recipientList()
+                        }
+                    }
+                    unstable {
+                        subject('Pull request #$ghprbPullId of $ghprbGhRepository: $ghprbPullTitle was unstable')
+                        content('Pull request #$ghprbPullId of $ghprbGhRepository: $ghprbPullTitle was UNSTABLE\n' +
+                                'Build log: ${BUILD_URL}consoleText\n' +
+                                'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\n' +
+                                '***********************************************************************************************************************************************************\n' +
+                                '${FAILED_TESTS}')
+                        sendTo {
+                            recipientList()
+                        }
+                    }
+                    fixed {
+                        subject('Pull request #$ghprbPullId of $ghprbGhRepository: $ghprbPullTitle is fixed and was SUCCESSFUL')
+                        content('')
+                        sendTo {
+                            recipientList()
+                        }
+                    }
+                }
+            }
+
+            wsCleanup()
         }
     }
 }
