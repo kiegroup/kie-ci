@@ -18,14 +18,14 @@ def kieJenkins_PR='''#!/bin/bash -e
 cd job-dsls
 ./gradlew clean test'''
 
-def errorSh='''
+def errorSh='''#!/bin/bash -e
+cd $WORKSPACE
 touch trace.sh
 chmod 755 trace.sh
 echo "wget  --no-check-certificate ${BUILD_URL}consoleText" >> trace.sh
 echo "tail -n 750 consoleText >> error.log" >> trace.sh
 echo "gzip error.log" >> trace.sh
-cat trace.sh
-'''
+cat trace.sh'''
 
 // Creation of folders where jobs are stored
 folder(Constants.PULL_REQUEST_FOLDER)

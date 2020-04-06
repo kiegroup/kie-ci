@@ -139,14 +139,13 @@ def final REPO_CONFIGS = [
 ]
 
 //creation of script for log compression
-def errorSh='''
+def errorSh='''#!/bin/bash -e
+cd $WORKSPACE
 touch trace.sh
 chmod 755 trace.sh
 echo "wget  --no-check-certificate  ${BUILD_URL}consoleText" >> trace.sh
 echo "tail -n 1000 consoleText >> error.log" >> trace.sh
-echo "gzip error.log" >> trace.sh
-cat trace.sh
-'''
+echo "gzip error.log" >> trace.sh'''
 
 def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools", "appformer", "jbpm", "drools-wb", "kie-soup", "droolsjbpm-integration", "kie-wb-common", "openshift-drools-hacep"]
 
@@ -397,10 +396,8 @@ for (repoConfig in REPO_CONFIGS) {
                         content('Pull request #$ghprbPullId of $ghprbGhRepository: $ghprbPullTitle was UNSTABLE\n' +
                                 'Build log: ${BUILD_URL}consoleText\n' +
                                 'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\n' +
-                                '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you don\'t have access to RedHat VPN please download and decompress attached file.)\n' +
                                 '***********************************************************************************************************************************************************\n' +
                                 '${FAILED_TESTS}')
-                        attachmentPatterns('error.log.gz')
                         sendTo {
                             recipientList()
                         }
