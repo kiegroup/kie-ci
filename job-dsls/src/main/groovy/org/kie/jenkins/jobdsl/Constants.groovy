@@ -46,5 +46,4 @@ class Constants {
     static final String LOCAL_MVN_REP = "/home/jenkins/.m2/repository"
     static final String REPO_LIST_FILE_ID = "d3fcb864-42fc-4380-8d3b-9b1507a6c46a"
     static final String GITHUB_REPO_PREFIX = "https://www.github.com/kiegroup/"
-    static final String SRCCLR_FOLDER_PATH = "custom/akoufoud/source-clear/srcclr"
 }

@@ -2,7 +2,6 @@ import org.kie.jenkins.jobdsl.Constants
 
 def prefix = Constants.GITHUB_REPO_PREFIX
 def repoListFileId = Constants.REPO_LIST_FILE_ID
-def srcclrFolder = Constants.SRCCLR_FOLDER_PATH
 
 def pipelineScript =
         '''
@@ -28,7 +27,7 @@ for (repo in repoList) {
         node('kie-rhel7') {
             stage(branchName) {
                 def url = "${prefix}" + "${repoName}"
-                def jobName = "${srcclrFolder}" + '/srcclr-scan-' + "${repoName}"
+                def jobName = 'srcclr-scan-' + "${repoName}"
                 build job: "${jobName}", propagate: false, parameters: [
                             [$class: 'StringParameterValue', name: 'SCAN_TYPE', value: 'scm'],
                             [$class: 'StringParameterValue', name: 'URL', value: "${url}"],

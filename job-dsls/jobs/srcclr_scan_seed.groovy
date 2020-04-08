@@ -5,11 +5,9 @@ def repoList = [
         'drools'
 ]
 
-def srcclrFolder = Constants.SRCCLR_FOLDER_PATH
-
 for (repo in repoList) {
 
-    def jobName = "${srcclrFolder}" + '/srcclr-scan-' + "${repo}"
+    def jobName = 'srcclr-scan-' + "${repo}"
 
     job(jobName) {
 
