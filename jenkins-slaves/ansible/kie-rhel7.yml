@@ -26,6 +26,7 @@
       - new org.yaml.snakeyaml.Yaml
       - staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.lang.Object java.lang.String
       - new java.io.File java.lang.String
+      - method java.io.File exists
 
   roles:
     - common
