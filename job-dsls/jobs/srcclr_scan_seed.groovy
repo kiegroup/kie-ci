@@ -5,14 +5,15 @@ def repoList = [
         'drools'
 ]
 
+def srcclrFolder = Constants.SRCCLR_FOLDER_PATH
 
 for (repo in repoList) {
 
-    def jobName = 'srcclr/srcclr-scan-' + "${repo}"
+    def jobName = "${srcclrFolder}" + '/srcclr-scan-' + "${repo}"
 
     job(jobName) {
 
-        String jobDescription = 'Job responsible for SourceClear verification of' + "${repo}"
+        description('Job responsible for SourceClear verification of' + "${repo}")
 
         parameters {
             choiceParam('SCAN_TYPE', ['scm', 'binary'])
