@@ -39,7 +39,7 @@ for (repo in repoList) {
           
           map.put("TRACE", Boolean.valueOf("${TRACING}") ? "--trace" : "")
           
-          map.put("MVNPARAMETER", "${MVNPARAMS}" !="" ? "--maven-param=\\"${MVNPARAMS}\\":"")
+          map.put("MVNPARAMETER", "${MVNPARAMS}" !="" ? "--maven-param=${MVNPARAMS}":"")
           
           map.put("SCMVERSIONPARAM", "${SCAN_TYPE}" == "scm" ? " --ref=${SCMVERSION}":"")
           
