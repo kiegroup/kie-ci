@@ -10,7 +10,7 @@ def pipelineScript =
 def repoList = []
 node('kie-rhel7') {
     stage('Read repo file') {
-        configFileProvider([configFile(fileId: "${repoListFileId}", variable:'repoListFile')]) {
+        configFileProvider([configFile(fileId: "${REPO_LIST_FILE_ID}", variable:'repoListFile')]) {
             def repoFile = readFile "$repoListFile"
             repoList = repoFile.readLines()
         }
@@ -26,7 +26,7 @@ for (repo in repoList) {
     branches[branchName] = {
         node('kie-rhel7') {
             stage(branchName) {
-                def url = "${prefix}" + "${repoName}"
+                def url = "${URL_PREFIX}" + "${repoName}"
                 def jobName = 'srcclr-scan-' + "${repoName}"
                 build job: "${jobName}", propagate: false, parameters: [
                             [$class: 'StringParameterValue', name: 'SCAN_TYPE', value: 'scm'],
@@ -52,6 +52,16 @@ pipelineJob("parallel source clear scanning") {
 
     parameters {
         stringParam('kieVersion')
+        wHideParameterDefinition {
+            name('REPO_LIST_FILE_ID')
+            defaultValue("${repoListFileId}")
+            description('Config file id')
+        }
+        wHideParameterDefinition {
+            name('URL_PREFIX')
+            defaultValue("${prefix}")
+            description('URL prefix')
+        }
     }
 
     definition {
