@@ -1,5 +1,4 @@
 import org.kie.jenkins.jobdsl.Constants
-import org.kie.jenkins.jobdsl.templates.BasicJob
 
 def repoList = [
         'lienzo-core',
@@ -87,6 +86,4 @@ for (repo in repoList) {
             }
         }
     }
-
-    BasicJob.addCommonConfiguration(jobDefinition, jobDescription)
 }
