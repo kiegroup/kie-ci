@@ -1,7 +1,9 @@
 import org.kie.jenkins.jobdsl.Constants
 
-def repoFileDir = Constants.DROOLSJPBM_BOOTSTRAP_DIR
-def repoFilePath = "${env.REPO_LIST_FILE_PATH}"
+
+def srcclrInvokerRepoUrl = binding.variables.get("SRCCLR_INVOKER_REPO_URL")
+def repoFileDir = Constants.REPO_FILE_PATH
+def repoFilePath = binding.variables.get("REPO_LIST_FILE_PATH")
 def repoFile = readFileFromWorkspace("${repoFileDir}/${repoFilePath}")
 def repoList = repoFile.split()
 
@@ -54,7 +56,7 @@ for (repo in repoList) {
             git {
                 remote {
                     name('origin')
-                    url("${env.SRCCLR_INVOKER_REPO_URL}")
+                    url("${srcclrInvokerRepoUrl}")
                 }
                 branch('master')
             }
