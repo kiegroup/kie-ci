@@ -1,17 +1,16 @@
 import org.kie.jenkins.jobdsl.Constants
 
-def repoList = [
-        'lienzo-core',
-        'drools'
-]
+def repoFileDir = Constants.DROOLSJPBM_BOOTSTRAP_DIR
+def repoFile = readFileFromWorkspace("${repoFileDir}${env.REPO_LIST_FILE_PATH}")
+def repoList = repoFile.split()
 
 for (repo in repoList) {
 
-    def jobName = 'srcclr-scan-' + "${repo}"
+    def jobName = "srcclr-scan-${repo}"
 
     job(jobName) {
 
-        description('Job responsible for SourceClear verification of' + "${repo}")
+        description("Job responsible for SourceClear verification of ${repo}")
 
         parameters {
             choiceParam('SCAN_TYPE', ['scm', 'binary'])
@@ -31,20 +30,13 @@ for (repo in repoList) {
 
         environmentVariables{
             groovy('''
-          def map = [:]
-               
-          map.put("RECURSE", Boolean.valueOf("${RECURSIVE}") ? "--recursive" : "")
-          
-          map.put("DEBUG", Boolean.valueOf("${DEBUGGING}") ? "-d" : "");
-          
-          map.put("TRACE", Boolean.valueOf("${TRACING}") ? "--trace" : "")
-          
-          map.put("MVNPARAMETER", "${MVNPARAMS}" !="" ? "--maven-param=${MVNPARAMS}":"")
-          
-          map.put("SCMVERSIONPARAM", "${SCAN_TYPE}" == "scm" ? " --ref=${SCMVERSION}":"")
-          
-          return map
-           
+          def map = [:]     
+          map.put("RECURSE", Boolean.valueOf("${RECURSIVE}") ? "--recursive" : "")          
+          map.put("DEBUG", Boolean.valueOf("${DEBUGGING}") ? "-d" : "");          
+          map.put("TRACE", Boolean.valueOf("${TRACING}") ? "--trace" : "")          
+          map.put("MVNPARAMETER", "${MVNPARAMS}" !="" ? "--maven-param=${MVNPARAMS}":"")          
+          map.put("SCMVERSIONPARAM", "${SCAN_TYPE}" == "scm" ? " --ref=${SCMVERSION}":"")          
+          return map           
         ''')
         }
 
@@ -61,7 +53,7 @@ for (repo in repoList) {
             git {
                 remote {
                     name('origin')
-                    url('https://github.com/project-ncl/sourceclear-invoker')
+                    url("${env.SRCCLR_INVOKER_REPO_URL}")
                 }
                 branch('master')
             }

@@ -1,7 +1,6 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def prefix = Constants.GITHUB_REPO_PREFIX
-def repoListFileId = Constants.REPO_LIST_FILE_ID
 
 def pipelineScript =
         '''
@@ -10,24 +9,22 @@ def pipelineScript =
 def repoList = []
 node('kie-rhel7') {
     stage('Read repo file') {
-        configFileProvider([configFile(fileId: "${REPO_LIST_FILE_ID}", variable:'repoListFile')]) {
-            def repoFile = readFile "$repoListFile"
-            repoList = repoFile.readLines()
-        }
+      git url: "${env.DROOLSJBPM_BUILD_BOOTSTRAP_REPO}", branch: 'master'
+      def repoListFile = readFile "./${env.REPO_LIST_FILE_PATH}"
+      repoList = repoListFile.readLines()
     }
 }
 
 def branches = [:]
 
 for (repo in repoList) {
-    def branchName = 'Source Clear ' + "${repo}"
-    println 'Repo before node ' + "${repo}"
+    def branchName = "Source Clear ${repo}"
     def repoName = "${repo}"
     branches[branchName] = {
         node('kie-rhel7') {
             stage(branchName) {
-                def url = "${URL_PREFIX}" + "${repoName}"
-                def jobName = 'srcclr-scan-' + "${repoName}"
+                def url = "${URL_PREFIX}${repoName}"
+                def jobName = "srcclr-scan-${repoName}"
                 build job: "${jobName}", propagate: false, parameters: [
                             [$class: 'StringParameterValue', name: 'SCAN_TYPE', value: 'scm'],
                             [$class: 'StringParameterValue', name: 'URL', value: "${url}"],
