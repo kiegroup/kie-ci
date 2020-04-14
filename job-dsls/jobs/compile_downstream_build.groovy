@@ -111,7 +111,7 @@ for (repoConfig in REPO_CONFIGS) {
 
         triggers {
             githubPullRequest {
-                orgWhitelist(["appformer", "kiegroup"])
+                orgWhitelist(["kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
                 cron("H/5 * * * *")
                 triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) compile downstream build.*")
