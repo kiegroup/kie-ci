@@ -50,11 +50,6 @@ pipelineJob("parallel source clear scanning") {
     parameters {
         stringParam('kieVersion')
         wHideParameterDefinition {
-            name('REPO_LIST_FILE_ID')
-            defaultValue("${repoListFileId}")
-            description('Config file id')
-        }
-        wHideParameterDefinition {
             name('URL_PREFIX')
             defaultValue("${prefix}")
             description('URL prefix')

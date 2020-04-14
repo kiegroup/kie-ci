@@ -1,7 +1,8 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def repoFileDir = Constants.DROOLSJPBM_BOOTSTRAP_DIR
-def repoFile = readFileFromWorkspace("${repoFileDir}${env.REPO_LIST_FILE_PATH}")
+def repoFilePath = "${env.REPO_LIST_FILE_PATH}"
+def repoFile = readFileFromWorkspace("${repoFileDir}/${repoFilePath}")
 def repoList = repoFile.split()
 
 for (repo in repoList) {
