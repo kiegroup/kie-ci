@@ -27,6 +27,7 @@ for (repo in repoList) {
                 def jobName = "srcclr-scan-${repoName}"
                 build job: "${jobName}", propagate: false, parameters: [
                             [$class: 'StringParameterValue', name: 'SCAN_TYPE', value: 'scm'],
+                            [$class: 'StringParameterValue', name: 'SRCCLR_INVOKER_REPO_URL', value: "${env.SRCCLR_INVOKER_REPO_URL}"],
                             [$class: 'StringParameterValue', name: 'URL', value: url],
                             [$class: 'StringParameterValue', name: 'VERSION', value: "${kieVersion}"],
                             [$class: 'StringParameterValue', name: 'NAME', value: "${repoName}"],

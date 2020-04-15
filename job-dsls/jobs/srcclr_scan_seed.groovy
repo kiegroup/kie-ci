@@ -1,11 +1,8 @@
 import org.kie.jenkins.jobdsl.Constants
 
 
-def srcclrInvokerRepoUrl = binding.variables.SRCCLR_INVOKER_REPO_URL
-println "${srcclrInvokerRepoUrl}"
-def repoFileDir = Constants.DROOLSJBPM_BOOTSTRAP_DIR
-def repoFilePath = binding.variables.REPO_LIST_FILE_PATH
-def repoFile = readFileFromWorkspace("${repoFileDir}/${repoFilePath}")
+def repoFilePath = Constants.REPO_FILE_PATH
+def repoFile = readFileFromWorkspace(repoFilePath)
 def repoList = repoFile.split()
 
 for (repo in repoList) {
@@ -18,6 +15,7 @@ for (repo in repoList) {
 
         parameters {
             choiceParam('SCAN_TYPE', ['scm', 'binary'])
+            stringParam('SRCCLR_INVOKER_REPO_URL','')
             stringParam('URL','')
             stringParam('VERSION', '')
             stringParam('PACKAGE','')

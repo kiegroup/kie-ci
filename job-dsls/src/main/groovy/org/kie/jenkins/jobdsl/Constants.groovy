@@ -45,6 +45,6 @@ class Constants {
     static final String VERBOSE	= "false"
     static final String LOCAL_MVN_REP = "/home/jenkins/.m2/repository"
     static final String GITHUB_REPO_PREFIX = "https://www.github.com/kiegroup/"
-    static final String DROOLSJBPM_BOOTSTRAP_DIR = "droolsjbpm-build-bootstrap"
+    static final String REPO_FILE_PATH= "droolsjbpm-build-bootstrap/script/repository-list.txt"
 
 }
