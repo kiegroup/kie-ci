@@ -1,7 +1,7 @@
 import org.kie.jenkins.jobdsl.Constants
 
 
-def repoFilePath = Constants.REPO_FILE_PATH
+def repoFilePath = '$WORKSPACE/' + Constants.REPO_FILE_PATH
 def repoFile = readFileFromWorkspace(repoFilePath)
 def repoList = repoFile.split()
 
