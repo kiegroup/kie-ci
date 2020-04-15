@@ -2,6 +2,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 
 def srcclrInvokerRepoUrl = binding.variables.get("SRCCLR_INVOKER_REPO_URL")
+println "${srcclrInvokerRepoUrl}"
 def repoFileDir = Constants.DROOLSJBPM_BOOTSTRAP_DIR
 def repoFilePath = binding.variables.get("REPO_LIST_FILE_PATH")
 def repoFile = readFileFromWorkspace("${repoFileDir}/${repoFilePath}")
