@@ -35,7 +35,7 @@ for (repo in repoList) {
                     stage(branchName) {
                         git url: "${env.SRCCLR_INVOKER_REPO_URL}", branch: 'master'
                         def url = "${URL_PREFIX}${repoName}"
-                        maven.runMavenWithSettings(settingsXmlId, "-Pjenkins test -Dmaven.buildNumber.skip=true -DargLine='' -Dsourceclear=\"\${DEBUG} \${TRACE} --processor=\${PROCESSOR_TYPE} --product-version=\${VERSION} --package=\${PACKAGE} --product=\"\${NAME}\" --threshold=\${THRESHOLD} \${SCAN_TYPE} --url=\${URL} \${MVNPARAMETER} \${SCMVERSIONPARAM} \${RECURSE}\"", new Properties())
+                        maven.runMavenWithSettings(settingsXmlId, "-Pjenkins test -Dmaven.buildNumber.skip=true -DargLine='' -Dsourceclear=\"\${DEBUG} \${TRACE} --processor=\${PROCESSOR_TYPE} --product-version=\${VERSION} --package=\${PACKAGE} --product=\"\${repoName}\" --threshold=\${THRESHOLD} \${SCAN_TYPE} --url=\${url} \${MVNPARAMETER} \${SCMVERSIONPARAM} \${RECURSE}\"", new Properties())
                     }
                 }
             }
@@ -66,11 +66,8 @@ pipelineJob("Upstream Source Clear Scanning") {
 
     parameters {
         choiceParam('SCAN_TYPE', ['scm', 'binary'])
-        stringParam('SRCCLR_INVOKER_REPO_URL','')
-        stringParam('URL','')
         stringParam('VERSION', '')
         stringParam('PACKAGE','')
-        stringParam('NAME', '')
         stringParam('MVNPARAMS', '')
         choiceParam('PROCESSOR_TYPE', ['cve', 'cvss'])
         booleanParam('RECURSIVE', false)
