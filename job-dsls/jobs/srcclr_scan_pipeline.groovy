@@ -6,7 +6,7 @@ def repoList = []
 node('kie-rhel7') {
     stage('Read repo file') {
       git url: "${env.DROOLSJBPM_BUILD_BOOTSTRAP_REPO}", branch: 'master'
-      def repoListFile = readFile "./${env.REPO_LIST_FILE_PATH}"
+      def repoListFile = readFile "./script/repository-list.txt}"
       repoList = repoListFile.readLines()
     }
 }
@@ -46,16 +46,6 @@ pipelineJob("parallel source clear scanning") {
 
     parameters {
         stringParam('kieVersion')
-        wHideParameterDefinition {
-            name('REPO_LIST_FILE_ID')
-            defaultValue("${repoListFileId}")
-            description('Config file id')
-        }
-        wHideParameterDefinition {
-            name('URL_PREFIX')
-            defaultValue("${prefix}")
-            description('URL prefix')
-        }
     }
 
     definition {
