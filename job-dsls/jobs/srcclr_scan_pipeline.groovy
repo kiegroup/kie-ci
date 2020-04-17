@@ -5,8 +5,8 @@ def pipelineScript =
 def repoList = []
 node('kie-rhel7') {
     stage('Read repo file') {
-      git url: "${env.DROOLSJBPM_BUILD_BOOTSTRAP_REPO}", branch: 'master'
-      def repoListFile = readFile "./script/repository-list.txt}"
+      git url: "${env.DROOLSJBPM_BUILD_BOOTSTRAP_URL}", branch: "${env.DROOLSJBPM_BUILD_BOOTSTRAP_VERSION}"
+      def repoListFile = readFile "./${env.REPO_LIST_FILE_PATH}"
       repoList = repoListFile.readLines()
     }
 }
@@ -23,7 +23,7 @@ for (repo in repoList) {
                 def jobName = "srcclr-scan-${repoName}"
                 build job: "${jobName}", propagate: false, parameters: [
                             [$class: 'StringParameterValue', name: 'SCAN_TYPE', value: 'scm'],
-                            [$class: 'StringParameterValue', name: 'SRCCLR_INVOKER_REPO_URL, value: 'https://github.com/project-ncl/sourceclear-invoker'],
+                            [$class: 'StringParameterValue', name: 'SRCCLR_INVOKER_REPO_URL, value: "{env.SRCCLR_INVOKER_REPO_URL}"],
                             [$class: 'StringParameterValue', name: 'URL', value: "${url}"],
                             [$class: 'StringParameterValue', name: 'VERSION', value: "${kieVersion}"],
                             [$class: 'StringParameterValue', name: 'NAME', value: "${repoName}"],
@@ -40,7 +40,7 @@ parallel branches
 
         '''
 
-pipelineJob("parallel source clear scanning") {
+pipelineJob("srcclrpipeline") {
 
     description("This is a pipeline, which runs source clear scanning jobs")
 
