@@ -3,7 +3,7 @@ def repoList = repoFile.readLines()
 
 for (repo in repoList) {
 
-    def jobName = "srcclr-scan-${repo}"
+    def jobName = "custom/akoufoud/source-clear/srcclr/srcclr-scan-${repo}"
 
     job(jobName) {
 
