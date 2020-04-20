@@ -5,8 +5,8 @@ def pipelineScript =
 def repoList = []
 node('kie-rhel7') {
     stage('Read repo file') {
-      git url: "${env.DROOLSJBPM_BUILD_BOOTSTRAP_URL}", branch: "${env.DROOLSJBPM_BUILD_BOOTSTRAP_VERSION}"
-      def repoListFile = readFile "./${env.REPO_LIST_FILE_PATH}"
+      git url: "${DROOLSJBPM_BUILD_BOOTSTRAP_URL}", branch: "${DROOLSJBPM_BUILD_BOOTSTRAP_BRANCH}"
+      def repoListFile = readFile "./script/repository-list.txt"
       repoList = repoListFile.readLines()
     }
 }
@@ -23,9 +23,9 @@ for (repo in repoList) {
                 def jobName = "srcclr-scan-${repoName}"
                 build job: "${jobName}", propagate: false, parameters: [
                             [$class: 'StringParameterValue', name: 'SCAN_TYPE', value: 'scm'],
-                            [$class: 'StringParameterValue', name: 'SRCCLR_INVOKER_REPO_URL, value: "{env.SRCCLR_INVOKER_REPO_URL}"],
+                            [$class: 'StringParameterValue', name: 'SRCCLR_INVOKER_REPO_URL, value: "${SRCCLR_INVOKER_REPO_URL}"],
                             [$class: 'StringParameterValue', name: 'URL', value: "${url}"],
-                            [$class: 'StringParameterValue', name: 'VERSION', value: "${kieVersion}"],
+                            [$class: 'StringParameterValue', name: 'VERSION', value: "${KIE_VERSION}"],
                             [$class: 'StringParameterValue', name: 'NAME', value: "${repoName}"],
                             [$class: 'StringParameterValue', name: 'PROCESSOR_TYPE', value: 'cve'],
                             [$class: 'StringParameterValue', name: 'THRESHOLD', value: '1']
@@ -45,7 +45,10 @@ pipelineJob("srcclrpipeline") {
     description("This is a pipeline, which runs source clear scanning jobs")
 
     parameters {
-        stringParam('kieVersion')
+        stringParam('KIE_VERSION')
+        stringParam('SRCCLR_INVOKER_REPO_URL','https://github.com/project-ncl/sourceclear-invoker','URL of the JUnit tests, which invoke srcclr scanning.')
+        stringParam('DROOLSJBPM_BUILD_BOOTSTRAP_URL','https://github.com/akoufoudakis/droolsjbpm-build-bootstrap.git','')
+        stringParam('DROOLSJBPM_BUILD_BOOTSTRAP_BRANCH','BXMSPROD-533','')
     }
 
     definition {
