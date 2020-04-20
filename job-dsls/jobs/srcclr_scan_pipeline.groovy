@@ -40,7 +40,7 @@ parallel branches
 
         '''
 
-pipelineJob("custom/akoufoud/source-clear/srcclr/srcclrpipeline") {
+pipelineJob("${JOB_PATH}/srcclrpipeline") {
 
     description("This is a pipeline, which runs source clear scanning jobs")
 

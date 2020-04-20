@@ -4,6 +4,7 @@ job('srcclr_scan_seed_job') {
         stringParam('REPO_FILE_URL','https://raw.githubusercontent.com/akoufoudakis/droolsjbpm-build-bootstrap/BXMSPROD-533/script/repository-list.txt','URL of the rpository-list.txt file')
         stringParam('KIE_JENKINS_SCRIPTS_REPO', 'https://github.com/akoufoudakis/kie-jenkins-scripts.git', '')
         stringParam('KIE_JENKINS_SCRIPTS_BRANCH', 'master', '')
+        stringParam('JOB_PATH', 'custom/akoufoud/source-clear/srcclr', '')
     }
     scm {
         git {
