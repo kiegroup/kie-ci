@@ -18,7 +18,7 @@ job('srcclr_scan_seed_job') {
     steps{
         shell('curl ${REPO_FILE_URL} -o repository-list.txt')
         dsl{
-            external('srcclr_scan_job.groovy','srcclr_scan_pipeline.groovy')
+            external('job-dsls/jobs/srcclr_scan_job.groovy','job-dsls/jobs/srcclr_scan_pipeline.groovy')
         }
     }
 
