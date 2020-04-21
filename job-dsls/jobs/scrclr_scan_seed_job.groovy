@@ -1,9 +1,16 @@
 def SRCCLR_FOLDER = 'custom/akoufoud/srcclr'
 
-folder('custom/akoufoud/srcclr')
+folder("sourceclear")
 
 job('srcclr_scan_seed_job') {
+
     description('Scan job, which generates scanning jobs for upstream projects')
+
+    environmentVariables {
+        env('SRCCLR_FOLDER', 'custom/akoufoud/srcclr')
+        keepBuildVariables(true)
+    }
+
     parameters {
         stringParam('REPO_FILE_URL','https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/script/repository-list.txt','URL of the repository-list.txt file')
     }
