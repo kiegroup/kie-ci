@@ -1,7 +1,7 @@
 job('srcclr_scan_seed_job') {
     description('Scan job, which generates scanning jobs for upstream projects')
     parameters {
-        stringParam('REPO_FILE_URL','https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/script/repository-list.txt','URL of the rpository-list.txt file')
+        stringParam('REPO_FILE_URL','https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/script/repository-list.txt','URL of the repository-list.txt file')
         stringParam('KIE_JENKINS_SCRIPTS_REPO', 'https://github.com/kiegroup/kie-jenkins-scripts', '')
         stringParam('KIE_JENKINS_SCRIPTS_BRANCH', 'master', '')
         stringParam('JOB_PATH', '', '')
