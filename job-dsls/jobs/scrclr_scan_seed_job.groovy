@@ -10,7 +10,7 @@ job('srcclr_scan_seed_job') {
         git {
             remote {
                 name('origin')
-                url("${KIE_JENKINS_SCRIPTS_REPO}")
+                url('$KIE_JENKINS_SCRIPTS_REPO')
             }
             branch("${KIE_JENKINS_SCRIPTS_BRANCH}")
         }
