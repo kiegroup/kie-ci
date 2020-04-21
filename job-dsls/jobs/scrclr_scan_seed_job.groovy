@@ -7,7 +7,7 @@ job('srcclr_scan_seed_job') {
     description('Scan job, which generates scanning jobs for upstream projects')
 
     environmentVariables {
-        env('SRCCLR_FOLDER', 'custom/akoufoud/srcclr')
+        env('SRCCLR_FOLDER', 'sourceclear')
         keepBuildVariables(true)
     }
 
