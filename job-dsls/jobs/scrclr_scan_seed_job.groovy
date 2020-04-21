@@ -12,7 +12,7 @@ job('srcclr_scan_seed_job') {
                 name('origin')
                 url('$KIE_JENKINS_SCRIPTS_REPO')
             }
-            branch("${KIE_JENKINS_SCRIPTS_BRANCH}")
+            branch('$KIE_JENKINS_SCRIPTS_BRANCH}')
         }
     }
 
