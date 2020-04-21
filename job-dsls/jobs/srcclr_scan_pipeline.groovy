@@ -49,6 +49,7 @@ pipelineJob("${JOB_PATH}/srcclrpipeline") {
         stringParam('SRCCLR_INVOKER_REPO_URL','https://github.com/project-ncl/sourceclear-invoker','URL of the JUnit tests, which invoke srcclr scanning.')
         stringParam('DROOLSJBPM_BUILD_BOOTSTRAP_URL','https://github.com/kiegroup/droolsjbpm-build-bootstrap.git','')
         stringParam('DROOLSJBPM_BUILD_BOOTSTRAP_BRANCH','master','')
+        stringParam('JOB_PATH', '', '')
     }
 
     definition {
