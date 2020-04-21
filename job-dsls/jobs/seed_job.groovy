@@ -48,7 +48,7 @@ job("a-seed-job") {
     }
 
     steps {
-        shell('')
+        shell('curl https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/script/repository-list.txt -o repository-list.txt')
         shell(seedJob)
 
         jobDsl {
