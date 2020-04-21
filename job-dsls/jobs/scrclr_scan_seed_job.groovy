@@ -1,25 +1,37 @@
+def SRCCLR_FOLDER = 'custom/akoufoud/srcclr'
+
+folder('custom/akoufoud/srcclr')
+
 job('srcclr_scan_seed_job') {
     description('Scan job, which generates scanning jobs for upstream projects')
     parameters {
         stringParam('REPO_FILE_URL','https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/script/repository-list.txt','URL of the repository-list.txt file')
-        stringParam('KIE_JENKINS_SCRIPTS_REPO', 'https://github.com/kiegroup/kie-jenkins-scripts', '')
-        stringParam('KIE_JENKINS_SCRIPTS_BRANCH', 'master', '')
-        stringParam('JOB_PATH', '', '')
     }
     scm {
         git {
             remote {
                 name('origin')
-                url('$KIE_JENKINS_SCRIPTS_REPO')
+                url('https://github.com/akoufoudakis/kie-jenkins-scripts.git')
             }
-            branch('$KIE_JENKINS_SCRIPTS_BRANCH}')
+            branch('BXMSPROD-533')
         }
     }
 
     steps{
         shell('curl ${REPO_FILE_URL} -o repository-list.txt')
-        dsl{
-            external('job-dsls/jobs/srcclr_scan_job.groovy','job-dsls/jobs/srcclr_scan_pipeline.groovy')
+        jobDsl {
+            targets("job-dsls/jobs/**/srcclr_scan_job.groovy\n" +
+                    "job-dsls/jobs/**/srcclr_scan_pipeline.groovy")
+            useScriptText(false)
+            sandbox(false)
+            ignoreExisting(false)
+            ignoreMissingFiles(false)
+            failOnMissingPlugin(true)
+            unstableOnDeprecation(true)
+            removedJobAction('DELETE')
+            removedViewAction('DELETE')
+            lookupStrategy('SEED_JOB')
+            additionalClasspath("job-dsls/src/main/groovy")
         }
     }
 

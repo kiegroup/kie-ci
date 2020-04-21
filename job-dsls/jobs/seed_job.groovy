@@ -48,7 +48,6 @@ job("a-seed-job") {
     }
 
     steps {
-        shell('curl https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/script/repository-list.txt -o repository-list.txt')
         shell(seedJob)
 
         jobDsl {
@@ -66,8 +65,6 @@ job("a-seed-job") {
                     "job-dsls/jobs/**/sonarcloud_daily.groovy\n" +
                     "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
                     "job-dsls/jobs/**/*_website_automatic_*.groovy\n" +
-                    "job-dsls/jobs/**/srcclr_scan_job.groovy\n" +
-                    "job-dsls/jobs/**/srcclr_scan_pipeline.groovy\n" +
                     "job-dsls/jobs/**/turtleTests.groovy")
             useScriptText(false)
             sandbox(false)
