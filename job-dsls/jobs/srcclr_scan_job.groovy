@@ -39,7 +39,7 @@ for (repo in repoList) {
         }
 
 
-        label("kie-rhel7")
+        label("kie-rhel7 & !master")
 
         wrappers {
             credentialsBinding {
@@ -51,7 +51,7 @@ for (repo in repoList) {
             git {
                 remote {
                     name('origin')
-                    url("${SRCCLR_INVOKER_REPO_URL}")
+                    url(SRCCLR_INVOKER_REPO_URL)
                 }
                 branch('master')
             }
