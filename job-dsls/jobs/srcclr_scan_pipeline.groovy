@@ -40,7 +40,7 @@ parallel branches
 
         '''
 
-pipelineJob("./srcclrpipeline") {
+pipelineJob("srcclrpipeline") {
 
     description("This is a pipeline, which runs source clear scanning jobs")
 
