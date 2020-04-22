@@ -8,7 +8,7 @@ job('srcclr_scan_seed_job') {
 
     environmentVariables {
         env('SRCCLR_FOLDER', 'sourceclear')
-        keepBuildVariables(true)
+        keepSystemVariables(true)
     }
 
     parameters {

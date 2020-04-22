@@ -36,6 +36,7 @@ for (repo in repoList) {
           map.put("SCMVERSIONPARAM", "${SCAN_TYPE}" == "scm" ? " --ref=${SCMVERSION}":"")
           return map
         ''')
+            keepSystemVariables(true)
         }
 
 
