@@ -1,3 +1,4 @@
+def SRCCLR_FOLDER = "$SRCCLR_FOLDER"
 def pipelineScript =
         '''
 @Library('jenkins-pipeline-shared-libraries')_
@@ -43,6 +44,10 @@ parallel branches
 pipelineJob("${SRCCLR_FOLDER}/srcclrpipeline") {
 
     description("This is a pipeline, which runs source clear scanning jobs")
+
+    environmentVariables{
+        keepSystemVariables(true)
+    }
 
     parameters {
         stringParam('KIE_VERSION')
