@@ -1,4 +1,4 @@
-def SRCCLR_FOLDER_PATH = "${SRCCLR_FOLDER}"
+def SRCCLR_FOLDER_PATH = "custom/akoufoud/srcclr"
 def pipelineScript =
         '''
 @Library('jenkins-pipeline-shared-libraries')_
