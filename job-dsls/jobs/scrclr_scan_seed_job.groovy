@@ -6,13 +6,10 @@ job('srcclr_scan_seed_job') {
 
     description('Scan job, which generates scanning jobs for upstream projects')
 
-    environmentVariables {
-        env('SRCCLR_FOLDER', 'sourceclear')
-        keepSystemVariables(true)
-    }
 
     parameters {
         stringParam('REPO_FILE_URL','https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/script/repository-list.txt','URL of the repository-list.txt file')
+        stringParam('SRCCLR_FOLDER', "${SRCCLR_FOLDER}")
     }
     scm {
         git {
@@ -37,7 +34,7 @@ job('srcclr_scan_seed_job') {
             unstableOnDeprecation(true)
             removedJobAction('DELETE')
             removedViewAction('DELETE')
-            lookupStrategy('SEED_JOB')
+            lookupStrategy('JENKINS_ROOT')
             additionalClasspath("job-dsls/src/main/groovy")
         }
     }
