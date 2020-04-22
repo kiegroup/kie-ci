@@ -1,9 +1,9 @@
-def repoFile = readFileFromWorkspace("repository-list.txt")
+def repoFile = readFileFromWorkspace("$WORKSPACE/repository-list.txt")
 def repoList = repoFile.readLines()
 
 for (repo in repoList) {
 
-    def jobName = "${SRCCLR_FOLDER}/srcclr-scan-${repo}"
+    def jobName = "srcclr-scan-${repo}"
 
     job(jobName) {
 
