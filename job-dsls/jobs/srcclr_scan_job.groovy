@@ -1,5 +1,9 @@
-def repoFile = readFileFromWorkspace('custom/akoufoud/source-clear/srcclr/srcclr-scan-seed', 'repository-list.txt')
+import org.kie.jenkins.jobdsl.Constants
+
+def repoFile = new URL(Constants.REPO_FILE_URL).text
 def repoList = repoFile.readLines()
+
+folder("sourceclear")
 
 for (repo in repoList) {
 
@@ -51,7 +55,7 @@ for (repo in repoList) {
             git {
                 remote {
                     name('origin')
-                    url(SRCCLR_INVOKER_REPO_URL)
+                    url('$SRCCLR_INVOKER_REPO_URL')
                 }
                 branch('master')
             }
