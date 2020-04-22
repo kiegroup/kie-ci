@@ -1,4 +1,4 @@
-def repoFile = readFileFromWorkspace('srcclr-scan-seed', 'repository-list.txt')
+def repoFile = readFileFromWorkspace('custom/akoufoud/source-clear/srcclr/srcclr-scan-seed', 'repository-list.txt')
 def repoList = repoFile.readLines()
 
 for (repo in repoList) {
