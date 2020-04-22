@@ -1,4 +1,3 @@
-def SRCCLR_FOLDER_PATH = "custom/akoufoud/srcclr"
 def pipelineScript =
         '''
 @Library('jenkins-pipeline-shared-libraries')_
@@ -41,7 +40,7 @@ parallel branches
 
         '''
 
-pipelineJob("${SRCCLR_FOLDER_PATH}/srcclrpipeline") {
+pipelineJob('srcclrpipeline') {
 
     description("This is a pipeline, which runs source clear scanning jobs")
 
