@@ -3,8 +3,6 @@ import org.kie.jenkins.jobdsl.Constants
 def repoFile = new URL(Constants.REPO_FILE_URL).text
 def repoList = repoFile.readLines()
 
-folder("sourceclear")
-
 for (repo in repoList) {
 
     def jobName = "srcclr-scan-${repo}"
