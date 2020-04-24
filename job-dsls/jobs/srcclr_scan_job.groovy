@@ -2,13 +2,13 @@ import org.kie.jenkins.jobdsl.Constants
 
 def repoList = new URL(Constants.REPO_FILE_URL).text.readLines()
 
-def srcclrPath = Constants.SRCCLR_JOBS_FOLDER
+def srcclrPath =
 
-folder("${srcclrPath}")
+folder(Constants.SRCCLR_JOBS_FOLDER)
 
 for (repo in repoList) {
 
-    def jobName = "${srcclrPath}/srcclr-scan-${repo}"
+    def jobName = "${Constants.SRCCLR_JOBS_FOLDER}/srcclr-scan-${repo}"
 
     job(jobName) {
 
