@@ -1,3 +1,7 @@
+import org.kie.jenkins.jobdsl.Constants
+
+def srcclrPath = Constants.SRCCLR_JOBS_FOLDER
+
 def pipelineScript =
         '''
 @Library('jenkins-pipeline-shared-libraries')_
@@ -39,6 +43,8 @@ for (repo in repoList) {
 parallel branches
 
         '''
+
+folder("${srcclrPath}")
 
 pipelineJob('srcclrpipeline') {
 
