@@ -26,20 +26,18 @@ for (repo in repoList) {
             stringParam('SCMVERSION', '')
             stringParam('THRESHOLD', '1','Threshold from 1 to 10 for cvss processor')
         }
-
-
+        
         environmentVariables{
             groovy('''
           def map = [:]
           map.put("RECURSE", Boolean.valueOf("${RECURSIVE}") ? "--recursive" : "")
           map.put("DEBUG", Boolean.valueOf("${DEBUGGING}") ? "-d" : "");
           map.put("TRACE", Boolean.valueOf("${TRACING}") ? "--trace" : "")
-          map.put("MVNPARAMETER", "${MVNPARAMS}" !="" ? "--maven-param=${MVNPARAMS}":"")
+          map.put("MVNPARAMETER", "${MVNPARAMS}" != "" ? "--maven-param=${MVNPARAMS}":"")
           map.put("SCMVERSIONPARAM", "${SCAN_TYPE}" == "scm" ? " --ref=${SCMVERSION}":"")
           return map
         ''')
         }
-
 
         label("kie-rhel7 & !master")
 
@@ -48,7 +46,6 @@ for (repo in repoList) {
                 string("SRCCLR_API_TOKEN", "SRCCLR_API_TOKEN")
             }
         }
-
         scm {
             git {
                 remote {
@@ -58,6 +55,7 @@ for (repo in repoList) {
                 branch('master')
             }
         }
+
         steps {
             maven {
                 mavenInstallation("kie-maven-3.5.4")
