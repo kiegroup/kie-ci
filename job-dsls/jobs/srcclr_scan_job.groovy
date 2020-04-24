@@ -2,8 +2,6 @@ import org.kie.jenkins.jobdsl.Constants
 
 def repoList = new URL(Constants.REPO_FILE_URL).text.readLines()
 
-def srcclrPath =
-
 folder(Constants.SRCCLR_JOBS_FOLDER)
 
 for (repo in repoList) {
