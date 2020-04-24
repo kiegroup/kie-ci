@@ -8,7 +8,7 @@ folder("${srcclrPath}")
 
 for (repo in repoList) {
 
-    def jobName = "srcclr-scan-${repo}"
+    def jobName = "${srcclrPath}/srcclr-scan-${repo}"
 
     job(jobName) {
 
