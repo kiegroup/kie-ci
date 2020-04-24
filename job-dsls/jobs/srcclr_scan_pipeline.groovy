@@ -45,8 +45,8 @@ parallel branches
         '''
 
 folder("${srcclrPath}")
-def pipelineName = "${srcclrPath}/srcclrpipeline"
-pipelineJob(pipelineName) {
+
+pipelineJob("${srcclrPath}/srcclrpipeline") {
 
     description("This is a pipeline, which runs source clear scanning jobs")
 
