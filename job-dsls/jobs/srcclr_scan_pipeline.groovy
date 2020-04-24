@@ -3,7 +3,7 @@ def pipelineScript =
 @Library('jenkins-pipeline-shared-libraries')_
 
 def repoList = []
-node('kie-rhel7') {
+node('kie-rhel7 & !master') {
     stage('Read repo file') {
       git url: "${DROOLSJBPM_BUILD_BOOTSTRAP_URL}", branch: "${DROOLSJBPM_BUILD_BOOTSTRAP_BRANCH}"
       def repoListFile = readFile "./script/repository-list.txt"
@@ -17,7 +17,7 @@ for (repo in repoList) {
     def branchName = "Source Clear ${repo}"
     def repoName = "${repo}"
     branches[branchName] = {
-        node('kie-rhel7') {
+        node('kie-rhel7 & !master') {
             stage(branchName) {
                 def url = "https://github.com/kiegroup/${repoName}"
                 def jobName = "srcclr-scan-${repoName}"
