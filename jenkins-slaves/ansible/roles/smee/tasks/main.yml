@@ -1,0 +1,65 @@
+---
+
+- debug: msg="WEBHOOK_URL \"{{ lookup('env','WEBHOOK_URL') }}\""
+- debug: msg="TARGET_URL \"{{ lookup('env','TARGET_URL') }}\""
+
+### Install NodeJS package ###
+
+- name: Install NodeJS repository
+  shell: curl -sL {{node_setup_url}} | sudo -E bash -
+
+- name: Install NodeJS package
+  yum:
+    pkg: nodejs-{{node_version}}
+    state: present
+
+- name: Print Node version
+  shell: node -v
+  register: node
+
+- debug: msg="{{ node.stdout }}"
+
+- name: Install Smee Client
+  npm:
+    name: smee-client
+    global: yes
+    production: yes
+    state: present
+    registry: ${NPM_REGISTRY_URL}
+
+- name: Generate smee.service.sh file
+  template:
+    src: data/service/smee.service.sh.j2
+    dest: /usr/local/bin/smee.service.sh
+    mode: 0777
+    force: yes
+    owner: root
+    group: root
+
+- name: Get smee.service content
+  shell: cat /usr/local/bin/smee.service.sh
+  register: cat
+
+- debug: msg="{{ cat.stdout }}"
+
+- name: Register Smee Service
+  copy:
+    src: data/service/smee.service
+    dest: /etc/systemd/system/smee.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Start Service
+  service:
+    name: smee
+    enabled: yes
+    state: restarted
+
+- name: get smee status
+  command: systemctl status smee.service
+  register: smee_service_status
+
+- debug: msg="{{ smee_service_status.stdout }}"
+
+...

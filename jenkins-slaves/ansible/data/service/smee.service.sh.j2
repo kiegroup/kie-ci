@@ -1,0 +1,2 @@
+#!/bin/bash
+smee -u {{ lookup('env','WEBHOOK_URL') }} -t {{ lookup('env','TARGET_URL') }}

@@ -1,0 +1,23 @@
+---
+- hosts: smee-client
+  remote_user: root
+  gather_facts: false
+
+  vars :
+    node_version: 12.16.2
+    node_setup_url: https://rpm.nodesource.com/setup_12.x
+
+  roles:
+    - smee
+
+  tasks:
+  ### Clean up ###
+  - name: Remove temprorary directory
+    file:
+      path: /tmp/downloads
+      state: absent
+
+  # Hack: decrease the image size by writing zeros into unsused parts of the disk
+  - name: Decrease VM image size
+    shell: cd / && (dd if=/dev/zero of=fillmeup || true) && sync && rm -f fillmeup
+...
