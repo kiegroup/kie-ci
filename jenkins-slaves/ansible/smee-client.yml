@@ -13,7 +13,7 @@
 
   tasks:
   ### Clean up ###
-  - name: Remove temprorary directory
+  - name: Remove temporary directory
     file:
       path: /tmp/downloads
       state: absent
