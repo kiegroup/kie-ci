@@ -1,4 +1,5 @@
 {
+  "_comment": "It's not originally created to be used from jenkins but for testing purposes (to build ansible/smee-client.yml in an easier way).",
   "variables": {
     "openstack_endpoint": null,
     "openstack_username": null,
