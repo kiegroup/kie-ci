@@ -49,13 +49,13 @@ dependencies {
     testCompile 'org.jenkins-ci.plugins:structs:1.13@jar'
     testCompile "org.jenkins-ci.plugins:config-file-provider:2.15.7@jar"
     testCompile 'org.jenkins-ci.plugins:credentials:2.1.13@jar'
-    testCompile 'org.jenkins-ci.plugins:cloudbees-folder:5.12@jar'
-    testCompile 'org.jenkins-ci.plugins.workflow:workflow-aggregator:2.5@jar'
+    testCompile 'org.jenkins-ci.plugins:cloudbees-folder:5.16@jar'
+    testCompile 'org.jenkins-ci.plugins.workflow:workflow-aggregator:2.6@jar'
 
     // plugins to install in test instance (all plugins used by the DSL scripts needs to be specified)
     // keep the alphabetical order
-    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-aggregator:2.5'
-    testPlugins 'org.jenkins-ci.plugins:cloudbees-folder:5.12'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-aggregator:2.6'
+    testPlugins 'org.jenkins-ci.plugins:cloudbees-folder:5.16'
     testPlugins 'com.cloudbees.plugins:build-flow-plugin:0.20'
     testPlugins 'com.coravy.hudson.plugins.github:github:1.19.0'
     testPlugins 'com.sonyericsson.hudson.plugins.rebuild:rebuild:1.25'
@@ -68,11 +68,24 @@ dependencies {
     testPlugins 'org.jenkins-ci.plugins:description-setter:1.10'
     testPlugins 'org.jenkins-ci.plugins:envinject:2.0'
     testPlugins 'org.jenkins-ci.plugins:git:3.2.0'
-    testPlugins 'org.jenkins-ci.plugins:ghprb:1.36.1'
+    testPlugins 'org.jenkins-ci.plugins:ghprb:1.39.0'
     testPlugins 'org.jenkins-ci.plugins:junit:1.20'
     testPlugins 'org.jenkins-ci.plugins:multiple-scms:0.6'
     testPlugins 'org.jenkins-ci.plugins:nested-view:1.14'
     testPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-build-step:2.9'
+    testPlugins 'org.jenkinsci.plugins:pipeline-model-declarative-agent:1.1.1'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-input-step:2.10'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-maven:3.8.0'
+    testPlugins 'org.jenkins-ci.plugins.pipeline-stage-view:pipeline-rest-api:2.11'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-stage-step:2.3'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-utility-steps:2.3.0'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-graph-analysis:1.10'
+    testPlugins 'org.jenkins-ci.plugins:pipeline-milestone-step:1.3.1'
+    testPlugins 'org.jenkinsci.plugins:pipeline-model-api:1.3.9'
+    testPlugins 'org.jenkinsci.plugins:pipeline-model-definition:1.3.9'
+    testPlugins 'org.jenkinsci.plugins:pipeline-model-extensions:1.3.9'
+    testPlugins 'org.jenkins-ci.plugins.pipeline-stage-view:pipeline-rest-api:2.11'
     testPlugins 'org.jenkins-ci.plugins:script-security:1.27'
     testPlugins 'org.jenkins-ci.plugins:throttle-concurrents:1.9.0'
     testPlugins 'org.jenkins-ci.plugins:timestamper:1.8.8'
@@ -125,7 +138,7 @@ task rest(dependsOn: 'classes', type: JavaExec) {
     systemProperties System.getProperties()
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.4.1'
+task wrapperTask(type: Wrapper) {
+    gradleVersion = '6.3'
     distributionType = 'all'
 }
