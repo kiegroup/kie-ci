@@ -8,6 +8,7 @@
     node_setup_url: https://rpm.nodesource.com/setup_12.x
 
   roles:
+    - cert-ssh
     - smee
 
   tasks:
@@ -16,8 +17,4 @@
     file:
       path: /tmp/downloads
       state: absent
-
-  # Hack: decrease the image size by writing zeros into unsused parts of the disk
-  - name: Decrease VM image size
-    shell: cd / && (dd if=/dev/zero of=fillmeup || true) && sync && rm -f fillmeup
 ...

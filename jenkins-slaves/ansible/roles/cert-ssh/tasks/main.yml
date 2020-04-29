@@ -1,0 +1,45 @@
+---
+### redhat root certs ###
+
+- name: Download root certs
+  get_url:
+    url: "{{ item }}"
+    dest: /etc/pki/ca-trust/source/anchors/
+    validate_certs: no
+  with_items:
+    ['https://password.corp.redhat.com/legacy.crt', 'https://password.corp.redhat.com/RH-IT-Root-CA.crt']
+
+- name: Create cacerts directory
+  file:
+    path: /etc/openldap/cacerts
+    state: directory
+    recurse: yes
+
+- name: Copy legacy root certs to cacerts
+  copy:
+    src: /etc/pki/ca-trust/source/anchors/{{ item }}
+    dest: /etc/openldap/cacerts/
+    remote_src: yes
+  with_items:
+    [legacy.crt, RH-IT-Root-CA.crt]
+
+- name: Rehash cacerts
+  command: cacertdir_rehash /etc/openldap/cacerts
+
+- name: Update ca trust
+  command: update-ca-trust
+
+- name: Make node.js use the system root CA
+  copy:
+    dest: /etc/profile.d/nodejscerts.sh
+    mode: 0755
+    content: |
+      export NODE_EXTRA_CA_CERTS=/etc/pki/ca-trust/source/anchors/RH-IT-Root-CA.crt
+
+
+### ssh config ###
+
+- name: Set no strict host checking
+  shell: echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
+
+...
