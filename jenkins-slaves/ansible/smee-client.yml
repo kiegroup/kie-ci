@@ -1,0 +1,20 @@
+---
+- hosts: smee-client
+  remote_user: root
+  gather_facts: false
+
+  vars :
+    node_version: 12.16.2
+    node_setup_url: https://rpm.nodesource.com/setup_12.x
+
+  roles:
+    - cert-ssh
+    - smee
+
+  tasks:
+  ### Clean up ###
+  - name: Remove temporary directory
+    file:
+      path: /tmp/downloads
+      state: absent
+...

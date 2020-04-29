@@ -1,0 +1,10 @@
+[Unit]
+Description=Smee Client Service.
+
+[Service]
+Type=simple
+
+ExecStart=/usr/local/bin/smee.service.sh
+
+[Install]
+WantedBy=multi-user.target
