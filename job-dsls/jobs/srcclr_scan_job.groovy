@@ -40,7 +40,7 @@ for (repo in repoList) {
         ''')
         }
 
-        label("kie-rhel7 & !master")
+        label("kie-rhel7 && !master")
 
         wrappers {
             credentialsBinding {
