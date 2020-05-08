@@ -71,7 +71,7 @@ job("a-seed-job") {
             ignoreMissingFiles(false)
             failOnMissingPlugin(true)
             unstableOnDeprecation(true)
-            removedJobAction('DELETE')
+            removedJobAction('IGNORE')
             removedViewAction('DELETE')
             //removedConfigFilesAction('IGNORE')
             lookupStrategy('SEED_JOB')
