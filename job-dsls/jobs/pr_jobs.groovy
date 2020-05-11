@@ -216,6 +216,7 @@ for (repoConfig in REPO_CONFIGS) {
         triggers {
             githubPullRequest {
                 useGitHubHooks()
+                cron("")
                 orgWhitelist(["kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
                 whiteListTargetBranches([repoBranch])

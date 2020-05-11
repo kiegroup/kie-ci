@@ -85,6 +85,7 @@ job(jobName) {
     triggers {
         githubPullRequest {
             useGitHubHooks()
+            cron("")
             orgWhitelist(["appformer", "kiegroup"])
             allowMembersOfWhitelistedOrgsAsAdmin()
             whiteListTargetBranches([kieMainBranch])
