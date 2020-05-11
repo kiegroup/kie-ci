@@ -7,7 +7,7 @@ def kieMainBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_VERSION
 def repo="kie-jenkins-scripts"
-def ghAuthTokenId="kie-ci3-token"
+def ghAuthTokenId="kie-ci-token"
 def folderPath=Constants.PULL_REQUEST_FOLDER + "/"
 
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -84,13 +84,13 @@ job(jobName) {
 
     triggers {
         githubPullRequest {
+            useGitHubHooks()
             orgWhitelist(["appformer", "kiegroup"])
             allowMembersOfWhitelistedOrgsAsAdmin()
-            cron("H/7 * * * *")
             whiteListTargetBranches([kieMainBranch])
             extensions {
                 commitStatus {
-                    context('Linux')
+                    context('Pull Request Execution')
                     addTestResults(true)
                 }
             }
