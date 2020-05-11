@@ -52,6 +52,7 @@ job("a-seed-job") {
 
         jobDsl {
             targets("job-dsls/jobs/**/communityRelease_pipeline.groovy\n" +
+                    "job-dsls/jobs/**/pr_jobs.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_pipeline.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_prod_pipeline.groovy\n" +
                     "job-dsls/jobs/**/deploy_jobs.groovy\n" +
