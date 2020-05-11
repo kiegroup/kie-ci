@@ -52,13 +52,11 @@ job("a-seed-job") {
 
         jobDsl {
             targets("job-dsls/jobs/**/communityRelease_pipeline.groovy\n" +
-                    "job-dsls/jobs/**/compile_downstream_build.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_pipeline.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_prod_pipeline.groovy\n" +
                     "job-dsls/jobs/**/deploy_jobs.groovy\n" +
                     "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
                     "job-dsls/jobs/**/kie_jenkinsScripts_PR.groovy\n" +
-                    "job-dsls/jobs/**/pr_jobs.groovy\n" +
                     "job-dsls/jobs/**/prodTag_pipeline.groovy\n" +
                     "job-dsls/jobs/**/seed_job.groovy\n" +
                     "job-dsls/jobs/**/sonarcloud_daily.groovy\n" +
@@ -73,7 +71,7 @@ job("a-seed-job") {
             ignoreMissingFiles(false)
             failOnMissingPlugin(true)
             unstableOnDeprecation(true)
-            removedJobAction('DELETE')
+            removedJobAction('IGNORE')
             removedViewAction('DELETE')
             //removedConfigFilesAction('IGNORE')
             lookupStrategy('SEED_JOB')
