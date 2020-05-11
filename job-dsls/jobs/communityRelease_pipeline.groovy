@@ -10,7 +10,7 @@ def commitMsg="Upgraded version to "
 def javadk=Constants.JDK_VERSION
 def mvnVersion="kie-maven-3.5.2"
 def binariesNR=1
-String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.2.0/jboss-eap-7.2.0.zip"
+String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
 // creation of folder
 folder("community-release")
@@ -236,7 +236,7 @@ pipeline {
                     ' \\n' +
                     'The artifacts are available here \\n' +
                     ' \\n' +
-                    'business-central artifacts: (wildfly14.war) \\n' +
+                    'business-central artifacts: (wildfly18.war) \\n' +
                     'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
                     '\\n' +
                     'business-central-webapp: \\n' +
@@ -273,7 +273,7 @@ pipeline {
                     ' \\n' +
                     'The artifacts are available here \\n' +
                     ' \\n' +
-                    'business-central artifacts: (wildfly14.war) \\n' +
+                    'business-central artifacts: (wildfly18.war) \\n' +
                     'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
                     '\\n' +
                     'business-central-webapp: \\n' +
