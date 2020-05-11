@@ -8,7 +8,7 @@ def final CONFIG = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
         timeoutMins            : 120,
-        ghAuthTokenId          : "kie-ci2-token",
+        ghAuthTokenId          : "kie-ci-token",
         label                  : "kie-rhel7 && kie-mem8g",
         upstreamMvnArgs        : "-B -e -T1C -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -DskipTests -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-B -e -nsu -fae clean install -Pspringboot",
@@ -97,15 +97,15 @@ job(jobName) {
 
     triggers {
         githubPullRequest {
+            useGitHubHooks()
             orgWhitelist(["appformer", "kiegroup"])
             allowMembersOfWhitelistedOrgsAsAdmin()
-            cron("H/5 * * * *")
             triggerPhrase(".*[j|J]enkins,?.*execute springboot build.*")
             onlyTriggerPhrase()
             whiteListTargetBranches([repoBranch])
             extensions {
                 commitStatus {
-                    context('Linux - Spring Boot')
+                    context('Pull Request Execution - Spring Boot')
                     addTestResults(true)
                 }
             }
