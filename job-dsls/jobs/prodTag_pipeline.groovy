@@ -170,21 +170,13 @@ pipelineJob("${folderPath}/prod-tag-pipeline-${baseBranch}") {
         stringParam("baseBranch", "${baseBranch}", "Please edit the name of the kie branch ")
         stringParam("organization", "${organization}", "Please edit the name of organization.")
         stringParam("tagName", "${tagName}", "Please edit name of the prod tag - i.e. sync-XXX-yyyy.dd.mm ")
-        stringParam("TPB", "${TPB}","Please edit the name of the target product build i.e. RHPAM 7.5.0.CR1")
-        wHideParameterDefinition {
-            name('reportBranch')
-            defaultValue("${reportBranch}")
-            description('Please edit branch for release reports on jboss-integration')
-        }
+        stringParam("cutOffDate","$cutOffDate","Please edit the cut off date here in format yyyy-MM-dd")
+        stringParam("TPB", "${TPB}","Please edit the name of the target product build i.e. RHPAM_7.5.0.CR1")
+        stringParam("reportBranch","${reportBranch}","Please edit branch for release reports on jboss-integration")
         wHideParameterDefinition {
             name('MAVEN_OPTS')
             defaultValue("${MAVEN_OPTS}")
             description('Please edit the Maven options')
-        }
-        wHideParameterDefinition {
-            name('cutOffDate')
-            defaultValue("${cutOffDate}")
-            description('Please edit the cutOffDate')
         }
         wHideParameterDefinition {
             name('commitMsg')
