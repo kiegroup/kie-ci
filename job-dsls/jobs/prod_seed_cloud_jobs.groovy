@@ -4,7 +4,7 @@ import org.kie.jenkins.jobdsl.Constants
 String jobDescription = "Job responsible for seed jobs to building rhpm/rhdm openshift image"
 
 //Define Variables
-def prodComponent = ['rhpam-businesscentral','rhpam-businesscentral-monitoring','rhpam-controller','rhpam-kieserver','rhpam-smartrouter','rhdm-decisioncentral','rhdm-controller','rhdm-kieserver','rhdm-optaweb-employee-rostering']
+def prodComponent = ['rhpam-businesscentral','rhpam-businesscentral-monitoring','rhpam-controller','rhpam-kieserver','rhpam-smartrouter','rhdm-decisioncentral','rhdm-controller','rhdm-kieserver','rhpam-process-migration','rhdm-optaweb-employee-rostering']
 
 def buildDate=Constants.BUILD_DATE
 def prodVersion=Constants.PROD_VERSION
