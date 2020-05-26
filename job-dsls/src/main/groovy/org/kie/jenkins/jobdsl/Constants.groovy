@@ -24,7 +24,7 @@ class Constants {
     static final String GITHUB_ORG_UNIT = "kiegroup"
     static final String PULL_REQUEST_FOLDER = "pullrequest"
     static final String DEPLOY_FOLDER = "deployedRep"
-    static final String KIE_PREFIX = "7.38.0"
+    static final String KIE_PREFIX = "7.39.0"
     static final String NUMBER_OF_KIE_USERS = "10"
     static final String SONARCLOUD_FOLDER = "sonarcloud"
     static final String REPORT_BRANCH = "7.x"
