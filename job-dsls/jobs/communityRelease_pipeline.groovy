@@ -312,7 +312,7 @@ pipeline {
                 ' \\n' +
                 'business-central artifacts: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/ \\n' +
                 'business-central-webapp: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central-webapp/$kieVersion/ \\n' +
-                'business-monitoring-webapp: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/kieVersion/ \\n' +
+                'business-monitoring-webapp: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/$kieVersion/ \\n' +
                 'jbpm-server-distribution (single zip): https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
                  '\\n' +
                  'Component version:\\n' +
