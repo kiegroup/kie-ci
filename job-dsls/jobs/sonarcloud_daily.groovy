@@ -46,7 +46,8 @@ def final REPO_CONFIGS = [
         ],
         "droolsjbpm-integration" : [
                 timeoutMins: 240
-        ]
+        ],
+        "optaweb-employee-rostering": []
 ]
 
 for (repoConfig in REPO_CONFIGS) {

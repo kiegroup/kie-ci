@@ -147,7 +147,18 @@ echo "wget  --no-check-certificate  ${BUILD_URL}consoleText" >> trace.sh
 echo "tail -n 1000 consoleText >> error.log" >> trace.sh
 echo "gzip error.log" >> trace.sh'''
 
-def final SONARCLOUD_ENABLED_REPOSITORIES = ["optaplanner", "drools", "appformer", "jbpm", "drools-wb", "kie-soup", "droolsjbpm-integration", "kie-wb-common", "openshift-drools-hacep"]
+def final SONARCLOUD_ENABLED_REPOSITORIES = [
+        "optaplanner",
+        "drools",
+        "appformer",
+        "jbpm",
+        "drools-wb",
+        "kie-soup",
+        "droolsjbpm-integration",
+        "kie-wb-common",
+        "openshift-drools-hacep",
+        "optaweb-employee-rostering"
+]
 
 for (repoConfig in REPO_CONFIGS) {
     Closure<Object> get = { String key -> repoConfig.value[key] ?: DEFAULTS[key] }
@@ -258,7 +269,7 @@ for (repoConfig in REPO_CONFIGS) {
                     targetLocation("jenkins-settings.xml")
                 }
             }
-            
+
             if (repo in SONARCLOUD_ENABLED_REPOSITORIES) {
                 credentialsBinding { // Injects SONARCLOUD_TOKEN credentials into an environment variable.
                     string("SONARCLOUD_TOKEN", "SONARCLOUD_TOKEN")
