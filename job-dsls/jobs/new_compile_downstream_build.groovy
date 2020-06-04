@@ -77,6 +77,10 @@ for (repoConfig in REPO_CONFIGS) {
                     |Every configuration change needs to be done directly in the DSL files. See the below listed 'Seed job' for more info.
                     |""".stripMargin())
 
+        logRotator {
+            numToKeep(10)
+        }
+
         properties {
             githubProjectUrl("https://github.com/${ghOrgUnit}/${repo}")
         }
@@ -151,7 +155,7 @@ for (repoConfig in REPO_CONFIGS) {
                 whiteListLabels("")
                 extensions {
                     ghprbSimpleStatus {
-                        commitStatusContext("Linux - Compile Downstream Build (new)")
+                        commitStatusContext("Linux - Compile Downstream Build (***)")
                         addTestResults(true)
                         showMatrixStatus(false)
                         statusUrl("")
