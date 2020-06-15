@@ -1,9 +1,9 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-3.5.2"
+def mvnVersion="kie-maven-3.6.3"
 def javaToolEnv="KIE_JDK1_8"
-def mvnToolEnv="KIE_MAVEN_3_5_2"
+def mvnToolEnv="KIE_MAVEN_3_6_3"
 def mvnHome="${mvnToolEnv}_HOME"
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
@@ -26,7 +26,7 @@ pipeline {
         label 'kie-linux&&kie-rhel7&&kie-mem24g'
     }
     tools {
-        maven 'kie-maven-3.5.2'
+        maven 'kie-maven-3.6.3'
         jdk 'kie-jdk1.8'
     }
     stages {
