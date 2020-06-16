@@ -17,4 +17,34 @@
 
 - name: Install Yarn
   shell: npm install -g yarn --registry=${NPM_REGISTRY_URL}
+
+### Configure jenkins user to use podman ###
+- name: Copy podman config file
+  copy:
+    src: data/config/podman.conf
+    dest: /etc/sysctl.d/podman.conf
+    owner: root
+    group: root
+    mode: '0644'
+- name: add jenkins user to uids
+  shell: usermod --add-subuids 10000-75535 jenkins
+
+- name: add jenkins user to gids
+  shell: usermod --add-subgids 10000-75535 jenkins
+
+### Installing pip packages ###
+- name: Install pip packages
+  pip:
+    name:
+      - cekit
+      - behave
+      - lxml
+      - docker
+      - docker-squash
+      - odcs[client]
+      - elementPath
+      - pyyaml
+      - ruamel.yaml
+      - python-dateutil
+    executable: /bin/pip3
 ...
