@@ -19,6 +19,11 @@
     firefox_long_versions: [45.9.0esr, 52.9.0esr, 60.2.0esr]
     pme_version: 3.8.1
     pig_version: 1.0.5
+    graalvm_version: 19.3.1
+    operator_sdk_version: v0.15.1
+    golang_version: 1.13
+    mercurial_version: 5.3.1
+    openshift_clients_version: 4.4.0
     jenkins_script_security_approved_signatures_present:
       - method java.util.regex.Matcher find
       - method org.yaml.snakeyaml.Yaml load java.lang.String

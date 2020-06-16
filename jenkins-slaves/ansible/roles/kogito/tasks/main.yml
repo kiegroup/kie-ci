@@ -19,7 +19,7 @@
   shell: npm install -g yarn --registry=${NPM_REGISTRY_URL}
 
 ### Configure jenkins user to use podman ###
-- name: Copy podman cofig file
+- name: Copy podman config file
   copy:
     src: data/config/podman.conf
     dest: /etc/sysctl.d/podman.conf

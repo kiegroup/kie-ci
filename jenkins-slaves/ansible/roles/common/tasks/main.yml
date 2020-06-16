@@ -139,41 +139,47 @@
 
 - name: Dowload GraalVM archives
   get_url:
-    url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-19.3.1/graalvm-ce-java11-linux-amd64-19.3.1.tar.gz
+    url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-{{graalvm_version}}/graalvm-ce-java11-linux-amd64-{{graalvm_version}}.tar.gz
     dest: /tmp/downloads/
     owner: jenkins
     group: jenkins
 
+- name: Create graalvm directory
+  file:
+    path: /opt/tools/graalvm
+    state: directory
+
 - name: Extract GraalVM archives
   unarchive:
     copy: no
-    src: /tmp/downloads/graalvm-ce-java11-linux-amd64-19.3.1.tar.gz
-    dest: /opt/tools/
+    src: /tmp/downloads/graalvm-ce-java11-linux-amd64-{{graalvm_version}}.tar.gz
+    dest: /opt/tools/graalvm
+    extra_opts: [--strip-components=1]
     owner: jenkins
     group: jenkins
 
 - name: Install native-image
-  command: "/opt/tools/graalvm-ce-java11-19.3.1/bin/gu install native-image"
+  command: "/opt/tools/graalvm/bin/gu install native-image"
 
 ### Operator-sdk ###
 
 - name: Install Operator-sdk
   get_url:
-    url: https://github.com/operator-framework/operator-sdk/releases/download/v0.15.1/operator-sdk-v0.15.1-x86_64-linux-gnu
+    url: https://github.com/operator-framework/operator-sdk/releases/download/{{operator_sdk_version}}/operator-sdk-{{operator_sdk_version}}-x86_64-linux-gnu
     dest: /opt/tools/extras/operator-sdk
     mode: '0755'
 
 ### Golang ###
 - name: Download golang archives
   get_url:
-    url: https://dl.google.com/go/go1.13.linux-amd64.tar.gz
+    url: https://dl.google.com/go/go{{golang_version}}.linux-amd64.tar.gz
     dest: /tmp/downloads/
     owner: jenkins
     group: jenkins
 - name: Extract Golang archives
   unarchive:
     copy: no
-    src: /tmp/downloads/go1.13.linux-amd64.tar.gz
+    src: /tmp/downloads/go{{golang_version}}.linux-amd64.tar.gz
     dest: /opt/tools/
     owner: jenkins
     group: jenkins
@@ -188,15 +194,22 @@
 ### Mercurial ###
 - name: Download Mercurial archives
   get_url:
-    url: https://www.mercurial-scm.org/release/mercurial-5.3.1.tar.gz
+    url: https://www.mercurial-scm.org/release/mercurial-{{mercurial_version}}.tar.gz
     dest: /tmp/downloads/
     owner: jenkins
     group: jenkins
+
+- name: Create mercurial directory
+  file:
+    path: /opt/tools/mercurial
+    state: directory
+
 - name: Extract Mercurial archives
   unarchive:
     copy: no
-    src: /tmp/downloads/mercurial-5.3.1.tar.gz
-    dest: /opt/tools/
+    src: /tmp/downloads/mercurial-{{mercurial_version}}.tar.gz
+    dest: /opt/tools/mercurial
+    extra_opts: [--strip-components=1]
     owner: jenkins
     group: jenkins
 
@@ -218,7 +231,7 @@
 ### Openshift-client ###
 - name: Download openshift-utils archives
   get_url:
-    url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.4.0/openshift-client-linux-4.4.0.tar.gz
+    url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{openshift_clients_version}}/openshift-client-linux-{{openshift_clients_version}}.tar.gz
     dest: /tmp/downloads/
     owner: jenkins
     group: jenkins
@@ -226,7 +239,7 @@
 - name: Extract openshift-client archives
   unarchive:
     copy: no
-    src: /tmp/downloads/openshift-client-linux-4.4.0.tar.gz
+    src: /tmp/downloads/openshift-client-linux-{{openshift_clients_version}}.tar.gz
     dest: /opt/tools/extras/
     owner: jenkins
     group: jenkins
