@@ -7,7 +7,9 @@ fi
 
 export LANG=en_US.UTF-8
 export JAVA_HOME=/opt/tools/jdk1.8
-export MAVEN_HOME=/opt/tools/apache-maven-3.2.5
+export MAVEN_HOME=/opt/tools/apache-maven-3.5.2
 export MAVEN_OPTS="-Xmx2g"
-
-export PATH=$JAVA_HOME/bin:$MAVEN_HOME/bin:$PATH
+export GRAALVM_HOME=/opt/tools/graalvm-ce-java11-19.3.1
+export GOROOT=/opt/tools/go
+export GOPATH=/home/jenkins/go
+export PATH=$JAVA_HOME/bin:$MAVEN_HOME/bin:$GOROOT/bin:$GRAALVM_HOME/bin:$GOPATH/bin:/opt/tools/mercurial-5.3.1/:/opt/tools/extras/:$PATH

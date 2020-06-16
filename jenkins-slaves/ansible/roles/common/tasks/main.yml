@@ -18,7 +18,8 @@
   yum:
     pkg: ['git', 'tig', 'wget', 'mc', 'vim', 'unzip', 'iputils', 'bind-utils', 'findutils',
           'htop', 'hub', 'screen', 'lsof', 'bash-completion', 'bzip2', 'rng-tools',
-          'ansible', 'zip', 'python2-pip', 'jq', 'libXScrnSaver']
+          'ansible', 'zip', 'python2-pip', 'jq', 'libXScrnSaver', 'python3', 'python3-devel',
+          'python3-pip', 'glibc-devel', 'zlib-devel', 'podman', 'gcc', 'krb5-devel']
     state: latest
 
 - name: Update all packages
@@ -75,6 +76,13 @@
     owner: root
     group: root
 
+- name: Create extras packages directory
+  file:
+    path: /opt/tools/extras/
+    state: directory
+    owner: jenkins
+    group: jenkins
+
 ### JDK ###
 
 - name: Download JDK archives
@@ -111,7 +119,7 @@
 - name: Dowload Maven archives
   get_url:
     url: https://archive.apache.org/dist/maven/maven-3/{{ item }}/binaries//apache-maven-{{ item }}-bin.tar.gz
-    dest: /tmp/downloads
+    dest: /tmp/downloads/
     owner: root
     group: root
   with_items:
@@ -126,6 +134,102 @@
     group: root
   with_items:
     - "{{ maven_versions }}"
+
+### GraalVM ###
+
+- name: Dowload GraalVM archives
+  get_url:
+    url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-19.3.1/graalvm-ce-java11-linux-amd64-19.3.1.tar.gz
+    dest: /tmp/downloads/
+    owner: jenkins
+    group: jenkins
+
+- name: Extract GraalVM archives
+  unarchive:
+    copy: no
+    src: /tmp/downloads/graalvm-ce-java11-linux-amd64-19.3.1.tar.gz
+    dest: /opt/tools/
+    owner: jenkins
+    group: jenkins
+
+- name: Install native-image
+  command: "/opt/tools/graalvm-ce-java11-19.3.1/bin/gu install native-image"
+
+### Operator-sdk ###
+
+- name: Install Operator-sdk
+  get_url:
+    url: https://github.com/operator-framework/operator-sdk/releases/download/v0.15.1/operator-sdk-v0.15.1-x86_64-linux-gnu
+    dest: /opt/tools/extras/operator-sdk
+    mode: '0755'
+
+### Golang ###
+- name: Download golang archives
+  get_url:
+    url: https://dl.google.com/go/go1.13.linux-amd64.tar.gz
+    dest: /tmp/downloads/
+    owner: jenkins
+    group: jenkins
+- name: Extract Golang archives
+  unarchive:
+    copy: no
+    src: /tmp/downloads/go1.13.linux-amd64.tar.gz
+    dest: /opt/tools/
+    owner: jenkins
+    group: jenkins
+
+- name: Create GOPATH directory
+  file:
+    path: /home/jenkins/go/
+    state: directory
+    owner: jenkins
+    group: jenkins
+
+### Mercurial ###
+- name: Download Mercurial archives
+  get_url:
+    url: https://www.mercurial-scm.org/release/mercurial-5.3.1.tar.gz
+    dest: /tmp/downloads/
+    owner: jenkins
+    group: jenkins
+- name: Extract Mercurial archives
+  unarchive:
+    copy: no
+    src: /tmp/downloads/mercurial-5.3.1.tar.gz
+    dest: /opt/tools/
+    owner: jenkins
+    group: jenkins
+
+### Source-to-image ###
+- name: Download s2i archives
+  get_url:
+    url: https://github.com/openshift/source-to-image/releases/download/v1.3.0/source-to-image-v1.3.0-eed2850f-linux-amd64.tar.gz
+    dest: /tmp/downloads/
+    owner: jenkins
+    group: jenkins
+- name: Extract s2i archives
+  unarchive:
+    copy: no
+    src: /tmp/downloads/source-to-image-v1.3.0-eed2850f-linux-amd64.tar.gz
+    dest: /opt/tools/extras/
+    owner: jenkins
+    group: jenkins
+
+### Openshift-client ###
+- name: Download openshift-utils archives
+  get_url:
+    url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.4.0/openshift-client-linux-4.4.0.tar.gz
+    dest: /tmp/downloads/
+    owner: jenkins
+    group: jenkins
+
+- name: Extract openshift-client archives
+  unarchive:
+    copy: no
+    src: /tmp/downloads/openshift-client-linux-4.4.0.tar.gz
+    dest: /opt/tools/extras/
+    owner: jenkins
+    group: jenkins
 
 ### Packer ###
 
