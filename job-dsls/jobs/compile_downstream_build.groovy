@@ -11,7 +11,7 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 600,
         label                  : "kie-rhel7 && kie-mem16g",
-        ghAuthTokenId          : "kie-ci4-token",
+        ghAuthTokenId          : "kie-ci-token",
         upstreamMvnArgs        : "-B -e -T1C -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
         downstreamMvnGoals     : "-B -e -nsu -fae -T1C clean install -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Dfull=true -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true",
         artifactsToArchive     : [
@@ -111,9 +111,10 @@ for (repoConfig in REPO_CONFIGS) {
 
         triggers {
             githubPullRequest {
+                useGitHubHooks(true)
                 orgWhitelist(["kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
-                cron("H/5 * * * *")
+                cron("")
                 triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) compile downstream build.*")
 
                 // execute build for drools and appformer by default
