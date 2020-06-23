@@ -51,9 +51,7 @@ job("a-seed-job") {
         shell(seedJob)
 
         jobDsl {
-            targets("job-dsls/jobs/**/pr_jobs.groovy\n" +
-                    "job-dsls/jobs/**/compile_downstream_build.groovy\n" +
-                    "job-dsls/jobs/**/dailyBuild_pipeline.groovy\n" +
+            targets("job-dsls/jobs/**/dailyBuild_pipeline.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_prod_pipeline.groovy\n" +
                     "job-dsls/jobs/**/deploy_jobs.groovy\n" +
                     "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
