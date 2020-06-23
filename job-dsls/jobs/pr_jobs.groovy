@@ -52,6 +52,7 @@ def final REPO_CONFIGS = [
         ],
         "drools"                    : [],
         "optaplanner"               : [
+                upstreamMvnArgs : "-B -e -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE clean install -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true",
                 mvnGoals: "-B -e -nsu -fae clean install",
                 mvnProps: [
                     "full"                     : "true",

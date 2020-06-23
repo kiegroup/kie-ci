@@ -35,7 +35,10 @@ def final REPO_CONFIGS = [
         "appformer"                 : [],
         "droolsjbpm-knowledge"      : [],
         "drools"                    : [],
-        "optaplanner"               : [],
+        "optaplanner"               : [
+                upstreamMvnArgs : "-B -e -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE clean install -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true",
+                downstreamMvnGoals : "-B -e -nsu -fae clean install -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Dfull=true -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true"
+        ],
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [],
