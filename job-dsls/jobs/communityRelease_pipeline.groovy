@@ -2,13 +2,13 @@ import org.kie.jenkins.jobdsl.Constants
 
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
-def releaseBranch="r7.29.0.Final"
+def releaseBranch="r7.40.0.Final"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def MAVEN_OPTS="-Xms1g -Xmx3g"
 def commitMsg="Upgraded version to "
 def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-3.5.2"
+def mvnVersion="kie-maven-3.6.3"
 def binariesNR=1
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
@@ -23,7 +23,7 @@ pipeline {
         label 'kie-releases'
     }
     tools {
-        maven 'kie-maven-3.5.2'
+        maven 'kie-maven-3.6.3'
         jdk 'kie-jdk1.8'
     }
     stages {
