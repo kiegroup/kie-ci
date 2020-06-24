@@ -11,9 +11,9 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 600,
         label                  : "kie-rhel7 && kie-mem16g",
-        ghAuthTokenId          : "kie-ci4-token",
-        upstreamMvnArgs        : "-B -e -T1C -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
-        downstreamMvnGoals     : "-B -e -nsu -fae -T1C clean install -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Dfull=true -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true",
+        ghAuthTokenId          : "kie-ci-token",
+        upstreamMvnArgs        : "-B -e -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
+        downstreamMvnGoals     : "-B -e -nsu -fae clean install -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Dfull=true -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true",
         artifactsToArchive     : [
                 "**/target/*.log",
                 "**/target/testStatusListener*",
@@ -35,10 +35,7 @@ def final REPO_CONFIGS = [
         "appformer"                 : [],
         "droolsjbpm-knowledge"      : [],
         "drools"                    : [],
-        "optaplanner"               : [
-                upstreamMvnArgs : "-B -e -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE clean install -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true",
-                downstreamMvnGoals : "-B -e -nsu -fae clean install -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Dfull=true -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true"
-        ],
+        "optaplanner"               : [],
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [],
@@ -114,9 +111,10 @@ for (repoConfig in REPO_CONFIGS) {
 
         triggers {
             githubPullRequest {
+                useGitHubHooks(true)
+                onlyTriggerPhrase(true)
                 orgWhitelist(["kiegroup"])
                 allowMembersOfWhitelistedOrgsAsAdmin()
-                cron("H/5 * * * *")
                 triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) compile downstream build.*")
 
                 // execute build for drools and appformer by default
@@ -168,7 +166,7 @@ for (repoConfig in REPO_CONFIGS) {
                     mavenName("kie-maven-${Constants.MAVEN_VERSION}")
                     jvmOptions("-Xms1g -Xmx4g -XX:+CMSClassUnloadingEnabled")
                     pom("${repo}")
-                    targets("-e -fae -nsu -B -T1C clean install -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Dfull -DskipTests")
+                    targets("-e -fae -nsu -B clean install -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -Dfull -DskipTests")
                 }
                 project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.DownstreamReposBuilder' {
                     mavenBuildConfig {
