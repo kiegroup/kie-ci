@@ -191,8 +191,7 @@ pipelineJob("${folderPath}/prod-tag-pipeline-${baseBranch}") {
     }
 
     logRotator {
-        numToKeep(10)
-        daysToKeep(10)
+        numToKeep(3)
     }
 
     definition {
