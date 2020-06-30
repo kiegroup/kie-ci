@@ -450,7 +450,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-jbpmTestCoverageMatrix"
     }
 
     logRotator {
-        numToKeep(10)
+        numToKeep(3)
     }
 
     wrappers {
@@ -537,7 +537,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
     childCustomWorkspace("\${SHORT_COMBINATION}")
 
     logRotator {
-        numToKeep(10)
+        numToKeep(3)
     }
 
     properties{
@@ -645,7 +645,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
     childCustomWorkspace("\${SHORT_COMBINATION}")
 
     logRotator {
-        numToKeep(5)
+        numToKeep(3)
     }
 
     wrappers {

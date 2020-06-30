@@ -32,7 +32,7 @@ job("${folderPath}/drools_website_automatic_publishing") {
             label("kie-releases")
 
             logRotator {
-                numToKeep(10)
+                numToKeep(3)
             }
 
             jdk("${javadk}")

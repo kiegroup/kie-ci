@@ -46,7 +46,7 @@ job(jobName) {
 
 
     logRotator {
-        numToKeep(10)
+        numToKeep(5)
     }
 
     label("kie-rhel7 && kie-mem4g")

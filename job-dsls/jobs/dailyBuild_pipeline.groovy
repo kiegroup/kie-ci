@@ -196,8 +196,7 @@ pipelineJob("${folderPath}/daily-build-pipeline-${baseBranch}") {
     }
 
     logRotator {
-        numToKeep(10)
-        daysToKeep(10)
+        numToKeep(5)
     }
 
     definition {
@@ -235,7 +234,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestCoverageMatrix") {
     }
 
     logRotator {
-        numToKeep(10)
+        numToKeep(5)
     }
 
     wrappers {
@@ -307,7 +306,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestContainerMatrix") {
     }
 
     logRotator {
-        numToKeep(10)
+        numToKeep(5)
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
@@ -395,7 +394,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
     childCustomWorkspace("\${SHORT_COMBINATION}")
 
     logRotator {
-        numToKeep(10)
+        numToKeep(5)
     }
 
     properties{
@@ -500,7 +499,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieServerMatrix") {
     childCustomWorkspace("\${SHORT_COMBINATION}")
 
     logRotator {
-        numToKeep(10)
+        numToKeep(5)
     }
 
     wrappers {
@@ -577,7 +576,7 @@ job("${dockerPath}/daily-build-${baseBranch}-docker-images") {
     label("kieci-02-docker")
 
     logRotator {
-        numToKeep(10)
+        numToKeep(5)
     }
 
     jdk("${javadk}")

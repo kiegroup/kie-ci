@@ -31,7 +31,7 @@ job(jobName) {
     description("Runs CI build against PRs submitted to the Errai repository (github.com/errai/errai.git)")
 
     logRotator {
-        daysToKeep(7)
+        numToKeep(10)
     }
 
     parameters {
