@@ -20,8 +20,8 @@
     pme_version: 3.8.1
     pig_version: 1.0.5
     graalvm_version: 19.3.1
-    operator_sdk_version: v0.15.1
-    golang_version: 1.13
+    operator_sdk_version: v0.18.2
+    golang_version: 1.14
     mercurial_version: 5.3.1
     openshift_clients_version: 4.4.0
     jenkins_script_security_approved_signatures_present:
