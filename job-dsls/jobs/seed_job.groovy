@@ -22,7 +22,7 @@ job("a-seed-job") {
     label("kieci-02-docker")
 
     logRotator {
-        numToKeep(10)
+        numToKeep(5)
     }
 
     jdk("${javadk}")

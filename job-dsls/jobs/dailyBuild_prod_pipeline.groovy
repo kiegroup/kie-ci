@@ -150,8 +150,7 @@ pipelineJob("${folderPath}/daily-build-prod-pipeline-${baseBranch}") {
     }
 
     logRotator {
-        numToKeep(10)
-        daysToKeep(10)
+        numToKeep(5)
     }
 
     definition {

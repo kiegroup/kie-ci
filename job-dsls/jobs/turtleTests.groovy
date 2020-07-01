@@ -48,7 +48,7 @@ for (repoConfig in REPO_CONFIGS) {
         description(get("jobDesc"))
 
         logRotator {
-            numToKeep(10)
+            numToKeep(5)
         }
 
         scm {
