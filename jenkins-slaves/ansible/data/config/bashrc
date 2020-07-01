@@ -6,7 +6,7 @@ if [ -f /etc/bashrc ]; then
 fi
 
 export LANG=en_US.UTF-8
-export JAVA_HOME=/opt/tools/jdk11
+export JAVA_HOME=/opt/tools/jdk1.8
 export MAVEN_HOME=/opt/tools/apache-maven-3.6.3
 export MAVEN_OPTS="-Xmx2g"
 export GRAALVM_HOME=/opt/tools/graalvm
