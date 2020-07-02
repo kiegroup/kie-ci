@@ -16,7 +16,7 @@ def final DEFAULTS = [
                 "**/target/kie-server-*ee7.war",
                 "**/target/kie-server-*webc.war",
                 "**/target/jbpm-server*dist*.zip",
-                "**/target/business-monitoring-webapp.war",
+                "**/target/business-monitoring-webapp.war",downsteram.production y upstream
                 "**/target/business-central*wildfly*.war",
                 "**/target/business-central*eap*.war"
         ]
@@ -34,18 +34,19 @@ def final REPO_CONFIGS = [
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [],
+        "openshift-drools-hacep"    : [],
         //"droolsjbpm-tools"          : [], // no other repo depends on droolsjbpm-tools
-        "kie-uberfire-extensions"   : [],
         "kie-wb-playground"         : [],
-        "kie-wb-common"             : [
-                label                  : "kie-rhel7&&kie-mem24g&&gui-testing"
-        ],
+        "kie-uberfire-extensions"   : [],
+        "kie-wb-common"             : [],
         "drools-wb"                 : [],
         "optaplanner-wb"            : [],
         "jbpm-designer"             : [],
         "jbpm-work-items"           : [],
-        "jbpm-wb"                   : []
-        //"kie-wb-distributions"      : [] // kie-wb-distributions is the last repo in the chain
+        "jbpm-wb"                   : [],
+        "optaweb-employee-rostering": [],
+        "optaweb-vehicle-routing"   : [],
+        "kie-wb-distributions"      : []
 ]
 
 
@@ -110,11 +111,7 @@ for (repoConfig in REPO_CONFIGS) {
                                 name("*/${repoBranch}")
                             }
                         }
-                        browser {
-                            githubWeb{
-                                repoUrl("${gitHubJenkinsfileRepUrl}")
-                            }
-                        }
+                        browser { }
                         doGenerateSubmoduleConfigurations(false)
                         gitTool("")
                     }

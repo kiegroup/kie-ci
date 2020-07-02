@@ -183,11 +183,7 @@ for (repoConfig in REPO_CONFIGS) {
                                 name("*/${repoBranch}")
                             }
                         }
-                        browser {
-                            githubWeb{
-                                repoUrl("${gitHubJenkinsfileRepUrl}")
-                            }
-                        }
+                        browser { }
                         doGenerateSubmoduleConfigurations(false)
                         gitTool("")
                     }
