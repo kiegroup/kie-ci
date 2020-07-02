@@ -16,7 +16,7 @@ def final DEFAULTS = [
                 "**/target/kie-server-*ee7.war",
                 "**/target/kie-server-*webc.war",
                 "**/target/jbpm-server*dist*.zip",
-                "**/target/business-monitoring-webapp.war",downsteram.production y upstream
+                "**/target/business-monitoring-webapp.war",
                 "**/target/business-central*wildfly*.war",
                 "**/target/business-central*eap*.war"
         ]
