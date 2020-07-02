@@ -38,7 +38,9 @@ def final REPO_CONFIGS = [
         //"droolsjbpm-tools"          : [], // no other repo depends on droolsjbpm-tools
         "kie-wb-playground"         : [],
         "kie-uberfire-extensions"   : [],
-        "kie-wb-common"             : [],
+        "kie-wb-common"             : [
+                label               : "kie-rhel7&&kie-mem24g&&gui-testing"
+        ],
         "drools-wb"                 : [],
         "optaplanner-wb"            : [],
         "jbpm-designer"             : [],
@@ -59,8 +61,8 @@ for (repoConfig in REPO_CONFIGS) {
     String ghAuthTokenId = get("ghAuthTokenId")
     String ghJenkinsfilePwd = get("ghJenkinsfilePwd")
     String additionalLabel = get("label")
-    String additionalArticfacts = get("artifactsToArchive")
-    additionalArticfacts = additionalArticfacts.replaceAll("[\\[\\]]", "")
+    String additionalArtifacts = get("artifactsToArchive")
+    additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
     String additionalTimeout = get("timeoutMins")
 
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
@@ -88,7 +90,7 @@ for (repoConfig in REPO_CONFIGS) {
 
         parameters {
             stringParam ("sha1","","this parameter will be provided by the PR")
-            stringParam ("ADDITIONAL_ARTIFACTS_TO_ARCHIVE","${additionalArticfacts}","this parameter is provided by the job")
+            stringParam ("ADDITIONAL_ARTIFACTS_TO_ARCHIVE","${additionalArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_LABEL","${additionalLabel}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_TIMEOUT","${additionalTimeout}","this parameter is provided by the job")
             stringParam ("PR_TYPE","Downstream Build Production","")
