@@ -556,7 +556,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieServerMatrix") {
 
 def kieDockerCi='''
 sh scripts/docker-clean.sh $kieVersion
-sh scripts/update-versions.sh $kieVersion -s "$SETTINGS_XML"'''
+sh scripts/update-versions.sh $kieVersion -s "$SETTINGS_XML" -U'''
 
 job("${dockerPath}/daily-build-${baseBranch}-docker-images") {
     description("Builds CI Docker images for master branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
