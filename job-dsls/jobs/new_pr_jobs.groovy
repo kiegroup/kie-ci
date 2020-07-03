@@ -61,8 +61,6 @@ def final REPO_CONFIGS = [
                 timeoutMins: 300,
                 label: "kie-rhel7 && kie-mem24g",
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + "," +  [
-                        "**/target/kie-server-*ee7.war",
-                        "**/target/kie-server-*webc.war",
                         "**/gclog" // this is a temporary file used to do some analysis: Once https://github.com/kiegroup/kie-jenkins-scripts/pull/652 is reverted this will disappear
                 ]
         ],
