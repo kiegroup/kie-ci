@@ -11,9 +11,7 @@ def final DEFAULTS = [
         label                  : "kie-rhel7 && kie-mem24g",
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
-        artifactsToArchive     : [
-                ",**/target/screenshots/**"
-        ]
+        artifactsToArchive     : []
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
