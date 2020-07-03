@@ -11,15 +11,7 @@ def final DEFAULTS = [
         label                  : "kie-rhel7 && kie-mem24g",
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
-        artifactsToArchive     : [
-                ",**/target/screenshots/**",
-                "**/target/kie-server-*ee7.war",
-                "**/target/kie-server-*webc.war",
-                "**/target/jbpm-server*dist*.zip",
-                "**/target/business-monitoring-webapp.war",
-                "**/target/business-central*wildfly*.war",
-                "**/target/business-central*eap*.war"
-        ]
+        artifactsToArchive     : [ ]
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
