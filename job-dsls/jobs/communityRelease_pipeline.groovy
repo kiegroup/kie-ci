@@ -45,7 +45,7 @@ pipeline {
         stage ('Clone others'){
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/git-clone-others.sh $baseBranch'
+                    sh 'sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch'
                 }    
             }
         }
