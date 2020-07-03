@@ -26,7 +26,7 @@ class Constants {
     static final String FDB_FOLDER = "fullDownstream"
     static final String CDB_FOLDER = "compileDownstream"
     static final String UPSTREAM_FOLDER = "upstream"
-    static final String DOWNSTREAM_PRODUCT_FOLDER = "downstream.product"
+    static final String DOWNSTREAM_PRODUCT_FOLDER = "downstream-production"
     static final String DEPLOY_FOLDER = "deployedRep"
     static final String KIE_PREFIX = "7.40.0"
     static final String NUMBER_OF_KIE_USERS = "10"
