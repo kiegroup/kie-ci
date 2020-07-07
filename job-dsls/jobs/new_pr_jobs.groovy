@@ -10,6 +10,7 @@ def final DEFAULTS = [
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
         label                  : "kie-rhel7 && kie-mem8g",
+        artifactsToArchive     : "",
         excludedArtifacts      : ""
 ]
 
