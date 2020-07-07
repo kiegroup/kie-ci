@@ -80,7 +80,7 @@ pipeline {
             }        
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/02_createReleaseBranches.sh $releaseBranch $baseBranch'
+                    sh 'sh droolsjbpm-build-bootstrap/script/release/02_createReleaseBranches.sh $releaseBranch'
                 }    
             }
         } 
