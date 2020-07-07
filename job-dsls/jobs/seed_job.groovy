@@ -53,6 +53,11 @@ job("a-seed-job") {
         jobDsl {
             targets("job-dsls/jobs/**/dailyBuild_pipeline.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_prod_pipeline.groovy\n" +
+                    "job-dsls/jobs/**/new_pr_jobs.groovy\n" +
+                    "job-dsls/jobs/**/new_downstream_pr_jobs.groovy\n" +
+                    "job-dsls/jobs/**/new_compile_downstream_build.groovy\n" +
+                    "job-dsls/jobs/**/new_downstream_production.groovy\n" +
+                    "job-dsls/jobs/**/new_upstream.groovy\n" +
                     "job-dsls/jobs/**/deploy_jobs.groovy\n" +
                     "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
                     "job-dsls/jobs/**/kie_jenkinsScripts_PR.groovy\n" +

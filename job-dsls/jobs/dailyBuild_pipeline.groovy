@@ -1,9 +1,9 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-3.6.3"
+def mvnVersion="kie-maven-3.5.2"
 def javaToolEnv="KIE_JDK1_8"
-def mvnToolEnv="KIE_MAVEN_3_6_3"
+def mvnToolEnv="KIE_MAVEN_3_5_2"
 def mvnHome="${mvnToolEnv}_HOME"
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
@@ -555,7 +555,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieServerMatrix") {
 
 def kieDockerCi='''
 sh scripts/docker-clean.sh $kieVersion
-sh scripts/update-versions.sh $kieVersion -s "$SETTINGS_XML"'''
+sh scripts/update-versions.sh $kieVersion -s "$SETTINGS_XML" -U'''
 
 job("${dockerPath}/daily-build-${baseBranch}-docker-images") {
     description("Builds CI Docker images for master branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
