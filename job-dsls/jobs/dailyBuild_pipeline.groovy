@@ -26,7 +26,7 @@ pipeline {
         label 'kie-linux&&kie-rhel7&&kie-mem24g'
     }
     tools {
-        maven 'kie-maven-3.6.3'
+        maven 'kie-maven-3.5.2'
         jdk 'kie-jdk1.8'
     }
     stages {
