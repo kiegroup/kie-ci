@@ -40,13 +40,13 @@ def final REPO_CONFIGS = [
         "drools"                    : [],
         "optaplanner"               : [],
         "optaweb-employee-rostering" : [
-                artifactsToArchive: DEFAULTS["artifactsToArchive"] + "," + [
+                artifactsToArchive: [
                         "**/cypress/screenshots/**",
                         "**/cypress/videos/**"
                 ]
         ],
         "optaweb-vehicle-routing" : [
-                artifactsToArchive: DEFAULTS["artifactsToArchive"] +  "," + [
+                artifactsToArchive: [
                         "**/cypress/screenshots/**",
                         "**/cypress/videos/**"
                 ]
@@ -60,7 +60,7 @@ def final REPO_CONFIGS = [
         "droolsjbpm-integration"    : [
                 timeoutMins: 300,
                 label: "kie-rhel7 && kie-mem24g",
-                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + "," +  [
+                artifactsToArchive: [
                         "**/gclog" // this is a temporary file used to do some analysis: Once https://github.com/kiegroup/kie-jenkins-scripts/pull/652 is reverted this will disappear
                 ]
         ],
@@ -90,13 +90,13 @@ def final REPO_CONFIGS = [
         "kie-docs"                  : [
                 label      : "kie-linux && kie-mem4g",
                 timeoutMins: 30,
-                artifactsToArchive  : DEFAULTS["artifactsToArchive"] + "," +  [
+                artifactsToArchive: [
                         "**/target/generated-docs/html_single/**/*"
                 ]
         ],
         "jbpm-wb"                   : [
                 label: "kie-rhel7 && kie-mem16g",
-                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + "," +  [
+                artifactsToArchive: [
                         "**/target/jbpm-wb-case-mgmt-showcase*.war",
                         "**/target/jbpm-wb-showcase.war"
                 ]
@@ -104,7 +104,7 @@ def final REPO_CONFIGS = [
         "kie-wb-distributions"      : [
                 label             : "kie-linux && kie-mem24g && gui-testing",
                 timeoutMins       : 200,
-                artifactsToArchive: DEFAULTS["artifactsToArchive"] + "," +  [
+                artifactsToArchive: [
                         "**/target/screenshots/**",
                         "**/target/business-monitoring-webapp.war",
                         "**/target/business-central*eap*.war",
