@@ -85,11 +85,11 @@ def final REPO_CONFIGS = [
         ],
         "jbpm-work-items"           : [
                 label      : "kie-linux && kie-mem4g",
-                timeoutMins: 30,
+                timeoutMins: 40,
         ],
         "kie-docs"                  : [
                 label      : "kie-linux && kie-mem4g",
-                timeoutMins: 30,
+                timeoutMins: 90,
                 artifactsToArchive: [
                         "**/target/generated-docs/html_single/**/*"
                 ]
