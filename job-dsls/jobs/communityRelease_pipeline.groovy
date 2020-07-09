@@ -200,7 +200,7 @@ pipeline {
                 }    
             }
         }
-        // additional tests in separate Jenkins jobs will be exucuted
+        // additional tests in separate Jenkins jobs will be executed
         stage('Additional tests') {
         when{
             expression { repBuild == 'YES'}
@@ -310,10 +310,10 @@ pipeline {
                 ' \\n' +
                 'You can download the artefacts..: \\n' +
                 ' \\n' +
-                'business-central artifacts: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/ \\n' +
-                'business-central-webapp: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central-webapp/$kieVersion/ \\n' +
-                'business-monitoring-webapp: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/$kieVersion/ \\n' +
-                'jbpm-server-distribution (single zip): https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
+                'business-central artifacts: https://origin-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/ \\n' +
+                'business-central-webapp: https://origin-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central-webapp/$kieVersion/ \\n' +
+                'business-monitoring-webapp: https://origin-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/$kieVersion/ \\n' +
+                'jbpm-server-distribution (single zip): https://origin-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
                  '\\n' +
                  'Component version:\\n' +
                  'kie = $kieVersion', subject: 'community-release-${baseBranch} $kieVersion was released', to: 'bsig@redhat.com\'
