@@ -32,7 +32,10 @@ def final REPO_CONFIGS = [
                 label: "kie-rhel7 && kie-mem4g"
         ],
         "appformer"                 : [
-                label    : "kie-rhel7 && kie-mem16g"
+                label    : "kie-rhel7 && kie-mem16g",
+                artifactsToArchive: [
+                        "**/dashbuilder-runtime.war"
+                ]
         ],
         "droolsjbpm-knowledge"      : [
                 label: "kie-rhel7 && kie-mem4g"
