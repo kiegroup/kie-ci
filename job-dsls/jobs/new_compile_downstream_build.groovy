@@ -28,7 +28,7 @@ def final REPO_CONFIGS = [
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [],
-        //"droolsjbpm-tools"          : [], // no other repo depends on droolsjbpm-tools
+        "droolsjbpm-tools"          : [],
         "kie-uberfire-extensions"   : [],
         "kie-wb-playground"         : [],
         "kie-wb-common"             : [],
