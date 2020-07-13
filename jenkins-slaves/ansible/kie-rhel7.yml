@@ -24,7 +24,7 @@
     operator_sdk_version: v0.18.2
     golang_version: 1.14
     mercurial_version: 5.3.1
-    openshift_clients_version: 4.4.0
+    openshift_clients_version: 4.4.12
     jenkins_script_security_approved_signatures_present:
       - method java.util.regex.Matcher find
       - method org.yaml.snakeyaml.Yaml load java.lang.String
