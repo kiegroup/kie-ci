@@ -114,6 +114,26 @@
   - "{{ jdk_long_versions }}"
   - "{{ jdk_symlink_names }}"
 
+- name: Remove JDK cacerts
+  file:
+    path: /opt/tools/{{ item.0 }}/{{ item.1 }}
+    state: absent
+    follow: no
+  with_together:
+    - "{{ jdk_long_versions }}"
+    - "{{ jdk_cacerts_subdirs }}"
+
+- name: Create JDK cacerts symlinks to system cert store
+  file:
+    src: /etc/pki/java/cacerts
+    dest: /opt/tools/{{ item.0 }}/{{ item.1 }}
+    state: link
+    follow: no
+    mode: 0644
+  with_together:
+    - "{{ jdk_long_versions }}"
+    - "{{ jdk_cacerts_subdirs }}"
+
 ### Maven ###
 
 - name: Dowload Maven archives
