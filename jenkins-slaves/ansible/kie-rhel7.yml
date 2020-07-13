@@ -15,6 +15,7 @@
     jdk_short_versions: [8u202, 9.0.4, 10.0.2, 11.0.2]
     jdk_long_versions: [jdk1.8.0_202, jdk-9.0.4, jdk-10.0.2, jdk-11.0.2]
     jdk_symlink_names: [jdk1.8, jdk9, jdk10, jdk11]
+    jdk_cacerts_subdirs: ["jre/lib/security/cacerts", "lib/security/cacerts", "lib/security/cacerts", "lib/security/cacerts"]
     firefox_short_versions: [45esr, 52esr, 60esr]
     firefox_long_versions: [45.9.0esr, 52.9.0esr, 60.2.0esr]
     pme_version: 3.8.1
@@ -23,7 +24,7 @@
     operator_sdk_version: v0.18.2
     golang_version: 1.14
     mercurial_version: 5.3.1
-    openshift_clients_version: 4.4.0
+    openshift_clients_version: 4.4.12
     jenkins_script_security_approved_signatures_present:
       - method java.util.regex.Matcher find
       - method org.yaml.snakeyaml.Yaml load java.lang.String
