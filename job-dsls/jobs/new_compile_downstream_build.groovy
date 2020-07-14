@@ -116,7 +116,12 @@ for (repoConfig in REPO_CONFIGS) {
 
         triggers {
             ghprbTrigger {
-                onlyTriggerPhrase(true)
+                // execute CDB for drools, droolsjbpm-knowledge and appformer by default
+                if ((repo != "drools") && (repo !="droolsjbpm-knowledge") && (repo != "appformer")) {
+                    onlyTriggerPhrase(true)
+                } else {
+                    onlyTriggerPhrase(false)
+                }
                 gitHubAuthId("${ghAuthTokenId}")
                 adminlist("")
                 orgslist("${ghOrgUnit}")
