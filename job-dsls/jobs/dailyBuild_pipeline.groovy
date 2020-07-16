@@ -215,7 +215,7 @@ def jbpmTestCoverage='''#!/bin/bash -e
 STAGING_REP=kie-internal-group
 echo "KIE version: $kieVersion"
 # wget the tar.gz sources
-wget -q http://\${LOCAL_NEXUS_IP}:8081/nexus/content/repositories/kieAllBuild-$baseBranch/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q https://\${LOCAL_NEXUS_IP}:8443/nexus/content/repositories/kieAllBuild-$baseBranch/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
@@ -285,7 +285,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestCoverageMatrix") {
 def jbpmContainerTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q http://\${LOCAL_NEXUS_IP}:8081/nexus/content/repositories/kieAllBuild-$baseBranch/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q https://\${LOCAL_NEXUS_IP}:8443/nexus/content/repositories/kieAllBuild-$baseBranch/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv jbpm-$kieVersion/* .
 rmdir jbpm-$kieVersion
@@ -361,14 +361,14 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestContainerMatrix") {
 //  run additional test: kieWbTestsMatrix
 def kieWbTest='''#!/bin/bash -e
 echo "KIE version $kieVersion - kie-wb-distributions"
-wget -q http://\${LOCAL_NEXUS_IP}:8081/nexus/content/repositories/kieAllBuild-$baseBranch/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q https://\${LOCAL_NEXUS_IP}:8443/nexus/content/repositories/kieAllBuild-$baseBranch/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 rm sources.tar.gz
 mv kie-wb-distributions-$kieVersion/* .
 rmdir kie-wb-distributions-$kieVersion
 
 echo "KIE version $kieVersion - kie-wb-common"
-wget -q http://\${LOCAL_NEXUS_IP}:8081/nexus/content/repositories/kieAllBuild-$baseBranch/org/kie/workbench/kie-wb-common/$kieVersion/kie-wb-common-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q https://\\${LOCAL_NEXUS_IP}:8443/nexus/content/repositories/kieAllBuild-$baseBranch/org/kie/workbench/kie-wb-common/$kieVersion/kie-wb-common-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 rm sources.tar.gz
 mv kie-wb-common-$kieVersion/* .
@@ -473,7 +473,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
 def kieServerTest='''#!/bin/bash -e
 echo "KIE version $kieVersion"
 # wget the tar.gz sources
-wget -q http://\${LOCAL_NEXUS_IP}:8081/nexus/content/repositories/kieAllBuild-$baseBranch/org/drools/droolsjbpm-integration/$kieVersion/droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q https://\${LOCAL_NEXUS_IP}:8443/nexus/content/repositories/kieAllBuild-$baseBranch/org/drools/droolsjbpm-integration/$kieVersion/droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 mv droolsjbpm-integration-$kieVersion/* .
 rmdir droolsjbpm-integration-$kieVersion'''
