@@ -10,6 +10,7 @@ def final DEFAULTS = [
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
         label                  : "kie-rhel7 && kie-mem8g",
+        executionNumber        : 10,
         artifactsToArchive     : "",
         excludedArtifacts      : ""
 ]
@@ -26,7 +27,8 @@ def final REPO_CONFIGS = [
         ],
         "droolsjbpm-build-bootstrap": [
                 timeoutMins: 30,
-                label      : "kie-rhel7 && kie-mem4g"
+                label      : "kie-rhel7 && kie-mem4g",
+                executionNumber : 25
         ],
         "kie-soup"                  : [
                 label: "kie-rhel7 && kie-mem4g"
@@ -65,7 +67,8 @@ def final REPO_CONFIGS = [
                 label: "kie-rhel7 && kie-mem24g",
                 artifactsToArchive: [
                         "**/gclog" // this is a temporary file used to do some analysis: Once https://github.com/kiegroup/kie-jenkins-scripts/pull/652 is reverted this will disappear
-                ]
+                ],
+                executionNumber : 25
         ],
         "openshift-drools-hacep"    : [],
         "droolsjbpm-tools"          : [],
@@ -78,6 +81,7 @@ def final REPO_CONFIGS = [
         "kie-wb-common"             : [
                 timeoutMins: 300,
                 label: "kie-rhel7 && kie-mem16g && gui-testing",
+                executionNumber : 25
         ],
         "drools-wb"                 : [
                 label: "kie-rhel7 && kie-mem16g"
@@ -120,6 +124,7 @@ for (repoConfig in REPO_CONFIGS) {
     String ghAuthTokenId = get("ghAuthTokenId")
     String ghJenkinsfilePwd = get("ghJenkinsfilePwd")
     String additionalLabel = get("label")
+    def exeNum = get("executionNumber")
     String additionalArtifacts = get("artifactsToArchive")
     additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
     String addtionalExcludeArtifacts = get("excludedArtifacts")
@@ -142,7 +147,7 @@ for (repoConfig in REPO_CONFIGS) {
                     |""".stripMargin())
 
         logRotator {
-            numToKeep(10)
+            numToKeep(exeNum)
         }
 
         properties {
