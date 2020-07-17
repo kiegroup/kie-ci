@@ -129,13 +129,14 @@ class PrVerificationJob extends BasicJob {
                 githubPullRequest {
 
                     // List of organizations. Their members will be whitelisted.
-                    orgWhitelist(["appformer", "kiegroup", "jboss-integration"])
+                    orgWhitelist(["kiegroup", "jboss-integration"])
 
                     // Use this option to allow members of whitelisted organisations to behave like admins, i.e. whitelist users and trigger pull request testing.
-                    allowMembersOfWhitelistedOrgsAsAdmin()
+                    allowMembersOfWhitelistedOrgsAsAdmin(true)
 
-                    //  This field follows the syntax of cron (with minor differences). Specifically, each line consists of 5 fields separated by TAB or whitespace
-                    cron("H/7 * * * *")
+
+                    // This field determines if webhooks are used
+                    useGitHubHooks(true)
 
                     // Adding branches to this whitelist allows you to selectively test pull requests destined for these branches only.
                     // Supports regular expressions (e.g. 'master', 'feature-.*').
@@ -147,7 +148,7 @@ class PrVerificationJob extends BasicJob {
                         commitStatus {
 
                             // A string label to differentiate this status from the status of other systems. Default: "default"
-                            context('Linux')
+                            context('Linux - Pull Request')
 
                             // Add test result one liner
                             addTestResults(true)
@@ -199,7 +200,7 @@ class PrVerificationJob extends BasicJob {
             // Adds authentication token id.
             configure { node ->
                 node / 'triggers' / 'org.jenkinsci.plugins.ghprb.GhprbTrigger' <<
-                        'gitHubAuthId'("kie-ci2-token")
+                        'gitHubAuthId'("kie-ci-token")
             }
         }
     }
