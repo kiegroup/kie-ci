@@ -120,7 +120,7 @@ for (repoConfig in REPO_CONFIGS) {
                 orgslist("${ghOrgUnit}")
                 whitelist("")
                 cron("")
-                triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) full downstream production build.*")
+                triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) prod downstream.*")
                 allowMembersOfWhitelistedOrgsAsAdmin(true)
                 whiteListTargetBranches {
                     ghprbBranch {
