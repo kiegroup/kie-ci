@@ -90,13 +90,6 @@ def final REPO_CONFIGS = [
                 label      : "kie-linux && kie-mem4g",
                 timeoutMins: 40,
         ],
-        "kie-docs"                  : [
-                label      : "kie-linux && kie-mem4g",
-                timeoutMins: 90,
-                artifactsToArchive: [
-                        "**/target/generated-docs/html_single/**/*"
-                ]
-        ],
         "jbpm-wb"                   : [
                 label: "kie-rhel7 && kie-mem16g",
                 artifactsToArchive: [
