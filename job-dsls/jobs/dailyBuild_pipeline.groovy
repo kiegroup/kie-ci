@@ -368,7 +368,7 @@ mv kie-wb-distributions-$kieVersion/* .
 rmdir kie-wb-distributions-$kieVersion
 
 echo "KIE version $kieVersion - kie-wb-common"
-wget -q https://\\${LOCAL_NEXUS_IP}:8443/nexus/content/repositories/kieAllBuild-$baseBranch/org/kie/workbench/kie-wb-common/$kieVersion/kie-wb-common-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+wget -q https://\${LOCAL_NEXUS_IP}:8443/nexus/content/repositories/kieAllBuild-$baseBranch/org/kie/workbench/kie-wb-common/$kieVersion/kie-wb-common-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 rm sources.tar.gz
 mv kie-wb-common-$kieVersion/* .
