@@ -9,6 +9,7 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 650,
         label                  : "kie-rhel7 && kie-mem24g",
+        executionNumber        : 10,
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
         artifactsToArchive     : []
@@ -17,7 +18,9 @@ def final DEFAULTS = [
 def final REPO_CONFIGS = [
         "lienzo-core"               : [],
         "lienzo-tests"              : [],
-        "droolsjbpm-build-bootstrap": [],
+        "droolsjbpm-build-bootstrap": [
+                executionNumber : 25
+        ],
         "kie-soup"                  : [],
         "appformer"                 : [],
         "droolsjbpm-knowledge"      : [],
@@ -25,12 +28,16 @@ def final REPO_CONFIGS = [
         "optaplanner"               : [],
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
-        "droolsjbpm-integration"    : [],
+        "droolsjbpm-integration"    : [
+                executionNumber : 25
+        ],
         "openshift-drools-hacep"    : [],
         "droolsjbpm-tools"          : [], 
         "kie-wb-playground"         : [],
         "kie-uberfire-extensions"   : [],
-        "kie-wb-common"             : [],
+        "kie-wb-common"             : [
+                executionNumber : 25
+        ],
         "drools-wb"                 : [],
         "optaplanner-wb"            : [],
         "jbpm-designer"             : [],
@@ -51,6 +58,7 @@ for (repoConfig in REPO_CONFIGS) {
     String ghAuthTokenId = get("ghAuthTokenId")
     String ghJenkinsfilePwd = get("ghJenkinsfilePwd")
     String additionalLabel = get("label")
+    def exeNum = get("executionNumber")
     String additionalArtifacts = get("artifactsToArchive")
     additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
     String additionalExcludedArtifacts = ""
@@ -72,7 +80,7 @@ for (repoConfig in REPO_CONFIGS) {
                     |""".stripMargin())
 
         logRotator {
-            numToKeep(10)
+            numToKeep(exeNum)
         }
 
         properties {
