@@ -65,7 +65,7 @@ def final REPO_CONFIGS = [
         ],
         "drools"                    : [
                 ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["optaplanner", "jbpm", "kie-jpmml-integration"],
+                downstreamRepos        : ["optaplanner-7x", "jbpm", "kie-jpmml-integration"],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
         "optaplanner"               : [
@@ -209,7 +209,12 @@ for (repoConfig in REPO_CONFIGS) {
             git {
                 remote {
                     github("${ghOrgUnit}/${repo}")
-                    branch(repoBranch)
+                    if (repo == "optaplanner") {
+                        branch "7.x"
+                    } else {
+                        branch "$repoBranch"
+                    }
+
                 }
                 extensions {
                     cloneOptions {
@@ -265,7 +270,11 @@ for (repoConfig in REPO_CONFIGS) {
                     } else {
                         baseRepository "$ghOrgUnit/$repo"
                     }
-                    branch "$repoBranch"
+                    if (repo == "optaplanner") {
+                        branch "master"
+                    } else {
+                        branch "$repoBranch"
+                    }
                     mavenBuildConfig {
                         mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
                         delegate.mavenOpts("-Xmx3g")
@@ -322,7 +331,7 @@ for (repoConfig in REPO_CONFIGS) {
             def downstreamRepos = get("downstreamRepos")
             if (downstreamRepos) {
                 def jobNames = downstreamRepos.collect { downstreamRepo ->
-                    if (repoBranch == "master") {
+                    if (repoBranch == "master" || repoBranch =="7.x") {
                         downstreamRepo
                     } else {
                         // non-master job names are in the format <repo>-<branch>
