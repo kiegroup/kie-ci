@@ -217,8 +217,9 @@ echo "KIE version: $kieVersion"
 # wget the tar.gz sources
 wget -q https://\${LOCAL_NEXUS_IP}:8443/nexus/content/repositories/kieAllBuild-$baseBranch/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
+rm sources.tar.gz
 mv jbpm-$kieVersion/* .
-rmdir jbpm-$kieVersion
+rm -rf jbpm-$kieVersion
 '''
 
 matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestCoverageMatrix") {
@@ -287,8 +288,9 @@ echo "KIE version $kieVersion"
 # wget the tar.gz sources
 wget -q https://\${LOCAL_NEXUS_IP}:8443/nexus/content/repositories/kieAllBuild-$baseBranch/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
+rm sources.tar.gz
 mv jbpm-$kieVersion/* .
-rmdir jbpm-$kieVersion
+rm -rf jbpm-$kieVersion
 '''
 
 matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestContainerMatrix") {
@@ -365,14 +367,14 @@ wget -q https://\${LOCAL_NEXUS_IP}:8443/nexus/content/repositories/kieAllBuild-$
 tar xzf sources.tar.gz
 rm sources.tar.gz
 mv kie-wb-distributions-$kieVersion/* .
-rmdir kie-wb-distributions-$kieVersion
+rm -rf kie-wb-distributions-$kieVersion
 
 echo "KIE version $kieVersion - kie-wb-common"
 wget -q https://\${LOCAL_NEXUS_IP}:8443/nexus/content/repositories/kieAllBuild-$baseBranch/org/kie/workbench/kie-wb-common/$kieVersion/kie-wb-common-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
 rm sources.tar.gz
 mv kie-wb-common-$kieVersion/* .
-rmdir kie-wb-common-$kieVersion'''
+rm -rf kie-wb-common-$kieVersion'''
 
 matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
     description("This job: <br> - Runs the KIE WB integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
@@ -475,8 +477,9 @@ echo "KIE version $kieVersion"
 # wget the tar.gz sources
 wget -q https://\${LOCAL_NEXUS_IP}:8443/nexus/content/repositories/kieAllBuild-$baseBranch/org/drools/droolsjbpm-integration/$kieVersion/droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
 tar xzf sources.tar.gz
+rm sources.tar.gz
 mv droolsjbpm-integration-$kieVersion/* .
-rmdir droolsjbpm-integration-$kieVersion'''
+rm -rf droolsjbpm-integration-$kieVersion'''
 
 matrixJob("${folderPath}/daily-build-${baseBranch}-kieServerMatrix") {
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
