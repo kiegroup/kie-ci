@@ -127,7 +127,7 @@ for (repoConfig in REPO_CONFIGS) {
                 orgslist("${ghOrgUnit}")
                 whitelist("")
                 cron("")
-                triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) compile downstream build.*")
+                triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) cdb.*")
                 allowMembersOfWhitelistedOrgsAsAdmin(true)
                 whiteListTargetBranches {
                     ghprbBranch {
@@ -152,7 +152,7 @@ for (repoConfig in REPO_CONFIGS) {
                 whiteListLabels("")
                 extensions {
                     ghprbSimpleStatus {
-                        commitStatusContext("Linux - Compile Downstream Build (***)")
+                        commitStatusContext("Linux - Compile Downstream Build")
                         addTestResults(true)
                         showMatrixStatus(false)
                         statusUrl("")

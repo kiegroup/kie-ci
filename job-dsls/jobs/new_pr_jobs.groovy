@@ -199,7 +199,7 @@ for (repoConfig in REPO_CONFIGS) {
                 orgslist("${ghOrgUnit}")
                 whitelist("")
                 cron("")
-                triggerPhrase(".*[j|J]enkins,?.*(retest|test) this please.*")
+                triggerPhrase(".*[j|J]enkins,?.*(retest|test) this.*")
                 allowMembersOfWhitelistedOrgsAsAdmin(true)
                 whiteListTargetBranches {
                     ghprbBranch {
@@ -224,7 +224,7 @@ for (repoConfig in REPO_CONFIGS) {
                 whiteListLabels("")
                 extensions {
                     ghprbSimpleStatus {
-                        commitStatusContext("Linux - Pull Request (***)")
+                        commitStatusContext("Linux - Pull Request")
                         addTestResults(true)
                         showMatrixStatus(false)
                         statusUrl("")

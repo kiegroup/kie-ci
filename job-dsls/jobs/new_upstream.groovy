@@ -120,7 +120,7 @@ for (repoConfig in REPO_CONFIGS) {
                 orgslist("${ghOrgUnit}")
                 whitelist("")
                 cron("")
-                triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) upstream build.*")
+                triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) upstream.*")
                 allowMembersOfWhitelistedOrgsAsAdmin(true)
                 whiteListTargetBranches {
                     ghprbBranch {
@@ -145,7 +145,7 @@ for (repoConfig in REPO_CONFIGS) {
                 whiteListLabels("")
                 extensions {
                     ghprbSimpleStatus {
-                        commitStatusContext("Linux - Upstream Build (***)")
+                        commitStatusContext("Linux - Upstream Build")
                         addTestResults(true)
                         showMatrixStatus(false)
                         statusUrl("")
