@@ -305,7 +305,7 @@ pipeline {
             steps {
                 emailext body: 'The community ${kieVersion} was released. \\n' +
                 ' \\n' +
-                'The tags are pushed and the binaries for the webs were uploaded to filemgmt.jboss.org. \\n' +
+                'The tags are pushed and the binaries for the webs will be uploaded soon to filemgmt.jboss.org. \\n' +
                 ' \\n' +
                 ' \\n' +
                 'You can download the artefacts..: \\n' +
