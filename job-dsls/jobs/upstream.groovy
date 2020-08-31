@@ -61,7 +61,7 @@ for (repoConfig in REPO_CONFIGS) {
     folder(Constants.UPSTREAM_FOLDER)
 
     // FDB name
-    String jobName = Constants.UPSTREAM_FOLDER + "/new-UP-$repo-$repoBranch" + ".upstream"
+    String jobName = Constants.UPSTREAM_FOLDER + "/$repo-$repoBranch" + ".upstream"
 
     pipelineJob(jobName) {
 

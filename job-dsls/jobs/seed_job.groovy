@@ -52,12 +52,12 @@ job("a-seed-job") {
 
         jobDsl {
             targets("job-dsls/jobs/**/communityRelease_pipeline.groovy\n" +
-                    "job-dsls/jobs/**/new_pr_jobs.groovy\n" +
-                    "job-dsls/jobs/**/new_downstream_pr_jobs.groovy\n" +
-                    "job-dsls/jobs/**/new_compile_downstream_build.groovy\n" +
-                    "job-dsls/jobs/**/new_downstream_production.groovy\n" +
-                    "job-dsls/jobs/**/new_upstream.groovy\n" +
                     "job-dsls/jobs/**/deploy_development_version.groovy\n" +
+                    "job-dsls/jobs/**/pr_jobs.groovy\n" +
+                    "job-dsls/jobs/**/downstream_pr_jobs.groovy\n" +
+                    "job-dsls/jobs/**/compile_downstream_build.groovy\n" +
+                    "job-dsls/jobs/**/downstream_production.groovy\n" +
+                    "job-dsls/jobs/**/upstream.groovy\n" +
                     "job-dsls/jobs/**/errai_pr.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_pipeline.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_prod_pipeline.groovy\n" +

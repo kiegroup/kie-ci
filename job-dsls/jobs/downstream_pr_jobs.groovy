@@ -1,16 +1,15 @@
 /**
- * Creates compile downstream pullrequest (PR) jobs for kiegroup GitHub org. units.
- * These jobs execute the downstream build skipping tests and skipping the gwt compilation
- * for a specific PR to make sure the changes do not break the downstream repos.
+ * Creates full downstream pullrequest (PR) jobs for kiegroup GitHub org. units.
+ * These jobs execute the full downstream build for a specific PR to make sure the changes do not break the downstream repos.
  */
-
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
         timeoutMins            : 650,
-        label                  : "kie-rhel7 && kie-mem16g",
+        label                  : "kie-rhel7 && kie-mem24g",
+        executionNumber        : 10,
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
         artifactsToArchive     : []
@@ -19,7 +18,9 @@ def final DEFAULTS = [
 def final REPO_CONFIGS = [
         "lienzo-core"               : [],
         "lienzo-tests"              : [],
-        "droolsjbpm-build-bootstrap": [],
+        "droolsjbpm-build-bootstrap": [
+                executionNumber : 25
+        ],
         "kie-soup"                  : [],
         "appformer"                 : [],
         "droolsjbpm-knowledge"      : [],
@@ -27,17 +28,24 @@ def final REPO_CONFIGS = [
         "optaplanner"               : [],
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
-        "droolsjbpm-integration"    : [],
-        "droolsjbpm-tools"          : [],
-        "kie-uberfire-extensions"   : [],
+        "droolsjbpm-integration"    : [
+                executionNumber : 25
+        ],
+        "openshift-drools-hacep"    : [],
+        "droolsjbpm-tools"          : [], 
         "kie-wb-playground"         : [],
-        "kie-wb-common"             : [],
+        "kie-uberfire-extensions"   : [],
+        "kie-wb-common"             : [
+                executionNumber : 25
+        ],
         "drools-wb"                 : [],
         "optaplanner-wb"            : [],
         "jbpm-designer"             : [],
         "jbpm-work-items"           : [],
-        "jbpm-wb"                   : []
-        //"kie-wb-distributions"      : [] // kie-wb-distributions is the last repo in the chain
+        "jbpm-wb"                   : [],
+        "optaweb-employee-rostering": [],
+        "optaweb-vehicle-routing"   : [],
+        "kie-wb-distributions"      : []
 ]
 
 
@@ -50,6 +58,7 @@ for (repoConfig in REPO_CONFIGS) {
     String ghAuthTokenId = get("ghAuthTokenId")
     String ghJenkinsfilePwd = get("ghJenkinsfilePwd")
     String additionalLabel = get("label")
+    def exeNum = get("executionNumber")
     String additionalArtifacts = get("artifactsToArchive")
     additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
     String additionalExcludedArtifacts = ""
@@ -58,10 +67,10 @@ for (repoConfig in REPO_CONFIGS) {
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
 
     // Creation of folders where jobs are stored
-    folder(Constants.CDB_FOLDER)
+    folder(Constants.FDB_FOLDER)
 
-    // CDB name
-    String jobName = Constants.CDB_FOLDER + "/new-CDB-$repo-$repoBranch" + ".compile"
+    // FDB name
+    String jobName = Constants.FDB_FOLDER + "/$repo-$repoBranch" + ".downstream"
 
     pipelineJob(jobName) {
 
@@ -71,7 +80,7 @@ for (repoConfig in REPO_CONFIGS) {
                     |""".stripMargin())
 
         logRotator {
-            numToKeep(10)
+            numToKeep(exeNum)
         }
 
         properties {
@@ -85,7 +94,8 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("ADDITIONAL_EXCLUDED_ARTIFACTS","${additionalExcludedArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_TIMEOUT","${additionalTimeout}","this parameter is provided by the job")
             stringParam ("CHECKSTYLE_FILE","**/checkstyle-result.xml","")
-            stringParam ("PR_TYPE","Compile Downstream Build","")
+            stringParam ("FINDBUGS_FILE","**/spotbugsXml.xml","")
+            stringParam ("PR_TYPE","Full Downstream Build","")
         }
 
         definition {
@@ -116,18 +126,13 @@ for (repoConfig in REPO_CONFIGS) {
 
         triggers {
             ghprbTrigger {
-                // execute CDB for drools, droolsjbpm-knowledge and appformer by default
-                if ((repo != "drools") && (repo !="droolsjbpm-knowledge") && (repo != "appformer")) {
-                    onlyTriggerPhrase(true)
-                } else {
-                    onlyTriggerPhrase(false)
-                }
+                onlyTriggerPhrase(true)
                 gitHubAuthId("${ghAuthTokenId}")
                 adminlist("")
                 orgslist("${ghOrgUnit}")
                 whitelist("")
                 cron("")
-                triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) cdb.*")
+                triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) fdb.*")
                 allowMembersOfWhitelistedOrgsAsAdmin(true)
                 whiteListTargetBranches {
                     ghprbBranch {
@@ -152,7 +157,7 @@ for (repoConfig in REPO_CONFIGS) {
                 whiteListLabels("")
                 extensions {
                     ghprbSimpleStatus {
-                        commitStatusContext("Linux - Compile Downstream Build")
+                        commitStatusContext("Linux - Full Downstream Build")
                         addTestResults(true)
                         showMatrixStatus(false)
                         statusUrl("")
