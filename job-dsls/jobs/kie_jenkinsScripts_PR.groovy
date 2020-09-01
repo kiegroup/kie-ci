@@ -85,8 +85,9 @@ job(jobName) {
     triggers {
         githubPullRequest {
             useGitHubHooks()
+            triggerPhrase(".*[j|J]enkins,?.*(retest|test) this.*")
             cron("")
-            orgWhitelist(["appformer", "kiegroup"])
+            orgWhitelist(["kiegroup"])
             allowMembersOfWhitelistedOrgsAsAdmin()
             whiteListTargetBranches([kieMainBranch])
             extensions {
