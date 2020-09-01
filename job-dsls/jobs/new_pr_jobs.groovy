@@ -81,7 +81,10 @@ def final REPO_CONFIGS = [
         "kie-wb-common"             : [
                 timeoutMins: 300,
                 label: "kie-rhel7 && kie-mem16g && gui-testing",
-                executionNumber : 25
+                executionNumber : 25,
+                artifactsToArchive: [
+                        "**/target/screenshots/**"
+                ]
         ],
         "drools-wb"                 : [
                 label: "kie-rhel7 && kie-mem16g"
