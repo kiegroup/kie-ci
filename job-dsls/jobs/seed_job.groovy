@@ -57,6 +57,7 @@ job("a-seed-job") {
                     "job-dsls/jobs/**/new_compile_downstream_build.groovy\n" +
                     "job-dsls/jobs/**/new_downstream_production.groovy\n" +
                     "job-dsls/jobs/**/new_upstream.groovy\n" +
+                    "job-dsls/jobs/**/deploy_development_version.groovy\n" +
                     "job-dsls/jobs/**/errai_pr.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_pipeline.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_prod_pipeline.groovy\n" +
