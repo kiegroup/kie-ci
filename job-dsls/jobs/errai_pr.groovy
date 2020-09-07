@@ -24,7 +24,7 @@ folder(Constants.PULL_REQUEST_FOLDER)
 
 
 // jobs for master branch don't use the branch in the name
-String jobName = Constants.PULL_REQUEST_FOLDER + "/new-PR-$repo-$repoBranch"
+String jobName = Constants.PULL_REQUEST_FOLDER + "/$repo-$repoBranch" + ".pullrequest"
 
 job(jobName) {
 

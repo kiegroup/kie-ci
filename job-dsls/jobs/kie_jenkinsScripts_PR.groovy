@@ -32,7 +32,7 @@ folder(Constants.PULL_REQUEST_FOLDER)
 
 
 // jobs for master branch don't use the branch in the name
-String jobName = (kieMainBranch == "master") ? folderPath + repo + "-pullrequests" : folderPath + repo + "-pullrequests-" + kieMainBranch
+String jobName = (kieMainBranch == "master") ? folderPath + repo + ".pullrequests" : folderPath + repo + kieMainBranch +".pullrequests"
 
 job(jobName) {
 
