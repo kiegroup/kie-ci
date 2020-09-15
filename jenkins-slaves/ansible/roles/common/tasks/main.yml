@@ -155,6 +155,35 @@
   with_items:
     - "{{ maven_versions }}"
 
+### Takari extensions for parallel builds
+-
+- name: Download takari-smart-builder
+  get_url:
+    url: https://repo1.maven.org/maven2/io/takari/maven/takari-smart-builder/0.4.0/takari-smart-builder-0.4.0.jar
+    dest: /opt/tools/apache-maven-{{ item }}/lib/ext
+    owner: root
+    group: root
+  with_items:
+    - "{{ maven_versions }}"
+
+- name: Download takari-filemanager
+  get_url:
+    url: https://repo1.maven.org/maven2/io/takari/takari-filemanager/0.8.2/takari-filemanager-0.8.2.jar
+    dest: /opt/tools/apache-maven-{{ item }}/lib/ext
+    owner: root
+    group: root
+  with_items:
+    - "{{ maven_versions }}"
+
+- name: Download takari-local-repository
+  get_url:
+    url: https://repo1.maven.org/maven2/io/takari/aether/takari-local-repository/0.10.4/takari-local-repository-0.10.4.jar
+    dest: /opt/tools/apache-maven-{{ item }}/lib/ext
+    owner: root
+    group: root
+  with_items:
+    - "{{ maven_versions }}"
+
 ### GraalVM ###
 
 - name: Dowload GraalVM archives
