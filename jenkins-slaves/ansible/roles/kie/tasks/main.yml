@@ -78,6 +78,15 @@
   with_items:
    - "{{ maven_versions_needing_extension }}"
 
+- name: Copy Maven common extensions
+  copy:
+    src: data/config/maven/ext-common/
+    dest: /opt/tools/apache-maven-{{ item }}/lib/ext
+    owner: root
+    group: root
+  with_items:
+   - "{{ maven_versions }}"   
+
 - name: Create ~/.m2 directory
   file:
     path: /home/jenkins/.m2
