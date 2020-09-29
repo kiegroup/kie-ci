@@ -51,14 +51,11 @@ job("a-seed-job") {
         shell(seedJob)
 
         jobDsl {
-            targets("job-dsls/jobs/**/communityRelease_pipeline.groovy\n" +
-                    "job-dsls/jobs/**/deploy_development_version.groovy\n" +
-                    "job-dsls/jobs/**/pr_jobs.groovy\n" +
+            targets("job-dsls/jobs/**/pr_jobs.groovy\n" +
                     "job-dsls/jobs/**/downstream_pr_jobs.groovy\n" +
                     "job-dsls/jobs/**/compile_downstream_build.groovy\n" +
                     "job-dsls/jobs/**/downstream_production.groovy\n" +
                     "job-dsls/jobs/**/upstream.groovy\n" +
-                    "job-dsls/jobs/**/errai_pr.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_pipeline.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_prod_pipeline.groovy\n" +
                     "job-dsls/jobs/**/deploy_jobs.groovy\n" +
@@ -68,7 +65,6 @@ job("a-seed-job") {
                     "job-dsls/jobs/**/seed_job.groovy\n" +
                     "job-dsls/jobs/**/sonarcloud_daily.groovy\n" +
                     "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
-                    "job-dsls/jobs/**/*_website_automatic_*.groovy\n" +
                     "job-dsls/jobs/**/turtleTests.groovy\n" +
                     "job-dsls/jobs/**/srcclr_scan_pipeline.groovy\n" +
                     "job-dsls/jobs/**/srcclr_scan_job.groovy")
