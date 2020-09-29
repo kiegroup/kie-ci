@@ -133,6 +133,9 @@ for (repoConfig in REPO_CONFIGS) {
                     ghprbBranch {
                         branch("${repoBranch}")
                     }
+                    ghprbBranch {
+                        branch("7.x")
+                    }
                 }
                 useGitHubHooks(true)
                 permitAll(false)
