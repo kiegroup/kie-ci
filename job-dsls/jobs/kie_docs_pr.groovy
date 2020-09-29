@@ -21,12 +21,13 @@ projectName = "kie-docs"
 labelName = "kie-rhel7&&kie-mem4g"
 timeoutValue = 60
 mavenGoals = "-B clean install"
+branchName = Constants.BRANCH
 
 // Adds required folders
 PrVerificationJob.addFolders(this)
 
 // Creates or updates a free style job.
-def jobDefinition = job(Constants.PULL_REQUEST_FOLDER + "/${projectName}.pullrequests")
+def jobDefinition = job(Constants.PULL_REQUEST_FOLDER + "/${projectName}-${branchName}.pullrequests")
 
 PrVerificationJob.addPrConfiguration(job = jobDefinition,
         projectName = projectName,

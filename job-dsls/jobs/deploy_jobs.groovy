@@ -1,4 +1,4 @@
- /**
+/**
  * Creates all the standard "deploy" jobs for appformer (formerly known as uberfire) and kiegroup GitHub org. units.
  */
 import org.kie.jenkins.jobdsl.Constants
@@ -8,7 +8,7 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
-        upstreamMvnArgs        : "-B -e -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
+        upstreamMvnArgs        : "-B -e -T1C -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-e -nsu -fae -B -Pwildfly clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
         mvnProps: [
                 "full"                     : "true",
@@ -65,11 +65,10 @@ def final REPO_CONFIGS = [
         ],
         "drools"                    : [
                 ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["optaplanner-7x", "jbpm", "kie-jpmml-integration"],
+                downstreamRepos        : ["optaplanner", "jbpm", "kie-jpmml-integration"],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
         "optaplanner"               : [
-                branch: "7.x",
                 ircNotificationChannels: ["#optaplanner-dev"],
                 downstreamRepos        : ["optaplanner-wb", "optaweb-employee-rostering", "optaweb-vehicle-routing"],
                 mvnGoals: "-e -nsu -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
@@ -209,12 +208,7 @@ for (repoConfig in REPO_CONFIGS) {
             git {
                 remote {
                     github("${ghOrgUnit}/${repo}")
-                    if (repo == "optaplanner") {
-                        branch "7.x"
-                    } else {
-                        branch "$repoBranch"
-                    }
-
+                    branch(repoBranch)
                 }
                 extensions {
                     cloneOptions {
@@ -252,7 +246,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
             timestamps()
             colorizeOutput()
-            
+
             configFiles {
                 mavenSettings("settings-local-maven-repo-nexus"){
                     variable("SETTINGS_XML_FILE")
@@ -270,11 +264,7 @@ for (repoConfig in REPO_CONFIGS) {
                     } else {
                         baseRepository "$ghOrgUnit/$repo"
                     }
-                    if (repo == "optaplanner") {
-                        branch "master"
-                    } else {
-                        branch "$repoBranch"
-                    }
+                    branch "$repoBranch"
                     mavenBuildConfig {
                         mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
                         delegate.mavenOpts("-Xmx3g")
@@ -331,7 +321,7 @@ for (repoConfig in REPO_CONFIGS) {
             def downstreamRepos = get("downstreamRepos")
             if (downstreamRepos) {
                 def jobNames = downstreamRepos.collect { downstreamRepo ->
-                    if (repoBranch == "master" || repoBranch =="7.x") {
+                    if (repoBranch == "master") {
                         downstreamRepo
                     } else {
                         // non-master job names are in the format <repo>-<branch>
