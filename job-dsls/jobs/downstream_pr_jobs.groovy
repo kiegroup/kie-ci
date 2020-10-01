@@ -67,10 +67,12 @@ for (repoConfig in REPO_CONFIGS) {
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
 
     // Creation of folders where jobs are stored
-    folder(Constants.FDB_FOLDER)
+    folder(Constants.FDB_FOLDER) {
+        displayName(Constants.FDB_FOLDER_DISPLAY_NAME)
+    }
 
     // FDB name
-    String jobName = Constants.FDB_FOLDER + "/$repo-$repoBranch" + ".downstream"
+    String jobName = Constants.FDB_FOLDER + "/${repo}-${repoBranch}.fdb"
 
     pipelineJob(jobName) {
 
