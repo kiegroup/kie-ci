@@ -20,7 +20,9 @@ def mvnGoals = "-B -e -fae -Dfull -Dmaven.test.failure.ignore=true -Pintegration
 def labelName = "kie-rhel7 && kie-mem16g"
 
 // Creation of folders where jobs are stored
-folder(Constants.PULL_REQUEST_FOLDER)
+folder(Constants.PULL_REQUEST_FOLDER) {
+    displayName(Constants.PULL_REQUEST_FOLDER_DISPLAY_NAME)
+}
 
 
 // jobs for master branch don't use the branch in the name

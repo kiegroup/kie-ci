@@ -33,7 +33,9 @@ class PrVerificationJob extends BasicJob {
         context.with {
 
             // Creates or updates a folder.
-            folder(Constants.PULL_REQUEST_FOLDER)
+            folder(Constants.PULL_REQUEST_FOLDER) {
+                displayName(Constants.PULL_REQUEST_FOLDER_DISPLAY_NAME)
+            }
         }
     }
 

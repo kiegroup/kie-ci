@@ -48,7 +48,9 @@ String ghOrgUnit = get("ghOrgUnit")
 String ghAuthTokenId = get("ghAuthTokenId")
 
 // Creation of folders where jobs are stored
-folder(Constants.PULL_REQUEST_FOLDER)
+folder(Constants.PULL_REQUEST_FOLDER) {
+    displayName(Constants.PULL_REQUEST_FOLDER_DISPLAY_NAME)
+}
 
 // jobs for master branch don't use the branch in the name
 String jobName = (repoBranch == "master") ? Constants.PULL_REQUEST_FOLDER + "/$repo-springboot-pullrequests" : Constants.PULL_REQUEST_FOLDER + "/$repo-springboot-pullrequests-$repoBranch"
