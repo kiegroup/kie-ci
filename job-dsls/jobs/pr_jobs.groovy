@@ -95,7 +95,7 @@ def final REPO_CONFIGS = [
         ],
         "jbpm-work-items"           : [
                 label      : "kie-linux && kie-mem4g",
-                timeoutMins: 40,
+                timeoutMins: 60,
         ],
         "jbpm-wb"                   : [
                 label: "kie-rhel7 && kie-mem16g",
