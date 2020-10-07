@@ -207,8 +207,10 @@ for (repoConfig in REPO_CONFIGS) {
                 triggerPhrase(".*[j|J]enkins,?.*(retest|test) this.*")
                 allowMembersOfWhitelistedOrgsAsAdmin(true)
                 whiteListTargetBranches {
-                    ghprbBranch {
-                        branch("${repoBranch}")
+                    if ( repo != "optaplanner" ) {
+                        ghprbBranch {
+                            branch("${repoBranch}")
+                        }
                     }
                     ghprbBranch {
                         branch("7.x")
