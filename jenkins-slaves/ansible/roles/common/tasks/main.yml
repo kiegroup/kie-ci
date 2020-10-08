@@ -59,6 +59,13 @@
     group: jenkins
     mode: 0644
 
+- name: Increase nofile limits (hard and soft) for jenkins user
+  pam_limits:
+    domain: jenkins
+    limit_type: '-'
+    limit_item: nofile
+    value: '32768'
+
 ### Tools ###
 
 - name: Create tools directory
