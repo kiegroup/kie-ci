@@ -207,13 +207,16 @@ for (repoConfig in REPO_CONFIGS) {
                 triggerPhrase(".*[j|J]enkins,?.*(retest|test) this.*")
                 allowMembersOfWhitelistedOrgsAsAdmin(true)
                 whiteListTargetBranches {
-                    if ( repo != "optaplanner" ) {
+                    boolean isOptaPlannerOrDependentRepo =
+                            repo in ['optaplanner', 'optaweb-employee-rostering', 'optaweb-vehicle-routing']
+                    if (isOptaPlannerOrDependentRepo) {
+                        ghprbBranch {
+                            branch("7.x")
+                        }
+                    } else {
                         ghprbBranch {
                             branch("${repoBranch}")
                         }
-                    }
-                    ghprbBranch {
-                        branch("7.x")
                     }
                 }
                 useGitHubHooks(true)
