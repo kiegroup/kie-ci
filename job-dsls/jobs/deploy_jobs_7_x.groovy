@@ -1,11 +1,11 @@
- /**
+/**
  * Creates all the standard "deploy" jobs for appformer (formerly known as uberfire) and kiegroup GitHub org. units.
  */
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
-        branch                 : Constants.BRANCH,
+        branch                 : "7.x",
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
         upstreamMvnArgs        : "-B -e -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
@@ -29,47 +29,9 @@ def final DEFAULTS = [
 
 // used to override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
-        "lienzo-core"                  : [
-                timeoutMins            : 20,
-                label                  : "kie-rhel7 && kie-mem4g",
-                downstreamRepos        : ["lienzo-tests"]
-        ],
-        "lienzo-tests"              : [
-                timeoutMins            : 20,
-                label                  : "kie-rhel7 && kie-mem4g",
-                downstreamRepos        : ["kie-soup"]
-        ],
-        "droolsjbpm-build-bootstrap": [
-                timeoutMins            : 30,
-                label                  : "kie-rhel7 && kie-mem4g",
-                ircNotificationChannels: ["#logicabyss"],
-                downstreamRepos        : ["kie-soup"]
-        ],
-        "kie-soup"                  : [
-                label                  : "kie-rhel7 && kie-mem4g",
-                ircNotificationChannels: ["#logicabyss", "#appformer"],
-                downstreamRepos        : ["appformer"]
-        ],
-        "appformer"                 : [
-                label                  : "kie-linux && kie-mem16g",
-                mvnProps               : DEFAULTS["mvnProps"] + [
-                        "gwt.compiler.localWorkers": "2"
-                ],
-                ircNotificationChannels: ["#appformer"],
-                downstreamRepos        : ["droolsjbpm-knowledge"]
-        ],
-        "droolsjbpm-knowledge"      : [
-                timeoutMins            : 40,
-                ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["drools"]
-        ],
-        "drools"                    : [
-                ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["optaplanner-7x", "jbpm", "kie-jpmml-integration"],
-                artifactsToArchive     : ["**/target/testStatusListener*"]
-        ],
         "optaplanner"               : [
                 ircNotificationChannels: ["#optaplanner-dev"],
+                downstreamRepos        : ["optaplanner-wb"],
                 mvnGoals: "-e -nsu -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
                 mvnProps: [
                         "full"                     : "true",
@@ -77,91 +39,19 @@ def final REPO_CONFIGS = [
                         "maven.test.failure.ignore": "true"
                 ]
         ],
-        "jbpm"                      : [
-                timeoutMins            : 120,
-                mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly",
-                ircNotificationChannels: ["#jbpmdev"],
-                downstreamRepos        : ["jbpm-work-items", "kie-jpmml-integration"]
-        ],
-        "kie-jpmml-integration"     :[
-                ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["droolsjbpm-integration"]
-        ],
-        "droolsjbpm-integration"    : [
-                timeoutMins            : 120,
-                ircNotificationChannels: ["#droolsdev", "#jbpmdev"],
-                downstreamRepos        : ["droolsjbpm-tools", "kie-uberfire-extensions", "openshift-drools-hacep"]
-        ],
-        "openshift-drools-hacep"       : [:],
-        "droolsjbpm-tools"          : [
-                label                  : "kie-linux && kie-mem24g",
-                ircNotificationChannels: ["#logicabyss"],
-                downstreamRepos        : []
-        ],
-        "kie-uberfire-extensions"   : [
-                timeoutMins            : 40,
-                ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["kie-wb-playground"]
-        ],
-        "kie-wb-playground"         : [
-                ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["kie-wb-common"]
-        ],
-        "kie-wb-common"             : [
-                label                  : "kie-rhel7 && kie-mem16g",
-                ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["drools-wb"]
-        ],
-        "drools-wb"                 : [
-                label                  : "kie-rhel7 && kie-mem16g",
-                ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-designer", "optaplanner-wb"]
-        ],
-        "optaplanner-wb"            : [
-                label                  : "kie-rhel7 && kie-mem16g",
-                ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-wb"]
-        ],
-        "jbpm-designer"             : [
-                mvnProps               : DEFAULTS["mvnProps"] + [
-                        "gwt.compiler.localWorkers": "1"
-                ],
-                ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["jbpm-work-items"]
-        ],
-        "jbpm-work-items"           : [
-                label      : "kie-linux && kie-mem4g",
-                timeoutMins: 30,
-                ircNotificationChannels: ["#jbpmdev"],
-                downstreamRepos        : ["jbpm-wb"]
-        ],
-        "jbpm-wb"                   : [
-                label                  : "kie-rhel7 && kie-mem16g",
-                mvnProps               : DEFAULTS["mvnProps"] + [
-                        "gwt.compiler.localWorkers": "1"
-                ],
-                ircNotificationChannels: ["#guvnordev"],
-                downstreamRepos        : ["kie-wb-distributions", "kie-docs"]
-        ],
-        "kie-docs"                  : [
-                ircNotificationChannels: ["#logicabyss"],
-                artifactsToArchive     : ["**/generated-docs/**"],
-                downstreamRepos        : ["optaweb-employee-rostering-7.x"]
-        ],
-        "kie-wb-distributions"      : [
-                timeoutMins            : 120,
-                label                  : "kie-rhel7 && kie-mem16g",
-                mvnGoals               : DEFAULTS["mvnGoals"] + " -Pbusiness-central",
-                mvnProps               : DEFAULTS["mvnProps"] + [
-                        "gwt.compiler.localWorkers": "1",
-                        "webdriver.firefox.bin"    : "/opt/tools/firefox-60esr/firefox-bin",
-                        "gwt.memory.settings"      : "-Xmx10g"
-                ],
-                ircNotificationChannels: ["#guvnordev"],
+        "optaweb-employee-rostering" : [
+                ircNotificationChannels: ["#optaplanner-dev"],
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
-                        "business-central-tests/business-central-tests-gui/target/screenshots/**"
+                        "**/target/configurations/cargo-profile/profile-log.txt"
                 ],
-                downstreamRepos        : []
+                downstreamRepos        : ["optaweb-vehicle-routing-7.x"]
+        ],
+        "optaweb-vehicle-routing" : [
+                ircNotificationChannels: ["#optaplanner-dev"],
+                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
+                        "**/target/configurations/cargo-profile/profile-log.txt"
+                ],
+                downstreamRepos        : ["kie-wb-distributions"]
         ]
 ]
 
@@ -212,10 +102,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        if (repo == "optaplanner") {
-            jdk("kie-jdk11")
-        } else {
-            jdk("kie-jdk1.8")}
+        jdk("kie-jdk1.8")
 
         label(get("label"))
 
@@ -224,17 +111,12 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         wrappers {
-            if (repo == "kie-wb-distributions") {
-                xvnc {
-                    useXauthority(false)
-                }
-            }
             timeout {
                 elastic(200, 3, get("timeoutMins"))
             }
             timestamps()
             colorizeOutput()
-            
+
             configFiles {
                 mavenSettings("settings-local-maven-repo-nexus"){
                     variable("SETTINGS_XML_FILE")
@@ -242,12 +124,13 @@ for (repoConfig in REPO_CONFIGS) {
                 }
             }
         }
+
         steps {
-            if (repo != "optaplanner") {
+            if (repo == "optaplanner") {
                 configure { project ->
                     project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.StandardBuildUpstreamReposBuilder' {
                         baseRepository "$ghOrgUnit/$repo"
-                        branch "$repoBranch"
+                        branch "master"
                         mavenBuildConfig {
                             mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
                             delegate.mavenOpts("-Xmx3g")
