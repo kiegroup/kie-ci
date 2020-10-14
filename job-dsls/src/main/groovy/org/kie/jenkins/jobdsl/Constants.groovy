@@ -38,7 +38,7 @@ class Constants {
     static final String SONARCLOUD_FOLDER = "sonarcloud"
     static final String REPORT_BRANCH = "7.x"
     static final String BUILD_DATE = ""
-    static final String PROD_VERSION = "7.9.0"
+    static final String PROD_VERSION = "7.10.0"
     static final String OSBS_BUILD_TARGET = "rhba-7-rhel-8-containers-candidate"
     static final String CEKIT_BUILD_OPTIONS = ""
     static final String KERBEROS_PRINCIPAL = ""
