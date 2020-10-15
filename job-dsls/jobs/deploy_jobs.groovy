@@ -89,6 +89,7 @@ def final REPO_CONFIGS = [
         ],
         "droolsjbpm-integration"    : [
                 timeoutMins            : 120,
+                mvnGoals               : DEFAULTS["mvnGoals"] + " -Pjenkins-pr-builder",
                 ircNotificationChannels: ["#droolsdev", "#jbpmdev"],
                 downstreamRepos        : ["droolsjbpm-tools", "kie-uberfire-extensions", "openshift-drools-hacep"]
         ],
