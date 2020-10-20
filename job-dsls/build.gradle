@@ -19,6 +19,10 @@ repositories {
     maven {
         url 'https://repo.spring.io/plugins-release/'
     }
+    // for internal redhat-ci-plugin
+    maven {
+        url 'http://artifactory.rhev-ci-vms.eng.rdu2.redhat.com:8081/artifactory/ci-ops-releases-local'
+    }
 }
 
 configurations {
@@ -55,24 +59,28 @@ dependencies {
     // plugins to install in test instance (all plugins used by the DSL scripts needs to be specified)
     // keep the alphabetical order
     testPlugins 'org.jenkins-ci.plugins.workflow:workflow-aggregator:2.6'
+    testPlugins 'org.jenkins-ci.plugins.workflow:workflow-step-api:2.22'
     testPlugins 'org.jenkins-ci.plugins:cloudbees-folder:5.16'
     testPlugins 'com.cloudbees.plugins:build-flow-plugin:0.20'
     testPlugins 'com.coravy.hudson.plugins.github:github:1.19.0'
     testPlugins 'com.sonyericsson.hudson.plugins.rebuild:rebuild:1.25'
     testPlugins 'com.synopsys.jenkinsci:ownership:0.9.1'
-    testPlugins 'org.jenkins-ci.main:maven-plugin:2.15.1'
+    testPlugins 'org.jenkins-ci.main:maven-plugin:3.1.2'
     testPlugins 'org.jenkins-ci.plugins:ansicolor:0.5.0'
     testPlugins 'org.jenkins-ci.plugins:build-timeout:1.18'
     testPlugins 'org.jenkins-ci.plugins:config-file-provider:2.15.7'
     testPlugins 'org.jenkins-ci.plugins:credentials:2.1.13'
     testPlugins 'org.jenkins-ci.plugins:description-setter:1.10'
+    testPlugins 'org.jenkins-ci.plugins:email-ext:2.40.5'
     testPlugins 'org.jenkins-ci.plugins:envinject:2.0'
     testPlugins 'org.jenkins-ci.plugins:git:3.2.0'
     testPlugins 'org.jenkins-ci.plugins:ghprb:1.39.0'
-    testPlugins 'org.jenkins-ci.plugins:junit:1.20'
+    testPlugins 'org.jenkins-ci.plugins:jms-messaging:1.1.18'
+    testPlugins 'org.jenkins-ci.plugins:junit:1.26.1'
+    testPlugins 'org.jenkins-ci.plugins:matrix-project:1.14.1'
     testPlugins 'org.jenkins-ci.plugins:multiple-scms:0.6'
     testPlugins 'org.jenkins-ci.plugins:nested-view:1.14'
-    testPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26'
+    testPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.35'
     testPlugins 'org.jenkins-ci.plugins:pipeline-build-step:2.9'
     testPlugins 'org.jenkinsci.plugins:pipeline-model-declarative-agent:1.1.1'
     testPlugins 'org.jenkins-ci.plugins:pipeline-input-step:2.10'
@@ -97,6 +105,8 @@ dependencies {
     testPlugins 'org.jvnet.hudson.plugins:checkstyle:3.48'
     testPlugins 'org.jvnet.hudson.plugins:findbugs:4.70'
     testPlugins 'org.jvnet.hudson.plugins:ircbot:2.27'
+    // should be 1.5.11 but 1.5.11 is missing pom in local repo
+    testPlugins 'com.redhat.jenkins.plugins:redhat-ci-plugin:1.5.10'
 }
 
 task resolveTestPlugins(type: Copy) {
