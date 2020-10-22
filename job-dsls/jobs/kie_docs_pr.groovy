@@ -27,7 +27,7 @@ branchName = Constants.BRANCH
 PrVerificationJob.addFolders(this)
 
 // Creates or updates a free style job.
-def jobDefinition = job(Constants.PULL_REQUEST_FOLDER + "/${projectName}-${branchName}.pullrequests")
+def jobDefinition = job(Constants.PULL_REQUEST_FOLDER + "/${projectName}-${branchName}.pr")
 
 PrVerificationJob.addPrConfiguration(job = jobDefinition,
         projectName = projectName,
