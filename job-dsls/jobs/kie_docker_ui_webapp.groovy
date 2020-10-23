@@ -14,12 +14,9 @@ def gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/${repo}/"
 def mavenVersion = Constants.MAVEN_VERSION
 def javaVersion = Constants.JDK_VERSION
 
-// Creation of folders where jobs are stored
-folder("docker-ui-webapp")
-def folderPath="docker-ui-webapp"
-def exeScript ="./scripts/kie-docker-ui-containers-clean.sh"
+def exeScript = ''' ./scripts/kie-docker-ui-containers-clean.sh '''
 
-job("${folderPath}/docker-ui-build") {
+job("docker-ui-build") {
 
     description("Builds and deploys latest version of the kie-docker-ci web application")
 
