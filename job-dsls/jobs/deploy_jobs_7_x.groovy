@@ -126,19 +126,6 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         steps {
-            if (repo == "optaplanner") {
-                configure { project ->
-                    project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.StandardBuildUpstreamReposBuilder' {
-                        baseRepository "$ghOrgUnit/$repo"
-                        branch "master"
-                        mavenBuildConfig {
-                            mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
-                            delegate.mavenOpts("-Xmx3g")
-                            mavenArgs(get("upstreamMvnArgs"))
-                        }
-                    }
-                }
-            }
             maven {
                 mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                 mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
@@ -181,25 +168,6 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                     }
                 }
-            }
-
-
-            def downstreamRepos = get("downstreamRepos")
-            if (downstreamRepos) {
-                def jobNames = downstreamRepos.collect { downstreamRepo ->
-                    if (repoBranch == "master" || repoBranch =="7.x") {
-                        downstreamRepo
-                    } else {
-                        // non-master job names are in the format <repo>-<branch>
-                        try {
-                            def downstreamRepoBranch = REPO_CONFIGS.get(downstreamRepo).get("branch", DEFAULTS["branch"])
-                            "$downstreamRepo-$downstreamRepoBranch"
-                        } catch (RuntimeException e) {
-                            throw new IllegalStateException("Invalid configuration for $downstreamRepo from downstreamRepos $downstreamRepos, see cause.", e)
-                        }
-                    }
-                }
-                downstream(jobNames, 'UNSTABLE')
             }
 
             wsCleanup()
