@@ -255,24 +255,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
         steps {
-            configure { project ->
-                project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.StandardBuildUpstreamReposBuilder' {
-                    if (repo == "jbpm-work-items") {
-                        // jbpm-work-items is _not_ in repository-list.txt, so the default config won't work
-                        // this is a workaround to make sure we build all repos until and including jbpm
-                        baseRepository "$ghOrgUnit/droolsjbpm-integration"
-                    } else {
-                        baseRepository "$ghOrgUnit/$repo"
-                    }
-                    branch "$repoBranch"
-                    mavenBuildConfig {
-                        mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
-                        delegate.mavenOpts("-Xmx3g")
-                        mavenArgs(get("upstreamMvnArgs"))
-                    }
-                }
-            }
-            maven {
+             maven {
                 mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                 mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
                 goals(get("mvnGoals"))
@@ -315,25 +298,6 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                     }
                 }
-            }
-
-
-            def downstreamRepos = get("downstreamRepos")
-            if (downstreamRepos) {
-                def jobNames = downstreamRepos.collect { downstreamRepo ->
-                    if (repoBranch == "master") {
-                        downstreamRepo
-                    } else {
-                        // non-master job names are in the format <repo>-<branch>
-                        try {
-                            def downstreamRepoBranch = REPO_CONFIGS.get(downstreamRepo).get("branch", DEFAULTS["branch"])
-                            "$downstreamRepo-$downstreamRepoBranch"
-                        } catch (RuntimeException e) {
-                            throw new IllegalStateException("Invalid configuration for $downstreamRepo from downstreamRepos $downstreamRepos, see cause.", e)
-                        }
-                    }
-                }
-                downstream(jobNames, 'UNSTABLE')
             }
 
             wsCleanup()
