@@ -19,7 +19,7 @@ job("a-kie-tools-seed-job") {
 
     description("this job creates all needed Jenkins jobs for kie-tools")
 
-    label("kieci-02-docker")
+    label("kie-rhel7 && kie-mem4g")
 
     logRotator {
         numToKeep(5)
