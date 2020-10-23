@@ -65,7 +65,7 @@ def final REPO_CONFIGS = [
         ],
         "drools"                    : [
                 ircNotificationChannels: ["#droolsdev"],
-                downstreamRepos        : ["optaplanner-7x", "jbpm", "kie-jpmml-integration"],
+                downstreamRepos        : ["optaplanner-7.x", "jbpm", "kie-jpmml-integration"],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
         "optaplanner"               : [
