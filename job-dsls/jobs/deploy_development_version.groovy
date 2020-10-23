@@ -8,16 +8,10 @@ def organization=Constants.GITHUB_ORG_UNIT
 
 
 
-// creation of folder
-folder("KIE")
-
-def folderPath="KIE"
-
-
 def bumpUp='''
 pipeline {
     agent {
-        label 'kie-rhel7-priority'      
+        label 'kie-rhel7 && kie-mem24g'      
     }
     tools {
         maven 'kie-maven-3.6.3'
@@ -64,7 +58,7 @@ pipeline {
 }
 '''
 
-pipelineJob("${folderPath}/deploy-development-version") {
+pipelineJob("deploy-development-version") {
 
     description('''
     Pipeline job for upgrading all kiegroup reps to the next SNAPSHOT version<br>

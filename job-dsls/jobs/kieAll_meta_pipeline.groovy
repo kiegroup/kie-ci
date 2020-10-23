@@ -6,23 +6,23 @@ def VERSION_ORG_KIE = "7.46.0-SNAPSHOT"
 
 def sendUMB="""pipeline{
     agent {
-        label 'kie-linux&&kie-rhel7&&kie-mem8g'
+        label 'kie-linux && kie-rhel7&&kie-mem8g'
     }    
     stages {
         stage('trigger daily build pipeline') {
             steps {
                 parallel (
                     "master-pipeline" : {
-                        build job: "master/daily-build/daily-build-pipeline-master", propagate: false
+                        build job: "../master/daily-build/daily-build-pipeline-master", propagate: false
                     },  
                     "prod-master-pipeline" : {
-                        build job: 'master/daily-build-prod/daily-build-prod-pipeline-master', propagate: false
+                        build job: '../master/daily-build-prod/daily-build-prod-pipeline-master', propagate: false
                     },
                     "7.44.x-pipeline" : {
-                        build job: "7.44.x/daily-build/daily-build-pipeline-7.44.x", propagate: false
+                        build job: "../7.44.x/daily-build/daily-build-pipeline-7.44.x", propagate: false
                     },  
                     "prod-7.44.x-pipeline" : {
-                        build job: '7.44.x/daily-build-prod/daily-build-prod-pipeline-7.44.x', propagate: false
+                        build job: '../7.44.x/daily-build-prod/daily-build-prod-pipeline-7.44.x', propagate: false
                     }                    
                 )      
             }    
