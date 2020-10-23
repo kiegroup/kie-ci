@@ -8,8 +8,7 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
-        upstreamMvnArgs        : "-B -e -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
-        mvnGoals               : "-e -nsu -fae -B -Pwildfly clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
+        mvnGoals               : "-e -fae -B -Pwildfly clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
         mvnProps: [
                 "full"                     : "true",
                 "container"                : "wildfly",
@@ -70,7 +69,7 @@ def final REPO_CONFIGS = [
         ],
         "optaplanner"               : [
                 ircNotificationChannels: ["#optaplanner-dev"],
-                mvnGoals: "-e -nsu -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
+                mvnGoals: "-e -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
                 mvnProps: [
                         "full"                     : "true",
                         "integration-tests"        : "true",
@@ -243,19 +242,6 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
         steps {
-            if (repo != "optaplanner") {
-                configure { project ->
-                    project / 'builders' << 'org.kie.jenkinsci.plugins.kieprbuildshelper.StandardBuildUpstreamReposBuilder' {
-                        baseRepository "$ghOrgUnit/$repo"
-                        branch "$repoBranch"
-                        mavenBuildConfig {
-                            mavenHome("/opt/tools/apache-maven-${Constants.UPSTREAM_BUILD_MAVEN_VERSION}")
-                            delegate.mavenOpts("-Xmx3g")
-                            mavenArgs(get("upstreamMvnArgs"))
-                        }
-                    }
-                }
-            }
             maven {
                 mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                 mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
@@ -298,25 +284,6 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                     }
                 }
-            }
-
-
-            def downstreamRepos = get("downstreamRepos")
-            if (downstreamRepos) {
-                def jobNames = downstreamRepos.collect { downstreamRepo ->
-                    if (repoBranch == "master" || repoBranch =="7.x") {
-                        downstreamRepo
-                    } else {
-                        // non-master job names are in the format <repo>-<branch>
-                        try {
-                            def downstreamRepoBranch = REPO_CONFIGS.get(downstreamRepo).get("branch", DEFAULTS["branch"])
-                            "$downstreamRepo-$downstreamRepoBranch"
-                        } catch (RuntimeException e) {
-                            throw new IllegalStateException("Invalid configuration for $downstreamRepo from downstreamRepos $downstreamRepos, see cause.", e)
-                        }
-                    }
-                }
-                downstream(jobNames, 'UNSTABLE')
             }
 
             wsCleanup()
