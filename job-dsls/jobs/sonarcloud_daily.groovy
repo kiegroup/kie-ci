@@ -8,7 +8,7 @@ def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
-        ghAuthTokenId          : "kie-ci2-token",
+        ghAuthTokenId          : "kie-ci-user-key",
         label                  : "kie-rhel7 && kie-mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-B -e -nsu -fae -Pwildfly -Prun-code-coverage clean install",
@@ -55,6 +55,8 @@ for (repoConfig in REPO_CONFIGS) {
 
     String repo = repoConfig.key
     String ghOrgUnit = get("ghOrgUnit")
+    String ghAuthTokenId = get("ghAuthTokenId")
+    String repoBranch = get("branch")
 
     // Creation of folders where jobs are stored
     folder(Constants.SONARCLOUD_FOLDER)
@@ -75,7 +77,8 @@ for (repoConfig in REPO_CONFIGS) {
             git {
                 remote {
                     github("${ghOrgUnit}/${repo}")
-                    branch("master")
+                    branch("${repoBranch}")
+                    credentials("${ghAuthTokenId}")
                 }
                 extensions {
                     cloneOptions {
