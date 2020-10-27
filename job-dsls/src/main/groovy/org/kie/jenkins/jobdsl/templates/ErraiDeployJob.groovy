@@ -82,7 +82,8 @@ class ErraiDeployJob extends BasicJob {
                 git {
                     remote {
                         github("${githubGroup}/${projectName}")
-                        branch "$branchName"
+                        branch ("$branchName")
+                        credentials("kie-ci-user-key")
                     }
                     extensions {
                         cloneOptions {
