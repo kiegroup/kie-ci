@@ -54,7 +54,7 @@ pipeline {
         }
         stage ('Checkout droolsjbpm-build-boostrap') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '$baseBranch']], browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/$organization/droolsjbpm-build-bootstrap'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'droolsjbpm-build-bootstrap']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/$organization/droolsjbpm-build-bootstrap.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '$baseBranch']], browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/$organization/droolsjbpm-build-bootstrap'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'droolsjbpm-build-bootstrap']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/$organization/droolsjbpm-build-bootstrap.git']]])
                 dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
                     sh 'pwd \\n' +
                        'git branch \\n' +
@@ -63,9 +63,11 @@ pipeline {
             }
         }
         stage('Clone all other reps') {
-            steps {
-                sh "sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch"
-            }
+            sshagent(['kie-ci-user-key']) {        
+                steps {
+                    sh "sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch"
+                }
+            }   
         }
         stage ('Remove M2') {
             steps {

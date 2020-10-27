@@ -63,6 +63,7 @@ job(jobName) {
                 github("${organization}/${repo}")
                 branch("\${sha1}")
                 name("origin")
+                credentials("kie-ci-user-key")
                 refspec("+refs/pull/*:refs/remotes/origin/pr/*")
             }
             extensions {

@@ -6,6 +6,7 @@ import org.kie.jenkins.jobdsl.Constants
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
+        kie_ci_token           : "kie-ci-user-key",
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
         upstreamMvnArgs        : "-B -e -T1C -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
@@ -186,6 +187,7 @@ for (repoConfig in REPO_CONFIGS) {
     String repo = repoConfig.key
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
+    String kie_ci_token = get ("kie_ci_token")
 
     // Creation of folders where jobs are stored
     folder(Constants.DEPLOY_FOLDER)
@@ -208,7 +210,8 @@ for (repoConfig in REPO_CONFIGS) {
             git {
                 remote {
                     github("${ghOrgUnit}/${repo}")
-                    branch(repoBranch)
+                    branch("$repoBranch")
+                    credentials("${kie_ci_token}")
                 }
                 extensions {
                     cloneOptions {
