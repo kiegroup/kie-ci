@@ -14,14 +14,9 @@
     name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     state: present
 
-- name: Install additional RHEL repository
-  yum:
-    name: https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.8-1.x86_64.rpm
-    state: present    
-
 - name: Install packages
   yum:
-    pkg: ['git', 'tig', 'wget', 'mc', 'vim', 'unzip', 'iputils', 'bind-utils', 'findutils',
+    pkg: ['wget', 'mc', 'vim', 'unzip', 'iputils', 'bind-utils', 'findutils',
           'htop', 'hub', 'screen', 'lsof', 'bash-completion', 'bzip2', 'rng-tools',
           'ansible', 'zip', 'python2-pip', 'jq', 'libXScrnSaver', 'python3', 'python3-devel',
           'python3-pip', 'glibc-devel', 'zlib-devel', 'podman', 'gcc', 'krb5-devel', 'libstdc++-static']
@@ -31,6 +26,16 @@
   yum:
     name: "*"
     state: latest
+
+- name: Install additional RHEL repository
+  yum:
+    name: https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.8-1.x86_64.rpm
+    state: present    
+
+- name: Install Git
+  yum:
+    pkg: ['git', 'tig']
+    state: latest    
 
 ### System services ###
 
