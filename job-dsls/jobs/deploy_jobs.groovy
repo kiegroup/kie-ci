@@ -1,4 +1,4 @@
- /**
+/**
  * Creates all the standard "deploy" jobs for appformer (formerly known as uberfire) and kiegroup GitHub org. units.
  */
 import org.kie.jenkins.jobdsl.Constants
@@ -6,8 +6,9 @@ import org.kie.jenkins.jobdsl.Constants
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
-        kie_ci_token           : "kie-ci-user-key",
+        ghAuthKey              : "kie-ci-user-key",
         timeoutMins            : 90,
+        buildHistory           : 3,
         label                  : "kie-rhel7 && kie-mem8g",
         mvnGoals               : "-e -fae -B -Pwildfly clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
         mvnProps: [
@@ -16,7 +17,7 @@ def final DEFAULTS = [
                 "integration-tests"        : "true",
                 "maven.test.failure.ignore": "true"
         ],
-        ircNotificationChannels: [],
+        zulipNotificationStream: "kie-ci.5ef0dba1f620d6457ba4c5976533977d.show-sender@streams.zulipchat.com",
         artifactsToArchive     : [
                 "**/target/testStatusListener*",
                 "**/target/*.log"
@@ -42,12 +43,10 @@ def final REPO_CONFIGS = [
         "droolsjbpm-build-bootstrap": [
                 timeoutMins            : 30,
                 label                  : "kie-rhel7 && kie-mem4g",
-                ircNotificationChannels: ["#logicabyss"],
                 downstreamRepos        : ["kie-soup"]
         ],
         "kie-soup"                  : [
                 label                  : "kie-rhel7 && kie-mem4g",
-                ircNotificationChannels: ["#logicabyss", "#appformer"],
                 downstreamRepos        : ["appformer"]
         ],
         "appformer"                 : [
@@ -55,21 +54,17 @@ def final REPO_CONFIGS = [
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
                 ],
-                ircNotificationChannels: ["#appformer"],
                 downstreamRepos        : ["droolsjbpm-knowledge"]
         ],
         "droolsjbpm-knowledge"      : [
                 timeoutMins            : 40,
-                ircNotificationChannels: ["#droolsdev"],
                 downstreamRepos        : ["drools"]
         ],
         "drools"                    : [
-                ircNotificationChannels: ["#droolsdev"],
                 downstreamRepos        : ["optaplanner-7.x", "jbpm", "kie-jpmml-integration"],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
         "optaplanner"               : [
-                ircNotificationChannels: ["#optaplanner-dev"],
                 mvnGoals: "-e -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
                 mvnProps: [
                         "full"                     : "true",
@@ -80,59 +75,47 @@ def final REPO_CONFIGS = [
         "jbpm"                      : [
                 timeoutMins            : 120,
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly",
-                ircNotificationChannels: ["#jbpmdev"],
                 downstreamRepos        : ["jbpm-work-items", "kie-jpmml-integration"]
         ],
         "kie-jpmml-integration"     :[
-                ircNotificationChannels: ["#droolsdev"],
                 downstreamRepos        : ["droolsjbpm-integration"]
         ],
         "droolsjbpm-integration"    : [
                 timeoutMins            : 120,
-                ircNotificationChannels: ["#droolsdev", "#jbpmdev"],
                 downstreamRepos        : ["droolsjbpm-tools", "kie-uberfire-extensions", "openshift-drools-hacep"]
         ],
         "openshift-drools-hacep"       : [:],
         "droolsjbpm-tools"          : [
-                label                  : "kie-linux && kie-mem24g",
-                ircNotificationChannels: ["#logicabyss"],
-                downstreamRepos        : []
+                label                  : "kie-linux && kie-mem8g"
         ],
         "kie-uberfire-extensions"   : [
                 timeoutMins            : 40,
-                ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["kie-wb-playground"]
         ],
         "kie-wb-playground"         : [
-                ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["kie-wb-common"]
         ],
         "kie-wb-common"             : [
                 label                  : "kie-rhel7 && kie-mem16g",
-                ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["drools-wb"]
         ],
         "drools-wb"                 : [
                 label                  : "kie-rhel7 && kie-mem16g",
-                ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["jbpm-designer", "optaplanner-wb"]
         ],
         "optaplanner-wb"            : [
                 label                  : "kie-rhel7 && kie-mem16g",
-                ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["jbpm-wb"]
         ],
         "jbpm-designer"             : [
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1"
                 ],
-                ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["jbpm-work-items"]
         ],
         "jbpm-work-items"           : [
                 label      : "kie-linux && kie-mem4g",
                 timeoutMins: 30,
-                ircNotificationChannels: ["#jbpmdev"],
                 downstreamRepos        : ["jbpm-wb"]
         ],
         "jbpm-wb"                   : [
@@ -140,13 +123,13 @@ def final REPO_CONFIGS = [
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1"
                 ],
-                ircNotificationChannels: ["#guvnordev"],
                 downstreamRepos        : ["kie-wb-distributions", "kie-docs"]
         ],
         "kie-docs"                  : [
-                ircNotificationChannels: ["#logicabyss"],
-                artifactsToArchive     : ["**/generated-docs/**"],
-                downstreamRepos        : ["optaweb-employee-rostering-7.x"]
+                artifactsToArchive     : [],
+                downstreamRepos        : ["optaweb-employee-rostering-7.x"],
+                mvnGoals               : "-e -B clean deploy -Dfull",
+                mvnProps               : []
         ],
         "kie-wb-distributions"      : [
                 timeoutMins            : 120,
@@ -157,7 +140,6 @@ def final REPO_CONFIGS = [
                         "webdriver.firefox.bin"    : "/opt/tools/firefox-60esr/firefox-bin",
                         "gwt.memory.settings"      : "-Xmx10g"
                 ],
-                ircNotificationChannels: ["#guvnordev"],
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "business-central-tests/business-central-tests-gui/target/screenshots/**"
                 ],
@@ -171,7 +153,8 @@ for (repoConfig in REPO_CONFIGS) {
     String repo = repoConfig.key
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
-    String kie_ci_token = get ("kie_ci_token")
+    String ghAuthKey = get("ghAuthKey")
+    String zulipStream = get("zulipNotificationStream")
 
     // Creation of folders where jobs are stored
     folder(Constants.DEPLOY_FOLDER)
@@ -187,7 +170,7 @@ for (repoConfig in REPO_CONFIGS) {
                     |""".stripMargin())
 
         logRotator {
-            numToKeep(3)
+            numToKeep(get("buildHistory"))
         }
 
         scm {
@@ -195,7 +178,7 @@ for (repoConfig in REPO_CONFIGS) {
                 remote {
                     github("${ghOrgUnit}/${repo}")
                     branch("$repoBranch")
-                    credentials("${kie_ci_token}")
+                    credentials("${ghAuthKey}")
                 }
                 extensions {
                     cloneOptions {
@@ -222,7 +205,7 @@ for (repoConfig in REPO_CONFIGS) {
         label(get("label"))
 
         triggers {
-            scm('H/10 * * * *')
+            gitHubPushTrigger()
         }
 
         wrappers {
@@ -236,7 +219,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
             timestamps()
             colorizeOutput()
-            
+
             configFiles {
                 mavenSettings("settings-local-maven-repo-nexus"){
                     variable("SETTINGS_XML_FILE")
@@ -244,32 +227,35 @@ for (repoConfig in REPO_CONFIGS) {
                 }
             }
         }
-        steps {
-            maven {
-                mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
-                mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
-                goals(get("mvnGoals"))
-                properties(get("mvnProps"))
-                providedSettings("7774c60d-cab3-425a-9c3b-26653e5feba1")
+        if ( "${repo}" != "kie-docs" ) {
+            steps {
+                maven {
+                    mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
+                    mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
+                    goals(get("mvnGoals"))
+                    properties(get("mvnProps"))
+                    providedSettings("7774c60d-cab3-425a-9c3b-26653e5feba1")
+                }
+            }
+        } else {
+            steps {
+                maven {
+                    mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
+                    mavenOpts("-Xms1g -Xmx3g -XX:+CMSClassUnloadingEnabled")
+                    goals(get("mvnGoals"))
+                    providedSettings("7774c60d-cab3-425a-9c3b-26653e5feba1")
+                }
             }
         }
 
         publishers {
-            archiveJunit('**/target/*-reports/TEST-*.xml') {
-                allowEmptyResults()
-            }
-            findbugs("**/spotbugsXml.xml")
-
-            checkstyle("**/checkstyle-result.xml")
-
-            mailer("", false, true)
-
-            irc {
-                for (ircChannel in get("ircNotificationChannels")) {
-                    channel(name: ircChannel, password: "", notificationOnly: true)
+            if ( "${repo}" != "kie-docs") {
+                archiveJunit('**/target/*-reports/TEST-*.xml') {
+                    allowEmptyResults()
                 }
-                strategy("FAILURE_AND_FIXED")
-                notificationMessage("Default")
+                findbugs("**/spotbugsXml.xml")
+
+                checkstyle("**/checkstyle-result.xml")
             }
 
             def artifactsToArchive = get("artifactsToArchive")
@@ -289,6 +275,41 @@ for (repoConfig in REPO_CONFIGS) {
                 }
             }
 
+            extendedEmail {
+                recipientList("")
+                defaultSubject('$DEFAULT_SUBJECT')
+                defaultContent('$DEFAULT_CONTENT')
+                contentType('default')
+                triggers {
+                    failure{
+                        subject('kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
+
+                        content('\n\nThe status of deploy kiegroup/$JOB_BASE_NAME was: $BUILD_STATUS\n\nPlease go to $BUILD_URL/consoleText\n(IMPORTANT: you need have access to Red Hat VPN to access this link)')
+
+                        sendTo {
+                            recipientList("${zulipStream}")
+                        }
+                    }
+                    unstable {
+                        subject('kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
+
+                        content('\n\nThe status of deploy kiegroup/$JOB_BASE_NAME was: $BUILD_STATUS\n\nPlease go to $BUILD_URL/consoleText\n(IMPORTANT: you need have access to Red Hat VPN to access this link)\n\n${FAILED_TESTS}')
+
+                        sendTo {
+                            recipientList("${zulipStream}")
+                        }
+                    }
+                    success{
+                        subject('kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
+
+                        content('\n\nThe status of deploy kiegroup/$JOB_BASE_NAME was: $BUILD_STATUS')
+
+                        sendTo{
+                            recipientList("${zulipStream}")
+                        }
+                    }
+                }
+            }
             wsCleanup()
 
         }

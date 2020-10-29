@@ -6,7 +6,7 @@ import org.kie.jenkins.jobdsl.Constants
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : "7.x",
-        kie_ci_token           : "kie-ci-user-key",
+        ghAuthKey              : "kie-ci-user-key",
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
         mvnGoals               : "-e -fae -B -Pwildfly clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
@@ -16,7 +16,7 @@ def final DEFAULTS = [
                 "integration-tests"        : "true",
                 "maven.test.failure.ignore": "true"
         ],
-        ircNotificationChannels: [],
+        zulipNotificationStream: "kie-ci.5ef0dba1f620d6457ba4c5976533977d.show-sender@streams.zulipchat.com",
         artifactsToArchive     : [
                 "**/target/testStatusListener*",
                 "**/target/*.log"
@@ -30,7 +30,6 @@ def final DEFAULTS = [
 // used to override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
         "optaplanner"               : [
-                ircNotificationChannels: ["#optaplanner-dev"],
                 downstreamRepos        : ["optaplanner-wb"],
                 mvnGoals: "-e -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
                 mvnProps: [
@@ -40,14 +39,12 @@ def final REPO_CONFIGS = [
                 ]
         ],
         "optaweb-employee-rostering" : [
-                ircNotificationChannels: ["#optaplanner-dev"],
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "**/target/configurations/cargo-profile/profile-log.txt"
                 ],
                 downstreamRepos        : ["optaweb-vehicle-routing-7.x"]
         ],
         "optaweb-vehicle-routing" : [
-                ircNotificationChannels: ["#optaplanner-dev"],
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "**/target/configurations/cargo-profile/profile-log.txt"
                 ],
@@ -61,7 +58,8 @@ for (repoConfig in REPO_CONFIGS) {
     String repo = repoConfig.key
     String repoBranch = get("branch")
     String ghOrgUnit = get("ghOrgUnit")
-    String kie_ci_token = get ("kie_ci_token")
+    String ghAuthKey = get ("ghAuthKey")
+    String zulipStream = get("zulipNotificationStream")
 
     // Creation of folders where jobs are stored
     folder(Constants.DEPLOY_FOLDER)
@@ -85,7 +83,7 @@ for (repoConfig in REPO_CONFIGS) {
                 remote {
                     github("${ghOrgUnit}/${repo}")
                     branch("$repoBranch")
-                    credentials("${kie_ci_token}")
+                    credentials("${ghAuthKey}")
                 }
                 extensions {
                     cloneOptions {
@@ -109,7 +107,7 @@ for (repoConfig in REPO_CONFIGS) {
         label(get("label"))
 
         triggers {
-            scm('H/10 * * * *')
+            gitHubPushTrigger()
         }
 
         wrappers {
@@ -145,16 +143,6 @@ for (repoConfig in REPO_CONFIGS) {
 
             checkstyle("**/checkstyle-result.xml")
 
-            mailer("", false, true)
-
-            irc {
-                for (ircChannel in get("ircNotificationChannels")) {
-                    channel(name: ircChannel, password: "", notificationOnly: true)
-                }
-                strategy("FAILURE_AND_FIXED")
-                notificationMessage("Default")
-            }
-
             def artifactsToArchive = get("artifactsToArchive")
             def excludedArtifacts = get("excludedArtifacts")
             if (artifactsToArchive) {
@@ -167,6 +155,42 @@ for (repoConfig in REPO_CONFIGS) {
                     if (excludedArtifacts) {
                         for (excludePattern in excludedArtifacts) {
                             exclude(excludePattern)
+                        }
+                    }
+                }
+            }
+
+            extendedEmail {
+                recipientList("")
+                defaultSubject('$DEFAULT_SUBJECT')
+                defaultContent('$DEFAULT_CONTENT')
+                contentType('default')
+                triggers {
+                    failure{
+                        subject('kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
+
+                        content('\n\nThe status of deploy kiegroup/$JOB_BASE_NAME was: $BUILD_STATUS\n\nPlease go to $BUILD_URL/consoleText\n(IMPORTANT: you need have access to Red Hat VPN to access this link)')
+
+                        sendTo {
+                            recipientList("${zulipStream}")
+                        }
+                    }
+                    unstable {
+                        subject('kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
+
+                        content('\n\nThe status of deploy kiegroup/$JOB_BASE_NAME was: $BUILD_STATUS\n\nPlease go to $BUILD_URL/consoleText\n(IMPORTANT: you need have access to Red Hat VPN to access this link)\n\n${FAILED_TESTS}')
+
+                        sendTo {
+                            recipientList("${zulipStream}")
+                        }
+                    }
+                    success{
+                        subject('kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
+
+                        content('\n\nThe status of deploy kiegroup/$JOB_BASE_NAME was: $BUILD_STATUS')
+
+                        sendTo{
+                            recipientList("${zulipStream}")
                         }
                     }
                 }
