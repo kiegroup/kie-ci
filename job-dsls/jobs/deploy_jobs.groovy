@@ -292,27 +292,27 @@ for (repoConfig in REPO_CONFIGS) {
                 contentType('default')
                 triggers {
                     failure{
-                        subject('kiegroup/$JOB_BASE_NAME ' + "${repoBranch}" + ' deploy $BUILD_STATUS')
+                        subject('kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
 
-                        content('\n\nStatus of deploy kiegroup/$JOB_BASE_NAME ' + "${repoBranch}" + '  was: $BUILD_STATUS\n\nPlease go to $BUILD_URL/consoleText\n(IMPORTANT: you need have access to Red Hat VPN to access this link)')
+                        content('\n\nStatus of deploy kiegroup/$JOB_BASE_NAME was: $BUILD_STATUS\n\nPlease go to $BUILD_URL/consoleText\n(IMPORTANT: you need have access to Red Hat VPN to access this link)')
 
                         sendTo {
                             recipientList("${zulipStream}")
                         }
                     }
                     unstable {
-                        subject('kiegroup/$JOB_BASE_NAME ' + "${repoBranch}" + ' deploy $BUILD_STATUS')
+                        subject('kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
 
-                        content('\n\nStatus of deploy kiegroup/$JOB_BASE_NAME ' + "${repoBranch}" + ' was: $BUILD_STATUS\n\nPlease go to $BUILD_URL/consoleText\n(IMPORTANT: you need have access to Red Hat VPN to access this link)\n\n${FAILED_TESTS}')
+                        content('\n\nStatus of deploy kiegroup/$JOB_BASE_NAME was: $BUILD_STATUS\n\nPlease go to $BUILD_URL/consoleText\n(IMPORTANT: you need have access to Red Hat VPN to access this link)\n\n${FAILED_TESTS}')
 
                         sendTo {
                             recipientList("${zulipStream}")
                         }
                     }
                     success{
-                        subject('kiegroup/$JOB_BASE_NAME ' + "${repoBranch}" + ' deploy $BUILD_STATUS')
+                        subject('kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
 
-                        content('\n\nStatus of deploy kiegroup/$JOB_BASE_NAME ' + "${repoBranch}" + ' was: $BUILD_STATUS')
+                        content('\n\nStatus of deploy kiegroup/$JOB_BASE_NAME was: $BUILD_STATUS')
 
                         sendTo{
                             recipientList("${zulipStream}")
