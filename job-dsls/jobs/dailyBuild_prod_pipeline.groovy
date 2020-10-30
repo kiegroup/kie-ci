@@ -63,8 +63,8 @@ pipeline {
             }
         }
         stage('Clone all other reps') {
-            sshagent(['kie-ci-user-key']) {        
-                steps {
+            steps {        
+                sshagent(['kie-ci-user-key']) { 
                     sh "sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch"
                 }
             }   
