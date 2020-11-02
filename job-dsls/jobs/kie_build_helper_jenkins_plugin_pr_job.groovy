@@ -27,7 +27,7 @@ mavenGoals = "-B clean install"
 PrVerificationJob.addFolders(this)
 
 // Creates or updates a free style job.
-def jobDefinition = job(Constants.PULL_REQUEST_FOLDER + "/${projectName}-pullrequests") {
+def jobDefinition = job(Constants.PULL_REQUEST_FOLDER + "/${projectName}.pr") {
 
     // Adds post-build actions to the job.
     publishers {

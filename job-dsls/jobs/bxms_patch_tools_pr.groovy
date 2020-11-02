@@ -28,7 +28,7 @@ githubCredentialsId = "kiereleaseuser2-github"
 PrVerificationJob.addFolders(this)
 
 // Creates or updates a free style job.
-def jobDefinition = job(Constants.PULL_REQUEST_FOLDER + "/${projectName}-pullrequests")
+def jobDefinition = job(Constants.PULL_REQUEST_FOLDER + "/${projectName}.pr")
 
 PrVerificationJob.addPrConfiguration(job = jobDefinition,
         projectName = projectName,
