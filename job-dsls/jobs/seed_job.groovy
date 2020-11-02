@@ -73,6 +73,7 @@ job("a-seed-job") {
                     "job-dsls/jobs/**/turtleTests.groovy\n" +
                     "job-dsls/jobs/**/srcclr_scan_pipeline.groovy\n" +
                     "job-dsls/jobs/**/reduced_drools_release.groovy \n" +
+                    "job-dsls/jobs/**/prod_projects_downstream_production.groovy \n" +
                     "job-dsls/jobs/**/srcclr_scan_job.groovy")
             useScriptText(false)
             sandbox(false)
