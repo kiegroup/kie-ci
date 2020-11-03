@@ -127,10 +127,36 @@ pipeline {
             }
         }        
         post {
-            always {
-                    cleanWs()             
+            failure{
+                emailext body: 'Build log: ${BUILD_URL}consoleText\\n' +
+                               'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
+                               '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download and decompress attached file.)',
+                         subject: 'Build #${BUILD_NUMBER} of kogito docs-upload FAILED',
+                         to: 'sterobin@redhat.com, hmanwani@redhat.com, mbiarnes@redhat.com'
+                cleanWs()                      
             }
-        }                  
+            unstable{
+                emailext body: 'Build log: ${BUILD_URL}consoleText\\n' +
+                               'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
+                               '***********************************************************************************************************************************************************\\n' +
+                               '${FAILED_TESTS}',
+                         subject: 'Build #${BUILD_NUMBER} of kogito docs-upload branch was UNSTABLE',
+                         to: 'sterobin@redhat.com, hmanwani@redhat.com, mbiarnes@redhat.com' 
+                cleanWs()                            
+            }
+            fixed {
+                emailext body: '',
+                     subject: 'Build #${BUILD_NUMBER} of kogito docs-upload was fixed and is SUCCESSFUL',
+                     to: 'sterobin@redhat.com, hmanwani@redhat.com, mbiarnes@redhat.com\'
+                cleanWs()
+            }
+            success{
+                emailext body: 'Everything worked fine',
+                     subject: 'Build #${BUILD_NUMBER} of kogito docs-upload was SUCCESSFUL',
+                     to: 'sterobin@redhat.com, hmanwani@redhat.com, mbiarnes@redhat.com'  
+                cleanWs()                           
+            }        
+        }                 
     }  
 }
 '''
