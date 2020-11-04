@@ -28,7 +28,6 @@ def final REPO_CONFIGS = [
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [],
-        "droolsjbpm-tools"          : [],
         "kie-uberfire-extensions"   : [],
         "kie-wb-playground"         : [],
         "kie-wb-common"             : [],
