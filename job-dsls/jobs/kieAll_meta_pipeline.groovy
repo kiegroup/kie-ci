@@ -15,6 +15,9 @@ def sendUMB="""pipeline{
                     "master-pipeline" : {
                         build job: "../master/daily-build/daily-build-pipeline-master", propagate: false
                     },  
+                    "master-jdk11-pipeline" : {
+                        build job: "../master/daily-build-jdk11/daily-build-jdk11-pipeline-master", propagate: false
+                    }, 
                     "prod-master-pipeline" : {
                         build job: '../master/daily-build-prod/daily-build-prod-pipeline-master', propagate: false
                     },

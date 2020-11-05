@@ -14,11 +14,9 @@ def m2Dir = Constants.LOCAL_MVN_REP
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
 // creation of folder
-folder("daily-build")
-folder("docker")
+folder("daily-build-jdk11")
 
-def folderPath="daily-build"
-def dockerPath="docker"
+def folderPath="daily-build-jdk11"
 
 def daily_build='''
 pipeline {
@@ -52,7 +50,6 @@ pipeline {
                 script {
                     data = new Date().format('yyyyMMdd-hhMMss')
                     kieVersion = "${kieVersion}.${data}"
-                    dockerAbsPath = "KIE/${baseBranch}/docker"
 
                     echo "data: ${data}"
                     echo "kieVersion: ${kieVersion}"
@@ -121,19 +118,19 @@ pipeline {
             steps {
                 parallel (
                     "jbpmTestCoverageMatrix" : {
-                        build job: "daily-build-${baseBranch}-jbpmTestCoverageMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
+                        build job: "daily-build-jdk11-${baseBranch}-jbpmTestCoverageMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
                     },
                     "jbpmTestContainerMatrix" : {
-                        build job: "daily-build-${baseBranch}-jbpmTestContainerMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
+                        build job: "daily-build-jdk11-${baseBranch}-jbpmTestContainerMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
                     },
                     "kieWbTestsMatrix" : {
-                            build job: "daily-build-${baseBranch}-kieWbTestsMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
+                            build job: "daily-build-jdk11-${baseBranch}-kieWbTestsMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
                      },
                     "kieServerMatrix" : {
-                            build job: "daily-build-${baseBranch}-kieServerMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
+                            build job: "daily-build-jdk11-${baseBranch}-kieServerMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
                     },
-                    "daily-build-docker-images" : {
-                            build job: "${dockerAbsPath}/daily-build-${baseBranch}-docker-images", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
+                    "daily-build-jdk11-docker-images" : {
+                            build job: "daily-build-jdk11-${baseBranch}-docker-images", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
                     }
                 )    
             } 
@@ -150,7 +147,7 @@ pipeline {
             emailext body: 'Build log: ${BUILD_URL}consoleText\\n' +
                            'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
                            '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download and decompress attached file.)',
-                     subject: 'Build #${BUILD_NUMBER} of daily builds ${baseBranch} branch FAILED',
+                     subject: 'Build #${BUILD_NUMBER} of daily builds ${baseBranch} branch with JDK 11 FAILED',
                      to: 'kie-jenkins-builds@redhat.com',
                      attachmentsPattern: 'error.log.gz'
             cleanWs()                     
@@ -160,13 +157,13 @@ pipeline {
                            'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
                            '***********************************************************************************************************************************************************\\n' +
                            '${FAILED_TESTS}',
-                     subject: 'Build #${BUILD_NUMBER} of daily builds ${baseBranch} branch was UNSTABLE',
+                     subject: 'Build #${BUILD_NUMBER} of daily builds ${baseBranch} branch with JDK 11 was UNSTABLE',
                      to: 'kie-jenkins-builds@redhat.com'
             cleanWs()         
         }
         fixed {
             emailext body: '',
-                 subject: 'Build #${BUILD_NUMBER} of daily builds ${baseBranch} branch is fixed and was SUCCESSFUL',
+                 subject: 'Build #${BUILD_NUMBER} of daily builds ${baseBranch} branch with JDK 11 is fixed and was SUCCESSFUL',
                  to: 'kie-jenkins-builds@redhat.com'
         }
         success {
@@ -176,7 +173,7 @@ pipeline {
 }
 '''
 
-pipelineJob("${folderPath}/daily-build-pipeline-${baseBranch}") {
+pipelineJob("${folderPath}/daily-build-jdk11-pipeline-${baseBranch}") {
 
     description('this is a pipeline job for the daily build of all reps')
 
@@ -295,7 +292,7 @@ mv jbpm-$kieVersion/* .
 rm -rf jbpm-$kieVersion
 '''
 
-matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestContainerMatrix") {
+matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-jbpmTestContainerMatrix") {
     description("Version to test. Will be supplied by the parent job. Also used to donwload proper sources. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
@@ -378,7 +375,7 @@ rm sources.tar.gz
 mv kie-wb-common-$kieVersion/* .
 rm -rf kie-wb-common-$kieVersion'''
 
-matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
+matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-kieWbTestsMatrix") {
     description("This job: <br> - Runs the KIE WB integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
@@ -483,7 +480,7 @@ rm sources.tar.gz
 mv droolsjbpm-integration-$kieVersion/* .
 rm -rf droolsjbpm-integration-$kieVersion'''
 
-matrixJob("${folderPath}/daily-build-${baseBranch}-kieServerMatrix") {
+matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-kieServerMatrix") {
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     // Label which specifies which nodes this job can run on.
@@ -562,7 +559,7 @@ def kieDockerCi='''
 sh scripts/docker-clean.sh $kieVersion
 sh scripts/update-versions.sh $kieVersion -s "$SETTINGS_XML"'''
 
-job("${dockerPath}/daily-build-${baseBranch}-docker-images") {
+job("${folderPath}/daily-build-jdk11-${baseBranch}-docker-images") {
     description("Builds CI Docker images for master branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
