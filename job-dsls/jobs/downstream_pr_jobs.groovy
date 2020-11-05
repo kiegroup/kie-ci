@@ -32,7 +32,6 @@ def final REPO_CONFIGS = [
                 executionNumber : 25
         ],
         "openshift-drools-hacep"    : [],
-        "droolsjbpm-tools"          : [], 
         "kie-wb-playground"         : [],
         "kie-uberfire-extensions"   : [],
         "kie-wb-common"             : [

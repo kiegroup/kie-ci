@@ -71,7 +71,6 @@ def final REPO_CONFIGS = [
                 executionNumber : 25
         ],
         "openshift-drools-hacep"    : [],
-        "droolsjbpm-tools"          : [],
         "kie-uberfire-extensions"   : [
                 label: "kie-rhel7 && kie-mem4g"
         ],
