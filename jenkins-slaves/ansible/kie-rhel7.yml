@@ -33,7 +33,7 @@
       - staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.lang.Object java.lang.String
     node_version: 12.16.2
     node_setup_url: https://rpm.nodesource.com/setup_12.x
-    buildchain_version: ^2.2.0
+    buildchain_version: ^2.2.1
 
   roles:
     - common
