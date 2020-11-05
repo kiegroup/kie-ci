@@ -361,14 +361,28 @@ pipeline {
             steps {
                 sh 'sh droolsjbpm-build-bootstrap/script/release/09_createjBPM_installers.sh'
             }
-        }        
-        stage('Push binaries to filemgmgt.jboss.org') {
-            steps {
-                sshagent(['jenkins-ci-filemgmt']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/10_uploadBinariesToFilemgmt.sh'
-                }    
+        }
+        stage('Drools binaries upload'){
+            steps{
+                withCredentials([sshUserPrivateKey(credentialsId: 'drools-filemgmt', keyFileVariable: 'DROOLS_FILEMGMT_KEY')]) {
+                        sh 'sh droolsjbpm-build-bootstrap/script/release/10a_drools_upload_filemgmt.sh $DROOLS_FILEMGMT_KEY'
+                }            
             }
-        }                                                                      
+        }        
+        stage('Jbpm binaries upload'){
+            steps{
+                withCredentials([sshUserPrivateKey(credentialsId: 'jbpm-filemgmt', keyFileVariable: 'JBPM_FILEMGMT_KEY')]) {
+                        sh 'sh droolsjbpm-build-bootstrap/script/release/10b_jbpm_upload_filemgmt.sh $JBPM_FILEMGMT_KEY'
+                }            
+            }
+        } 
+        stage('Optaplanner binaries upload'){
+            steps{
+                withCredentials([sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt', keyFileVariable: 'OPTAPLANNER_FILEMGMT_KEY')]) {
+                        sh 'sh droolsjbpm-build-bootstrap/script/release/10c_optaplanner_upload_filemgmt.sh $OPTAPLANNER_FILEMGMT_KEY'
+                }            
+            }
+        }                                                                              
     }
 }
 '''
