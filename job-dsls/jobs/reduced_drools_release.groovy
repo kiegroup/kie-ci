@@ -181,7 +181,13 @@ pipeline {
                     sh './droolsjbpm-build-bootstrap/script/release/06_uploadBinariesToNexus.sh $SETTINGS_XML_FILE\'
                 }    
             }
-        }                              
+        }
+        // the tags of the release will be created and pushed to github
+        stage('Push community tag') {
+            steps {
+                sh 'sh droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
+            }
+        }                                      
         stage ('Email send with BUILD result') {       
             steps {
                 emailext body: 'Build of drools ${kieVersion} was:  ' + "${currentBuild.currentResult}" +  '\\n' +
