@@ -45,7 +45,7 @@ pipeline {
         stage ('Clone others'){
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch'
+                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch'
                 }    
             }
         }
@@ -80,14 +80,14 @@ pipeline {
             }        
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/02_createReleaseBranches.sh $releaseBranch'
+                    sh './droolsjbpm-build-bootstrap/script/release/02_createReleaseBranches.sh $releaseBranch'
                 }    
             }
         } 
         // part of the Maven rep will be erased
         stage ('Remove M2') {
             steps {
-                sh "sh droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
+                sh "./droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
             }
         }
         // poms will be upgraded to new version ($kieVersion)                         
@@ -97,7 +97,7 @@ pipeline {
             }
             steps {
                 echo 'kieVersion: ' + "{$kieVersion}"
-                sh 'sh droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion'
+                sh './droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion'
             }
         }
         stage ('Add and commit version upgrades') {
@@ -107,7 +107,7 @@ pipeline {
             steps {
                 echo 'kieVersion: ' + "{$kieVersion}"
                 echo 'commitMsg: ' + "{$commitMsg}"                
-                sh 'sh droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$commitMsg" $kieVersion'
+                sh './droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$commitMsg" $kieVersion'
             }
         }
         //release branches are pushed to github
@@ -117,7 +117,7 @@ pipeline {
             }        
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/04_pushReleaseBranches.sh $releaseBranch'
+                    sh './droolsjbpm-build-bootstrap/script/release/04_pushReleaseBranches.sh $releaseBranch'
                 }    
             }
         }
@@ -128,8 +128,8 @@ pipeline {
             }         
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/git-all.sh fetch origin'
-                    sh 'sh droolsjbpm-build-bootstrap/script/git-all.sh checkout ' + "$releaseBranch"
+                    sh './droolsjbpm-build-bootstrap/script/git-all.sh fetch origin'
+                    sh './droolsjbpm-build-bootstrap/script/git-all.sh checkout ' + "$releaseBranch"
                 }            
             }
         }
@@ -162,7 +162,7 @@ pipeline {
             }        
             steps {
                 script {
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/prepareUploadDir.sh'
+                    sh './droolsjbpm-build-bootstrap/script/release/prepareUploadDir.sh'
                     sh 'cd "${kieVersion}"_uploadBinaries \\n' +
                        'totSize=$(du -sh) \\n' +
                        'echo "Total size of directory: " $totSize >> dirSize.txt \\n' +
@@ -298,7 +298,7 @@ pipeline {
         // the tags of the release will be created and pushed to github
         stage('Push community tag') {
             steps {
-                sh 'sh droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
+                sh './droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
             }
         }
         stage ('Send email to BSIG') {
@@ -359,27 +359,27 @@ pipeline {
         }        
         stage('Create jbpm installers') {
             steps {
-                sh 'sh droolsjbpm-build-bootstrap/script/release/09_createjBPM_installers.sh'
+                sh './droolsjbpm-build-bootstrap/script/release/09_createjBPM_installers.sh'
             }
         }
         stage('Drools binaries upload'){
             steps{
                 withCredentials([sshUserPrivateKey(credentialsId: 'drools-filemgmt', keyFileVariable: 'DROOLS_FILEMGMT_KEY')]) {
-                        sh 'sh droolsjbpm-build-bootstrap/script/release/10a_drools_upload_filemgmt.sh $DROOLS_FILEMGMT_KEY'
+                        sh './droolsjbpm-build-bootstrap/script/release/10a_drools_upload_filemgmt.sh $DROOLS_FILEMGMT_KEY'
                 }            
             }
         }        
         stage('Jbpm binaries upload'){
             steps{
                 withCredentials([sshUserPrivateKey(credentialsId: 'jbpm-filemgmt', keyFileVariable: 'JBPM_FILEMGMT_KEY')]) {
-                        sh 'sh droolsjbpm-build-bootstrap/script/release/10b_jbpm_upload_filemgmt.sh $JBPM_FILEMGMT_KEY'
+                        sh './droolsjbpm-build-bootstrap/script/release/10b_jbpm_upload_filemgmt.sh $JBPM_FILEMGMT_KEY'
                 }            
             }
         } 
         stage('Optaplanner binaries upload'){
             steps{
                 withCredentials([sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt', keyFileVariable: 'OPTAPLANNER_FILEMGMT_KEY')]) {
-                        sh 'sh droolsjbpm-build-bootstrap/script/release/10c_optaplanner_upload_filemgmt.sh $OPTAPLANNER_FILEMGMT_KEY'
+                        sh './droolsjbpm-build-bootstrap/script/release/10c_optaplanner_upload_filemgmt.sh $OPTAPLANNER_FILEMGMT_KEY'
                 }            
             }
         }                                                                              

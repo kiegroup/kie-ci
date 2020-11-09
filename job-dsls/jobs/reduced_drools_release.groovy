@@ -56,7 +56,7 @@ pipeline {
         stage ('Clone others'){
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch\'
+                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch\'
                 }    
             }
         }
@@ -91,20 +91,20 @@ pipeline {
             }
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/02_createReleaseBranches.sh $releaseBranch'
+                    sh './droolsjbpm-build-bootstrap/script/release/02_createReleaseBranches.sh $releaseBranch'
                 }
             }
         }
         // part of the Maven rep will be erased
         stage ('Remove M2') {
             steps {
-                sh "sh droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
+                sh "./droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
             }
         }        
         stage ('Configure github user'){
             steps {
-                sh ' droolsjbpm-build-bootstrap/script/git-all.sh config --global user.email "kie-ci@gmail.com"\'
-                sh ' droolsjbpm-build-bootstrap/script/git-all.sh config --global user.name "kie-ci"\'
+                sh './droolsjbpm-build-bootstrap/script/git-all.sh config --global user.email "kie-ci@gmail.com"\'
+                sh './droolsjbpm-build-bootstrap/script/git-all.sh config --global user.name "kie-ci"\'
             }  
         }          
         // poms will be upgraded to new version ($kieVersion)
@@ -114,7 +114,7 @@ pipeline {
             }
             steps {
                 echo 'kieVersion: ' + "{$kieVersion}"
-                sh 'sh droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion'
+                sh './droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion'
             }
         }
         stage ('Add and commit version upgrades') {
@@ -124,7 +124,7 @@ pipeline {
             steps {
                 echo 'kieVersion: ' + "{$kieVersion}"
                 echo 'commitMsg: ' + "{$commitMsg}"
-                sh 'sh droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$commitMsg" $kieVersion'
+                sh './droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$commitMsg" $kieVersion'
             }
         }
         //release branches are pushed to github
@@ -134,7 +134,7 @@ pipeline {
             }
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/04_pushReleaseBranches.sh $releaseBranch\'
+                    sh './droolsjbpm-build-bootstrap/script/release/04_pushReleaseBranches.sh $releaseBranch\'
                 }
             }
         }
@@ -145,8 +145,8 @@ pipeline {
             }
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/git-all.sh fetch origin\'
-                    sh 'sh droolsjbpm-build-bootstrap/script/git-all.sh checkout ' + "$releaseBranch"
+                    sh './droolsjbpm-build-bootstrap/script/git-all.sh fetch origin\'
+                    sh './droolsjbpm-build-bootstrap/script/git-all.sh checkout ' + "$releaseBranch"
                 }
             }
         }
@@ -185,7 +185,7 @@ pipeline {
         // the tags of the release will be created and pushed to github
         stage('Push community tag') {
             steps {
-                sh 'sh droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
+                sh './droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
             }
         }                                      
         stage ('Email send with BUILD result') {       

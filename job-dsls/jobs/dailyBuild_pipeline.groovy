@@ -74,19 +74,19 @@ pipeline {
         stage('Clone all other reps') {
             steps {        
                 sshagent(['kie-ci-user-key']) {        
-                    sh "sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch"
+                    sh "./droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch"
                 }
             }   
         }
         stage ('Remove M2') {
             steps {
-                sh "sh droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
+                sh "./droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
             }
         }         
         stage('Update versions') {
             steps {
                 sh "echo 'kieVersion: $kieVersion'"
-                sh "sh droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion"
+                sh "./droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion"
             }
         }
         stage('Create clean up script') {
@@ -102,7 +102,7 @@ pipeline {
         stage('Deploy repositories locally'){
             steps {
                 configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
-                    sh "sh droolsjbpm-build-bootstrap/script/release/05c_dailyBuildDeployLocally.sh $SETTINGS_XML_FILE"
+                    sh "./droolsjbpm-build-bootstrap/script/release/05c_dailyBuildDeployLocally.sh $SETTINGS_XML_FILE"
                 }
             }
         }          
