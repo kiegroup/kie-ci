@@ -6,7 +6,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
-def releaseBranch="r7.45.0.t20201015"
+def releaseBranch="r7.47.0.Beta1"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def commitMsg="Upgraded version to "
@@ -204,12 +204,16 @@ pipeline {
 
 pipelineJob("${folderPath}/drools-pipeline-${baseBranch}") {
 
-    description('This job is a pipeline for a drools release (reduced repositories)<br>The reps in repository-list will be from lienzo-core until droolsjbpm-integration')
+    description('This job is a pipeline for a drools release.<br>The reps in repository-list will be:<br><br>\n' +
+            '<li>droolsjbpm-build-bootstrap</li>\n' +
+            '<li>kie-soup</li>\n' +
+            '<li>droolsjbpm-knowledge</li>\n' +
+            '<li>drools</li>')
 
     parameters{
-        stringParam("kieVersion", "${kieVersion}", "please edit the version for the current release, format should be: i.e. 7.45.0.t20201014 ")
+        stringParam("kieVersion", "${kieVersion}", "please edit the version for the current release, format should be: i.e. 7.47.0.Beta1 ")
         stringParam("baseBranch", "${baseBranch}", "please edit the name of the branch ")
-        stringParam("releaseBranch", "${releaseBranch}", "please edit name of the current release branch, format should be: i.e. r7.45.0.t20201014 - branch should start with <b>r</b>")
+        stringParam("releaseBranch", "${releaseBranch}", "please edit name of the current release branch, format should be: i.e. r7.45.0.Beta1 - release branch should start with <b>r</b>")
         stringParam("organization", "${organization}", "please edit the name of organization ")
         wHideParameterDefinition {
             name('commitMsg')
