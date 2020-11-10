@@ -44,7 +44,7 @@ pipeline {
         stage ('Clone others'){
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh 'sh droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch\'
+                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch\'
                 }    
             }
         } 
@@ -56,26 +56,26 @@ pipeline {
         }
         stage ('Remove M2') {
             steps {
-                sh "sh droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
+                sh "./droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
             }
         }                   
         stage('Update versions') {
             steps {
                 echo 'kieVersion: ' + "$kieVersion"
-                sh 'sh droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion'
+                sh './droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion'
             }
         }
         stage ('Add and commit version upgrades') {
             steps {
                 echo 'kieVersion: ' + "$kieVersion"
                 echo 'commitMsg: ' + "$commitMsg"                
-                sh 'sh droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$commitMsg" $kieVersion'
+                sh './droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$commitMsg" $kieVersion'
             }
         }
         stage('Clean install repositories '){
             steps {
                 configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
-                    sh "sh droolsjbpm-build-bootstrap/script/release/05b_prodInstall.sh $SETTINGS_XML_FILE"
+                    sh "./droolsjbpm-build-bootstrap/script/release/05b_prodInstall.sh $SETTINGS_XML_FILE"
                 }
             }
         }
@@ -109,7 +109,7 @@ pipeline {
         }   
         stage ('Add remote pointing to Gerrit') {
             steps {
-               sh "sh droolsjbpm-build-bootstrap/script/release/07_addRemoteToGerrit.sh"
+               sh "./droolsjbpm-build-bootstrap/script/release/07_addRemoteToGerrit.sh"
             }
         }  
         stage ('Create & push tags to Gerrit') {
@@ -127,7 +127,7 @@ pipeline {
                     dir('kie-release-reports') {
                         sh 'git branch \\n' +
                            'cp ../log.txt script/ \\n' +
-                           'sh script/infoRelease.sh' + ' ' +  "${baseBranch}" + ' ' + "${tagName}" + ' ' + "${TPB}" + ' ' + "${cutOffDate}" + '\\n' +
+                           './script/infoRelease.sh' + ' ' +  "${baseBranch}" + ' ' + "${tagName}" + ' ' + "${TPB}" + ' ' + "${cutOffDate}" + '\\n' +
                            'git status \\n' +
                            'git add . \\n' +
                            'git commit -m "added report for "' + "${TPB}" + '\\n' +
