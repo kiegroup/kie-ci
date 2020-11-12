@@ -1,0 +1,4 @@
+{
+  "registry-mirrors": ["http://ba-docker-registry.usersys.redhat.com:5000"],
+  "insecure-registries": ["0.0.0.0/0", "ba-docker-registry.usersys.redhat.com:5000"]
+}

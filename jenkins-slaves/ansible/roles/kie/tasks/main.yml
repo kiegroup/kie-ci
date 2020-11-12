@@ -3,7 +3,22 @@
 
 - name: Install packages
   yum:
-    pkg: ['firefox', 'tigervnc', 'tigervnc-server', 'docker']
+    pkg: ['firefox', 'tigervnc', 'tigervnc-server', 'yum-utils', 'device-mapper-persistent-data', 'lvm2']
+    state: latest
+
+### Recent Docker ###
+
+- name: Copy recent Docker repo config
+  copy:
+    src: data/config/docker/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install recent Docker
+  yum:
+    pkg: ['docker-ce', 'docker-ce-cli', 'containerd.io']
     state: latest
 
 ### Bash ###
@@ -17,10 +32,25 @@
 
 ### Docker ###
 
-- name: Copy Docker config
+- name: Copy legacy Docker config
   copy:
     src: data/config/docker/docker
     dest: /etc/sysconfig/docker
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Create Docker daemon config directory
+  file:
+    path: /etc/docker
+    state: directory
+    owner: root
+    group: root
+
+- name: Copy Docker daemon config
+  copy:
+    src: data/config/docker/daemon.json
+    dest: /etc/docker/daemon.json
     owner: root
     group: root
     mode: 0644
@@ -35,12 +65,12 @@
   file:
     path: /var/run/docker.sock
     owner: root
-    group: dockerroot
+    group: docker
 
-- name: Add user jenkins into group dockerroot
+- name: Add user jenkins into group docker
   user:
     name: jenkins
-    groups: dockerroot
+    groups: docker
 
 ### VNC ###
 
