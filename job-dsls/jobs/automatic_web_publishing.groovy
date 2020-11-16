@@ -6,18 +6,25 @@
 folder("webs")
 def folderPath="webs"
 
-def final DEFAULTS = [repository : "drools"]
+def final DEFAULTS = [
+        repository : "drools",
+        mailRecip : "mbiarnes@redhat.com"
+]
 
 def final REPO_CONFIGS = [
         "drools"    : [],
         "jbpm"      : [repository : "jbpm"],
-        "optaplanner" : [repository : "optaplanner"]
+        "optaplanner" : [
+                repository : "optaplanner",
+                mailRecip  : DEFAULTS["mailRecip"] + ",gdsmet@redhat.com"
+        ]
 ]
 
 for (reps in REPO_CONFIGS) {
     Closure<Object> get = { String key -> reps.value[key] ?: DEFAULTS[key] }
 
     String repo = reps.key
+    String mailRecip = get("mailRecip")
 
     def awp = """pipeline {
         agent {
@@ -35,7 +42,7 @@ for (reps in REPO_CONFIGS) {
             }
             stage ('checkout website') {
                 steps {
-                    checkout([\$class: 'GitSCM', branches: [[name: 'master']], browser: [\$class: 'GithubWeb', repoUrl: 'https://github.com/kiegroup/${repo}-website'], doGenerateSubmoduleConfigurations: false, extensions: [[\$class: 'RelativeTargetDirectory', relativeTargetDir: '${repo}-website']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/kiegroup/${repo}-website']]])
+                    checkout([\$class: 'GitSCM', branches: [[name: 'master']], browser: [\$class: 'GithubWeb', repoUrl: 'https://github.com/kiegroup/${repo}-website'], doGenerateSubmoduleConfigurations: false, extensions: [[\$class: 'RelativeTargetDirectory', relativeTargetDir: '${repo}-website']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/kiegroup/${repo}-website']]])
                     dir("\${WORKSPACE}" + '/${repo}-website') {
                         sh '''pwd  
                            ls -al
@@ -88,13 +95,25 @@ for (reps in REPO_CONFIGS) {
             }
         }
         post {
-            always {
-                cleanWs()             
+            failure{
+                emailext body: 'Build log: \${BUILD_URL}consoleText\\n' +
+                '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download and decompress attached file.)',
+                subject: 'Build #\${BUILD_NUMBER} of ${repo}-web FAILED',
+                to: '${mailRecip}'
+                cleanWs()          
             }
-        } 
+            fixed {
+                emailext body: '',
+                subject: 'Build #\${BUILD_NUMBER} of ${repo}-web is fixed and was SUCCESSFUL',
+                to: '${mailRecip}'
+                cleanWs()     
+            }
+            success {
+            cleanWs()
+            }                    
+        }
     }
 """
-
 
     pipelineJob("${folderPath}/${repo}-automatic-web-publishing") {
 
