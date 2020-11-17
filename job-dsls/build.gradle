@@ -13,11 +13,9 @@ sourceSets {
 
 repositories {
     mavenCentral()
+    jcenter()
     maven {
         url 'https://repo.jenkins-ci.org/releases/'
-    }
-    maven {
-        url 'https://repo.spring.io/plugins-release/'
     }
     // for internal redhat-ci-plugin
     maven {
