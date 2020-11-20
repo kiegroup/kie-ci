@@ -13,9 +13,8 @@ sourceSets {
 
 repositories {
     mavenCentral()
-    jcenter()
     maven {
-        url 'https://repo.jenkins-ci.org/releases/'
+        url 'https://repo.jenkins-ci.org/public/'
     }
     // for internal redhat-ci-plugin
     maven {
