@@ -194,7 +194,10 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        if (repo == "optaplanner") {
+        if (repo == "optaplanner" ||
+            repo == "optaweb-employee-rostering" ||
+            repo == "optaweb-vehicle-routing" ||
+            repo == "optaplanner-quickstarts") {
             jdk("kie-jdk11")
         } else {
             jdk("kie-jdk1.8")}
