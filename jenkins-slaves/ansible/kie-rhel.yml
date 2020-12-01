@@ -10,10 +10,9 @@
       "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-8u202-linux-x64.tar.gz",
       "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-9.0.4-linux-x64.tar.gz",
       "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-10.0.2-linux-x64.tar.gz",
-      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-11.0.2-linux-x64.tar.gz"
     ]
-    jdk_short_versions: [8u202, 9.0.4, 10.0.2, 11.0.2]
-    jdk_long_versions: [jdk1.8.0_202, jdk-9.0.4, jdk-10.0.2, jdk-11.0.2]
+    jdk_short_versions: [8u202, 9.0.4, 10.0.2, 11.0.9]
+    jdk_long_versions: [jdk1.8.0_202, jdk-9.0.4, jdk-10.0.2, jdk-11.0.9]
     jdk_symlink_names: [jdk1.8, jdk9, jdk10, jdk11]
     jdk_cacerts_subdirs: ["jre/lib/security/cacerts", "lib/security/cacerts", "lib/security/cacerts", "lib/security/cacerts"]
     firefox_short_versions: [45esr, 52esr, 60esr]
