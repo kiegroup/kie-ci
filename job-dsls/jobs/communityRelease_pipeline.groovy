@@ -42,13 +42,6 @@ pipeline {
                 }
             }    
         }    
-        stage ('Clone others'){
-            steps {
-                sshagent(['kie-ci-user-key']) {
-                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch'
-                }    
-            }
-        }
         // checks if release branch already exists
         stage ('Check if branch exists') {
             steps{
@@ -71,6 +64,31 @@ pipeline {
                         echo "branch does not exist"
                     } 
                 }
+            }
+        } 
+        /* when release branches don't exist clone master branch */
+        stage ('Clone others when release branches do not exist'){
+            when{
+                expression { branchExists == '0'}
+            }            
+            steps {
+                sshagent(['kie-ci-user-key']) {
+                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch'
+                }    
+            }
+        }
+        /* when release branches exist clone releaseBranches */
+        stage ('Clone others when release branches exist'){
+            when{
+                expression { branchExists == '1'}
+            }
+            steps {
+                sshagent(['kie-ci-user-key']) {
+                    dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
+                        sh 'git checkout $releaseBranch'
+                    }    
+                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $releaseBranch'
+                }    
             }
         }
         // if release branches doesn't exist they will be created
@@ -121,18 +139,6 @@ pipeline {
                 }    
             }
         }
-        // if the release branches already exist they will be fetched from github
-        stage('Pull from existing release Branches') {
-            when{
-                expression { branchExists == '1'}
-            }         
-            steps {
-                sshagent(['kie-ci-user-key']) {
-                    sh './droolsjbpm-build-bootstrap/script/git-all.sh fetch origin'
-                    sh './droolsjbpm-build-bootstrap/script/git-all.sh checkout ' + "$releaseBranch"
-                }            
-            }
-        }
         // mvn clean deploy of each repository to a locally directory that will be uploaded later on - this saves time        
         stage('Build & deploy repositories locally'){
             when{
@@ -155,7 +161,7 @@ pipeline {
                     '${BUILD_LOG, maxLines=750}', subject: 'community-release for ${kieVersion} failed', to: 'kie-jenkins-builds@redhat.com' 
             }
         }        
-        // create a directory where the binaries to upload to filemgmt.jboss.org are stored 
+        // create a directory on filemgmt.jboss.org where the binaries have to be stored  
         stage('Create upload dir') {
             when{
                 expression { repBuild == 'YES'}
