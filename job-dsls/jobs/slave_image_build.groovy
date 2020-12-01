@@ -2,7 +2,7 @@ import org.kie.jenkins.jobdsl.Constants
 import org.kie.jenkins.jobdsl.templates.BasicJob
 
 // Job Description
-String jobDescription = "Job responsible for building slave image"
+String jobDescription = "Job responsible for building Jenkins agent image"
 
 
 String command = """#!/bin/bash +x
@@ -24,11 +24,17 @@ export ANSIBLE_SCP_IF_SSH=y
  -var "openstack_password=\$PSI_PASSWORD"\\
  -var "image_name=kie-rhel7-with-osbs-\$BUILD_NUMBER"\\
  -var "ssh_private_key_file=\$PSI_PRIVATE_KEY"\\
- packer-kie-rhel7.json
+ -on-error=cleanup \\
+ -var-file \$PACKER_VAR_FILE \\
+ packer-kie-rhel-jenkins-agent.json
 """
 
 // Creates or updates a free style job.
 def jobDefinition = job("slave-image-build") {
+
+    parameters {
+        choiceParam('PACKER_VAR_FILE', ['packer-kie-rhel7-vars.json', 'packer-kie-rhel8-vars.json'], 'The file defining variables specific for different RHEL versions.')
+    }
 
     // Allows a job to check out sources from an SCM provider.
     multiscm {
