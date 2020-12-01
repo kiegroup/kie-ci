@@ -6,21 +6,6 @@
     pkg: ['firefox', 'tigervnc', 'tigervnc-server', 'yum-utils', 'device-mapper-persistent-data', 'lvm2']
     state: latest
 
-### Recent Docker ###
-
-- name: Copy recent Docker repo config
-  copy:
-    src: data/config/docker/docker-ce.repo
-    dest: /etc/yum.repos.d/docker-ce.repo
-    owner: root
-    group: root
-    mode: 0644
-
-- name: Install recent Docker
-  yum:
-    pkg: ['docker-ce', 'docker-ce-cli', 'containerd.io']
-    state: latest
-
 ### Bash ###
 
 - name: Copy bashrc file
@@ -30,7 +15,22 @@
     owner: jenkins
     group: jenkins
 
-### Docker ###
+### Recent Docker - RHEL 7 only! ###
+
+- name: Copy recent Docker repo config
+  copy:
+    src: data/config/docker/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    owner: root
+    group: root
+    mode: 0644
+  when: rhel_version | int < 8
+
+- name: Install recent Docker
+  yum:
+    pkg: ['docker-ce', 'docker-ce-cli', 'containerd.io']
+    state: latest
+  when: rhel_version | int < 8
 
 - name: Copy legacy Docker config
   copy:
@@ -39,6 +39,7 @@
     owner: root
     group: root
     mode: 0644
+  when: rhel_version | int < 8
 
 - name: Create Docker daemon config directory
   file:
@@ -46,6 +47,7 @@
     state: directory
     owner: root
     group: root
+  when: rhel_version | int < 8
 
 - name: Copy Docker daemon config
   copy:
@@ -54,23 +56,27 @@
     owner: root
     group: root
     mode: 0644
+  when: rhel_version | int < 8
 
 - name: Start and enabled Docker Service
   service:
     name: docker
     state: started
     enabled: true
+  when: rhel_version | int < 8
 
 - name: Change group of /var/run/docker.sock to enable easier access to Docker daemon for user jenkins
   file:
     path: /var/run/docker.sock
     owner: root
     group: docker
+  when: rhel_version | int < 8
 
 - name: Add user jenkins into group docker
   user:
     name: jenkins
     groups: docker
+  when: rhel_version | int < 8
 
 ### VNC ###
 
