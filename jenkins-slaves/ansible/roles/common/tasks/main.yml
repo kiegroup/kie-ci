@@ -110,16 +110,17 @@
     group: jenkins
 
 ### JDK ###
-# - name: Create JDK symlinks
-#   file:
-#     src: /opt/tools/{{ item.0 }}
-#     dest: /opt/tools/{{ item.1 }}
-#     state: link
-#     follow: no
-#     mode: 0644
-#   with_together:
-#   - "{{ jdk_long_versions }}"
-#   - "{{ jdk_symlink_names }}"
+
+- name: Create JDK symlinks
+  file:
+    src: /usr/lib/jvm/{{ item.0 }}
+    dest: /opt/tools/{{ item.1 }}
+    state: link
+    follow: no
+    mode: 0644
+  with_together:
+  - "{{ jdk_long_versions }}"
+  - "{{ jdk_symlink_names }}"
 
 ### Maven ###
 
