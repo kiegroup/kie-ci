@@ -6,15 +6,8 @@
   vars :
     maven_versions: [3.3.9,3.5.0,3.5.2,3.5.4,3.6.0,3.6.2,3.6.3]
     maven_versions_needing_extension: [3.3.9,3.5.0,3.5.2,3.5.4,3.6.0]
-    jdk_download_urls: [
-      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-8u202-linux-x64.tar.gz",
-      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-9.0.4-linux-x64.tar.gz",
-      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-10.0.2-linux-x64.tar.gz",
-      "https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/jdk-11.0.2-linux-x64.tar.gz"
-    ]
-    jdk_short_versions: [8u202, 9.0.4, 10.0.2, 11.0.2]
-    jdk_long_versions: [jdk1.8.0_202, jdk-9.0.4, jdk-10.0.2, jdk-11.0.2]
-    jdk_symlink_names: [jdk1.8, jdk9, jdk10, jdk11]
+    jdk_long_versions: [java-1.8.0-openjdk, java-11-openjdk]
+    jdk_symlink_names: [jdk1.8, jdk11]
     jdk_cacerts_subdirs: ["jre/lib/security/cacerts", "lib/security/cacerts", "lib/security/cacerts", "lib/security/cacerts"]
     firefox_short_versions: [45esr, 52esr, 60esr]
     firefox_long_versions: [45.9.0esr, 52.9.0esr, 60.2.0esr]
@@ -34,7 +27,8 @@
     node_version: 12.16.2
     node_setup_url: https://rpm.nodesource.com/setup_12.x
     buildchain_version: ^2.2.12
-    rhel_version: 7
+    # rhel_version=7|8 variable is set by Packer when calling Ansible, you have to set it when running the playbook directly
+    # e.g. by using --extra-vars rhel_version=7
 
   roles:
     - common

@@ -1,16 +1,26 @@
 ---
 ### Install RPM packages ###
 
-- name: Install RCMTOOLS repository
+- name: Install RCMTOOLS repository - RHEL 7
   yum:
     name: http://download.devel.redhat.com/rel-eng/RCMTOOLS/latest-redhat-rcminternal-release-server-rhel-7.noarch.rpm
     state: present
+  when: rhel_version | int < 8
+
+- name: Copy RCMTOOLS repository config - RHEL 8
+  copy:
+    src: data/config/rcm-tools/rcm-tools-rhel-8-baseos.repo
+    dest: /etc/yum.repos.d/rcm-tools-rhel-8-baseos.repo
+    owner: root
+    group: root
+    mode: 0644
+  when: rhel_version | int >= 8
 
 - name: Import RCMTOOLS repository key
   rpm_key:
     state: present
     key: /etc/pki/rpm-gpg/RPM-GPG-KEY-rcminternal
-
+  when: rhel_version | int < 8
 
 - name: Install packages
   yum:
@@ -36,8 +46,18 @@
 
 ### Download and install PiG/PFG ###
 
-- name: Install PNC CLI
-  command: "pip install pnc_cli"
+- name: Install PNC CLI - RHEL 7
+  pip:
+    name:
+      - pnc_cli
+  when: rhel_version | int < 8
+
+- name: Install PNC CLI via pip - RHEL 8
+  pip:
+    name:
+      - pnc_cli
+    executable: /bin/pip3
+  when: rhel_version | int >= 8
 
 - name: Create tools directory for PiG
   file:
