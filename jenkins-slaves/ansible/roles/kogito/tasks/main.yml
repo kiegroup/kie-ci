@@ -9,6 +9,11 @@
     pkg: nodejs-{{node_version}}
     state: present
 
+- name: Install Required packages by kogito-tooling
+  yum:
+    pkg: ['gcc-c++']
+    state: latest
+
 - name: Print Node version
   shell: node -v
   register: node
