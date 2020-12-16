@@ -1,7 +1,6 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def javadk="kie-jdk11"
-def mvnVersion="kie-maven-3.6.3"
 def javaToolEnv="KIE_JDK11"
 def mvnToolEnv="KIE_MAVEN_3_6_3"
 def mvnHome="${mvnToolEnv}_HOME"
@@ -10,6 +9,8 @@ def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def deployDir="deploy-dir"
 def m2Dir = Constants.LOCAL_MVN_REP
+def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def AGENT_LABEL="kie-linux&&kie-rhel7&&kie-mem24g"
 
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
@@ -21,11 +22,11 @@ def folderPath="daily-build-jdk11"
 def daily_build='''
 pipeline {
     agent {
-        label 'kie-linux&&kie-rhel7&&kie-mem24g'
+        label "$AGENT_LABEL"
     }
     tools {
-        maven 'kie-maven-3.6.3'
-        jdk 'kie-jdk11'
+        maven "$mvnVersion"
+        jdk "$javadk"
     }
     stages {
         stage('CleanWorkspace') {
@@ -191,6 +192,21 @@ pipelineJob("${folderPath}/daily-build-jdk11-pipeline-${baseBranch}") {
             name('m2Dir')
             defaultValue("${m2Dir}")
             description('Path to .m2/repository')
+        }
+        wHideParameterDefinition {
+            name('AGENT_LABEL')
+            defaultValue("${AGENT_LABEL}")
+            description('name of machine where to run this job')
+        }
+        wHideParameterDefinition {
+            name('mvnVersion')
+            defaultValue("${mvnVersion}")
+            description('version of maven')
+        }
+        wHideParameterDefinition {
+            name('javadk')
+            defaultValue("${javadk}")
+            description('version of jdk')
         }
     }
 
