@@ -2,9 +2,15 @@
  * job that publishes automatically the ${repo}-website
  */
 
+import org.kie.jenkins.jobdsl.Constants
+
 // creation of folder
 folder("webs")
 def folderPath="webs"
+
+def javadk=Constants.JDK_VERSION
+def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def AGENT_LABEL="kie-rhel7 && kie-mem4g"
 
 def final DEFAULTS = [
         repository : "drools",
@@ -28,11 +34,11 @@ for (reps in REPO_CONFIGS) {
 
     def awp = """pipeline {
         agent {
-            label 'kie-rhel7 && kie-mem4g'
+            label "$AGENT_LABEL"
         }
         tools {
-            maven 'kie-maven-3.6.3'
-            jdk 'kie-jdk1.8'
+            maven "$mvnVersion"
+            jdk "$javadk"
         }
         stages {
             stage('CleanWorkspace') {
@@ -114,10 +120,27 @@ for (reps in REPO_CONFIGS) {
         }
     }
 """
-
     pipelineJob("${folderPath}/${repo}-automatic-web-publishing") {
 
         description("this is a pipeline job for publishing automatically ${repo}-website")
+
+        parameters {
+            wHideParameterDefinition {
+                name('AGENT_LABEL')
+                defaultValue("${AGENT_LABEL}")
+                description('name of machine where to run this job')
+            }
+            wHideParameterDefinition {
+                name('mvnVersion')
+                defaultValue("${mvnVersion}")
+                description('version of maven')
+            }
+            wHideParameterDefinition {
+                name('javadk')
+                defaultValue("${javadk}")
+                description('version of jdk')
+            }
+        }
 
         logRotator {
             numToKeep(3)

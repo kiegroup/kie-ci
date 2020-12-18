@@ -8,8 +8,10 @@ def m2Dir = Constants.LOCAL_MVN_REP
 def MAVEN_OPTS="-Xms1g -Xmx3g"
 def commitMsg="Upgraded version to "
 def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-3.6.3"
 def binariesNR=1
+def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def AGENT_LABEL="kie-releases"
+
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
 // creation of folder
@@ -20,11 +22,11 @@ def folderPath="community-release"
 def comRelease='''
 pipeline {
     agent {
-        label 'kie-releases'
+        label "$AGENT_LABEL"
     }
     tools {
-        maven 'kie-maven-3.6.3'
-        jdk 'kie-jdk1.8'
+        maven "$mvnVersion"
+        jdk "$javadk"
     }
     stages {
         stage('CleanWorkspace') {
@@ -424,6 +426,21 @@ pipelineJob("${folderPath}/community-release-pipeline-${baseBranch}") {
             name('binariesNR')
             defaultValue("${binariesNR}")
             description('')
+        }
+        wHideParameterDefinition {
+            name('AGENT_LABEL')
+            defaultValue("${AGENT_LABEL}")
+            description('name of machine where to run this job')
+        }
+        wHideParameterDefinition {
+            name('mvnVersion')
+            defaultValue("${mvnVersion}")
+            description('version of maven')
+        }
+        wHideParameterDefinition {
+            name('javadk')
+            defaultValue("${javadk}")
+            description('version of jdk')
         }
     }
 

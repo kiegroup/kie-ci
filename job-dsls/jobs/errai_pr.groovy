@@ -17,6 +17,7 @@ def repoBranch = Constants.BRANCH
 def ghOrgUnit = "errai"
 def ghAuthTokenId = "kie-ci-token"
 def mvnGoals = "-B -e -fae -Dfull -Dmaven.test.failure.ignore=true -Pintegration-test clean install -Derrai.codegen.details=true -Dapt-generators"
+def javadk=Constants.JDK_VERSION
 def labelName = "kie-rhel7 && kie-mem16g"
 
 // Creation of folders where jobs are stored
@@ -65,7 +66,7 @@ job(jobName) {
         }
     }
 
-    jdk("kie-jdk1.8")
+    jdk(javadk)
 
     label(labelName)
 

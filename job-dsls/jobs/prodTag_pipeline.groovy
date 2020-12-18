@@ -10,6 +10,9 @@ def reportBranch=Constants.REPORT_BRANCH
 def MAVEN_OPTS="-Xms1g -Xmx3g"
 def cutOffDate = new Date().format('yyyy-MM-dd')
 def commitMsg="Upgraded version to "
+def javadk=Constants.JDK_VERSION
+def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def AGENT_LABEL="kie-rhel7 && kie-mem24g"
 
 // creation of folder
 folder("prod-tag")
@@ -19,11 +22,11 @@ def folderPath="prod-tag"
 def productTag='''
 pipeline {
     agent {
-        label 'kie-linux&&kie-rhel7&&kie-mem24g'
+        label "$AGENT_LABEL"
     }
     tools {
-        maven 'kie-maven-3.6.3'
-        jdk 'kie-jdk1.8'
+        maven "$mvnVersion"
+        jdk "$javadk"
     }
     stages {
         stage('CleanWorkspace') {
@@ -189,6 +192,21 @@ pipelineJob("${folderPath}/prod-tag-pipeline-${baseBranch}") {
             name('m2Dir')
             defaultValue("${m2Dir}")
             description('Path to .m2/repository')
+        }
+        wHideParameterDefinition {
+            name('AGENT_LABEL')
+            defaultValue("${AGENT_LABEL}")
+            description('name of machine where to run this job')
+        }
+        wHideParameterDefinition {
+            name('mvnVersion')
+            defaultValue("${mvnVersion}")
+            description('version of maven')
+        }
+        wHideParameterDefinition {
+            name('javadk')
+            defaultValue("${javadk}")
+            description('version of jdk')
         }
     }
 

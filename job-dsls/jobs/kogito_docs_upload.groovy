@@ -9,7 +9,9 @@ def currentKogitoDocsVersion = "0.17.0"
 def currentKogitoDocsTagName = "0.17.0-kogito"
 def nextKogitoDocsSnapshot = "0.18.0-SNAPSHOT"
 def sshKogitoDocsPath = "kogito@filemgmt.jboss.org:/docs_htdocs/kogito/release"
-
+def javadk=Constants.JDK_VERSION
+def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def AGENT_LABEL="kie-rhel7 && kie-mem4g"
 
 // creation of folder
 folder("KIE")
@@ -21,11 +23,11 @@ def folderPath="KIE/kogito-docs"
 def uploadDocs='''
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem4g'      
+        label "$AGENT_LABEL"      
     }
     tools {
-        maven 'kie-maven-3.6.3'
-        jdk 'kie-jdk1.8'
+        maven "$mvnVersion"
+        jdk "$javadk"
     }
     stages {
         stage('CleanWorkspace') {
@@ -186,6 +188,21 @@ pipelineJob("${folderPath}/uploadKogitoDocs") {
             name('sshKogitoDocsPath')
             defaultValue("${sshKogitoDocsPath}")
             description('Please edit the path to filemgm.jboss.org')
+        }
+        wHideParameterDefinition {
+            name('AGENT_LABEL')
+            defaultValue("${AGENT_LABEL}")
+            description('name of machine where to run this job')
+        }
+        wHideParameterDefinition {
+            name('mvnVersion')
+            defaultValue("${mvnVersion}")
+            description('version of maven')
+        }
+        wHideParameterDefinition {
+            name('javadk')
+            defaultValue("${javadk}")
+            description('version of jdk')
         }
     }
 

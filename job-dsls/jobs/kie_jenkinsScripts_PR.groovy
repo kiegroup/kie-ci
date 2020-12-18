@@ -9,6 +9,7 @@ def javadk=Constants.JDK_VERSION
 def repo="kie-jenkins-scripts"
 def ghAuthTokenId="kie-ci-token"
 def folderPath=Constants.PULL_REQUEST_FOLDER + "/"
+def labelName="kie-rhel7 && kie-mem4g"
 
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -51,9 +52,9 @@ job(jobName) {
         numToKeep(5)
     }
 
-    label("kie-rhel7 && kie-mem4g")
+    label(labelName)
 
-    jdk("${javadk}")
+    jdk(javadk)
 
     parameters {
         stringParam("sha1")

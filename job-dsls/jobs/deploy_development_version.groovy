@@ -5,17 +5,19 @@ import org.kie.jenkins.jobdsl.Constants
 def nextDevVer="x.x.0-SNAPSHOT"
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
-
+def javadk=Constants.JDK_VERSION
+def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def AGENT_LABEL="kie-rhel7 && kie-mem24g"
 
 
 def bumpUp='''
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem24g'      
+        label "$AGENT_LABEL"
     }
     tools {
-        maven 'kie-maven-3.6.3'
-        jdk 'kie-jdk1.8'
+        maven "$mvnVersion"
+        jdk "$javadk"
     }
     stages {
         stage('CleanWorkspace') {
@@ -74,6 +76,21 @@ pipelineJob("deploy-development-version") {
         stringParam("nextDevVer", "${nextDevVer}", "Next development version (xxx-SNAPSHOT) kie will be upgraded to.")
         stringParam("baseBranch", "${baseBranch}", "kie branch. This will be usually set automatically by the parent pipeline job.")
         stringParam("organization", "${organization}", "Name of organization. This will be usually set automatically by the parent pipeline job.")
+        wHideParameterDefinition {
+            name('AGENT_LABEL')
+            defaultValue("${AGENT_LABEL}")
+            description('name of machine where to run this job')
+        }
+        wHideParameterDefinition {
+            name('mvnVersion')
+            defaultValue("${mvnVersion}")
+            description('version of maven')
+        }
+        wHideParameterDefinition {
+            name('javadk')
+            defaultValue("${javadk}")
+            description('version of jdk')
+        }
     }
 
     logRotator {

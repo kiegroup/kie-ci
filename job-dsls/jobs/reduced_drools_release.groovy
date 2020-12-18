@@ -10,6 +10,9 @@ def releaseBranch="r7.45.0.t20201015"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def commitMsg="Upgraded version to "
+def javadk=Constants.JDK_VERSION
+def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def AGENT_LABEL="kie-rhel7 && kie-mem24g"
 
 
 // creation of folder
@@ -20,11 +23,11 @@ def folderPath="reduced-drools-release"
 def redRelease='''
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem24g'
+        label "$AGENT_LABEL"
     }
     tools {
-        maven 'kie-maven-3.6.3'
-        jdk 'kie-jdk1.8'
+        maven "$mvnVersion"
+        jdk "javadk"
     }
     stages {
         stage('CleanWorkspace') {
@@ -226,6 +229,21 @@ pipelineJob("${folderPath}/drools-pipeline-${baseBranch}") {
             name('m2Dir')
             defaultValue("${m2Dir}")
             description('Path to .m2/repository')
+        }
+        wHideParameterDefinition {
+            name('AGENT_LABEL')
+            defaultValue("${AGENT_LABEL}")
+            description('name of machine where to run this job')
+        }
+        wHideParameterDefinition {
+            name('mvnVersion')
+            defaultValue("${mvnVersion}")
+            description('version of maven')
+        }
+        wHideParameterDefinition {
+            name('javadk')
+            defaultValue("${javadk}")
+            description('version of jdk')
         }
     }
 
