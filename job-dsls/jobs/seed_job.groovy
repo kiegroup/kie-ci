@@ -66,6 +66,7 @@ job("a-seed-job") {
                     "job-dsls/jobs/**/deploy_jobs_7_x.groovy\n" +
                     "job-dsls/jobs/**/kie_jenkinsScripts_PR.groovy\n" +
                     "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
+                    "job-dsls/jobs/**/pr_droolsjbpm_tools.groovy\n" +
                     "job-dsls/jobs/**/prodTag_pipeline.groovy\n" +
                     "job-dsls/jobs/**/seed_job.groovy\n" +
                     "job-dsls/jobs/**/sonarcloud_daily.groovy\n" +
@@ -75,7 +76,8 @@ job("a-seed-job") {
                     "job-dsls/jobs/**/srcclr_scan_pipeline.groovy\n" +
                     "job-dsls/jobs/**/reduced_drools_release.groovy \n" +
                     "job-dsls/jobs/**/prod_projects_downstream_production.groovy \n" +
-                    "job-dsls/jobs/**/srcclr_scan_job.groovy")
+                    "job-dsls/jobs/**/srcclr_scan_job.groovy\n" +
+                    "job-dsls/jobs/**/jenkins_shared_libs.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)

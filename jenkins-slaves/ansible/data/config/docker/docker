@@ -1,14 +1,14 @@
 # /etc/sysconfig/docker
 
 # Modify these options if you want to change the way the docker daemon runs
-OPTIONS='-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --insecure-registry=0.0.0.0/0 --group="dockerroot"'
+OPTIONS='-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --registry-mirror=http://ba-docker-registry.usersys.redhat.com:5000 --insecure-registry=0.0.0.0/0 --insecure-registry=ba-docker-registry.usersys.redhat.com --group="docker" --mtu=1200'
 DOCKER_CERT_PATH=/etc/docker
 
 # If you want to add your own registry to be used for docker search and docker
 # pull use the ADD_REGISTRY option to list a set of registries, each prepended
 # with --add-registry flag. The first registry added will be the first registry
 # searched.
-ADD_REGISTRY='--add-registry registry.access.redhat.com'
+# ADD_REGISTRY='--add-registry registry.access.redhat.com'
 
 # If you want to block registries from being used, uncomment the BLOCK_REGISTRY
 # option and give it a set of registries, each prepended with --block-registry

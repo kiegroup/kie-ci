@@ -2,12 +2,18 @@
  * pipeline that sends a UMB message to trigger all daily builds of different branches
  */
 
-def VERSION_ORG_KIE = "7.46.0-SNAPSHOT"
+import org.kie.jenkins.jobdsl.Constants
+
+def javadk=Constants.JDK_VERSION
+def AGENT_LABEL="kie-linux && kie-rhel7&&kie-mem8g"
 
 def sendUMB="""pipeline{
     agent {
-        label 'kie-linux && kie-rhel7&&kie-mem8g'
-    }    
+        label "$AGENT_LABEL"
+    } 
+    tools {
+        jdk "$javadk"        
+    }   
     stages {
         stage('trigger daily build pipeline') {
             steps {
@@ -38,6 +44,18 @@ pipelineJob("kieAll_meta_pipeline") {
 
     description("This is a pipeline job for sending an UMB trigger to run all daily build jobs")
 
+    parameters {
+        wHideParameterDefinition {
+            name('AGENT_LABEL')
+            defaultValue("${AGENT_LABEL}")
+            description('name of machine where to run this job')
+        }
+        wHideParameterDefinition {
+            name('javadk')
+            defaultValue("${javadk}")
+            description('version of jdk')
+        }
+    }
 
     logRotator {
         numToKeep(3)

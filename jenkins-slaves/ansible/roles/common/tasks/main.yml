@@ -1,36 +1,45 @@
 ---
 ### RPM repositories ###
 
-- name: Copy Pulp repos config
+- name: Copy Pulp repos config - RHEL {{ rhel_version }}
   copy:
-    src: data/config/pulp/pulp.repo
+    src: data/config/pulp/pulp-rhel{{ rhel_version }}.repo
     dest: /etc/yum.repos.d/pulp.repo
     owner: root
     group: root
     mode: 0644
 
-- name: Install EPEL7 repository
+- name: Install EPEL repository - RHEL {{ rhel_version }}
   yum:
-    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ rhel_version }}.noarch.rpm
     state: present
+    disable_gpg_check: true
 
 - name: Install packages
   yum:
     pkg: ['wget', 'mc', 'vim', 'unzip', 'iputils', 'bind-utils', 'findutils',
-          'htop', 'hub', 'screen', 'lsof', 'bash-completion', 'bzip2', 'rng-tools',
+          'htop', 'screen', 'lsof', 'bash-completion', 'bzip2', 'rng-tools',
           'ansible', 'zip', 'python2-pip', 'jq', 'libXScrnSaver', 'python3', 'python3-devel',
-          'python3-pip', 'glibc-devel', 'zlib-devel', 'podman', 'gcc', 'krb5-devel', 'libstdc++-static']
+          'python3-pip', 'glibc-devel', 'zlib-devel', 'podman', 'gcc', 'krb5-devel', 'libstdc++-static', 
+          'java-1.8.0-openjdk-devel', 'java-11-openjdk-devel']
     state: latest
+
+- name: Install packages - hub on RHEL 7
+  yum:
+    pkg: ['hub']
+    state: latest
+  when: rhel_version | int < 8
 
 - name: Update all packages
   yum:
     name: "*"
     state: latest
 
-- name: Install additional RHEL repository
+- name: Install additional RHEL repository - RHEL 7
   yum:
     name: https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.8-1.x86_64.rpm
     state: present    
+  when: rhel_version | int < 8
 
 - name: Install Git
   yum:
@@ -102,27 +111,9 @@
 
 ### JDK ###
 
-- name: Download JDK archives
-  get_url:
-    url: "{{ item }}"
-    dest: /tmp/downloads/
-    validate_certs: no
-  with_items:
-    - "{{ jdk_download_urls }}"
-
-- name: Extract JDK archives
-  unarchive:
-    src: /tmp/downloads/jdk-{{ item }}-linux-x64.tar.gz
-    dest: /opt/tools
-    copy: no
-    owner: root
-    group: root
-  with_items:
-   - "{{ jdk_short_versions }}"
-
 - name: Create JDK symlinks
   file:
-    src: /opt/tools/{{ item.0 }}
+    src: /usr/lib/jvm/{{ item.0 }}
     dest: /opt/tools/{{ item.1 }}
     state: link
     follow: no
@@ -130,26 +121,6 @@
   with_together:
   - "{{ jdk_long_versions }}"
   - "{{ jdk_symlink_names }}"
-
-- name: Remove JDK cacerts
-  file:
-    path: /opt/tools/{{ item.0 }}/{{ item.1 }}
-    state: absent
-    follow: no
-  with_together:
-    - "{{ jdk_long_versions }}"
-    - "{{ jdk_cacerts_subdirs }}"
-
-- name: Create JDK cacerts symlinks to system cert store
-  file:
-    src: /etc/pki/java/cacerts
-    dest: /opt/tools/{{ item.0 }}/{{ item.1 }}
-    state: link
-    follow: no
-    mode: 0644
-  with_together:
-    - "{{ jdk_long_versions }}"
-    - "{{ jdk_cacerts_subdirs }}"
 
 ### Maven ###
 

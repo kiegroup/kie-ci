@@ -13,11 +13,11 @@
       "username": "{{ user `openstack_username` }}",
       "password": "{{ user `openstack_password` }}",
       "tenant_name": "rhba-jenkins",
-      "source_image": "33543771-9453-4da2-bcbb-abd01d84b89a",
+      "source_image": "{{ user `source_image` }}",
       "image_name": "{{ user `image_name` }}",
       "flavor": "ci.m1.medium.no.nested.virt",
       "networks": [
-        "25ec4907-36fc-4035-b8d5-b797246330f2"
+        "60cacaff-86a6-4f88-82a4-ed3023724df1"
         ],
       "insecure": "true",
       "ssh_username": "root",
@@ -30,10 +30,11 @@
   "provisioners": [
     {
       "type": "ansible",
-      "playbook_file": "ansible/kie-rhel7.yml",
+      "playbook_file": "ansible/kie-rhel.yml",
       "groups": [
         "packer"
-      ]
+      ],
+      "extra_arguments": [ "--extra-vars", "rhel_version={{user `rhel_version`}}" ]
     },
     {
       "type": "shell",

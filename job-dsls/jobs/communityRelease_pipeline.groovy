@@ -8,8 +8,10 @@ def m2Dir = Constants.LOCAL_MVN_REP
 def MAVEN_OPTS="-Xms1g -Xmx3g"
 def commitMsg="Upgraded version to "
 def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-3.6.3"
 def binariesNR=1
+def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def AGENT_LABEL="kie-releases"
+
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
 // creation of folder
@@ -20,11 +22,11 @@ def folderPath="community-release"
 def comRelease='''
 pipeline {
     agent {
-        label 'kie-releases'
+        label "$AGENT_LABEL"
     }
     tools {
-        maven 'kie-maven-3.6.3'
-        jdk 'kie-jdk1.8'
+        maven "$mvnVersion"
+        jdk "$javadk"
     }
     stages {
         stage('CleanWorkspace') {
@@ -42,13 +44,6 @@ pipeline {
                 }
             }    
         }    
-        stage ('Clone others'){
-            steps {
-                sshagent(['kie-ci-user-key']) {
-                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch'
-                }    
-            }
-        }
         // checks if release branch already exists
         stage ('Check if branch exists') {
             steps{
@@ -71,6 +66,31 @@ pipeline {
                         echo "branch does not exist"
                     } 
                 }
+            }
+        } 
+        /* when release branches don't exist clone master branch */
+        stage ('Clone others when release branches do not exist'){
+            when{
+                expression { branchExists == '0'}
+            }            
+            steps {
+                sshagent(['kie-ci-user-key']) {
+                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch'
+                }    
+            }
+        }
+        /* when release branches exist clone releaseBranches */
+        stage ('Clone others when release branches exist'){
+            when{
+                expression { branchExists == '1'}
+            }
+            steps {
+                sshagent(['kie-ci-user-key']) {
+                    dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
+                        sh 'git checkout $releaseBranch'
+                    }    
+                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $releaseBranch'
+                }    
             }
         }
         // if release branches doesn't exist they will be created
@@ -121,18 +141,6 @@ pipeline {
                 }    
             }
         }
-        // if the release branches already exist they will be fetched from github
-        stage('Pull from existing release Branches') {
-            when{
-                expression { branchExists == '1'}
-            }         
-            steps {
-                sshagent(['kie-ci-user-key']) {
-                    sh './droolsjbpm-build-bootstrap/script/git-all.sh fetch origin'
-                    sh './droolsjbpm-build-bootstrap/script/git-all.sh checkout ' + "$releaseBranch"
-                }            
-            }
-        }
         // mvn clean deploy of each repository to a locally directory that will be uploaded later on - this saves time        
         stage('Build & deploy repositories locally'){
             when{
@@ -155,7 +163,7 @@ pipeline {
                     '${BUILD_LOG, maxLines=750}', subject: 'community-release for ${kieVersion} failed', to: 'kie-jenkins-builds@redhat.com' 
             }
         }        
-        // create a directory where the binaries to upload to filemgmt.jboss.org are stored 
+        // create a directory on filemgmt.jboss.org where the binaries have to be stored  
         stage('Create upload dir') {
             when{
                 expression { repBuild == 'YES'}
@@ -418,6 +426,21 @@ pipelineJob("${folderPath}/community-release-pipeline-${baseBranch}") {
             name('binariesNR')
             defaultValue("${binariesNR}")
             description('')
+        }
+        wHideParameterDefinition {
+            name('AGENT_LABEL')
+            defaultValue("${AGENT_LABEL}")
+            description('name of machine where to run this job')
+        }
+        wHideParameterDefinition {
+            name('mvnVersion')
+            defaultValue("${mvnVersion}")
+            description('version of maven')
+        }
+        wHideParameterDefinition {
+            name('javadk')
+            defaultValue("${javadk}")
+            description('version of jdk')
         }
     }
 

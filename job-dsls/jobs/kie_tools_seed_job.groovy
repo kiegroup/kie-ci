@@ -6,6 +6,7 @@ def javaToolEnv="KIE_JDK1_8"
 def kieMainBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_VERSION
+def labelName="kie-rhel7 && kie-mem4g"
 
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -19,13 +20,13 @@ job("a-kie-tools-seed-job") {
 
     description("this job creates all needed Jenkins jobs for kie-tools")
 
-    label("kie-rhel7 && kie-mem4g")
+    label(labelName)
 
     logRotator {
         numToKeep(5)
     }
 
-    jdk("${javadk}")
+    jdk(javadk)
 
     scm {
         git {

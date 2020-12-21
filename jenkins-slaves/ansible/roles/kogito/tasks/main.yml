@@ -9,6 +9,11 @@
     pkg: nodejs-{{node_version}}
     state: present
 
+- name: Install Required packages by kogito-tooling
+  yum:
+    pkg: ['gcc-c++']
+    state: latest
+
 - name: Print Node version
   shell: node -v
   register: node
@@ -24,7 +29,7 @@
 ### Configure jenkins user to use podman ###
 - name: Copy podman config file
   copy:
-    src: data/config/podman.conf
+    src: data/config/podman/podman.conf
     dest: /etc/sysctl.d/podman.conf
     owner: root
     group: root
@@ -34,6 +39,30 @@
 
 - name: add jenkins user to gids
   shell: usermod --add-subgids 10000-75535 jenkins
+
+- name: Ensure podman containers config directory exists
+  file:
+    path: /home/jenkins/.config/containers
+    state: directory
+    recurse: yes
+    owner: jenkins
+    group: jenkins
+
+- name: Copy podman registries mirror config file
+  copy:
+    src: data/config/podman/registries.conf
+    dest: /home/jenkins/.config/containers/registries.conf
+    owner: jenkins
+    group: jenkins
+    mode: '0644'
+
+- name: Copy testcontainers config file
+  copy:
+    src: data/config/testcontainers/.testcontainers.properties
+    dest: /home/jenkins/.testcontainers.properties
+    owner: jenkins
+    group: jenkins
+    mode: '0644'
 
 ### Installing pip packages ###
 - name: Install pip packages

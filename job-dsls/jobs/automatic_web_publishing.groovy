@@ -2,30 +2,43 @@
  * job that publishes automatically the ${repo}-website
  */
 
+import org.kie.jenkins.jobdsl.Constants
+
 // creation of folder
 folder("webs")
 def folderPath="webs"
 
-def final DEFAULTS = [repository : "drools"]
+def javadk=Constants.JDK_VERSION
+def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def AGENT_LABEL="kie-rhel7 && kie-mem4g"
+
+def final DEFAULTS = [
+        repository : "drools",
+        mailRecip : "mbiarnes@redhat.com"
+]
 
 def final REPO_CONFIGS = [
         "drools"    : [],
         "jbpm"      : [repository : "jbpm"],
-        "optaplanner" : [repository : "optaplanner"]
+        "optaplanner" : [
+                repository : "optaplanner",
+                mailRecip  : DEFAULTS["mailRecip"] + ",gdsmet@redhat.com"
+        ]
 ]
 
 for (reps in REPO_CONFIGS) {
     Closure<Object> get = { String key -> reps.value[key] ?: DEFAULTS[key] }
 
     String repo = reps.key
+    String mailRecip = get("mailRecip")
 
     def awp = """pipeline {
         agent {
-            label 'kie-rhel7 && kie-mem4g'
+            label "$AGENT_LABEL"
         }
         tools {
-            maven 'kie-maven-3.6.3'
-            jdk 'kie-jdk1.8'
+            maven "$mvnVersion"
+            jdk "$javadk"
         }
         stages {
             stage('CleanWorkspace') {
@@ -35,7 +48,7 @@ for (reps in REPO_CONFIGS) {
             }
             stage ('checkout website') {
                 steps {
-                    checkout([\$class: 'GitSCM', branches: [[name: 'master']], browser: [\$class: 'GithubWeb', repoUrl: 'https://github.com/kiegroup/${repo}-website'], doGenerateSubmoduleConfigurations: false, extensions: [[\$class: 'RelativeTargetDirectory', relativeTargetDir: '${repo}-website']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/kiegroup/${repo}-website']]])
+                    checkout([\$class: 'GitSCM', branches: [[name: 'master']], browser: [\$class: 'GithubWeb', repoUrl: 'https://github.com/kiegroup/${repo}-website'], doGenerateSubmoduleConfigurations: false, extensions: [[\$class: 'RelativeTargetDirectory', relativeTargetDir: '${repo}-website']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/kiegroup/${repo}-website']]])
                     dir("\${WORKSPACE}" + '/${repo}-website') {
                         sh '''pwd  
                            ls -al
@@ -88,17 +101,46 @@ for (reps in REPO_CONFIGS) {
             }
         }
         post {
-            always {
-                cleanWs()             
+            failure{
+                emailext body: 'Build log: \${BUILD_URL}consoleText\\n' +
+                '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download and decompress attached file.)',
+                subject: 'Build #\${BUILD_NUMBER} of ${repo}-web FAILED',
+                to: '${mailRecip}'
+                cleanWs()          
             }
-        } 
+            fixed {
+                emailext body: '',
+                subject: 'Build #\${BUILD_NUMBER} of ${repo}-web is fixed and was SUCCESSFUL',
+                to: '${mailRecip}'
+                cleanWs()     
+            }
+            success {
+            cleanWs()
+            }                    
+        }
     }
 """
-
-
     pipelineJob("${folderPath}/${repo}-automatic-web-publishing") {
 
         description("this is a pipeline job for publishing automatically ${repo}-website")
+
+        parameters {
+            wHideParameterDefinition {
+                name('AGENT_LABEL')
+                defaultValue("${AGENT_LABEL}")
+                description('name of machine where to run this job')
+            }
+            wHideParameterDefinition {
+                name('mvnVersion')
+                defaultValue("${mvnVersion}")
+                description('version of maven')
+            }
+            wHideParameterDefinition {
+                name('javadk')
+                defaultValue("${javadk}")
+                description('version of jdk')
+            }
+        }
 
         logRotator {
             numToKeep(3)
