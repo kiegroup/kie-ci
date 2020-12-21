@@ -1,5 +1,5 @@
 ---
-- hosts: smee-client
+- hosts: verdaccio-service
   remote_user: root
   gather_facts: false
 
@@ -10,7 +10,7 @@
   roles:
     - cert-ssh
     - node
-    - smee
+    - verdaccio
 
   tasks:
   ### Clean up ###

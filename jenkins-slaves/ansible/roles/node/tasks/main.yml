@@ -1,0 +1,19 @@
+---
+
+### Install NodeJS package ###
+
+- name: Install NodeJS repository
+  shell: curl -sL {{node_setup_url}} | sudo -E bash -
+
+- name: Install NodeJS package
+  yum:
+    pkg: nodejs-{{node_version}}
+    state: present
+
+- name: Print Node version
+  shell: node -v
+  register: node
+
+- debug: msg="{{ node.stdout }}"
+
+...
