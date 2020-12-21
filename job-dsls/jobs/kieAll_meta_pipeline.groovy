@@ -32,7 +32,13 @@ def sendUMB="""pipeline{
                     },  
                     "prod-7.44.x-pipeline" : {
                         build job: '../7.44.x/daily-build-prod/daily-build-prod-pipeline-7.44.x', propagate: false
-                    }                    
+                    },
+                    "7.48.x-pipeline" : {
+                        build job: "../7.48.x/daily-build/daily-build-pipeline-7.48.x", propagate: false
+                    },  
+                    "prod-7.48.x-pipeline" : {
+                        build job: '../7.48.x/daily-build-prod/daily-build-prod-pipeline-7.48.x', propagate: false
+                    }                                        
                 )      
             }    
         } 
