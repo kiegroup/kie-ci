@@ -53,7 +53,7 @@ folder(Constants.PULL_REQUEST_FOLDER) {
 }
 
 // jobs for master branch don't use the branch in the name
-String jobName = (repoBranch == "master") ? Constants.PULL_REQUEST_FOLDER + "/$repo-springboot.pr" : Constants.PULL_REQUEST_FOLDER + "/" + ${repo-springboot} + "-" + $repoBranch + ".pr"
+String jobName = (repoBranch == "master") ? Constants.PULL_REQUEST_FOLDER + "/$repo-springboot" + ".pr" : Constants.PULL_REQUEST_FOLDER + "/" + ${repo-springboot} + "-" + $repoBranch + ".pr"
 job(jobName) {
 
     description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
