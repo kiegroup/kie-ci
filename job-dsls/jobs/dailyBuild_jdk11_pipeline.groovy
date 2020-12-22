@@ -10,7 +10,10 @@ def organization=Constants.GITHUB_ORG_UNIT
 def deployDir="deploy-dir"
 def m2Dir = Constants.LOCAL_MVN_REP
 def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+// def AGENT_DOCKER_LABEL= "furure docker machine"
+def AGENT_DOCKER_LABEL= "kieci-02-docker"
 def AGENT_LABEL="kie-linux&&kie-rhel7&&kie-mem24g"
+def artifactsPath="/home/docker/kie-artifacts/$kieVersion"
 
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
@@ -571,75 +574,97 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-kieServerMatrix") {
 // *****************************************************************************************************
 // definition of kieDockerCi  script
 
-def kieDockerCi='''
-sh scripts/docker-clean.sh $kieVersion
-sh scripts/update-versions.sh $kieVersion -s "$SETTINGS_XML"'''
+def dockImg='''pipeline {
+    agent {
+        label "$AGENT_DOCKER_LABEL"
+    }
+    tools {
+        maven "$mvnVersion"
+        jdk "$javadk"
+    }
+    environment {
+        JAVA_OPTS = '-Djsse.enableSNIExtension=false'
+    }
+    stages {
+        stage('CleanWorkspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Checkout kie-docker-ci-images') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '${baseBranch}']], browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/kiegroup/kie-docker-ci-images.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-docker-ci-images']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/kiegroup/kie-docker-ci-images.git']]])
+                dir("${WORKSPACE}" + '/kie-docker-ci-images') {
+                    sh 'pwd \\n' +
+                       'ls -al \\n' +
+                       'git branch'
+                }
+            }
+        }
+        stage('execute scripts for cleaning and updating') {
+            steps {
+                dir("${WORKSPACE}" + '/kie-docker-ci-images') {
+                    configFileProvider([configFile(fileId: '3ebb89ff-985c-43a2-965d-1cde56f31e1a', targetLocation: 'jenkins-settings.xml', variable: 'settingsXmlFile')]) {
+                        sh './scripts/docker-clean.sh $kieVersion \\n' +
+                           './scripts/update-versions.sh $kieVersion -s "$settingsXmlFile"'
+                    }
+                }
+            }
+        }
+        stage('build'){
+            steps{
+                dir("${WORKSPACE}" + '/kie-docker-ci-images') {
+                    configFileProvider([configFile(fileId: '3ebb89ff-985c-43a2-965d-1cde56f31e1a', targetLocation: 'jenkins-settings.xml', variable: 'settingsXmlFile')]) {
+                        sh 'mvn -e -B -U -s $settingsXmlFile clean install -Dkie.artifacts.deploy.path=$artifactsPath'
+                    }              
+               }   
+            }
+        }
+    }
+}
+'''
 
-job("${folderPath}/daily-build-jdk11-${baseBranch}-docker-images") {
-    description("Builds CI Docker images for master branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
+pipelineJob("${folderPath}/daily-build-jdk11-${baseBranch}-docker-images") {
 
     parameters {
-        stringParam("kieVersion", "${kieVersion}-SNAPSHOT", "Please edit the version of the kie release <br> i.e. typically <b> major.minor.micro.EXT </b>i.e. 8.0.0.Beta1<br> Normally the kie version will be supplied by parent job <br> ******************************************************** <br> ")
-    }
-
-    scm {
-        git {
-            remote {
-                github("${organization}/kie-docker-ci-images")
-            }
-            branch ("${baseBranch}")
+        stringParam("kieVersion", "${kieVersion}", "Version of kie. This will be usually set automatically by the parent pipeline job. ")
+        wHideParameterDefinition {
+            name('AGENT_DOCKER_LABEL')
+            defaultValue("${AGENT_DOCKER_LABEL}")
+            description('name of machine where to run this job')
+        }
+        wHideParameterDefinition {
+            name('mvnVersion')
+            defaultValue("${mvnVersion}")
+            description('version of maven')
+        }
+        wHideParameterDefinition {
+            name('javadk')
+            defaultValue("${javadk}")
+            description('version of jdk')
+        }
+        wHideParameterDefinition {
+            name('artifactsPath')
+            defaultValue("${artifactsPath}")
+            description('path of artifacts stored on the docker machine')
+        }
+        wHideParameterDefinition {
+            name('baseBranch')
+            defaultValue("${baseBranch}")
+            description('name of branch')
         }
     }
 
-    label("kieci-02-docker")
+    description('Builds CI Docker images for master branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ')
 
     logRotator {
         numToKeep(5)
     }
 
-    jdk("${javadk}")
-
-    wrappers {
-        timeout {
-            absolute(120)
-        }
-        timestamps()
-        toolenv("${mvnToolEnv}", "${javaToolEnv}")
-        colorizeOutput()
-        preBuildCleanup()
-        configFiles {
-            mavenSettings("3ebb89ff-985c-43a2-965d-1cde56f31e1a"){
-                targetLocation("\$WORKSPACE/settings.xml")
-                variable("SETTINGS_XML")
-            }
-        }
-    }
-
-    publishers {
-        mailer('mbiarnes@redhat.com', false, false)
-        wsCleanup()
-    }
-
-    configure { project ->
-        project / 'buildWrappers' << 'org.jenkinsci.plugins.proccleaner.PreBuildCleanup' {
-            cleaner(class: 'org.jenkinsci.plugins.proccleaner.PsCleaner') {
-                killerType 'org.jenkinsci.plugins.proccleaner.PsAllKiller'
-                killer(class: 'org.jenkinsci.plugins.proccleaner.PsAllKiller')
-                username 'jenkins'
-            }
-        }
-    }
-
-    steps {
-        environmentVariables {
-            envs(MAVEN_HOME : "\$${mvnHome}", PATH : "\$${mvnHome}/bin:\$PATH")
-        }
-        shell(kieDockerCi)
-        maven{
-            mavenInstallation("${mvnVersion}")
-            goals("-e -B -U clean install")
-            providedSettings("3ebb89ff-985c-43a2-965d-1cde56f31e1a")
-            properties("kie.artifacts.deploy.path":"/home/docker/kie-artifacts/\$kieVersion")
+    definition {
+        cps {
+            script("${dockImg}")
+            sandbox()
         }
     }
 }
