@@ -593,7 +593,7 @@ def dockImg='''pipeline {
         }
         stage('Checkout kie-docker-ci-images') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: 'master']], browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/kiegroup/kie-docker-ci-images.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-docker-ci-images']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/kiegroup/kie-docker-ci-images.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '${baseBranch}']], browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/kiegroup/kie-docker-ci-images.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-docker-ci-images']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/kiegroup/kie-docker-ci-images.git']]])
                 dir("${WORKSPACE}" + '/kie-docker-ci-images') {
                     sh 'pwd \\n' +
                        'ls -al \\n' +
@@ -647,6 +647,11 @@ pipelineJob("${dockerPath}/daily-build-${baseBranch}-docker-images") {
             name('artifactsPath')
             defaultValue("${artifactsPath}")
             description('path of artifacts stored on the docker machine')
+        }
+        wHideParameterDefinition {
+            name('baseBranch')
+            defaultValue("${baseBranch}")
+            description('name of branch')
         }
     }
 
