@@ -1,5 +1,7 @@
 ---
 
+- debug: msg="ENCRYPTED_PASSWORD \"{{ lookup('env','ENCRYPTED_PASSWORD') }}\""
+
 - name: Install verdaccio
   npm:
     name: verdaccio
@@ -35,7 +37,7 @@
 
 - name: Copy Verdaccio user/pass
   template:
-    src: data/config/verdaccio/htpasswd
+    src: data/config/verdaccio/htpasswd.j2
     dest: /verdaccio/htpasswd
     mode: 0777
     force: yes
