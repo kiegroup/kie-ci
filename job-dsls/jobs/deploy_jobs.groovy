@@ -81,7 +81,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["droolsjbpm-integration"]
         ],
         "droolsjbpm-integration"    : [
-                timeoutMins            : 120,
+                timeoutMins            : 180,
                 downstreamRepos        : ["kie-uberfire-extensions", "openshift-drools-hacep"]
         ],
         "openshift-drools-hacep"       : [:],
@@ -93,6 +93,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["kie-wb-common"]
         ],
         "kie-wb-common"             : [
+                timeoutMins            : 180,
                 label                  : "kie-rhel7 && kie-mem16g",
                 downstreamRepos        : ["drools-wb"]
         ],
