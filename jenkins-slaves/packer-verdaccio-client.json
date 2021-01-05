@@ -1,0 +1,48 @@
+{
+  "_comment": "It's not originally created to be used from jenkins but for testing purposes (to build ansible/smee-client.yml in an easier way).",
+  "variables": {
+    "openstack_endpoint": null,
+    "openstack_username": null,
+    "openstack_password": null,
+    "image_name": null,
+    "ssh_private_key_file": null,
+    "encrypted_password": null
+  },
+  "builders": [
+    {
+      "type": "openstack",
+      "identity_endpoint": "{{ user `openstack_endpoint` }}",
+      "username": "{{ user `openstack_username` }}",
+      "password": "{{ user `openstack_password` }}",
+      "tenant_name": "rhba-jenkins",
+      "source_image": "33543771-9453-4da2-bcbb-abd01d84b89a",
+      "image_name": "{{ user `image_name` }}",
+      "flavor": "ci.m1.medium.no.nested.virt",
+      "networks": [
+        "25ec4907-36fc-4035-b8d5-b797246330f2"
+        ],
+      "insecure": "true",
+      "ssh_username": "root",
+      "ssh_keypair_name": "kie-jenkins",
+      "ssh_private_key_file": "{{ user `ssh_private_key_file` }}",
+      "user_data_file": "cloud-init-linux",
+      "domain_name": "redhat.com"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "ansible/verdaccio-service.yml",
+      "groups": [
+        "verdaccio-service"
+      ],
+      "ansible_env_vars": [ "ENCRYPTED_PASSWORD={{user `encrypted_password`}}" ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "rm -rf /home/jenkins/.ansible"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+---
+
+- debug: msg="ENCRYPTED_PASSWORD \"{{ lookup('env','ENCRYPTED_PASSWORD') }}\""
+
+- name: Install verdaccio
+  npm:
+    name: verdaccio
+    version: 4.10.0
+    global: yes
+    production: yes
+    state: present
+    registry: ${NPM_REGISTRY_URL}
+
+- name: Generate verdaccio.service.sh file
+  template:
+    src: data/service/verdaccio.service.sh.j2
+    dest: /usr/local/bin/verdaccio.service.sh
+    mode: 0777
+    force: yes
+    owner: root
+    group: root
+
+- name: Create verdaccio directory
+  file:
+    path: /verdaccio
+    state: directory
+    mode: 0775    
+
+- name: Copy Verdaccio Configuration
+  template:
+    src: data/config/verdaccio/config.yaml
+    dest: /verdaccio/config.yaml
+    mode: 0777
+    force: yes
+    owner: root
+    group: root
+
+- name: Copy Verdaccio user/pass
+  template:
+    src: data/config/verdaccio/htpasswd.j2
+    dest: /verdaccio/htpasswd
+    mode: 0777
+    force: yes
+    owner: root
+    group: root
+
+- name: Register Verdaccio Service
+  copy:
+    src: data/service/verdaccio.service
+    dest: /etc/systemd/system/verdaccio.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Start Service
+  service:
+    name: verdaccio
+    enabled: yes
+    state: restarted
+
+- name: get verdaccio status
+  command: systemctl status verdaccio.service
+  register: verdaccio_service_status
+
+- debug: msg="{{ verdaccio_service_status.stdout }}"
+
+- name: firewall setup
+  command: firewall-cmd --zone=public --add-port=80/tcp --permanent
+
+- name: firewall reload
+  command: firewall-cmd --reload
+
+...

@@ -1,0 +1,10 @@
+[Unit]
+Description=Verdaccio Service.
+
+[Service]
+Type=simple
+
+ExecStart=/usr/local/bin/verdaccio.service.sh
+
+[Install]
+WantedBy=multi-user.target
