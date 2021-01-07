@@ -4,7 +4,7 @@ def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
-def TPB="target product build"
+def TPB=""
 def tagName="sync-xxx-date"
 def reportBranch=Constants.REPORT_BRANCH
 def MAVEN_OPTS="-Xms1g -Xmx3g"
@@ -34,6 +34,17 @@ pipeline {
                 cleanWs()
             }
         }
+        stage('Check TPB'){
+            steps{
+                script {
+                    if (params.TPB == '') {
+                        echo "Target Product Build Parameter was not set"
+                        currentBuild.result = 'ABORTED'
+                        error('Please set TPB')
+                    }
+                }                
+            }
+        }        
         stage('Checkout droolsjbpm-build-bootstrap') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '$baseBranch']], browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/$organization/droolsjbpm-build-bootstrap'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'droolsjbpm-build-bootstrap']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/$organization/droolsjbpm-build-bootstrap.git']]])
