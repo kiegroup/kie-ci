@@ -244,7 +244,7 @@ pipeline {
                     ' \\n' +
                     'The artifacts are available here \\n' +
                     ' \\n' +
-                    'business-central artifacts: (wildfly14.war) \\n' +
+                    'business-central artifacts: \\n' +
                     'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
                     '\\n' +
                     'business-central-webapp: \\n' +
@@ -281,7 +281,7 @@ pipeline {
                     ' \\n' +
                     'The artifacts are available here \\n' +
                     ' \\n' +
-                    'business-central artifacts: (wildfly14.war) \\n' +
+                    'business-central artifacts: \\n' +
                     'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
                     '\\n' +
                     'business-central-webapp: \\n' +
