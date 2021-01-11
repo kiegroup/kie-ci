@@ -35,10 +35,7 @@ def sendUMB="""pipeline{
                     },
                     "7.48.x-pipeline" : {
                         build job: "../7.48.x/daily-build/daily-build-pipeline-7.48.x", propagate: false
-                    },
-                    "master-jdk11-pipeline" : {
-                        build job: "../7.48.x/daily-build-jdk11/daily-build-jdk11-pipeline-7.48.x", propagate: false
-                    },                     
+                    },                  
                     "prod-7.48.x-pipeline" : {
                         build job: '../7.48.x/daily-build-prod/daily-build-prod-pipeline-7.48.x', propagate: false
                     }                                        
@@ -51,6 +48,8 @@ def sendUMB="""pipeline{
 
 pipelineJob("kieAll_meta_pipeline") {
 
+    disabled()
+    
     description("This is a pipeline job for sending an UMB trigger to run all daily build jobs")
 
     parameters {
