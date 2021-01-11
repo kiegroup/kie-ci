@@ -179,8 +179,9 @@ pipeline {
 
 pipelineJob("${folderPath}/daily-build-jdk11-pipeline-${baseBranch}") {
 
-    description('this is a pipeline job for the daily build of all reps')
 
+    description('this is a pipeline job for the daily build of all reps')
+    disabled() // this jdk11 pipeline job makes sense only for master branch
 
     parameters{
         stringParam("kieVersion", "${kieVersion}", "Version of kie. This will be usually set automatically by the parent pipeline job. ")
