@@ -212,8 +212,10 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'kie-ci-token', variable: 'TOKEN')]) {
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                            sh 'set +x'
-                            sh 'curl -X POST -u kie-ci:$TOKEN -d \'{"body":"Build: kiegroup/\'"$releaseBranch"\' "}\' --fail https://api.github.com/repos/kiegroup/kogito-tooling/issues/221/comments '
+                            sh """
+                                set +x
+                                curl -X POST -u kie-ci:$TOKEN -d '{"body":"Build: kiegroup/'"$releaseBranch"' "}' --fail https://api.github.com/repos/kiegroup/kogito-tooling/issues/221/comments
+                                """
                     }
                 }
             }
