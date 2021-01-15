@@ -17,7 +17,13 @@
     path: /opt/tools/gh-cli
     state: directory
 
-- name: Install gh-cli
-  shell: cd /home/gh-cli && make install prefix=/opt/tools/gh-cli
+- make:
+    chdir: /home/gh-cli
+    target: install
+    params:
+      prefix: /opt/tools/gh-cli
+
+- name: check gh-cli
+  shell: ls /opt/tools/gh-cli
 
 ...
