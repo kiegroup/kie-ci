@@ -17,13 +17,12 @@
     path: /opt/tools/gh-cli
     state: directory
 
-- make:
-    chdir: /home/gh-cli
-    target: install
-    params:
-      prefix: /opt/tools/gh-cli
+- name: Install make package
+  yum:
+    pkg: ['make']
+    state: latest      
 
-- name: check gh-cli
-  shell: ls /opt/tools/gh-cli
+- name: Install gh-cli
+  shell: cd /home/gh-cli && make install prefix=/opt/tools/gh-cli
 
 ...
