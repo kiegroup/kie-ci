@@ -27,6 +27,7 @@ folder("community-release")
 def folderPath="community-release"
 
 def comRelease='''
+retry=0
 pipeline {
     agent {
         label "$AGENT_LABEL"
@@ -52,7 +53,7 @@ pipeline {
             }    
         }    
         // checks if release branch already exists
-        stage ('Check if "${releaseBranch}" exists') {
+        stage ('Check if release branch exists') {
             steps{
                 sshagent(['kie-ci-user-key']) {
                     dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
@@ -68,18 +69,6 @@ pipeline {
                 }
             }
         }
-        /*stage ('Log results') {
-            steps {
-                echo 'branchExists: ' + "$branchExists"
-                script {
-                    if ( "$branchExists" == "1") {
-                        echo "branch exists"
-                    } else {
-                        echo "branch does not exist"
-                    } 
-                }
-            }
-        }*/ 
         /* when release branches don't exist clone master branch */
         stage ('Clone others when release branches do not exist'){
             when{
@@ -215,19 +204,23 @@ pipeline {
                 expression { repBuild == 'YES'}
             }         
             steps {
-                withCredentials([usernameColonPassword(credentialsId: "$uploadCreds", variable: 'CREDS')]) {
-                    sh """ 
-                        cd $zipDir
-                        zip -r kiegroup .
-                        repoID=\\$(curl --header 'Content-Type: application/xml' -X POST -u "${CREDS}" --data '<promoteRequest><data><description>$kieVersion</description></data></promoteRequest>' -v $nexusUrl/service/local/staging/profiles/15c58a1abc895b/start | grep -oP '(?<=stagedRepositoryId)[^<]+' | sed 's/>//' | tr -d '\\n')
-                        echo "repoID= " \\$repoID
-                        echo " "
-                        ls -al
-                        echo " "
-                        curl --silent --upload-file kiegroup.zip -u \\$CREDS -v \\$nexusUrl/service/local/repositories/\\$repoID/content-compressed
-                        curl --header "Content-Type: application/xml" -X POST -u \\$CREDS --data "<promoteRequest><data><stagedRepositoryId>\\$repoID</stagedRepositoryId><description>$kieVersion</description></data></promoteRequest>" -v $nexusUrl/service/local/staging/profiles/15c58a1abc895b/finish 
-                        """
-                }    
+                script {
+                    execute {
+                        withCredentials([usernameColonPassword(credentialsId: "$uploadCreds", variable: 'CREDS')]) {
+                            sh """ 
+                                cd $zipDir
+                                zip -r kiegroup .
+                                repoID=\\$(curl --header 'Content-Type: application/xml' -X POST -u "${CREDS}" --data '<promoteRequest><data><description>$kieVersion</description></data></promoteRequest>' -v $nexusUrl/service/local/staging/profiles/15c58a1abc895b/start | grep -oP '(?<=stagedRepositoryId)[^<]+' | sed 's/>//' | tr -d '\\n')
+                                echo "repoID= " \\$repoID
+                                echo " "
+                                ls -al
+                                echo " "
+                                curl --silent --upload-file kiegroup.zip -u \\$CREDS -v \\$nexusUrl/service/local/repositories/\\$repoID/content-compressed
+                                curl --header "Content-Type: application/xml" -X POST -u \\$CREDS --data "<promoteRequest><data><stagedRepositoryId>\\$repoID</stagedRepositoryId><description>$kieVersion</description></data></promoteRequest>" -v $nexusUrl/service/local/staging/profiles/15c58a1abc895b/finish 
+                                """
+                        }
+                    }
+                }            
             }
         }
         stage('Comment on issue 221 of kogito-tooling') {
@@ -426,6 +419,16 @@ pipeline {
             }
         }                                                                              
     }
+}
+void execute(Closure closure) {
+    try {
+        closure()
+    } catch(error) {
+        input "Retry the upload of binaries to Nexus?"
+        retry++
+        echo "This is retry number ${retry}"
+        execute(closure)
+    } 
 }
 '''
 
