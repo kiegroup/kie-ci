@@ -1,0 +1,17 @@
+---
+### Install Homebrew packages ###
+
+- name: Install Development Tools groupinstall
+  shell: 'yum -y groupinstall "Development Tools"'
+
+- name: Install packages
+  yum:
+    pkg: ['file', 'libxcrypt-compat']
+    state: latest
+
+### Install gh-api ###
+
+- name: Install gh-api
+  shell: brew install gh
+
+...
