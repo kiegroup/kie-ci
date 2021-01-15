@@ -6,7 +6,7 @@
 
 - name: Install packages
   yum:
-    pkg: ['file', 'libxcrypt-compat']
+    pkg: ['file']
     state: latest
 
 ### Install gh-api ###
