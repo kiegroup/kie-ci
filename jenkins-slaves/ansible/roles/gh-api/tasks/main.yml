@@ -1,17 +1,23 @@
 ---
-### Install Homebrew packages ###
+### Clone gh-cli repo ###
 
-- name: Install Development Tools groupinstall
-  shell: 'yum -y groupinstall "Development Tools"'
+- name: Create gh-cli repo dir
+  file:
+    path: /home/gh-cli
+    state: directory
 
-- name: Install packages
-  yum:
-    pkg: ['file']
-    state: latest
+- name: Clone gh-cli
+  shell: cd /home && git clone https://github.com/cli/cli.git gh-cli
+
 
 ### Install gh-api ###
 
-- name: Install gh-api
-  shell: brew install gh
+- name: Create gh-cli tool folder
+  file:
+    path: /opt/tools/gh-cli
+    state: directory
+
+- name: Install gh-cli
+  shell: cd /home/gh-cli && make install prefix=/opt/tools/gh-cli
 
 ...
