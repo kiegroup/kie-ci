@@ -2,16 +2,23 @@ import org.kie.jenkins.jobdsl.Constants
 
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
-def releaseBranch="r7.40.0.Final"
+def releaseBranch="r7.49.0.Final"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def MAVEN_OPTS="-Xms1g -Xmx3g"
 def commitMsg="Upgraded version to "
 def javadk=Constants.JDK_VERSION
+// number of build that has stored the binaries (*tar.gz) that are wanted to upload
 def binariesNR=1
 def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
 def AGENT_LABEL="kie-releases"
-
+// directory where the zip with all binaries is stored
+def zipDir="\$WORKSPACE/community-deploy-dir"
+// in case of testing the uploads of binaries to Nexus the URL should be https://repository.stage.jboss.org/nexus
+def nexusUrl = "https://repository.jboss.org/nexus"
+// in case of testing the upload of binaries to Nexus the credentials should be uploadNexus_test: recent value is for prod
+def uploadCreds = "kie_upload_Nexus"
+// download URL of jboss-eap for the additional tests
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
 // creation of folder
@@ -20,6 +27,7 @@ folder("community-release")
 def folderPath="community-release"
 
 def comRelease='''
+retry=0
 pipeline {
     agent {
         label "$AGENT_LABEL"
@@ -45,29 +53,22 @@ pipeline {
             }    
         }    
         // checks if release branch already exists
-        stage ('Check if branch exists') {
+        stage ('Check if release branch exists') {
             steps{
                 sshagent(['kie-ci-user-key']) {
                     dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
                         script {
                             branchExists = sh(script: 'git ls-remote --heads origin ${releaseBranch} | wc -l', returnStdout: true).trim()
+                            if ( "$branchExists" == "1") {
+                                echo "branch exists"
+                            } else {
+                                echo "branch does not exist"
+                            }                             
                         } 
                     }
                 }
             }
         }
-        stage ('log results') {
-            steps {
-                echo 'branchExists: ' + "$branchExists"
-                script {
-                    if ( "$branchExists" == "1") {
-                        echo "branch exists"
-                    } else {
-                        echo "branch does not exist"
-                    } 
-                }
-            }
-        } 
         /* when release branches don't exist clone master branch */
         stage ('Clone others when release branches do not exist'){
             when{
@@ -197,18 +198,32 @@ pipeline {
               junit '**/target/*-reports/TEST-*.xml'    
             }
         }         
-        // binaries created in previous step will be uploaded to Nexus
-        stage('Upload binaries to staging repository to Nexus') {
+        // binaries created in previous step will be compressed and uploaded to Nexus
+        stage('Upload binaries to staging repository on Nexus') {
             when{
                 expression { repBuild == 'YES'}
             }         
             steps {
-                configFileProvider([configFile(fileId: '3f317dd7-4d08-4ee4-b9bb-969c309e782c', targetLocation: 'uploadNexus-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
-                    sh './droolsjbpm-build-bootstrap/script/release/06_uploadBinariesToNexus.sh $SETTINGS_XML_FILE'
-                }    
+                script {
+                    execute {
+                        withCredentials([usernameColonPassword(credentialsId: "$uploadCreds", variable: 'CREDS')]) {
+                            sh """ 
+                                cd $zipDir
+                                zip -r kiegroup .
+                                repoID=\\$(curl --header 'Content-Type: application/xml' -X POST -u "${CREDS}" --data '<promoteRequest><data><description>$kieVersion</description></data></promoteRequest>' -v $nexusUrl/service/local/staging/profiles/15c58a1abc895b/start | grep -oP '(?<=stagedRepositoryId)[^<]+' | sed 's/>//' | tr -d '\\n')
+                                echo "repoID= " \\$repoID
+                                echo " "
+                                ls -al
+                                echo " "
+                                curl --silent --upload-file kiegroup.zip -u \\$CREDS -v \\$nexusUrl/service/local/repositories/\\$repoID/content-compressed
+                                curl --header "Content-Type: application/xml" -X POST -u \\$CREDS --data "<promoteRequest><data><stagedRepositoryId>\\$repoID</stagedRepositoryId><description>$kieVersion</description></data></promoteRequest>" -v $nexusUrl/service/local/staging/profiles/15c58a1abc895b/finish 
+                                """
+                        }
+                    }
+                }            
             }
         }
-        stage('creates comment on issue 221 of kogito-tooling') {
+        stage('Comment on issue 221 of kogito-tooling') {
             steps {
                 withCredentials([string(credentialsId: 'kie-ci-token', variable: 'TOKEN')]) {
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
@@ -405,6 +420,16 @@ pipeline {
         }                                                                              
     }
 }
+void execute(Closure closure) {
+    try {
+        closure()
+    } catch(error) {
+        input "Retry the upload of binaries to Nexus?"
+        retry++
+        echo "This is retry number ${retry}"
+        execute(closure)
+    } 
+}
 '''
 
 
@@ -453,6 +478,21 @@ pipelineJob("${folderPath}/community-release-pipeline-${baseBranch}") {
             name('javadk')
             defaultValue("${javadk}")
             description('version of jdk')
+        }
+        wHideParameterDefinition {
+            name('zipDir')
+            defaultValue("${zipDir}")
+            description('Where is the zipped file to upload?')
+        }
+        wHideParameterDefinition {
+            name('nexusUrl')
+            defaultValue("${nexusUrl}")
+            description('URL of Nexus server')
+        }
+        wHideParameterDefinition {
+            name('uploadCreds')
+            defaultValue("${uploadCreds}")
+            description('Credentials to take for uploading binaries')
         }
     }
 
