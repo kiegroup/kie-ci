@@ -27,7 +27,7 @@ pipeline {
     }
     tools {
         maven "$mvnVersion"
-        jdk "javadk"
+        jdk "$javadk"
     }
     stages {
         stage('CleanWorkspace') {
