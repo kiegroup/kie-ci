@@ -170,12 +170,29 @@
   command: "/opt/tools/graalvm/bin/gu install native-image"
 
 ### Operator-sdk ###
+- name: Create OperatorSDK directory
+  file:
+    path: /opt/tools/extras/operator-sdk
+    state: directory
+    owner: root
+    group: root
+
+- name: Create OperatorSDK subdir downloads directory
+  file:
+    path: /opt/tools/extras/operator-sdk/{{ item }}
+    state: directory
+    owner: root
+    group: root
+  with_items:
+    - "{{ operator_sdk_version }}"
 
 - name: Install Operator-sdk
   get_url:
-    url: https://github.com/operator-framework/operator-sdk/releases/download/{{operator_sdk_version}}/operator-sdk-{{operator_sdk_version}}-x86_64-linux-gnu
-    dest: /opt/tools/extras/operator-sdk
+    url: https://github.com/operator-framework/operator-sdk/releases/download/{{ item }}/operator-sdk-{{ item }}-x86_64-linux-gnu
+    dest: /opt/tools/extras/operator-sdk/{{ item }}/operator-sdk
     mode: '0755'
+  with_items:
+    - "{{ operator_sdk_version }}"
 
 ### Golang ###
 - name: Download golang archives
