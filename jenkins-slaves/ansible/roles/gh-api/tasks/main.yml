@@ -1,0 +1,34 @@
+---
+### Clone gh-cli repo ###
+
+- name: Create gh-cli repo dir
+  file:
+    path: /home/gh-cli
+    state: directory
+
+- name: Clone gh-cli
+  shell: cd /home && git clone https://github.com/cli/cli.git gh-cli
+
+
+### Install gh-api ###
+
+- name: Create gh-cli tool folder
+  file:
+    path: /opt/tools/gh-cli
+    state: directory
+
+- name: Install the 'Development tools' package group
+  yum:
+    name: "@Development tools"
+    state: present
+
+- name: Install the list of needed packages by make
+  yum:
+    name:
+      - go
+    state: present    
+
+- name: Install gh-cli
+  shell: cd /home/gh-cli && make install prefix=/opt/tools/gh-cli
+
+...

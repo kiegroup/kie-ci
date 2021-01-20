@@ -39,6 +39,7 @@
     - rhba
     - rhba-osbs
     - rhba-sourceclear-integration
+    - gh-api
 
   tasks:
   ### Clean up ###
