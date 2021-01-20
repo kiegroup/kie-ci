@@ -17,10 +17,10 @@
     path: /opt/tools/gh-cli
     state: directory
 
-- name: Install make package
+- name: Install the 'Development tools' package group
   yum:
-    pkg: ['make']
-    state: latest      
+    name: "@Development tools"
+    state: present
 
 - name: Install gh-cli
   shell: cd /home/gh-cli && make install prefix=/opt/tools/gh-cli
