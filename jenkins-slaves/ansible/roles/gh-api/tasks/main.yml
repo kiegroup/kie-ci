@@ -22,6 +22,12 @@
     name: "@Development tools"
     state: present
 
+- name: Install the list of needed packages by make
+  yum:
+    name:
+      - go
+    state: present    
+
 - name: Install gh-cli
   shell: cd /home/gh-cli && make install prefix=/opt/tools/gh-cli
 
