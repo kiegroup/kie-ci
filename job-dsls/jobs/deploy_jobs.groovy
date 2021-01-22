@@ -153,7 +153,6 @@ for (repoConfig in REPO_CONFIGS) {
     String ghOrgUnit = get("ghOrgUnit")
     String ghAuthKey = get("ghAuthKey")
     String zulipStream = get("zulipNotificationStream")
-    String[] jdk11Repos = ["optaplanner", "optaweb-employee-rostering", "optaweb-vehicle-routing", "optaplanner-quickstarts"]
 
     // Creation of folders where jobs are stored
     folder(Constants.DEPLOY_FOLDER)
@@ -196,7 +195,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        if (jdk11Repos.contains(repo)) {
+        if (repo == "optaplanner") {
             jdk("kie-jdk11")
         } else {
             jdk("kie-jdk1.8")}
