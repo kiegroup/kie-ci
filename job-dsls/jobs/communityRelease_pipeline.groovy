@@ -8,9 +8,10 @@ def m2Dir = Constants.LOCAL_MVN_REP
 def MAVEN_OPTS="-Xms1g -Xmx3g"
 def commitMsg="Upgraded version to "
 def javadk=Constants.JDK_VERSION
+def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
 // number of build that has stored the binaries (*tar.gz) that are wanted to upload
 def binariesNR=1
-def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def toolsVer="7.47.0.Final"
 def AGENT_LABEL="kie-releases"
 // directory where the zip with all binaries is stored
 def zipDir="\$WORKSPACE/community-deploy-dir"
@@ -19,6 +20,8 @@ def nexusUrl = "https://repository.jboss.org/nexus"
 // in case of testing the upload of binaries to Nexus the credentials should be uploadNexus_test: recent value is for prod
 def uploadCreds = "kie_upload_Nexus"
 // download URL of jboss-eap for the additional tests
+
+
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
 // creation of folder
@@ -394,7 +397,7 @@ pipeline {
         }        
         stage('Create jbpm installers') {
             steps {
-                sh './droolsjbpm-build-bootstrap/script/release/09_createjBPM_installers.sh'
+                sh './droolsjbpm-build-bootstrap/script/release/09_createjBPM_installers.sh $toolsVer'
             }
         }
         stage('Drools binaries upload'){
@@ -443,6 +446,7 @@ pipelineJob("${folderPath}/community-release-pipeline-${baseBranch}") {
         stringParam("baseBranch", "${baseBranch}", "Please edit the name of the kie branch ")
         stringParam("releaseBranch", "${releaseBranch}", "Please edit name of the releaseBranch - i.e. r7.28.0.Final ")
         stringParam("organization", "${organization}", "Please edit the name of organization ")
+        stringParam("toolsVer", "${toolsVer}", "Please edit the latest stable version of droolsjbpm-tools<br>Important: needed for the jbpm-installer creation.")
         choiceParam("repBuild",["YES", "NO"],"Please select if<br>you want to do a new build = YES<br>a new build is not required and artifacts are already uploaded to Nexus = NO ")
         wHideParameterDefinition {
             name('MAVEN_OPTS')
