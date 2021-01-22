@@ -72,6 +72,22 @@ def final REPO_CONFIGS = [
                         "maven.test.failure.ignore": "true"
                 ]
         ],
+        "optaweb-employee-rostering"  : [
+                mvnGoals: "-e -nsu -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
+                mvnProps: [
+                        "full"                  : "true",
+                        "integration-tests"     : "true",
+                        "maven.test.failure.ignore" : "true"
+                ]
+        ],
+        "optaweb-vehicle-routing"  : [
+                mvnGoals: "-e -nsu -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
+                mvnProps: [
+                        "full"                  : "true",
+                        "integration-tests"     : "true",
+                        "maven.test.failure.ignore" : "true"
+                ]
+        ],
         "jbpm"                      : [
                 timeoutMins            : 120,
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly",
