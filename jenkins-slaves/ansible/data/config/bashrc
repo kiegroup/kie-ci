@@ -13,4 +13,4 @@ export MAVEN_OPTS="-Xmx2g"
 export GRAALVM_HOME=/opt/tools/graalvm
 export GOROOT=/opt/tools/go
 export GOPATH=/home/jenkins/go
-export PATH=$JAVA_HOME/bin:$MAVEN_HOME/bin:$GOROOT/bin:$OPERATORSDK_HOME/v1.2.0:$GRAALVM_HOME/bin:$GOPATH/bin:/opt/tools/mercurial/:/opt/tools/extras/:$PATH
+export PATH=$JAVA_HOME/bin:$MAVEN_HOME/bin:$GOROOT/bin:$OPERATORSDK_HOME/v1.2.0:$GOPATH/bin:/opt/tools/mercurial/:/opt/tools/extras/:$PATH:$GRAALVM_HOME/bin
