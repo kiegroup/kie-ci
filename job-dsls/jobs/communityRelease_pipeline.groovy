@@ -265,10 +265,10 @@ pipeline {
                 }                     
             }    
         }
-        // after a first build this email will be send               
-        stage ('1st email send with BUILD result') {
+        // send email for Sanity Checks                
+        stage ('Email send with BUILD result') {
             when{
-                expression { branchExists == '0' && repBuild == 'YES'}
+                expression { repBuild == 'YES' }
             }        
             steps {
                 emailext body: 'Build of community ${kieVersion} was:  ' + "${currentBuild.currentResult}" +  '\\n' +
@@ -278,59 +278,21 @@ pipeline {
                     ' \\n' +
                     'The artifacts are available here \\n' +
                     ' \\n' +
-                    'business-central artifacts: \\n' +
-                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
-                    '\\n' +
-                    'business-central-webapp: \\n' +
-                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/' + "${kieVersion}" + '\\n'+
-                    '\\n' +
-                    'business-monitoring-webapp: \\n' +
-                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/' + "${kieVersion}" + '\\n'+
+                    'business-central artifacts: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
+                    'business-central-webapp: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/' + "${kieVersion}" + '\\n'+
+                    'business-monitoring-webapp: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/' + "${kieVersion}" + '\\n'+
                     ' \\n' +
-                    'Please download for sanity checks: \\n' +
-                    'jbpm-server-distribution.zip: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/' + "${kieVersion}" + '\\n'+
+                    'Please download for sanity checks: jbpm-server-distribution.zip: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/' + "${kieVersion}" + '\\n'+
                     ' \\n' +                    
                     ' \\n' +
                     'Please download the needed binaries, fill in your assigned test scenarios and check the failing tests \\n' +
                     'sanity checks: https://docs.google.com/spreadsheets/d/1jPtRilvcOji__qN0QmVoXw6KSi4Nkq8Nz_coKIVfX6A/edit#gid=167259416 \\n' +
                     ' \\n' +
-                    'KIE version: ' + "${kieVersion}" + '\\n' +
+                    'In case Sanity Checks were already done and this kind of mail arrives the second time, please verify if the bugs reported in Sanity Checks are fixed now.' \\n + 
                     ' \\n' +
-                    ' \\n' +                    
-                    '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} status and artefacts for sanity checks', to: 'kie-jenkins-builds@redhat.com'
+                    'KIE version: ' + "${kieVersion}", subject: 'community-release-${baseBranch} ${kieVersion} status and artefacts for sanity checks', to: 'kie-jenkins-builds@redhat.com\'
             }    
-        }
-        // if after sanity checks a second build is requested this mail will be send
-        stage ('2nd email send with BUILD result') {
-            when{
-                expression { branchExists == '1' && repBuild == 'YES'}
-            }        
-            steps {
-                emailext body: 're-build of community ${kieVersion} after sanity checks was:  ' + "${currentBuild.currentResult}" +  '\\n' +
-                    ' \\n' +
-                    'PLEASE CHECK IF THE BLOCKERS DETECTED DURING SANITY CHECKS ARE FIXED NOW \\n' +
-                    ' \\n' +
-                    'Failed tests: $BUILD_URL/testReport \\n' +
-                    ' \\n' +
-                    ' \\n' +
-                    'The artifacts are available here \\n' +
-                    ' \\n' +
-                    'business-central artifacts: \\n' +
-                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
-                    '\\n' +
-                    'business-central-webapp: \\n' +
-                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/' + "${kieVersion}" + '\\n'+
-                    '\\n' +
-                    'business-monitoring-webapp: \\n' +
-                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/' + "${kieVersion}" + '\\n'+
-                    ' \\n' +
-                    'Please download for sanity checks: \\n' +
-                    'jbpm-server-distribution.zip: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/' + "${kieVersion}" + '\\n'+
-                    ' \\n' +                    
-                    ' \\n' +                    
-                    '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} re-build after sanity checks', to: 'kie-jenkins-builds@redhat.com\'
-            }    
-        }        
+        }       
         // user interaction required: continue or abort
         stage('Approval (Point of NO return)') {
             steps {
