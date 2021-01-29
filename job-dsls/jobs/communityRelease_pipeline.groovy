@@ -503,6 +503,8 @@ matrixJob("${folderPath}/community-release-${baseBranch}-jbpmTestCoverageMatrix"
         }
     }
 
+    label('kie-rhel7&&kie-mem8g&&!master')
+
     axes {
         labelExpression("label-exp","kie-linux&&kie-mem8g")
         jdk("${javadk}")
@@ -562,6 +564,7 @@ def kieWbTest='''#!/bin/bash -e
 # wget the tar.gz sources
 wget -q https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz  -O sources.tar.gz
 tar xzf sources.tar.gz
+rm sources.tar.gz
 mv kie-wb-distributions-$kieVersion/* .
 rm -rf kie-wb-distributions-$kieVersion
 
@@ -594,6 +597,8 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
+
+    label('kie-rhel7&&kie-mem8g&&!master')
 
     logRotator {
         numToKeep(3)
@@ -702,6 +707,8 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
+
+    label('kie-rhel7&&kie-mem8g&&!master')
 
     logRotator {
         numToKeep(3)
