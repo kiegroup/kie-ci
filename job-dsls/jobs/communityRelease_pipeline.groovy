@@ -167,19 +167,21 @@ pipeline {
                     '${BUILD_LOG, maxLines=750}', subject: 'community-release for ${kieVersion} failed', to: 'kie-jenkins-builds@redhat.com' 
             }
         }        
-        // create a directory on filemgmt.jboss.org where the binaries have to be stored  
+        // create a local directory for archiving artifacts  
         stage('Create upload dir') {
             when{
                 expression { repBuild == 'YES'}
             }        
             steps {
                 script {
-                    sh './droolsjbpm-build-bootstrap/script/release/prepareUploadDir.sh'
-                    sh 'cd "${kieVersion}"_uploadBinaries \\n' +
-                       'totSize=$(du -sh) \\n' +
-                       'echo "Total size of directory: " $totSize >> dirSize.txt \\n' +
-                       'echo "" >> dirSize.txt \\n' +
-                       'ls -l >> dirSize.txt'          
+                    execute {
+                        sh './droolsjbpm-build-bootstrap/script/release/prepareUploadDir.sh'
+                        sh 'cd "${kieVersion}"_uploadBinaries \\n' +
+                            'totSize=$(du -sh) \\n' +
+                            'echo "Total size of directory: " $totSize >> dirSize.txt \\n' +
+                            'echo "" >> dirSize.txt \\n' +
+                            'ls -l >> dirSize.txt'
+                    }                  
                 }
             }        
         }
@@ -198,7 +200,9 @@ pipeline {
                 expression { repBuild == 'YES'}
             }         
             steps {
-              junit '**/target/*-reports/TEST-*.xml'    
+                execute {
+                    junit '**/target/*-reports/TEST-*.xml'
+                }        
             }
         }         
         // binaries created in previous step will be compressed and uploaded to Nexus
