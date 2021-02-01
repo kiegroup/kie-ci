@@ -247,6 +247,8 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestCoverageMatrix") {
         stringParam("baseBranch", "${baseBranch}", "please edit the branch of the KIE release <br> Will be supplied by the parent job. <br> Normally the baseBranch will be supplied by parent job <br> ******************************************************** <br> ")
     }
 
+    label('kie-rhel7&&kie-mem8g&&!master')
+
     axes {
         labelExpression("label-exp","kie-linux&&kie-mem8g")
         jdk("${javadk}")
@@ -318,6 +320,8 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestContainerMatrix") {
         stringParam("baseBranch", "${baseBranch}", "please edit the branch of the KIE release <br> Will be supplied by the parent job. <br> Normally the baseBranch will be supplied by parent job <br> ******************************************************** <br> ")
 
     }
+
+    label('kie-rhel7&&kie-mem8g&&!master')
 
     axes {
         labelExpression("label-exp","kie-rhel7&&kie-mem8g")
@@ -402,6 +406,8 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
         stringParam("baseBranch", "${baseBranch}", "please edit the branch of the KIE release <br> Will be supplied by the parent job. <br> Normally the baseBranch will be supplied by parent job <br> ******************************************************** <br> ")
 
     }
+
+    label('kie-rhel7&&kie-mem8g&&!master')
 
     axes {
         labelExpression("label_exp", "kie-rhel7&&kie-mem8g&&gui-testing")
@@ -511,6 +517,8 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieServerMatrix") {
 
     }
 
+    label('kie-rhel7&&kie-mem8g&&!master')
+    
     axes {
         jdk("${javadk}")
         text("container", "wildfly", "eap7", "tomcat9")
