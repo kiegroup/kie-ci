@@ -167,19 +167,21 @@ pipeline {
                     '${BUILD_LOG, maxLines=750}', subject: 'community-release for ${kieVersion} failed', to: 'kie-jenkins-builds@redhat.com' 
             }
         }        
-        // create a directory on filemgmt.jboss.org where the binaries have to be stored  
+        // create a local directory for archiving artifacts  
         stage('Create upload dir') {
             when{
                 expression { repBuild == 'YES'}
             }        
             steps {
                 script {
-                    sh './droolsjbpm-build-bootstrap/script/release/prepareUploadDir.sh'
-                    sh 'cd "${kieVersion}"_uploadBinaries \\n' +
-                       'totSize=$(du -sh) \\n' +
-                       'echo "Total size of directory: " $totSize >> dirSize.txt \\n' +
-                       'echo "" >> dirSize.txt \\n' +
-                       'ls -l >> dirSize.txt'          
+                    execute {
+                        sh './droolsjbpm-build-bootstrap/script/release/prepareUploadDir.sh'
+                        sh 'cd "${kieVersion}"_uploadBinaries \\n' +
+                            'totSize=$(du -sh) \\n' +
+                            'echo "Total size of directory: " $totSize >> dirSize.txt \\n' +
+                            'echo "" >> dirSize.txt \\n' +
+                            'ls -l >> dirSize.txt'
+                    }                  
                 }
             }        
         }
@@ -198,7 +200,9 @@ pipeline {
                 expression { repBuild == 'YES'}
             }         
             steps {
-              junit '**/target/*-reports/TEST-*.xml'    
+                execute {
+                    junit '**/target/*-reports/TEST-*.xml'
+                }        
             }
         }         
         // binaries created in previous step will be compressed and uploaded to Nexus
@@ -261,10 +265,10 @@ pipeline {
                 }                     
             }    
         }
-        // after a first build this email will be send               
-        stage ('1st email send with BUILD result') {
+        // send email for Sanity Checks                
+        stage ('Email send with BUILD result') {
             when{
-                expression { branchExists == '0' && repBuild == 'YES'}
+                expression { repBuild == 'YES' }
             }        
             steps {
                 emailext body: 'Build of community ${kieVersion} was:  ' + "${currentBuild.currentResult}" +  '\\n' +
@@ -274,59 +278,21 @@ pipeline {
                     ' \\n' +
                     'The artifacts are available here \\n' +
                     ' \\n' +
-                    'business-central artifacts: \\n' +
-                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
-                    '\\n' +
-                    'business-central-webapp: \\n' +
-                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/' + "${kieVersion}" + '\\n'+
-                    '\\n' +
-                    'business-monitoring-webapp: \\n' +
-                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/' + "${kieVersion}" + '\\n'+
+                    'business-central artifacts: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
+                    'business-central-webapp: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/' + "${kieVersion}" + '\\n'+
+                    'business-monitoring-webapp: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/' + "${kieVersion}" + '\\n'+
                     ' \\n' +
-                    'Please download for sanity checks: \\n' +
-                    'jbpm-server-distribution.zip: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/' + "${kieVersion}" + '\\n'+
+                    'Please download for sanity checks: jbpm-server-distribution.zip: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/' + "${kieVersion}" + '\\n'+
                     ' \\n' +                    
                     ' \\n' +
                     'Please download the needed binaries, fill in your assigned test scenarios and check the failing tests \\n' +
                     'sanity checks: https://docs.google.com/spreadsheets/d/1jPtRilvcOji__qN0QmVoXw6KSi4Nkq8Nz_coKIVfX6A/edit#gid=167259416 \\n' +
                     ' \\n' +
-                    'KIE version: ' + "${kieVersion}" + '\\n' +
+                    'In case Sanity Checks were already done and this kind of mail arrives the second time, please verify if the bugs reported in Sanity Checks are fixed now.' \\n + 
                     ' \\n' +
-                    ' \\n' +                    
-                    '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} status and artefacts for sanity checks', to: 'kie-jenkins-builds@redhat.com'
+                    'KIE version: ' + "${kieVersion}", subject: 'community-release-${baseBranch} ${kieVersion} status and artefacts for sanity checks', to: 'kie-jenkins-builds@redhat.com\'
             }    
-        }
-        // if after sanity checks a second build is requested this mail will be send
-        stage ('2nd email send with BUILD result') {
-            when{
-                expression { branchExists == '1' && repBuild == 'YES'}
-            }        
-            steps {
-                emailext body: 're-build of community ${kieVersion} after sanity checks was:  ' + "${currentBuild.currentResult}" +  '\\n' +
-                    ' \\n' +
-                    'PLEASE CHECK IF THE BLOCKERS DETECTED DURING SANITY CHECKS ARE FIXED NOW \\n' +
-                    ' \\n' +
-                    'Failed tests: $BUILD_URL/testReport \\n' +
-                    ' \\n' +
-                    ' \\n' +
-                    'The artifacts are available here \\n' +
-                    ' \\n' +
-                    'business-central artifacts: \\n' +
-                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n'+
-                    '\\n' +
-                    'business-central-webapp: \\n' +
-                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/' + "${kieVersion}" + '\\n'+
-                    '\\n' +
-                    'business-monitoring-webapp: \\n' +
-                    'https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/' + "${kieVersion}" + '\\n'+
-                    ' \\n' +
-                    'Please download for sanity checks: \\n' +
-                    'jbpm-server-distribution.zip: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/' + "${kieVersion}" + '\\n'+
-                    ' \\n' +                    
-                    ' \\n' +                    
-                    '${BUILD_LOG, maxLines=750}', subject: 'community-release-${baseBranch} ${kieVersion} re-build after sanity checks', to: 'kie-jenkins-builds@redhat.com\'
-            }    
-        }        
+        }       
         // user interaction required: continue or abort
         stage('Approval (Point of NO return)') {
             steps {
@@ -537,6 +503,8 @@ matrixJob("${folderPath}/community-release-${baseBranch}-jbpmTestCoverageMatrix"
         }
     }
 
+    label('kie-rhel7&&kie-mem8g&&!master')
+
     axes {
         labelExpression("label-exp","kie-linux&&kie-mem8g")
         jdk("${javadk}")
@@ -596,6 +564,7 @@ def kieWbTest='''#!/bin/bash -e
 # wget the tar.gz sources
 wget -q https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz  -O sources.tar.gz
 tar xzf sources.tar.gz
+rm sources.tar.gz
 mv kie-wb-distributions-$kieVersion/* .
 rm -rf kie-wb-distributions-$kieVersion
 
@@ -628,6 +597,8 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
+
+    label('kie-rhel7&&kie-mem8g&&!master')
 
     logRotator {
         numToKeep(3)
@@ -736,6 +707,8 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
+
+    label('kie-rhel7&&kie-mem8g&&!master')
 
     logRotator {
         numToKeep(3)
