@@ -216,6 +216,13 @@
     owner: jenkins
     group: jenkins
 
+### Sudoers Entry for Jenkins user ###
+- name: sudo without password for wheel group
+  copy:
+    content: 'jenkins ALL=(ALL:ALL) NOPASSWD:ALL'
+    dest: /etc/sudoers.d/jenkins_nopasswd
+    mode: 0440
+
 ### Mercurial ###
 - name: Download Mercurial archives
   get_url:
