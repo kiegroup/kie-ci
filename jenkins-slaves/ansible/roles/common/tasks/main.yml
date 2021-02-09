@@ -46,6 +46,13 @@
     pkg: ['git', 'tig']
     state: latest    
 
+### Update pip ###
+- name: Update pip3
+  pip:
+    name: pip
+    state: latest
+    executable: /bin/pip3
+
 ### System services ###
 
 - name: Start and enable RNGD Service
@@ -84,6 +91,13 @@
     limit_type: '-'
     limit_item: nofile
     value: '32768'
+
+- name: Increase stack limits (hard and soft) for jenkins user to avoid argument list too long
+  pam_limits:
+    domain: jenkins
+    limit_type: '-'
+    limit_item: stack
+    value: '65536'
 
 ### Tools ###
 
