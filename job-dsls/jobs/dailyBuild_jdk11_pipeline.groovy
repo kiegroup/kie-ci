@@ -51,7 +51,7 @@ pipeline {
         stage('Calculate versions') {
             steps {
                 script {
-                    data = new Date().format('yyyyMMdd-hhMMss')
+                    data = new Date().format('yyMMdd-hh')
                     kieVersion = "${kieVersion}.${data}"
 
                     echo "data: ${data}"
