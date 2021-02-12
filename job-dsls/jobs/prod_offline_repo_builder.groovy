@@ -7,7 +7,7 @@ String commands = this.getClass().getResource("job-scripts/prod_offline_repo_bui
 
 folder("PROD")
 
-job("offline-repo-builder") {
+job("PROD/offline-repo-builder") {
     description("Check offliner manifest against offline repository")
 
     logRotator {

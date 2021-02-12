@@ -12,7 +12,7 @@ String commands = this.getClass().getResource("job-scripts/prod_rhba_properties_
 
 folder("PROD")
 
-pipelineJob("rhba-properties-generator") {
+pipelineJob("PROD/rhba-properties-generator") {
     description("Generate properties files for nightly and productized builds")
 
     parameters {

@@ -5,7 +5,7 @@ String commands = this.getClass().getResource("job-scripts/prod_rhba_staging.jen
 
 folder("PROD")
 
-pipelineJob("rhba-staging") {
+pipelineJob("PROD/rhba-staging") {
     description("Artifact staging from PNC/Indy to the host rcm-guest.app.eng.bos.redhat.com. \n" +
             "It retrieves from the specified PNC_API_URL the last artifact builds for the MILESTONE and stores them into the host STAGING_BASE_PATH directory.\n" +
             "The staged artifacts are restricted to the ones specified in the variable projects.\n" +
