@@ -5,6 +5,8 @@ import org.kie.jenkins.jobdsl.Constants
 
 String commands = this.getClass().getResource("job-scripts/prod_offline_repo_builder.sh").text
 
+folder("PROD")
+
 job("offline-repo-builder") {
     description("Check offliner manifest against offline repository")
 
@@ -15,7 +17,7 @@ job("offline-repo-builder") {
 
     parameters {
         stringParam("MANIFEST_URL", "", "Offliner manifest URL")
-        stringParam("RELEASE_REPO_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/offline-repo-7.6/", "Scratch repository for the release")
+        stringParam("RELEASE_REPO_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/offline-repo-7.10/", "Scratch repository for the release")
     }
 
     scm {
