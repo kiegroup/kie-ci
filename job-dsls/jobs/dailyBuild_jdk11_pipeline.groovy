@@ -1,9 +1,6 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def javadk="kie-jdk11"
-def javaToolEnv="KIE_JDK11"
-def mvnToolEnv="KIE_MAVEN_3_6_3"
-def mvnHome="${mvnToolEnv}_HOME"
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
