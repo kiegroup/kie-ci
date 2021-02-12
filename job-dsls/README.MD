@@ -31,7 +31,7 @@ Manually create a job:
    * Tasks: `clean test`
 * Process Job DSLs
    * DSL Scripts: `job-dsls/jobs/**/*.groovy`
-   * Additional classpath: `job-dsls/src/main/groovy`
+   * Additional classpath: `job-dsls/src/main/groovy`, `job-dsls/src/main/resources`
 * Publish JUnit test result report
    * Test report XMLs: `job-dsls/build/test-results/**/*.xml`
 
