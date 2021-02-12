@@ -40,8 +40,8 @@ pipeline {
                                 println "changes ${changes}"
                                 if(changes.size() > 0) {
                                     println 'There are changes'
-                                    sh 'git config user.email "emingora@redhat.com"'
-                                    sh 'git config user.name "Enrique Mingorance Cano"'
+                                    sh 'git config user.email "kie-ci1@redhat.com"'
+                                    sh 'git config user.name "kie-ci1"'
                                     sh "git commit -m 'pipelines shared libraries import pointing to updated to ${BRANCH_NAME}'"
                                     sh 'git push origin ${BRANCH_NAME}'
                                 } else {

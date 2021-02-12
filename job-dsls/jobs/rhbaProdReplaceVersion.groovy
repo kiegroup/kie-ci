@@ -57,8 +57,8 @@ pipeline {
                                     if(changes.size() > 0) {
                                         println 'There are changes'
                                         sh 'git add pom.xml'
-                                        sh 'git config user.email "emingora@redhat.com"'
-                                        sh 'git config user.name "Enrique Mingorance Cano"'
+                                        sh 'git config user.email "kie-ci1@redhat.com"'
+                                        sh 'git config user.name "kie-ci1"'
                                         sh "git commit -m 'version.org.kie updated to ${VERSION_ORG_KIE}'"
                                         sh 'git push'
                                     } else {

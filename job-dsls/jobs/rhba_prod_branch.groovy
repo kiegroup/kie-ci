@@ -38,8 +38,8 @@ pipeline {
                                     def encodedPass = URLEncoder.encode(PASS, 'UTF-8')
                                     sh "git clone https://${USER}:${encodedPass}@github.com/${group}/${name} ."
                                     sh "git checkout -b ${BRANCH_NAME}"
-                                    sh 'git config user.email "emingora@redhat.com"\'
-                                    sh 'git config user.name "Enrique Mingorance Cano"\'
+                                    sh 'git config user.email "kie-ci1@redhat.com"'
+                                    sh 'git config user.name "kie-ci1"'
                                     sh "git push origin ${BRANCH_NAME}"
                                 }
                             }                        
