@@ -77,7 +77,10 @@ job("a-seed-job") {
                     "job-dsls/jobs/**/reduced_drools_release.groovy \n" +
                     "job-dsls/jobs/**/prod_projects_downstream_production.groovy \n" +
                     "job-dsls/jobs/**/srcclr_scan_job.groovy\n" +
-                    "job-dsls/jobs/**/jenkins_shared_libs.groovy")
+                    "job-dsls/jobs/**/jenkins_shared_libs.groovy\n" +
+                    "job-dsls/jobs/**/prod_offline_repo_builder.groovy\n" +
+                    "job-dsls/jobs/**/prod_rhba_properties_generator.groovy\n" +
+                    "job-dsls/jobs/**/prod_rhba_staging.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)
