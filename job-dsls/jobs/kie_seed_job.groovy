@@ -15,11 +15,11 @@ def seedJob='''#!/bin/bash -e
 cd job-dsls
 ./gradlew clean test'''
 
-job("kie-seed-job") {
+job("a-kie-seed-job") {
 
     description("this job creates all needed Jenkins jobs")
 
-    label("rhel7")
+    label("kie-rhel7")
 
     logRotator {
         numToKeep(5)
