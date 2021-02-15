@@ -15,11 +15,11 @@ def seedJob='''#!/bin/bash -e
 cd job-dsls
 ./gradlew clean test'''
 
-job("kie-seed-job") {
+job("a-kie-seed-job") {
 
     description("this job creates all needed Jenkins jobs")
 
-    label("rhel7")
+    label("kie-rhel7")
 
     logRotator {
         numToKeep(5)
@@ -68,7 +68,7 @@ job("kie-seed-job") {
                     "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
                     "job-dsls/jobs/**/pr_droolsjbpm_tools.groovy\n" +
                     "job-dsls/jobs/**/prodTag_pipeline.groovy\n" +
-                    "job-dsls/jobs/**/kie_seed_job.groovy\n" +
+                    "job-dsls/jobs/**/a-kie_seed_job.groovy\n" +
                     "job-dsls/jobs/**/sonarcloud_daily.groovy\n" +
                     "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
                     "job-dsls/jobs/**/automatic_web_publishing.groovy\n" +
