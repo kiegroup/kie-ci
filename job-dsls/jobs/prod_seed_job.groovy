@@ -19,7 +19,7 @@ job("a-seed-job") {
 
     description("this job creates all needed Jenkins jobs")
 
-    label("kie-rhel7&&kie-mem8g")
+    label("kie-rhel7")
 
     logRotator {
         numToKeep(5)
