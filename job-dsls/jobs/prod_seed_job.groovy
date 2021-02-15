@@ -15,7 +15,7 @@ def seedJob='''#!/bin/bash -e
 cd job-dsls
 ./gradlew clean test'''
 
-job("prod-seed-job") {
+job("a-prod-seed-job") {
 
     description("this job creates all needed Jenkins jobs")
 

@@ -68,7 +68,7 @@ job("a-kie-seed-job") {
                     "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
                     "job-dsls/jobs/**/pr_droolsjbpm_tools.groovy\n" +
                     "job-dsls/jobs/**/prodTag_pipeline.groovy\n" +
-                    "job-dsls/jobs/**/a-kie_seed_job.groovy\n" +
+                    "job-dsls/jobs/**/kie_seed_job.groovy\n" +
                     "job-dsls/jobs/**/sonarcloud_daily.groovy\n" +
                     "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
                     "job-dsls/jobs/**/automatic_web_publishing.groovy\n" +
