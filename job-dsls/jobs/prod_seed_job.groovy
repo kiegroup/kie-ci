@@ -58,6 +58,7 @@ job("prod-seed-job") {
                     "job-dsls/jobs/**/prod_offline_repo_builder.groovy\n" +
                     "job-dsls/jobs/**/prod_rhba_properties_generator.groovy\n" +
                     "job-dsls/jobs/**/prod_rhba_staging.groovy\n" +
+                    "job-dsls/jobs/**/prod_kogito_properties_generator.groovy\n" +
                     "job-dsls/jobs/**/prod_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
