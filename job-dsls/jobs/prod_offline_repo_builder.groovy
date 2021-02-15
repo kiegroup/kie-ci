@@ -53,9 +53,8 @@ def offline = '''
       done
 '''
 
-folder("PROD")
 
-job("PROD/offline-repo-builder") {
+job("offline-repo-builder") {
     description("Check offliner manifest against offline repository")
 
     logRotator {

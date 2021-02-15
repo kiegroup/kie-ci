@@ -69,9 +69,7 @@ def publishFile(String fileId, String fileName, Map<String, String> binding, Str
 }
 '''
 
-folder("PROD")
-
-pipelineJob("PROD/rhba-properties-generator") {
+pipelineJob("rhba-properties-generator") {
     description("Generate properties files for nightly and productized builds")
 
     parameters {
