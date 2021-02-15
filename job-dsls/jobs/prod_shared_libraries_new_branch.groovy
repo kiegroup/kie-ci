@@ -51,12 +51,8 @@ pipeline {
 }
 '''
 
-// Creation of folders where jobs are stored
-folder("PROD")
-def folderPath="PROD"
-
 // job name
-String jobName = "$folderPath/jenkins-pipeline-shared-libraries-newBranch"
+String jobName = "jenkins-pipeline-shared-libraries-newBranch"
 
 pipelineJob(jobName) {
 

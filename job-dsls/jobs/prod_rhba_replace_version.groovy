@@ -81,12 +81,8 @@ pipeline {
 }
 '''
 
-// Creation of folders where jobs are stored
-folder("PROD")
-def folderPath="PROD"
-
 // job name
-String jobName = "$folderPath/rhba-prod-replace-version.org.kie"
+String jobName = "rhba-prod-replace-version.org.kie"
 
 pipelineJob(jobName) {
 

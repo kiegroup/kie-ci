@@ -6,7 +6,6 @@ def javaToolEnv="KIE_JDK1_8"
 def kieMainBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_VERSION
-def labelName="kie-rhel7"
 
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -16,17 +15,17 @@ def seedJob='''#!/bin/bash -e
 cd job-dsls
 ./gradlew clean test'''
 
-job("kie-tools-seed-job") {
+job("prod-seed-job") {
 
-    description("this job creates all needed Jenkins jobs for kie-tools")
+    description("this job creates all needed Jenkins jobs")
 
-    label(labelName)
+    label("kie-rhel7")
 
     logRotator {
         numToKeep(5)
     }
 
-    jdk(javadk)
+    jdk("${javadk}")
 
     scm {
         git {
@@ -52,11 +51,14 @@ job("kie-tools-seed-job") {
         shell(seedJob)
 
         jobDsl {
-            targets("job-dsls/jobs/**/send_UMB_trigger_after_version_upgrade.groovy \n" +
-                    "job-dsls/jobs/**/kieAll_meta_pipeline.groovy \n" +
-                    "job-dsls/jobs/**/deploy_development_version.groovy \n" +
-                    "job-dsls/jobs/**/kie_docker_ui_webapp.groovy \n" +
-                    "job-dsls/jobs/**/kie_tools_seed_job.groovy")
+            targets("job-dsls/jobs/**/prod_replace_shared_libraries.groovy\n" +
+                    "job-dsls/jobs/**/prod_rhba_prod_branch.groovy\n" +
+                    "job-dsls/jobs/**/prod_rhba_replace_version.groovy\n" +
+                    "job-dsls/jobs/**/prod_shared_libraries_new_branch.groovy\n" +
+                    "job-dsls/jobs/**/prod_offline_repo_builder.groovy\n" +
+                    "job-dsls/jobs/**/prod_rhba_properties_generator.groovy\n" +
+                    "job-dsls/jobs/**/prod_rhba_staging.groovy\n" +
+                    "job-dsls/jobs/**/prod_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)
@@ -64,7 +66,8 @@ job("kie-tools-seed-job") {
             failOnMissingPlugin(true)
             unstableOnDeprecation(true)
             removedJobAction('IGNORE')
-            removedConfigFilesAction('IGNORE')
+            removedViewAction('DELETE')
+            //removedConfigFilesAction('IGNORE')
             lookupStrategy('SEED_JOB')
             additionalClasspath("job-dsls/src/main/groovy")
         }
