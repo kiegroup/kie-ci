@@ -6,7 +6,7 @@ def javaToolEnv="KIE_JDK1_8"
 def kieMainBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_VERSION
-def labelName="kie-rhel7 && kie-mem4g"
+def labelName="kie-rhel7"
 
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -16,7 +16,7 @@ def seedJob='''#!/bin/bash -e
 cd job-dsls
 ./gradlew clean test'''
 
-job("a-kie-tools-seed-job") {
+job("kie-tools-seed-job") {
 
     description("this job creates all needed Jenkins jobs for kie-tools")
 
