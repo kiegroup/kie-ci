@@ -46,7 +46,6 @@ for (jobNames in JOB_NAMES) {
     Closure<Object> get = { String key -> jobNames.value[key] ?: DEFAULTS[key] }
 
     String jobName = jobNames.key
-    String folderPath = get("folderPath")
     String jobAbr = get("jobAbr")
     String labExp = get("labExp")
     String jobDescription = get('jobDescription')
@@ -61,6 +60,7 @@ for (jobNames in JOB_NAMES) {
     String jobN = "$folderPath/$jobName"
 
     job(jobN) {
+
         description(jobDescription)
 
         logRotator {
@@ -163,3 +163,4 @@ def getScript(String fullName) {
             "openstack server delete \$FULL_NAME\n" +
             "sleep 10s\n"
 }
+
