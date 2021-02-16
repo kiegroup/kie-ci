@@ -278,11 +278,11 @@ pipeline {
                     ' \\n' +
                     'The artifacts are available here \\n' +
                     ' \\n' +
-                    'business-central artifacts: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/' + "${kieVersion}" + '\\n' +
-                    'business-central-webapp: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/' + "${kieVersion}" + '\\n' +
-                    'business-monitoring-webapp: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/' + "${kieVersion}" + '\\n' +
+                    'business-central artifacts: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/ \\n' +
+                    'business-central-webapp: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/$kieVersion/ \\n' +
+                    'business-monitoring-webapp: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/$kieVersion/ \\n' +
                     ' \\n' +
-                    'Please download for sanity checks: jbpm-server-distribution.zip: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/' + "${kieVersion}" + '\\n' +
+                    'Please download for sanity checks: jbpm-server-distribution.zip: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
                     ' \\n' +                    
                     ' \\n' +
                     'Please download the needed binaries, fill in your assigned test scenarios and check the failing tests \\n' +
@@ -290,7 +290,7 @@ pipeline {
                     ' \\n' +
                     'In case Sanity Checks were already done and this kind of mail arrives the second time, please verify if the bugs reported in Sanity Checks are fixed now. \\n' + 
                     ' \\n' +
-                    'KIE version: ' + "${kieVersion}", subject: 'community-release-${baseBranch} ${kieVersion} status and artefacts for sanity checks', to: 'kie-jenkins-builds@redhat.com\'
+                    'KIE version: $kieVersion', subject: 'community-release-$baseBranch $kieVersion status and artefacts for sanity checks', to: 'bsig@redhat.com'
             }    
         }       
         // user interaction required: continue or abort
@@ -318,9 +318,9 @@ pipeline {
                 'business-central-webapp: https://origin-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central-webapp/$kieVersion/ \\n' +
                 'business-monitoring-webapp: https://origin-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/$kieVersion/ \\n' +
                 'jbpm-server-distribution (single zip): https://origin-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
-                 '\\n' +
-                 'Component version:\\n' +
-                 'kie = $kieVersion', subject: 'community-release-${baseBranch} $kieVersion was released', to: 'bsig@redhat.com\'
+                '\\n' +
+                'Component version:\\n' +
+                'kie = $kieVersion', subject: 'community-release-$baseBranch $kieVersion was released', to: 'bsig@redhat.com'
             }
         }         
         // if a the pipeline job was executed again but without building the binaries from uploading to filemgmt.jboss.org are needed
