@@ -1,9 +1,9 @@
 /**
- * Creates all detele-jobs in Jenkins/Tools/provisioning
- * delete-cekit-cacher
- * delete-docker-registry
- * delete-smee-client
- * delete-verdaccio-service
+ * Creates all provision-jobs in Jenkins/Tools/provisioning
+ * provision-cekit-cacher
+ * provision-docker-registry
+ * provision-smee-client
+ * provision-verdaccio-service
  */
 
 import org.kie.jenkins.jobdsl.Constants
@@ -14,25 +14,42 @@ def final DEFAULTS = [
         logRot : 10,
         labExp : "ansible",
         timeOutVar : 30,
-        param : "",
-        paramDescription: ""
+        params : [ ],
+        defaultValues : [ ],
+        paramsDescription : [ ]
 ]
+
 def final JOB_NAMES = [
-        "delete-cekit-cacher"       : [
-                jobAbr: "CekitCacher"
+        "provision-cekit-cacher"       : [
+                jobAbr: "CekitCacher",
+                params : [
+                        "IMAGE",
+                        "FLAVOUR",
+                        "DDNS_HOSTNAME",
+                        "DDNS_HASH"
+                ],
+                defaultValues : [
+                        "bxms-packer-rhel7-snapshot-updated",
+                        "m1.medium",
+                        "ba-cekit-cacher",
+                        "d1c2341602998809404776a93d354bd0"
+
+                ],
+                paramsDescription : [
+                        "The name of the image to be used for machine creation.",
+                        "The flavor (i.e. resources such as CPU cores, RAM, ...) defining the machine. m1.medium = 2 vCPUs, 4 GB RAM, 40 GB HDD",
+                        "Hostname to use in DDNS service",
+                        "Hash used as authorization for use of specified hostname."
+                ]
         ],
-        "delete-docker-registry"    : [
+        "provision-docker-registry"    : [
                 jobAbr: "DockerReg"
         ],
-        "delete-smee-client"        : [
-                jobAbr: "SmeeClient",
-                param : "SMEE_NUMBER",
-                paramDescription : "The number related with the BUILD_ID from provision-smee-client job when the machine was provisioned. 14 for instance"
-        ],
-        "delete-verdaccio-service"  : [
-                jobAbr: "VerdaccioServ",
-                param: "INSTANCE_NUMBER",
-                paramDescription: "The number related with the BUILD_ID from provision-verdaccio-service job when the machine was provisioned. 14 for instance"
+        "provision-smee-client"        : [
+                jobAbr: "SmeeClient"
+         ],
+        "provision-verdaccio-service"  : [
+                jobAbr: "VerdaccioServ"
         ]
 ]
 
@@ -46,10 +63,12 @@ for (jobNames in JOB_NAMES) {
     String folderPath = get("folderPath")
     String jobAbr = get("jobAbr")
     String labExp = get("labExp")
-    String param = get("param")
-    String paramDesc = get("paramDescription")
+    list params = get("params")
+    list paramsDesc = get("paramsDescription")
+    list defaultValues = get("defaultValues")
     def logRot = get("logRot")
     def timeOutVar = get("timeOutVar")
+    def listMax = params.size()
 
     // jobs for master branch don't use the branch in the name
     String jobN = "$folderPath/$jobName"
@@ -63,9 +82,14 @@ for (jobNames in JOB_NAMES) {
 
         label(labExp)
 
-        if ( param != "") {
-            parameters {
-                stringParam ("${param}","","${paramDesc}")
+        if ( params != "") {
+            for (i = 0; i <=listMax; i++ ) {
+                String PARAM_NAME = params[i]
+                String PARAM_DEFAULT = defaultValues[i]
+                String PARAM_DESC = paramsDesc[i]
+                parameters {
+                    stringParam("${PARAM_NAME}", "${PARAM_DEFAULT}","${PARAM_DESC}")
+                }
             }
         }
 
@@ -99,7 +123,7 @@ for (jobNames in JOB_NAMES) {
 
             // Injects passwords as environment variables into the job.
             injectPasswords {
-            // Injects global passwords provided by Jenkins configuration.
+                // Injects global passwords provided by Jenkins configuration.
                 injectGlobalPasswords(true)
                 // Masks passwords provided by build parameters.
                 maskPasswordParameters(true)
@@ -138,21 +162,13 @@ for (jobNames in JOB_NAMES) {
 String getDescription(String Abr){
     switch(Abr) {
         case "VerdaccioServ":
-            return "Destroys verdaccio-service machine from PSI (Upshift) OpenStack.\n" +
-                    " \n" +
-                    "Do NOT run unless you know what you are doing!"
+            return "Destroys verdaccio-service machine from PSI (Upshift) OpenStack.<br>Do NOT run unless you know what you are doing!"
         case "DockerReg":
-            return "Destroys local docker-registry machine from PSI (Upshift) OpenStack.\n" +
-                    " \n" +
-                    "Do NOT run unless you know what you are doing!"
+            return "Destroys local docker-registry machine from PSI (Upshift) OpenStack.<br>Do NOT run unless you know what you are doing!"
         case "SmeeClient":
-            return "Destroys smee-client machine from PSI (Upshift) OpenStack. \n" +
-                    " \n" +
-                    "Do NOT run unless you know what you are doing!"
+            return "Destroys smee-client machine from PSI (Upshift) OpenStack.<br>Do NOT run unless you know what you are doing!"
         default:
-            return "Destroys cekit-cacher machine from PSI (Upshift) OpenStack. \n" +
-                    " \n" +
-                    "Do NOT run unless you know what you are doing!"
+            return "Destroys cekit-cacher machine from PSI (Upshift) OpenStack.<br>Do NOT run unless you know what you are doing!"
     }
 }
 
