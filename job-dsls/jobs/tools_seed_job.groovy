@@ -53,7 +53,7 @@ job("a-tools-seed-job") {
         jobDsl {
             targets("job-dsls/jobs/**/slave_image_build.groovy\n" +
                     "job-dsls/jobs/**/slave_image_build_PR_test.groovy\n" +
-                    "job-dsls/jobs/**/tools_provisioning_delete.groovy\n" +
+                    "job-dsls/jobs/**/tools_provisioning*.groovy\n" +
                     "job-dsls/jobs/**/tools_seed_job.groovy")
             useScriptText(false)
             sandbox(false)

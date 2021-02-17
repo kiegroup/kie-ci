@@ -6,8 +6,6 @@
  * delete-verdaccio-service
  */
 
-import org.kie.jenkins.jobdsl.Constants
-
 def final DEFAULTS = [
         jobAbr : "",
         folderPath : "Provisioning",
@@ -138,20 +136,16 @@ for (jobNames in JOB_NAMES) {
 String getDescription(String Abr){
     switch(Abr) {
         case "VerdaccioServ":
-            return "Destroys verdaccio-service machine from PSI (Upshift) OpenStack.\n" +
-                    " \n" +
+            return "Destroys verdaccio-service machine from PSI (Upshift) OpenStack.<br>\n" +
                     "Do NOT run unless you know what you are doing!"
         case "DockerReg":
-            return "Destroys local docker-registry machine from PSI (Upshift) OpenStack.\n" +
-                    " \n" +
+            return "Destroys local docker-registry machine from PSI (Upshift) OpenStack.<br>\n" +
                     "Do NOT run unless you know what you are doing!"
         case "SmeeClient":
-            return "Destroys smee-client machine from PSI (Upshift) OpenStack. \n" +
-                    " \n" +
+            return "Destroys smee-client machine from PSI (Upshift) OpenStack.<br>\n" +
                     "Do NOT run unless you know what you are doing!"
         default:
-            return "Destroys cekit-cacher machine from PSI (Upshift) OpenStack. \n" +
-                    " \n" +
+            return "Destroys cekit-cacher machine from PSI (Upshift) OpenStack.<br> \n" +
                     "Do NOT run unless you know what you are doing!"
     }
 }
