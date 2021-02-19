@@ -13,22 +13,27 @@ def final DEFAULTS = [
         labExp : "ansible",
         timeOutVar : 30,
         param : "",
-        paramDescription: ""
+        paramDescription: "",
+        jobDescription: ""
 ]
 def final JOB_NAMES = [
         "delete-cekit-cacher"       : [
-                jobAbr: "CekitCacher"
+                jobAbr: "CekitCacher",
+                jobDescription : "Destroys cekit-cacher machine from PSI (Upshift) OpenStack.<br>Do NOT run unless you know what you are doing!"
         ],
         "delete-docker-registry"    : [
-                jobAbr: "DockerReg"
+                jobAbr: "DockerReg",
+                jobDescription : "Destroys local docker-registry machine from PSI (Upshift) OpenStack.<br>Do NOT run unless you know what you are doing!"
         ],
         "delete-smee-client"        : [
                 jobAbr: "SmeeClient",
+                jobDescription : "Destroys smee-client machine from PSI (Upshift) OpenStack.<br>Do NOT run unless you know what you are doing!",
                 param : "SMEE_NUMBER",
                 paramDescription : "The number related with the BUILD_ID from provision-smee-client job when the machine was provisioned. 14 for instance"
         ],
         "delete-verdaccio-service"  : [
                 jobAbr: "VerdaccioServ",
+                jobDescription : "Destroys verdaccio-service machine from PSI (Upshift) OpenStack.<br>Do NOT run unless you know what you are doing!",
                 param: "INSTANCE_NUMBER",
                 paramDescription: "The number related with the BUILD_ID from provision-verdaccio-service job when the machine was provisioned. 14 for instance"
         ]
@@ -44,16 +49,18 @@ for (jobNames in JOB_NAMES) {
     String folderPath = get("folderPath")
     String jobAbr = get("jobAbr")
     String labExp = get("labExp")
+    String jobDescription = get('jobDescription')
     String param = get("param")
     String paramDesc = get("paramDescription")
     def logRot = get("logRot")
     def timeOutVar = get("timeOutVar")
+    def script = this.getClass().getResource("tools/tools_provisioning_delete.groovy").text
 
     // jobs for master branch don't use the branch in the name
     String jobN = "$folderPath/$jobName"
 
     job(jobN) {
-        description(getDescription(jobAbr))
+        description(jobDescription)
 
         logRotator {
             numToKeep(logRot)
@@ -127,66 +134,7 @@ for (jobNames in JOB_NAMES) {
 
         // Adds step that executes a shell script
         steps {
-            shell(getScripts(jobAbr))
+            shell(script)
         }
-    }
-}
-
-// def of variables
-String getDescription(String Abr){
-    switch(Abr) {
-        case "VerdaccioServ":
-            return "Destroys verdaccio-service machine from PSI (Upshift) OpenStack.<br>\n" +
-                    "Do NOT run unless you know what you are doing!"
-        case "DockerReg":
-            return "Destroys local docker-registry machine from PSI (Upshift) OpenStack.<br>\n" +
-                    "Do NOT run unless you know what you are doing!"
-        case "SmeeClient":
-            return "Destroys smee-client machine from PSI (Upshift) OpenStack.<br>\n" +
-                    "Do NOT run unless you know what you are doing!"
-        default:
-            return "Destroys cekit-cacher machine from PSI (Upshift) OpenStack.<br> \n" +
-                    "Do NOT run unless you know what you are doing!"
-    }
-}
-
-String getScripts(String Abr) {
-    switch(Abr) {
-        case "VerdaccioServ":
-            return ". \$OPENRC_FILE\n" +
-                    "# OS_PASSWORD gets injected from global passwords\n" +
-                    "\n" +
-                    "export FULL_NAME=\"verdaccio-service-\$INSTANCE_NUMBER\"\n" +
-                    "\n" +
-                    "# delete the machine\n" +
-                    "openstack server delete \$FULL_NAME\n" +
-                    "sleep 10s\n"
-        case "DockerReg":
-            return ". \$OPENRC_FILE\n" +
-                    "# OS_PASSWORD gets injected from global passwords\n" +
-                    "\n" +
-                    "export FULL_NAME=\"provisioner-job-docker-registry-server\"\n" +
-                    "\n" +
-                    "# delete the machine\n" +
-                    "openstack server delete \$FULL_NAME\n" +
-                    "sleep 10s\n"
-        case "SmeeClient":
-            return ". \$OPENRC_FILE\n" +
-                    "# OS_PASSWORD gets injected from global passwords\n" +
-                    "\n" +
-                    "export FULL_NAME=\"smee-client-\$SMEE_NUMBER\"\n" +
-                    "\n" +
-                    "# delete the machine\n" +
-                    "openstack server delete \$FULL_NAME\n" +
-                    "sleep 10s"
-        default:
-            return ". \$OPENRC_FILE\n" +
-                    "# OS_PASSWORD gets injected from global passwords\n" +
-                    "\n" +
-                    "export FULL_NAME=\"provisioner-job-cekit-cacher-server\"\n" +
-                    "\n" +
-                    "# delete the machine\n" +
-                    "openstack server delete \$FULL_NAME\n" +
-                    "sleep 10s"
     }
 }
