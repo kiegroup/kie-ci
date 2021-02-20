@@ -97,6 +97,20 @@ pipeline {
                 }    
             }
         }
+        // email send automatically when release starts and the release branches are not created
+        stage ('Send email: release start') {
+            when{
+                expression { branchExists == '0'}
+            }
+            steps {
+                emailext body: 'The build for community release ${kieVersion} started. \\n' +
+                ' \\n' +
+                '@leads: Please look at the sanity checks: https://docs.google.com/spreadsheets/d/1jPtRilvcOji__qN0QmVoXw6KSi4Nkq8Nz_coKIVfX6A/edit#gid=167259416 \\n' +
+                'and assign tasks to people who should run these checks (if not done yet) \\n' +
+                ' \\n' +
+                'Thank you', subject: 'build for community-release $kieVersion started', to: 'bsig@redhat.com etirelli@redhat.com lazarotti@redhat.com dward@redhat.com dgutierr@redhat.com'
+            }
+        }
         // if release branches doesn't exist they will be created
         stage('Create release branches') {
             when{
@@ -107,7 +121,7 @@ pipeline {
                     sh './droolsjbpm-build-bootstrap/script/release/02_createReleaseBranches.sh $releaseBranch'
                 }    
             }
-        } 
+        }
         // part of the Maven rep will be erased
         stage ('Remove M2') {
             steps {
