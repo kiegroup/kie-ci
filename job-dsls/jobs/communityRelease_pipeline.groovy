@@ -340,7 +340,13 @@ pipeline {
                 'Component version:\\n' +
                 'kie = $kieVersion', subject: 'community-release-$baseBranch $kieVersion was released', to: 'bsig@redhat.com'
             }
-        }         
+        }
+        // user interaction required: continue or abort
+        stage('Approval(are artifacts released on Nexus?)') {
+            steps {
+                input message: 'Were the binaries on Nexus already released. If not please release them before continuing', ok: 'Continue with releasing'
+            }
+        }                 
         // if a the pipeline job was executed again but without building the binaries from uploading to filemgmt.jboss.org are needed
         stage('BUILD NUMBER of desired binaries') {
             when{
