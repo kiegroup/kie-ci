@@ -80,7 +80,7 @@ for (jobNames in JOB_NAMES) {
 
             // Adds timestamps to the console log.
             timestamps()
-            
+
             // Renders ANSI escape sequences, including color, to console output.
             colorizeOutput()
 

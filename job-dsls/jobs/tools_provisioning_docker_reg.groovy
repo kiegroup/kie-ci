@@ -30,7 +30,6 @@ for (jobNames in JOB_NAMES) {
     Closure<Object> get = { String key -> jobNames.value[key] ?: DEFAULTS[key] }
 
     String jobName = jobNames.key
-    String folderPath = get("folderPath")
     String labExp = get("labExp")
     String openJdk = get("openJdk")
     String jobDecription = get("jobDecription")
