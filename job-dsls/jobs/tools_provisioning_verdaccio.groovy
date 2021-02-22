@@ -4,7 +4,6 @@
  */
 
 def final DEFAULTS = [
-        folderPath : "Provisioning",
         logRot : 10,
         labExp : "ansible",
         params : [ ],
@@ -13,10 +12,6 @@ def final DEFAULTS = [
 
 def final JOB_NAMES = [
         "provision-verdaccio-service"  : [
-<<<<<<< HEAD
-=======
-                jobAbr: "VerdaccioServ",
->>>>>>> added provisioning job for verdacio-service
                 params : [
                         [name: "IMAGE", default: "rhel-7.6-server-x86_64-released", description: "The name of the image to be used for machine creation." ],
                         [name: "FLAVOUR", default: "ci.m1.medium.no.nested.virt", description: "The flavor (i.e. resources such as CPU cores, RAM, ...) defining the machine. m1.medium = 2 vCPUs, 4 GB RAM, 40 GB HDD" ]
@@ -25,18 +20,16 @@ def final JOB_NAMES = [
         ]
 ]
 
-//create folders
-folder("Provisioning")
+// create needed folder(s) for where the jobs are created
+folder("Tools")
+folder("Tools/Provisioning")
+
+def folderPath = "Tools/Provisioning"
 
 for (jobNames in JOB_NAMES) {
     Closure<Object> get = { String key -> jobNames.value[key] ?: DEFAULTS[key] }
 
     String jobName = jobNames.key
-    String folderPath = get("folderPath")
-<<<<<<< HEAD
-=======
-    String jobAbr = get("jobAbr")
->>>>>>> added provisioning job for verdacio-service
     String labExp = get("labExp")
     String openJdk = get("openJdk")
     String jobDescription = get("jobDescription")

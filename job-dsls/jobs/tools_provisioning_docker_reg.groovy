@@ -4,7 +4,6 @@
  */
 
 def final DEFAULTS = [
-        folderPath : "Provisioning",
         logRot : 10,
         labExp : "ansible",
         params : [ ],
@@ -23,8 +22,11 @@ def final JOB_NAMES = [
         ]
 ]
 
-//create folders
-folder("Provisioning")
+// create needed folder(s) for where the jobs are created
+folder("Tools")
+folder("Tools/Provisioning")
+
+def folderPath = "Tools/Provisioning"
 
 for (jobNames in JOB_NAMES) {
     Closure<Object> get = { String key -> jobNames.value[key] ?: DEFAULTS[key] }
