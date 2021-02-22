@@ -316,7 +316,11 @@ pipeline {
         // the tags of the release will be created and pushed to github
         stage('Push community tag') {
             steps {
-                sh './droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
+                script {
+                    execute {
+                        sh './droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
+                    }
+                }        
             }
         }
         stage ('Send email to BSIG') {
@@ -377,27 +381,43 @@ pipeline {
         }        
         stage('Create jbpm installers') {
             steps {
-                sh './droolsjbpm-build-bootstrap/script/release/09_createjBPM_installers.sh $toolsVer'
+                script {
+                    execute {            
+                        sh './droolsjbpm-build-bootstrap/script/release/09_createjBPM_installers.sh $toolsVer'
+                    }
+                }        
             }
         }
         stage('Drools binaries upload'){
             steps{
-                withCredentials([sshUserPrivateKey(credentialsId: 'drools-filemgmt', keyFileVariable: 'DROOLS_FILEMGMT_KEY')]) {
-                        sh './droolsjbpm-build-bootstrap/script/release/10a_drools_upload_filemgmt.sh $DROOLS_FILEMGMT_KEY'
+                script {
+                    execute {            
+                        withCredentials([sshUserPrivateKey(credentialsId: 'drools-filemgmt', keyFileVariable: 'DROOLS_FILEMGMT_KEY')]) {
+                            sh './droolsjbpm-build-bootstrap/script/release/10a_drools_upload_filemgmt.sh $DROOLS_FILEMGMT_KEY'
+                        }
+                    }        
                 }            
             }
         }        
         stage('Jbpm binaries upload'){
             steps{
-                withCredentials([sshUserPrivateKey(credentialsId: 'jbpm-filemgmt', keyFileVariable: 'JBPM_FILEMGMT_KEY')]) {
-                        sh './droolsjbpm-build-bootstrap/script/release/10b_jbpm_upload_filemgmt.sh $JBPM_FILEMGMT_KEY'
+                script {
+                    execute {            
+                        withCredentials([sshUserPrivateKey(credentialsId: 'jbpm-filemgmt', keyFileVariable: 'JBPM_FILEMGMT_KEY')]) {
+                            sh './droolsjbpm-build-bootstrap/script/release/10b_jbpm_upload_filemgmt.sh $JBPM_FILEMGMT_KEY'
+                        }
+                    }        
                 }            
             }
         } 
         stage('Optaplanner binaries upload'){
             steps{
-                withCredentials([sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt', keyFileVariable: 'OPTAPLANNER_FILEMGMT_KEY')]) {
-                        sh './droolsjbpm-build-bootstrap/script/release/10c_optaplanner_upload_filemgmt.sh $OPTAPLANNER_FILEMGMT_KEY'
+                script {
+                    execute {            
+                        withCredentials([sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt', keyFileVariable: 'OPTAPLANNER_FILEMGMT_KEY')]) {
+                            sh './droolsjbpm-build-bootstrap/script/release/10c_optaplanner_upload_filemgmt.sh $OPTAPLANNER_FILEMGMT_KEY'
+                        }
+                    }        
                 }            
             }
         }                                                                              
@@ -407,7 +427,7 @@ void execute(Closure closure) {
     try {
         closure()
     } catch(error) {
-        input "Retry the upload of binaries to Nexus?"
+        input "Retry step?"
         retry++
         echo "This is retry number ${retry}"
         execute(closure)
