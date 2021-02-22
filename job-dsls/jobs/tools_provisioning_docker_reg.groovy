@@ -4,18 +4,15 @@
  */
 
 def final DEFAULTS = [
-        jobAbr : "",
         folderPath : "Provisioning",
         logRot : 10,
         labExp : "ansible",
-        timeOutVar : 30,
         params : [ ],
         openJdk : "openjdk1.8_local"
 ]
 
 def final JOB_NAMES = [
         "provision-docker-registry"    : [
-                jobAbr: "DockerReg",
                 params : [
                         [name: "IMAGE", default: "bxms-packer-rhel7-snapshot-updated", description: "The name of the image to be used for machine creation." ],
                         [name: "FLAVOUR", default: "m1.medium", description: "The flavor (i.e. resources such as CPU cores, RAM, ...) defining the machine. m1.medium = 2 vCPUs, 4 GB RAM, 40 GB HDD" ],
@@ -34,13 +31,11 @@ for (jobNames in JOB_NAMES) {
 
     String jobName = jobNames.key
     String folderPath = get("folderPath")
-    String jobAbr = get("jobAbr")
     String labExp = get("labExp")
     String openJdk = get("openJdk")
     String jobDecription = get("jobDecription")
     def params = get("params")
     def logRot = get("logRot")
-    def timeOutVar = get("timeOutVar")
 
     // jobs for master branch don't use the branch in the name
     String jobN = "$folderPath/$jobName"
@@ -84,11 +79,6 @@ for (jobNames in JOB_NAMES) {
 
             // Adds timestamps to the console log.
             timestamps()
-
-            // Adds timeout
-            /*timeout{
-                absolute(timeOutVar)
-            }*/
 
             // Renders ANSI escape sequences, including color, to console output.
             colorizeOutput()

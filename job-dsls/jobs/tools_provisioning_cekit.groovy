@@ -7,7 +7,6 @@ def final DEFAULTS = [
         folderPath : "Provisioning",
         logRot : 10,
         labExp : "ansible",
-        timeOutVar : 30,
         params : [ ],
         openJdk : "openjdk1.8_local"
 ]
@@ -82,11 +81,6 @@ for (jobNames in JOB_NAMES) {
 
             // Adds timestamps to the console log.
             timestamps()
-
-            // Adds timeout
-            /*timeout{
-                absolute(timeOutVar)
-            }*/
 
             // Renders ANSI escape sequences, including color, to console output.
             colorizeOutput()
