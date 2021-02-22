@@ -66,7 +66,7 @@ for (jobNames in JOB_NAMES) {
                 remote {
                     url('git@github.com:kiegroup/kie-jenkins-scripts.git')
                     credentials("kie-qe-ci-user-key")
-                    branch('*/BXMSPROD-1147')
+                    branch('*/master')
                 }
                 extensions {
                     relativeTargetDirectory {
