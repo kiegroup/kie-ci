@@ -16,7 +16,7 @@
 package org.kie.jenkins.jobdsl.templates
 
 import javaposse.jobdsl.dsl.Job
-import org.kie.jenkins.jobdsl.Constants;
+import org.kie.jenkins.jobdsl.Constants
 
 /**
  * PR verification Job Template
@@ -32,8 +32,10 @@ class PrVerificationJob extends BasicJob {
     static void addFolders(context) {
         context.with {
 
-            // Creates or updates a folder.
-            folder(Constants.PULL_REQUEST_FOLDER) {
+            // Creation of folders where jobs are stored
+            folder("KIE")
+            folder("KIE/${branchName}")
+            folder("KIE/${branchName}/" + Constants.PULL_REQUEST_FOLDER){
                 displayName(Constants.PULL_REQUEST_FOLDER_DISPLAY_NAME)
             }
         }
@@ -63,7 +65,7 @@ class PrVerificationJob extends BasicJob {
             String archiveArtifactsPattern = null) {
 
         //Add common configuration to the job
-        String description = String.format("Pull Request Verification job for ${projectName} project.")
+        String description = "Pull Request Verification job for ${projectName} project."
         addCommonConfiguration(job, description)
 
         //Add PR configuration

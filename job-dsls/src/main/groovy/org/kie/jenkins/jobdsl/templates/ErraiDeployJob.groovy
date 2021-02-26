@@ -16,7 +16,7 @@
 package org.kie.jenkins.jobdsl.templates
 
 import javaposse.jobdsl.dsl.Job
-import org.kie.jenkins.jobdsl.Constants;
+import org.kie.jenkins.jobdsl.Constants
 
 /**
  * Deploy Job Template for errai
@@ -31,9 +31,10 @@ class ErraiDeployJob extends BasicJob {
      */
     static void addFolders(context) {
         context.with {
-
-            // Creates or updates a folder.
-            folder(Constants.DEPLOY_FOLDER) {
+            // Creation of folders where jobs are stored
+            folder("KIE")
+            folder("KIE/${branchName}")
+            folder("KIE/${branchName}/" + Constants.DEPLOY_FOLDER){
                 displayName(Constants.DEPLOY_FOLDER)
             }
         }
@@ -60,7 +61,7 @@ class ErraiDeployJob extends BasicJob {
                                    String mavenGoals) {
 
         //Add common configuration to the job
-        String description = String.format("deploy job for ${projectName} ${branchName} project.")
+        String description = "deploy job for ${projectName} ${branchName} project."
         addCommonConfiguration(job, description)
 
         //Add PR configuration
