@@ -9,13 +9,12 @@ def javadk=Constants.JDK_VERSION
 
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// create seed job script
+// creation of folder where this seed job should run
+folder("KIE")
+folder("KIE/${baseBranch}")
+def folderPath = "KIE/${baseBranch}"
 
-def seedJob='''#!/bin/bash -e
-cd job-dsls
-./gradlew clean test'''
-
-job("a-seed-job-${baseBranch}") {
+job("${folderPath}/a-seed-job-${baseBranch}") {
 
     description("this job creates all needed Jenkins jobs for the ${baseBranch}-branch ")
 
@@ -48,8 +47,6 @@ job("a-seed-job-${baseBranch}") {
     }
 
     steps {
-        shell(seedJob)
-
         jobDsl {
             targets("job-dsls/jobs/**/pr_jobs.groovy\n" +
                     "job-dsls/jobs/**/downstream_pr_jobs.groovy\n" +
