@@ -46,6 +46,13 @@
     pkg: ['git', 'tig']
     state: latest    
 
+### Update pip ###
+- name: Update pip3
+  pip:
+    name: pip
+    state: latest
+    executable: /bin/pip3
+
 ### System services ###
 
 - name: Start and enable RNGD Service
