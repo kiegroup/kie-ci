@@ -106,7 +106,7 @@ pipeline {
         }         
         stage ('Send email with BUILD result') {
             steps {
-                emailext body: 'Build of prod tag #${BUILD_NUMBER} of ${baseBranch} branch for ${TPB} was:  ' + "${currentBuild.currentResult}" +  '\\n' +
+                emailext body: 'Build of prod tag ${tagName} of ${baseBranch} branch for ${TPB} was:  ' + "${currentBuild.currentResult}" +  '\\n' +
                     ' \\n' +
                     'Please look here: ${BUILD_URL} \\n' +
                     ' \\n' +
