@@ -42,7 +42,9 @@ def final REPO_CONFIGS = [
         "droolsjbpm-knowledge"      : [
                 label: "kie-rhel7 && kie-mem4g"
         ],
-        "drools"                    : [],
+        "drools"                    : [
+                timeoutMins: 150
+        ],
         "optaplanner"               : [],
         "optaweb-employee-rostering" : [
                 artifactsToArchive: [
