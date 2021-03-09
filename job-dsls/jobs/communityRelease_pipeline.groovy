@@ -2,7 +2,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
-def releaseBranch="r7.49.0.Final"
+def releaseBranch="r7.51.0.Final"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def MAVEN_OPTS="-Xms1g -Xmx3g"
@@ -11,7 +11,7 @@ def javadk=Constants.JDK_VERSION
 def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
 // number of build that has stored the binaries (*tar.gz) that are wanted to upload
 def binariesNR=1
-def toolsVer="7.47.0.Final"
+def toolsVer="7.46.0.Final"
 def AGENT_LABEL="kie-releases"
 // directory where the zip with all binaries is stored
 def zipDir="\$WORKSPACE/community-deploy-dir"
@@ -448,11 +448,11 @@ pipelineJob("${folderPath}/community-release-pipeline-${baseBranch}") {
 
 
     parameters{
-        stringParam("kieVersion", "${kieVersion}", "Please edit the version of kie i.e 7.28.0.Final ")
-        stringParam("baseBranch", "${baseBranch}", "Please edit the name of the kie branch ")
-        stringParam("releaseBranch", "${releaseBranch}", "Please edit name of the releaseBranch - i.e. r7.28.0.Final ")
+        stringParam("kieVersion", "${kieVersion}", "Please edit the version of kie i.e 7.51.0.Final ")
+        stringParam("baseBranch", "${baseBranch}", "Please edit the name of the kie base branch ")
+        stringParam("releaseBranch", "${releaseBranch}", "Please edit name of the releaseBranch - i.e. r7.51.0.Final ")
         stringParam("organization", "${organization}", "Please edit the name of organization ")
-        stringParam("toolsVer", "${toolsVer}", "Please edit the latest stable version of droolsjbpm-tools<br>Important: needed for the jbpm-installer creation.")
+        stringParam("toolsVer", "${toolsVer}", "Please edit the latest stable version of droolsjbpm-tools<br>Important: needed for the jbpm-installer creation. Latest stable version is 7.46.0.Final.")
         choiceParam("repBuild",["YES", "NO"],"Please select if<br>you want to do a new build = YES<br>a new build is not required and artifacts are already uploaded to Nexus = NO ")
         wHideParameterDefinition {
             name('MAVEN_OPTS')
