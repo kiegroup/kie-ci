@@ -1,6 +1,6 @@
 [rhel-8-server-baseos-os-rpms]
 metadata_expire = 86400
-baseurl = https://pulp.dist.prod.ext.phx2.redhat.com/content/dist/rhel8/$releasever/$basearch/baseos/os
+baseurl = https://rhsm-pulp.corp.redhat.com/content/dist/rhel8/$releasever/$basearch/baseos/os
 ui_repoid_vars = releasever basearch
 sslverify = 0
 name = Red Hat Enterprise Linux 8 Server - baseos-os (RPMs)
@@ -11,7 +11,7 @@ gpgcheck = 0
 
 [rhel-8-server-appstream-os-rpms]
 metadata_expire = 86400
-baseurl = https://pulp.dist.prod.ext.phx2.redhat.com/content/dist/rhel8/$releasever/$basearch/appstream/os
+baseurl = https://rhsm-pulp.corp.redhat.com/content/dist/rhel8/$releasever/$basearch/appstream/os
 ui_repoid_vars = releasever basearch
 sslverify = 0
 name = Red Hat Enterprise Linux 8 Server - appstream-os (RPMs)
@@ -22,7 +22,7 @@ gpgcheck = 0
 
 [rhel-8-server-codeready-builder-os-rpms]
 metadata_expire = 86400
-baseurl = https://pulp.dist.prod.ext.phx2.redhat.com/content/dist/rhel8/$releasever/$basearch/codeready-builder/os
+baseurl = https://rhsm-pulp.corp.redhat.com/content/dist/rhel8/$releasever/$basearch/codeready-builder/os
 ui_repoid_vars = releasever basearch
 sslverify = 0
 name = Red Hat Enterprise Linux 8 Server - codeready-builder-os (RPMs)

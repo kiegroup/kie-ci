@@ -1,6 +1,6 @@
 [rhel-7-server-os-rpms]
 metadata_expire = 86400
-baseurl = https://pulp.dist.prod.ext.phx2.redhat.com/content/dist/rhel/server/7/$releasever/$basearch/os
+baseurl = https://rhsm-pulp.corp.redhat.com/content/dist/rhel/server/7/$releasever/$basearch/os
 ui_repoid_vars = releasever basearch
 sslverify = 0
 name = Red Hat Enterprise Linux 7 Server - os (RPMs)
@@ -11,7 +11,7 @@ gpgcheck = 1
 
 [rhel-7-server-extras-rpms]
 metadata_expire = 86400
-baseurl = https://pulp.dist.prod.ext.phx2.redhat.com/content/dist/rhel/server/7/7Server/$basearch/extras/os
+baseurl = https://rhsm-pulp.corp.redhat.com/content/dist/rhel/server/7/7Server/$basearch/extras/os
 ui_repoid_vars = releasever basearch
 sslverify = 0
 name = Red Hat Enterprise Linux 7 Server - extras (RPMs)
@@ -22,7 +22,7 @@ gpgcheck = 1
 
 [rhel-7-server-optional-rpms]
 metadata_expire = 86400
-baseurl = https://pulp.dist.prod.ext.phx2.redhat.com/content/dist/rhel/server/7/7Server/$basearch/optional/os
+baseurl = https://rhsm-pulp.corp.redhat.com/content/dist/rhel/server/7/7Server/$basearch/optional/os
 ui_repoid_vars = releasever basearch
 sslverify = 0
 name = Red Hat Enterprise Linux 7 Server - optional (RPMs)
@@ -33,7 +33,7 @@ gpgcheck = 1
 
 [rhel-7-server-supplementary-rpms]
 metadata_expire = 86400
-baseurl = https://pulp.dist.prod.ext.phx2.redhat.com/content/dist/rhel/server/7/7Server/$basearch/supplementary/os
+baseurl = https://rhsm-pulp.corp.redhat.com/content/dist/rhel/server/7/7Server/$basearch/supplementary/os
 ui_repoid_vars = releasever basearch
 sslverify = 0
 name = Red Hat Enterprise Linux 7 Server - supplementary (RPMs)
