@@ -150,6 +150,8 @@ for (repoConfig in REPO_CONFIGS) {
 
     pipelineJob(jobName) {
 
+        disabled()
+
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
                     |
                     |Every configuration change needs to be done directly in the DSL files. See the below listed 'Seed job' for more info.
@@ -196,7 +198,7 @@ for (repoConfig in REPO_CONFIGS) {
                         gitTool("")
                     }
                 }
-                scriptPath("Jenkinsfile")
+                scriptPath("Jenkinsfile.buildchain")
             }
         }
 
