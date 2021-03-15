@@ -175,7 +175,7 @@ String getScripts() {
             "  echo \$FULL_NAME >> \$MACHINES_FILE\n" +
             "  \n" +
             "  export NETWORKS=`openstack server list -f value -c Networks --name \$FULL_NAME`\n" +
-            "  export INSTANCE_IP=\${NETWORKS # *=}\n" +
+            "  export INSTANCE_IP=\${NETWORKS#*=}\n" +
             "\n" +
             "  echo \$INSTANCE_IP >> \$IP_FILE\n" +
             "}\n" +
