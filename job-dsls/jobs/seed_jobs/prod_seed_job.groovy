@@ -14,6 +14,8 @@ folder("PROD")
 def folderPath = "PROD"
 job("${folderPath}/a-seed-job-prod") {
 
+    disabled()
+
     description("this job creates all needed Jenkins jobs for the jobs in PROD ")
 
     label("kie-rhel7")

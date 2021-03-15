@@ -16,6 +16,8 @@ def folderPath = "KIE/${baseBranch}"
 
 job("${folderPath}/a-seed-job-${baseBranch}") {
 
+    disabled()
+
     description("this job creates all needed Jenkins jobs for the ${baseBranch}-branch ")
 
     label("kie-rhel7")

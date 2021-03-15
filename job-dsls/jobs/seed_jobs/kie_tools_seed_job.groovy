@@ -16,6 +16,8 @@ def folderPath="KIE/kie-tools"
 
 job("${folderPath}/a-seed-job-kie-tools") {
 
+    disabled()
+
     description("this job creates all needed Jenkins jobs in kie-tools folder ")
 
     label("kie-rhel7")
