@@ -86,6 +86,18 @@ for (jobNames in JOB_NAMES) {
             // Renders ANSI escape sequences, including color, to console output.
             colorizeOutput()
 
+            // secret text
+            credentialsBinding {
+                usernamePassword {
+                    // Name of an environment variable to be set to the username during the build
+                    usernameVariable('os_user')
+                    // Name of an environment variable to be set to the password during the build.
+                    passwordVariable('PSI_OS_PASSWORD')
+                    // Credentials of an appropriate type to be set to the variable.
+                    credentialsId('upshift-openstack-credentials-v3')
+                }
+            }
+
             // Deletes files from the workspace before the build starts.
             preBuildCleanup()
 
@@ -169,7 +181,7 @@ String getScripts() {
             "function provision_machine {\n" +
             "  local name=\$1\n" +
             "  local VOLUME_ID=\$2\n" +
-            "  local FULL_NAME=\"provisioner-job-cekit-cacher-\$name\"\n" +
+            "  local FULL_NAME=\"provisioner-job-cekit-cacher-eng-jenkins-\$name\"\n" +
             "\n" +
             "  check_machine \"\$FULL_NAME\"\n" +
             "  \n" +

@@ -86,6 +86,18 @@ for (jobNames in JOB_NAMES) {
             // Deletes files from the workspace before the build starts.
             preBuildCleanup()
 
+            // secret text
+            credentialsBinding {
+                usernamePassword {
+                    // Name of an environment variable to be set to the username during the build
+                    usernameVariable('os_user')
+                    // Name of an environment variable to be set to the password during the build.
+                    passwordVariable('PSI_OS_PASSWORD')
+                    // Credentials of an appropriate type to be set to the variable.
+                    credentialsId('upshift-openstack-credentials-v3')
+                }
+            }
+
             // Loads file provider
             configFileProvider {
                 managedFiles {
@@ -181,7 +193,7 @@ String getScripts() {
             "}\n" +
             "\n" +
             "\n" +
-            "provision_machine \"smee-client-\$BUILD_ID\"\n" +
+            "provision_machine \"smee-client-eng-jenkins-\$BUILD_ID\"\n" +
             "echo \"[smee-client]\" > \$INVENTORY_FILE\n" +
             "echo \"\$INSTANCE_IP\" >> \$INVENTORY_FILE\n" +
             "\n" +
