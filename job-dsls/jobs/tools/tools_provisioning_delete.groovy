@@ -91,6 +91,18 @@ for (jobNames in JOB_NAMES) {
             // Renders ANSI escape sequences, including color, to console output.
             colorizeOutput()
 
+            // secret text
+            credentialsBinding {
+                usernamePassword {
+                    // Name of an environment variable to be set to the username during the build
+                    usernameVariable('os_user')
+                    // Name of an environment variable to be set to the password during the build.
+                    passwordVariable('PSI_OS_PASSWORD')
+                    // Credentials of an appropriate type to be set to the variable.
+                    credentialsId('upshift-openstack-credentials-v3')
+                }
+            }
+
             // Deletes files from the workspace before the build starts.
             preBuildCleanup()
 
@@ -145,13 +157,13 @@ for (jobNames in JOB_NAMES) {
 def getFullName(String jobAbr) {
     switch (jobAbr) {
         case "VerdaccioServ":
-            return "\"verdaccio-service-\$INSTANCE_NUMBER\""
+            return "\"verdaccio-service-eng-jenkins-\$INSTANCE_NUMBER\""
         case "DockerReg":
-            return "\"provisioner-job-docker-registry-server\""
+            return "\"provisioner-job-docker-registry-eng-jenkins-server\""
         case "SmeeClient":
-            return "\"smee-client-\$SMEE_NUMBER\""
+            return "\"smee-client-eng-jenkins-\$SMEE_NUMBER\""
         default:
-            return "\"provisioner-job-cekit-cacher-server\""
+            return "\"provisioner-job-cekit-cacher-eng-jenkins-server\""
     }
 }
 
