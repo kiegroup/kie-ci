@@ -3,14 +3,37 @@
 - debug: msg="WEBHOOK_URL \"{{ lookup('env','WEBHOOK_URL') }}\""
 - debug: msg="TARGET_URL \"{{ lookup('env','TARGET_URL') }}\""
 
-- name: Install Smee Client
-  npm:
-    name: smee-client
-    version: 1.1.0
-    global: yes
-    production: yes
-    state: present
-    registry: ${NPM_REGISTRY_URL}
+- name: Copy Pulp repos config - RHEL 7
+  copy:
+    src: data/config/pulp/pulp-rhel7.repo
+    dest: /etc/yum.repos.d/pulp.repo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install packages - git
+  yum:
+    pkg: 'git'
+    state: latest
+
+# TODO revert after https://github.com/probot/smee-client/pull/162 is merged and smee-client released!!
+#- name: Install Smee Client
+#  npm:
+#    name: smee-client
+#    version: 1.1.0
+#    global: yes
+#    production: yes
+#    state: present
+#    registry: ${NPM_REGISTRY_URL}
+
+- name: Transfer the script
+  copy:
+    src: data/service/smee-client-build.sh
+    dest: /root/
+    mode: 0777
+
+- name: Build Smee Client from fork
+  command: bash /root/smee-client-build.sh
 
 - name: Generate smee.service.sh file
   template:
