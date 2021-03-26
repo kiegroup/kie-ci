@@ -16,8 +16,6 @@ def folderPath = "KIE/${baseBranch}"
 
 job("${folderPath}/a-seed-job-${baseBranch}") {
 
-    disabled()
-
     description("this job creates all needed Jenkins jobs for the ${baseBranch}-branch ")
 
     label("kie-rhel7")
@@ -38,7 +36,7 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
     }
 
     triggers {
-        scm('H/15 * * * *')
+        gitHubPushTrigger()
     }
 
     wrappers {
@@ -57,6 +55,7 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
                     "job-dsls/jobs/**/upstream.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_pipeline.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_prod_pipeline.groovy\n" +
+                    "job-dsls/jobs/**/dailyBuild_jdk11_pipeline.groovy\n" +
                     "job-dsls/jobs/**/deploy_jobs.groovy\n" +
                     "job-dsls/jobs/**/kie_jenkinsScripts_PR.groovy\n" +
                     "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
