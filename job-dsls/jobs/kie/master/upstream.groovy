@@ -7,7 +7,7 @@ import org.kie.jenkins.jobdsl.Constants
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
-        timeoutMins            : 650,
+        timeoutMins            : 720,
         label                  : "kie-rhel7 && kie-mem24g",
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
@@ -113,7 +113,7 @@ for (repoConfig in REPO_CONFIGS) {
                         gitTool("")
                     }
                 }
-                scriptPath("Jenkinsfile")
+                scriptPath("Jenkinsfile.buildchain")
             }
         }
 
