@@ -60,48 +60,52 @@ pipelineJob(jobName) {
         }
     }
 
-    triggers {
-        ghprbTrigger {
-            // Ordered by appearence in Jenkins UI
-            gitHubAuthId(ghAuthTokenId)
-            adminlist('')
-            useGitHubHooks(true)
-            triggerPhrase('.*[j|J]enkins,?.*(retest|test) this.*')
-            onlyTriggerPhrase(false)
-            autoCloseFailedPullRequests(false)
-            skipBuildPhrase(".*\\[skip\\W+ci\\].*")
-            displayBuildErrorsOnDownstreamBuilds(false)
-            cron('')
-            whitelist(ghOrgUnit)
-            orgslist(ghOrgUnit)
-            blackListLabels('')
-            whiteListLabels('')
-            allowMembersOfWhitelistedOrgsAsAdmin(true)
-            buildDescTemplate('')
-            blackListCommitAuthor('')
-            whiteListTargetBranches{
-                ghprbBranch {
-                    branch('master')
+    properties {
+        pipelineTriggers {
+            triggers {
+                ghprbTrigger {
+                    // Ordered by appearence in Jenkins UI
+                    gitHubAuthId(ghAuthTokenId)
+                    adminlist('')
+                    useGitHubHooks(true)
+                    triggerPhrase('.*[j|J]enkins,?.*(retest|test) this.*')
+                    onlyTriggerPhrase(false)
+                    autoCloseFailedPullRequests(false)
+                    skipBuildPhrase(".*\\[skip\\W+ci\\].*")
+                    displayBuildErrorsOnDownstreamBuilds(false)
+                    cron('')
+                    whitelist(ghOrgUnit)
+                    orgslist(ghOrgUnit)
+                    blackListLabels('')
+                    whiteListLabels('')
+                    allowMembersOfWhitelistedOrgsAsAdmin(true)
+                    buildDescTemplate('')
+                    blackListCommitAuthor('')
+                    whiteListTargetBranches {
+                        ghprbBranch {
+                            branch('master')
+                        }
+                    }
+                    blackListTargetBranches {}
+                    includedRegions('')
+                    excludedRegions('')
+                    extensions {
+                        ghprbSimpleStatus {
+                            commitStatusContext('Build&Test')
+                            addTestResults(true)
+                            showMatrixStatus(false)
+                            statusUrl('${BUILD_URL}display/redirect')
+                            triggeredStatus('')
+                            startedStatus('')
+                        }
+                    }
+                    permitAll(false)
+                    commentFilePath('')
+                    msgSuccess('Success')
+                    msgFailure('Failure')
+                    commitStatusContext('')
                 }
             }
-            blackListTargetBranches{}
-            includedRegions('')
-            excludedRegions('')
-            extensions {
-                ghprbSimpleStatus {
-                    commitStatusContext('Build&Test')
-                    addTestResults(true)
-                    showMatrixStatus(false)
-                    statusUrl('${BUILD_URL}display/redirect')
-                    triggeredStatus('')
-                    startedStatus('')
-                }
-            }
-            permitAll(false)
-            commentFilePath('')
-            msgSuccess('Success')
-            msgFailure('Failure')
-            commitStatusContext('')
         }
     }
 }
