@@ -78,17 +78,17 @@ for (repoConfig in REPO_CONFIGS) {
         logRotator {
             numToKeep(10)
         }
-        
+
         properties {
             githubProjectUrl("https://github.com/${ghOrgUnit}/${repo}")
         }
 
         parameters {
-            stringParam ("sha1","","this parameter will be provided by the PR")
-            stringParam ("ADDITIONAL_ARTIFACTS_TO_ARCHIVE","${additionalArtifacts}","this parameter is provided by the job")
-            stringParam ("ADDITIONAL_LABEL","${additionalLabel}","this parameter is provided by the job")
-            stringParam ("ADDITIONAL_TIMEOUT","${additionalTimeout}","this parameter is provided by the job")
-            stringParam ("PR_TYPE","Upstream Build","")
+            stringParam("sha1", "", "this parameter will be provided by the PR")
+            stringParam("ADDITIONAL_ARTIFACTS_TO_ARCHIVE", "${additionalArtifacts}", "this parameter is provided by the job")
+            stringParam("ADDITIONAL_LABEL", "${additionalLabel}", "this parameter is provided by the job")
+            stringParam("ADDITIONAL_TIMEOUT", "${additionalTimeout}", "this parameter is provided by the job")
+            stringParam("PR_TYPE", "Upstream Build", "")
         }
 
         definition {
@@ -108,7 +108,7 @@ for (repoConfig in REPO_CONFIGS) {
                                 name("*/${repoBranch}")
                             }
                         }
-                        browser { }
+                        browser {}
                         doGenerateSubmoduleConfigurations(false)
                         gitTool("")
                     }
@@ -117,49 +117,53 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        triggers {
-            ghprbTrigger {
-                onlyTriggerPhrase(true)
-                gitHubAuthId("${ghAuthTokenId}")
-                adminlist("")
-                orgslist("${ghOrgUnit}")
-                whitelist("")
-                cron("")
-                triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) upstream.*")
-                allowMembersOfWhitelistedOrgsAsAdmin(true)
-                whiteListTargetBranches {
-                    ghprbBranch {
-                        branch("${repoBranch}")
-                    }
-                    ghprbBranch {
-                        branch("7.x")
+        properties {
+            pipelineTriggers {
+                triggers {
+                    ghprbTrigger {
+                        onlyTriggerPhrase(true)
+                        gitHubAuthId("${ghAuthTokenId}")
+                        adminlist("")
+                        orgslist("${ghOrgUnit}")
+                        whitelist("")
+                        cron("")
+                        triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) upstream.*")
+                        allowMembersOfWhitelistedOrgsAsAdmin(true)
+                        whiteListTargetBranches {
+                            ghprbBranch {
+                                branch("${repoBranch}")
+                            }
+                            ghprbBranch {
+                                branch("7.x")
+                            }
+                        }
+                        useGitHubHooks(true)
+                        permitAll(false)
+                        autoCloseFailedPullRequests(false)
+                        displayBuildErrorsOnDownstreamBuilds(false)
+                        blackListCommitAuthor("")
+                        commentFilePath("")
+                        skipBuildPhrase("")
+                        msgSuccess("Success")
+                        msgFailure("Failure")
+                        commitStatusContext("")
+                        buildDescTemplate("")
+                        blackListLabels("")
+                        whiteListLabels("")
+                        extensions {
+                            ghprbSimpleStatus {
+                                commitStatusContext("Linux - Upstream Build")
+                                addTestResults(true)
+                                showMatrixStatus(false)
+                                statusUrl("")
+                                triggeredStatus("")
+                                startedStatus("")
+                            }
+                        }
+                        includedRegions("")
+                        excludedRegions("")
                     }
                 }
-                useGitHubHooks(true)
-                permitAll(false)
-                autoCloseFailedPullRequests(false)
-                displayBuildErrorsOnDownstreamBuilds(false)
-                blackListCommitAuthor("")
-                commentFilePath("")
-                skipBuildPhrase("")
-                msgSuccess("Success")
-                msgFailure("Failure")
-                commitStatusContext("")
-                buildDescTemplate("")
-                blackListLabels("")
-                whiteListLabels("")
-                extensions {
-                    ghprbSimpleStatus {
-                        commitStatusContext("Linux - Upstream Build")
-                        addTestResults(true)
-                        showMatrixStatus(false)
-                        statusUrl("")
-                        triggeredStatus("")
-                        startedStatus("")
-                    }
-                }
-                includedRegions("")
-                excludedRegions("")
             }
         }
     }
