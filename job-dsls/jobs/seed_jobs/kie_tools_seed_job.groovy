@@ -16,11 +16,9 @@ def folderPath="KIE/kie-tools"
 
 job("${folderPath}/a-seed-job-kie-tools") {
 
-    disabled()
-
     description("this job creates all needed Jenkins jobs in kie-tools folder ")
 
-    label("kie-rhel7")
+    label("kie-rhel7 && kie-mem8g")
 
     logRotator {
         numToKeep(10)
@@ -44,9 +42,14 @@ job("${folderPath}/a-seed-job-kie-tools") {
         preBuildCleanup()
     }
 
+    triggers {
+        gitHubPushTrigger()
+    }
+
     steps {
         jobDsl {
-            targets("job-dsls/jobs/kie/kie-tools/*.groovy")
+            targets("job-dsls/jobs/kie/kie-tools/*.groovy\n" +
+                    "job-dsls/jobs/seed_jobs/kie_tools_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)
