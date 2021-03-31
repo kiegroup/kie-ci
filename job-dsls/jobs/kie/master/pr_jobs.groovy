@@ -200,54 +200,58 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        triggers {
-            ghprbTrigger {
-                onlyTriggerPhrase(false)
-                gitHubAuthId("${ghAuthTokenId}")
-                adminlist("")
-                orgslist("${ghOrgUnit}")
-                whitelist("")
-                cron("")
-                triggerPhrase(".*[j|J]enkins,?.*(retest|test) this.*")
-                allowMembersOfWhitelistedOrgsAsAdmin(true)
-                whiteListTargetBranches {
-                    boolean isOptaPlannerOrDependentRepo =
-                            repo in ['optaplanner', 'optaweb-employee-rostering', 'optaweb-vehicle-routing']
-                    if (isOptaPlannerOrDependentRepo) {
-                        ghprbBranch {
-                            branch("7.x")
+        properties {
+            pipelineTriggers {
+                triggers {
+                    ghprbTrigger {
+                        onlyTriggerPhrase(false)
+                        gitHubAuthId("${ghAuthTokenId}")
+                        adminlist("")
+                        orgslist("${ghOrgUnit}")
+                        whitelist("")
+                        cron("")
+                        triggerPhrase(".*[j|J]enkins,?.*(retest|test) this.*")
+                        allowMembersOfWhitelistedOrgsAsAdmin(true)
+                        whiteListTargetBranches {
+                            boolean isOptaPlannerOrDependentRepo =
+                                    repo in ['optaplanner', 'optaweb-employee-rostering', 'optaweb-vehicle-routing']
+                            if (isOptaPlannerOrDependentRepo) {
+                                ghprbBranch {
+                                    branch("7.x")
+                                }
+                            } else {
+                                ghprbBranch {
+                                    branch("${repoBranch}")
+                                }
+                            }
                         }
-                    } else {
-                        ghprbBranch {
-                            branch("${repoBranch}")
+                        useGitHubHooks(true)
+                        permitAll(false)
+                        autoCloseFailedPullRequests(false)
+                        displayBuildErrorsOnDownstreamBuilds(false)
+                        blackListCommitAuthor("")
+                        commentFilePath("")
+                        skipBuildPhrase("")
+                        msgSuccess("Success")
+                        msgFailure("Failure")
+                        commitStatusContext("")
+                        buildDescTemplate("")
+                        blackListLabels("")
+                        whiteListLabels("")
+                        extensions {
+                            ghprbSimpleStatus {
+                                commitStatusContext("Linux - Pull Request")
+                                addTestResults(true)
+                                showMatrixStatus(false)
+                                statusUrl("")
+                                triggeredStatus("")
+                                startedStatus("")
+                            }
                         }
+                        includedRegions("")
+                        excludedRegions("")
                     }
                 }
-                useGitHubHooks(true)
-                permitAll(false)
-                autoCloseFailedPullRequests(false)
-                displayBuildErrorsOnDownstreamBuilds(false)
-                blackListCommitAuthor("")
-                commentFilePath("")
-                skipBuildPhrase("")
-                msgSuccess("Success")
-                msgFailure("Failure")
-                commitStatusContext("")
-                buildDescTemplate("")
-                blackListLabels("")
-                whiteListLabels("")
-                extensions {
-                    ghprbSimpleStatus {
-                        commitStatusContext("Linux - Pull Request")
-                        addTestResults(true)
-                        showMatrixStatus(false)
-                        statusUrl("")
-                        triggeredStatus("")
-                        startedStatus("")
-                    }
-                }
-                includedRegions("")
-                excludedRegions("")
             }
         }
     }

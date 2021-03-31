@@ -118,54 +118,58 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        triggers {
-            ghprbTrigger {
-                // execute CDB for drools, droolsjbpm-knowledge and appformer by default
-                if ((repo != "drools") && (repo !="droolsjbpm-knowledge") && (repo != "appformer")) {
-                    onlyTriggerPhrase(true)
-                } else {
-                    onlyTriggerPhrase(false)
-                }
-                gitHubAuthId("${ghAuthTokenId}")
-                adminlist("")
-                orgslist("${ghOrgUnit}")
-                whitelist("")
-                cron("")
-                triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) cdb.*")
-                allowMembersOfWhitelistedOrgsAsAdmin(true)
-                whiteListTargetBranches {
-                    ghprbBranch {
-                        branch("${repoBranch}")
+        properties {
+            pipelineTriggers {
+                triggers {
+                    ghprbTrigger {
+                        // execute CDB for drools, droolsjbpm-knowledge and appformer by default
+                        if ((repo != "drools") && (repo != "droolsjbpm-knowledge") && (repo != "appformer")) {
+                            onlyTriggerPhrase(true)
+                        } else {
+                            onlyTriggerPhrase(false)
+                        }
+                        gitHubAuthId("${ghAuthTokenId}")
+                        adminlist("")
+                        orgslist("${ghOrgUnit}")
+                        whitelist("")
+                        cron("")
+                        triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) cdb.*")
+                        allowMembersOfWhitelistedOrgsAsAdmin(true)
+                        whiteListTargetBranches {
+                            ghprbBranch {
+                                branch("${repoBranch}")
+                            }
+                            ghprbBranch {
+                                branch("7.x")
+                            }
+                        }
+                        useGitHubHooks(true)
+                        permitAll(false)
+                        autoCloseFailedPullRequests(false)
+                        displayBuildErrorsOnDownstreamBuilds(false)
+                        blackListCommitAuthor("")
+                        commentFilePath("")
+                        skipBuildPhrase("")
+                        msgSuccess("Success")
+                        msgFailure("Failure")
+                        commitStatusContext("")
+                        buildDescTemplate("")
+                        blackListLabels("")
+                        whiteListLabels("")
+                        extensions {
+                            ghprbSimpleStatus {
+                                commitStatusContext("Linux - Compile Downstream Build")
+                                addTestResults(true)
+                                showMatrixStatus(false)
+                                statusUrl("")
+                                triggeredStatus("")
+                                startedStatus("")
+                            }
+                        }
+                        includedRegions("")
+                        excludedRegions("")
                     }
-                    ghprbBranch {
-                        branch("7.x")
-                    }
                 }
-                useGitHubHooks(true)
-                permitAll(false)
-                autoCloseFailedPullRequests(false)
-                displayBuildErrorsOnDownstreamBuilds(false)
-                blackListCommitAuthor("")
-                commentFilePath("")
-                skipBuildPhrase("")
-                msgSuccess("Success")
-                msgFailure("Failure")
-                commitStatusContext("")
-                buildDescTemplate("")
-                blackListLabels("")
-                whiteListLabels("")
-                extensions {
-                    ghprbSimpleStatus {
-                        commitStatusContext("Linux - Compile Downstream Build")
-                        addTestResults(true)
-                        showMatrixStatus(false)
-                        statusUrl("")
-                        triggeredStatus("")
-                        startedStatus("")
-                    }
-                }
-                includedRegions("")
-                excludedRegions("")
             }
         }
     }
