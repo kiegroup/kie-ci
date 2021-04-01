@@ -57,7 +57,8 @@ job("a-seed-job-migration") {
             removedViewAction('IGNORE')
             removedConfigFilesAction('IGNORE')
             lookupStrategy('JENKINS_ROOT')
-            additionalClasspath("job-dsls/src/main/groovy,job-dsls/src/main/resources")
+            additionalClasspath("job-dsls/src/main/groovy\n" +
+                    "job-dsls/src/main/resources")
         }
     }
 }
