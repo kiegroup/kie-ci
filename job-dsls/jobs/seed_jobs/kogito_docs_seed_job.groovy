@@ -16,8 +16,6 @@ def folderPath="KIE/kogito"
 
 job("${folderPath}/a-seed-job-kogito-docs") {
 
-    disabled()
-
     description("this job creates needed Jenkins job for kogito-docs in kogito folder")
 
     label("kie-rhel7")

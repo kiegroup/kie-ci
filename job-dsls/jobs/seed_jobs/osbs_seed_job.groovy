@@ -14,8 +14,6 @@ folder("OSBS")
 def folderPath = "OSBS"
 job("${folderPath}/a-seed-job-OSBS") {
 
-    disabled()
-
     description("this job creates all needed Jenkins jobs in OSBS folder ")
 
     label("kie-rhel7")

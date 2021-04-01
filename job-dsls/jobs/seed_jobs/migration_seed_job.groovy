@@ -11,8 +11,6 @@ def javadk=Constants.JDK_VERSION
 
 job("a-seed-job-migration") {
 
-    disabled()
-
     description("this job creates all needed seed jobs in the new Jenkins after migration ")
 
     label("kie-rhel7")
