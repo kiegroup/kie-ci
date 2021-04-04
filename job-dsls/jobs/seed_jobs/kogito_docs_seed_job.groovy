@@ -16,8 +16,6 @@ def folderPath="KIE/kogito"
 
 job("${folderPath}/a-seed-job-kogito-docs") {
 
-    disabled()
-
     description("this job creates needed Jenkins job for kogito-docs in kogito folder")
 
     label("kie-rhel7")
@@ -57,7 +55,8 @@ job("${folderPath}/a-seed-job-kogito-docs") {
             removedViewAction('IGNORE')
             removedConfigFilesAction('IGNORE')
             lookupStrategy('JENKINS_ROOT')
-            additionalClasspath("job-dsls/src/main/groovy,job-dsls/src/main/resources")
+            additionalClasspath("job-dsls/src/main/groovy\n" +
+                    "job-dsls/src/main/resources")
         }
     }
 }

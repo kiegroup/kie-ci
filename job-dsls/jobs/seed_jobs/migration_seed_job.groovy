@@ -11,8 +11,6 @@ def javadk=Constants.JDK_VERSION
 
 job("a-seed-job-migration") {
 
-    disabled()
-
     description("this job creates all needed seed jobs in the new Jenkins after migration ")
 
     label("kie-rhel7")
@@ -57,7 +55,8 @@ job("a-seed-job-migration") {
             removedViewAction('IGNORE')
             removedConfigFilesAction('IGNORE')
             lookupStrategy('JENKINS_ROOT')
-            additionalClasspath("job-dsls/src/main/groovy,job-dsls/src/main/resources")
+            additionalClasspath("job-dsls/src/main/groovy\n" +
+                    "job-dsls/src/main/resources")
         }
     }
 }

@@ -14,8 +14,6 @@ folder("PROD")
 def folderPath = "PROD"
 job("${folderPath}/a-seed-job-prod") {
 
-    disabled()
-
     description("this job creates all needed Jenkins jobs for the jobs in PROD ")
 
     label("kie-rhel7")
@@ -55,7 +53,8 @@ job("${folderPath}/a-seed-job-prod") {
             removedViewAction('IGNORE')
             removedConfigFilesAction('IGNORE')
             lookupStrategy('JENKINS_ROOT')
-            additionalClasspath("job-dsls/src/main/groovy,job-dsls/src/main/resources")
+            additionalClasspath("job-dsls/src/main/groovy\n" +
+                    "job-dsls/src/main/resources")
         }
     }
 }
