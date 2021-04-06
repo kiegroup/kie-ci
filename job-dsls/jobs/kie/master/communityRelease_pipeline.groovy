@@ -368,7 +368,7 @@ pipeline {
                 'The tags are pushed and the binaries for the webs will be uploaded soon to filemgmt.jboss.org. \\n' +
                 ' \\n' +
                 ' \\n' +
-                'You can download the artefacts..: \\n' +
+                'You can download the artifacts..: \\n' +
                 ' \\n' +
                 'business-central artifacts: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/ \\n' +
                 'business-central-webapp: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central-webapp/$kieVersion/ \\n' +
