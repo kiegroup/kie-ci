@@ -59,7 +59,7 @@ dependencies {
     testPlugins 'org.jenkins-ci.plugins.workflow:workflow-step-api:2.22'
     testPlugins 'org.jenkins-ci.plugins:cloudbees-folder:5.16'
     testPlugins 'com.cloudbees.plugins:build-flow-plugin:0.20'
-    testPlugins 'com.coravy.hudson.plugins.github:github:1.19.0'
+    testPlugins 'com.coravy.hudson.plugins.github:github:1.32.0'
     testPlugins 'com.sonyericsson.hudson.plugins.rebuild:rebuild:1.25'
     testPlugins 'com.synopsys.jenkinsci:ownership:0.9.1'
     testPlugins 'org.jenkins-ci.main:maven-plugin:3.1.2'
