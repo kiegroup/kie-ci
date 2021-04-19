@@ -33,7 +33,7 @@ class Constants {
     static final String DOWNSTREAM_PRODUCT_FOLDER = "fdbp"
     static final String DOWNSTREAM_PRODUCT_FOLDER_DISPLAY_NAME = "downstream-production"
     static final String DEPLOY_FOLDER = "deployedRep"
-    static final String KIE_PREFIX = "7.52.0"
+    static final String KIE_PREFIX = "7.53.0"
     static final String NUMBER_OF_KIE_USERS = "10"
     static final String SONARCLOUD_FOLDER = "sonarcloud"
     static final String REPORT_BRANCH = "7.x"

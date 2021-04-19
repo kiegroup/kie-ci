@@ -1,8 +1,8 @@
 import org.kie.jenkins.jobdsl.Constants
 
-def kieVersion=Constants.KIE_PREFIX
+def kieVersion=Constants.KIE_PREFIX + ".Final"
 def baseBranch=Constants.BRANCH
-def releaseBranch="r7.51.0.Final"
+def releaseBranch="r7.53.0.Final"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def MAVEN_OPTS="-Xms1g -Xmx3g"
@@ -283,6 +283,23 @@ pipeline {
                 }                     
             }    
         }
+        // load URL for repositories.jboss.org to prevent using origin-repositories.jboss.org
+        stage("preload staging profiles"){
+            steps{
+                script {
+                    execute {
+                        sh 'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly-deployable.zip \\n' +
+                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly-deployable.zip \\n' +                    
+                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly19.war \\n' +
+                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly19.war \\n' +
+                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/$kieVersion/business-monitoring-webapp-$kieVersion.war \\n' +
+                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/$kieVersion/business-monitoring-webapp-$kieVersion.war \\n' +                    
+                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/$kieVersion/jbpm-server-distribution-$kieVersion-dist.zip \\n' +
+                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/$kieVersion/jbpm-server-distribution-$kieVersion-dist.zip'                
+                    }
+                }
+            }
+        } 
         // send email for Sanity Checks                
         stage ('Email send with BUILD result') {
             when{
@@ -296,12 +313,12 @@ pipeline {
                     ' \\n' +
                     'The artifacts are available here \\n' +
                     ' \\n' +
-                    'business-central artifacts: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/ \\n' +
-                    'business-central-webapp: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/$kieVersion/ \\n' +
-                    'business-monitoring-webapp: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/$kieVersion/ \\n' +
+                    'business-central artifacts: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/ \\n' +  
+                    'business-central-webpp: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/ \\n' +
+                    'business-monitoring-webapp: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/$kieVersion/ \\n' +
                     ' \\n' +
-                    'Please download for sanity checks: jbpm-server-distribution.zip: https://origin-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
-                    ' \\n' +                    
+                    'Please download for sanity checks: jbpm-server-distribution.zip: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
+                    ' \\n' +                   
                     ' \\n' +
                     'Please download the needed binaries, fill in your assigned test scenarios and check the failing tests \\n' +
                     'sanity checks: https://docs.google.com/spreadsheets/d/1jPtRilvcOji__qN0QmVoXw6KSi4Nkq8Nz_coKIVfX6A/edit#gid=167259416 \\n' +
@@ -327,6 +344,23 @@ pipeline {
                 }        
             }
         }
+        // load URL for repositories.jboss.org to prevent using origin-repositories.jboss.org
+        stage("preload released profiles"){
+            steps{
+                script {
+                    execute {
+                        sh 'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly-deployable.zip \\n' +
+                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly-deployable.zip \\n' +                    
+                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly19.war \\n' +
+                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly19.war \\n' +
+                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/$kieVersion/business-monitoring-webapp-$kieVersion.war \\n' +
+                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/$kieVersion/business-monitoring-webapp-$kieVersion.war \\n' +                    
+                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/jbpm-server-distribution-$kieVersion-dist.zip \\n' +
+                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/jbpm-server-distribution-$kieVersion-dist.zip'                
+                    }
+                }
+            }
+        }        
         stage ('Send email to BSIG') {
             steps {
                 emailext body: 'The community ${kieVersion} was released. \\n' +
@@ -334,12 +368,12 @@ pipeline {
                 'The tags are pushed and the binaries for the webs will be uploaded soon to filemgmt.jboss.org. \\n' +
                 ' \\n' +
                 ' \\n' +
-                'You can download the artefacts..: \\n' +
+                'You can download the artifacts..: \\n' +
                 ' \\n' +
-                'business-central artifacts: https://origin-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/ \\n' +
-                'business-central-webapp: https://origin-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central-webapp/$kieVersion/ \\n' +
-                'business-monitoring-webapp: https://origin-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/$kieVersion/ \\n' +
-                'jbpm-server-distribution (single zip): https://origin-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
+                'business-central artifacts: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/ \\n' +
+                'business-central-webapp: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central-webapp/$kieVersion/ \\n' +
+                'business-monitoring-webapp: https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/$kieVersion/ \\n' +
+                'jbpm-server-distribution (single zip): https://repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
                 '\\n' +
                 'Component version:\\n' +
                 'kie = $kieVersion', subject: 'community-release-$baseBranch $kieVersion was released', to: 'bsig@redhat.com'
@@ -356,7 +390,7 @@ pipeline {
             when{
                 expression { repBuild == 'NO'}
             }
-            //interactive step: user should select the BUILD Nr of the rtifacts to restore            
+            //interactive step: user should select the BUILD Nr of the artifacts to restore            
             steps {
                 script {
                     binariesNR = input id: 'binariesID', message: 'Which build number has the desired binaries \\n DBN (desired build number)', parameters: [string(defaultValue: '', description: '', name: 'DBN')]
