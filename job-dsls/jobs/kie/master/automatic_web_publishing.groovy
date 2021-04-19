@@ -148,23 +148,21 @@ for (reps in REPO_CONFIGS) {
             numToKeep(3)
         }
 
+        properties {
+            githubProjectUrl("https://github.com/kiegroup/${repo}-website")
+            pipelineTriggers {
+                triggers {
+                    githubPush()
+                }
+            }
+        }
+
         definition {
             cps {
                 script("${awp}")
                 sandbox()
             }
         }
-
-        properties {
-            githubProjectUrl("https://github.com/kiegroup/${repo}-website")
-        }
-
-        triggers {
-            scm("H/10 * * * *") {
-                ignorePostCommitHooks(false)
-            }
-        }
-
 
     }
 
