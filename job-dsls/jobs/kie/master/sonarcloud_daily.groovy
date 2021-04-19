@@ -35,11 +35,6 @@ def final REPO_CONFIGS = [
                         "runTurtleTests": "true"
                 ]
         ],
-        "optaplanner": [
-                mvnProps: [
-                        "sonar.projectKey": "org.optaplanner:optaplanner"
-                ]
-        ],
         "appformer" : [],
         "jbpm" : [],
         "openshift-drools-hacep" : [],
