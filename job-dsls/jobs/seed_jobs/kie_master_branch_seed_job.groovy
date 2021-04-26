@@ -17,7 +17,7 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
 
     description("this job creates all needed Jenkins jobs for the ${baseBranch}-branch ")
 
-    label("kie-rhel7")
+    label("kie-rhel7&&kie-mem8g")
 
     logRotator {
         numToKeep(10)
@@ -35,7 +35,7 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
     }
 
     triggers {
-        scm('H/15 * * * *')
+        gitHubPushTrigger()
     }
 
     wrappers {
@@ -47,7 +47,8 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
 
     steps {
         jobDsl {
-            targets("job-dsls/jobs/kie/master/*.groovy")
+            targets("job-dsls/jobs/kie/master/*.groovy\n" +
+                    "job-dsls/jobs/seed_jobs/kie_master_branch_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)
