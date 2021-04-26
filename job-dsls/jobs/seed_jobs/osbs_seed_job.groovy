@@ -16,7 +16,7 @@ job("${folderPath}/a-seed-job-OSBS") {
 
     description("this job creates all needed Jenkins jobs in OSBS folder ")
 
-    label("kie-rhel7")
+    label("kie-rhel7 && kie-mem8g")
 
     logRotator {
         numToKeep(10)
@@ -33,6 +33,10 @@ job("${folderPath}/a-seed-job-OSBS") {
         }
     }
 
+    triggers {
+        gitHubPushTrigger()
+    }
+
     wrappers {
         timestamps()
         colorizeOutput()
@@ -42,7 +46,8 @@ job("${folderPath}/a-seed-job-OSBS") {
 
     steps {
         jobDsl {
-            targets("job-dsls/jobs/osbs/*.groovy")
+            targets("job-dsls/jobs/osbs/*.groovy\n" +
+                    "job-dsls/jobs/seed_jobs/osbs_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)

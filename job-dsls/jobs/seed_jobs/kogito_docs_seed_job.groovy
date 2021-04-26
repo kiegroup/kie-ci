@@ -18,7 +18,7 @@ job("${folderPath}/a-seed-job-kogito-docs") {
 
     description("this job creates needed Jenkins job for kogito-docs in kogito folder")
 
-    label("kie-rhel7")
+    label("kie-rhel7 && kie-mem8g")
 
     logRotator {
         numToKeep(10)
@@ -35,6 +35,10 @@ job("${folderPath}/a-seed-job-kogito-docs") {
         }
     }
 
+    triggers {
+        gitHubPushTrigger()
+    }
+
     wrappers {
         timestamps()
         colorizeOutput()
@@ -44,7 +48,8 @@ job("${folderPath}/a-seed-job-kogito-docs") {
 
     steps {
         jobDsl {
-            targets("job-dsls/jobs/kie/kogito/*.groovy")
+            targets("job-dsls/jobs/kie/kogito/*.groovy\n" +
+                    "jobs-dsls/jobs/seed_jobs/kogito_docs_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)

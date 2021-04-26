@@ -16,7 +16,7 @@ job("${folderPath}/a-seed-job-prod") {
 
     description("this job creates all needed Jenkins jobs for the jobs in PROD ")
 
-    label("kie-rhel7")
+    label("kie-rhel7 && kie-mem8g")
 
     logRotator {
         numToKeep(10)
@@ -33,6 +33,10 @@ job("${folderPath}/a-seed-job-prod") {
         }
     }
 
+    triggers {
+        gitHubPushTrigger()
+    }
+
     wrappers {
         timestamps()
         colorizeOutput()
@@ -42,7 +46,8 @@ job("${folderPath}/a-seed-job-prod") {
 
     steps {
         jobDsl {
-            targets("job-dsls/jobs/prod/*.groovy")
+            targets("job-dsls/jobs/prod/*.groovy\n" +
+                    "job-dsls/jobs/seed_jobs/prod_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)
