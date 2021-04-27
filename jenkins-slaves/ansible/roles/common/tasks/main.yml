@@ -161,7 +161,7 @@
 -name: Extract Ant archives
   unarchive:
     copy: no
-    src: /tmp/downloads/apache-ant-{{ant_version}}-bin.tar.gz
+    src: /tmp/downloads/apache-ant-{{ ant_version }}-bin.tar.gz
     dest: /opt/tools
     owner: root
     group: root
