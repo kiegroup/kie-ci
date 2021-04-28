@@ -76,6 +76,7 @@ dependencies {
     testPlugins 'org.jenkins-ci.plugins:ghprb:1.42.2'
     testPlugins 'org.jenkins-ci.plugins:jms-messaging:1.1.19'
     testPlugins 'org.jenkins-ci.plugins:junit:1.49'
+    testPlugins 'org.jenkins-ci.plugins:mask-passwords:3.0'
     testPlugins 'org.jenkins-ci.plugins:matrix-project:1.18'
     testPlugins 'org.jenkins-ci.plugins:multiple-scms:0.6'
     testPlugins 'org.jenkins-ci.plugins:nested-view:1.14'
