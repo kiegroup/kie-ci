@@ -102,8 +102,6 @@ dependencies {
     testPlugins 'org.jenkins-ci.plugins:ws-cleanup:0.39'
     testPlugins 'org.jenkins-ci.plugins:xvnc:1.25'
     testPlugins 'org.jenkins-ci.plugins:hidden-parameter:0.0.4'
-    testPlugins 'org.jvnet.hudson.plugins:checkstyle:4.0.0'
-    testPlugins 'org.jvnet.hudson.plugins:findbugs:4.60'
     testPlugins 'org.jvnet.hudson.plugins:ircbot:2.27'
     // should be 1.5.11 but 1.5.11 is missing pom in local repo
     testPlugins 'com.redhat.jenkins.plugins:redhat-ci-plugin:1.5.10'
