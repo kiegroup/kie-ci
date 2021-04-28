@@ -1,4 +1,6 @@
 import org.kie.jenkins.jobdsl.Constants
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
@@ -8,7 +10,7 @@ def TPB=""
 def tagName="sync-xxx-date"
 def reportBranch=Constants.REPORT_BRANCH
 def MAVEN_OPTS="-Xms1g -Xmx3g"
-def cutOffDate = new Date().format('yyyy-MM-dd')
+def cutOffDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 def commitMsg="Upgraded version to "
 def javadk=Constants.JDK_VERSION
 def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
