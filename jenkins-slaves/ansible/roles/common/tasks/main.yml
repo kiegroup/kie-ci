@@ -153,7 +153,7 @@
 ### Ant ###
 
 - name: Download Ant archives
-  get url:
+  get_url:
     url: https://archive.apache.org/dist/ant/binaries/apache-ant-{{ ant_version }}-bin.tar.gz
     dest: /tmp/downloads
     owner: root
