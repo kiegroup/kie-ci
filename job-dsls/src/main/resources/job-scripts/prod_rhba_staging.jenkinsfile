@@ -98,8 +98,8 @@ def getLastProjectVersion(projectId, milestone) {
     def endpoint = "projects/${projectId}/builds"
     def params = [q: "productMilestone.version==${milestone};status==SUCCESS;temporaryBuild==false"]
     def projectBuilds = queryPNC(endpoint, params)
-    def lastprojectBuild = projectBuilds.content.max({ it.scmTag })
-    return lastprojectBuild.scmTag
+    def lastprojectBuild = projectBuilds.content.max({ it.attributes.BREW_BUILD_VERSION })
+    return lastprojectBuild.attributes.BREW_BUILD_VERSION
 }
 
 def getArtifactMetadata(identifier) {
