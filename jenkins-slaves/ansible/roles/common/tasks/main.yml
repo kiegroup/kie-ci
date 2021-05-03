@@ -151,14 +151,14 @@
     - "{{ maven_versions }}"
 
 ### Ant ###
--name: Download Ant archives
+- name: Download Ant archives
   get url:
     url: https://archive.apache.org/dist/ant/binaries/apache-ant-{{ ant_version }}-bin.tar.gz
     dest: /tmp/downloads
     owner: root
     group: root
 
--name: Extract Ant archives
+- name: Extract Ant archives
   unarchive:
     copy: no
     src: /tmp/downloads/apache-ant-{{ ant_version }}-bin.tar.gz
