@@ -52,11 +52,8 @@ for (jobNames in JOB_NAMES) {
         for ( param in params ) {
             parameters {
                 stringParam(param.name, param.default, param.description)
-                password{
-                    name('ENCRYPTED_PASSWORD')
-                    defaultValue('redhat')
-                    description('The encrypted password. To generate it you should take value from npm adduser command. Default redhat')
-                }
+                // TODO figure out how to properly replace password parameter below (stringParam is just a quick workaround) - using credentials?
+                stringParam('ENCRYPTED_PASSWORD', 'redhat', 'The encrypted password. To generate it you should take value from npm adduser command. Default redhat')
             }
         }
 
