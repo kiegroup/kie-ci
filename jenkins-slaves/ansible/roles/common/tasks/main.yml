@@ -151,6 +151,7 @@
     - "{{ maven_versions }}"
 
 ### Ant ###
+
 - name: Download Ant archives
   get url:
     url: https://archive.apache.org/dist/ant/binaries/apache-ant-{{ ant_version }}-bin.tar.gz
