@@ -1,61 +1,12 @@
 /**
  * Check offliner manifest against offline repository
  */
+import org.kie.jenkins.jobdsl.Constants
 
-def offline = '''
-      set +x
-      
-      if [ ! MANIFEST_URL ]
-      then
-          echo "ERROR: Manifest URL not supplied."
-          exit 1
-      fi
-      
-      MANIFEST="offliner-manifest.txt"
-      if ! curl -s -k -f -o $MANIFEST $MANIFEST_URL
-      then
-          echo "ERROR: Failed to download the offliner manifest"
-          exit 1
-      fi   
-      
-      RELEASE_REPO=$(echo $RELEASE_REPO_URL | sed 's/\\//\\\\\\//g')
-      WRAPPER="ip-tooling/scripts/rhba/build-offline-repo.sh"
-      sed -i "s/MRRC=.*/MRRC=$RELEASE_REPO/g" $WRAPPER
-      
-      chmod 755 $WRAPPER
-      OUTPUT="output.log"
-      "./$WRAPPER" $MANIFEST | tee $OUTPUT
-      
-      
-      ### Stats
-      STATS="download-stats"
-      mkdir $STATS
-      
-      ATTEMPTS="$STATS/attempts.log"
-      grep -P '^>>>Downloading: .*$' $OUTPUT | sed 's/>>>Downloading: //g' > $ATTEMPTS
-      
-      MISSING="$STATS/missing.log"
-      grep -P '^<<<Not Found: .*$' $OUTPUT | sed 's/<<<Not Found: //g' > $MISSING
-      
-      FAILURES="$STATS/failures.log"
-      grep -P '^<<<FAIL: .*$' $OUTPUT | sed 's/<<<FAIL: //g' > $FAILURES
-      
-      SUCCESS="$STATS/success.log"
-      grep -vF -f $MISSING $ATTEMPTS > $SUCCESS
-      
-      
-      echo "Downloads by repo:"
-      REPOS=$(sed 's/\\(https\\?:\\/\\/[^/]*\\/\\).*/\\1/g' $SUCCESS | sort -u)
-      for repo in $REPOS;
-      do
-          downloads=$(grep $repo $SUCCESS | wc -l)
-          echo "$repo: $downloads"
-      done
-'''
+String commands = this.getClass().getResource("job-scripts/prod_offline_repo_builder.sh").text
 
-// create needed folder(s) for where the jobs are created
-folder("PROD")
 def folderPath = "PROD"
+folder(folderPath)
 
 job("${folderPath}/offline-repo-builder") {
     description("Check offliner manifest against offline repository")
@@ -67,7 +18,7 @@ job("${folderPath}/offline-repo-builder") {
 
     parameters {
         stringParam("MANIFEST_URL", "", "Offliner manifest URL")
-        stringParam("RELEASE_REPO_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/offline-repo-7.10/", "Scratch repository for the release")
+        stringParam("RELEASE_REPO_GROUP_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/groups/offline-repo-group-7-11/", "Scratch repositories group for the release")
     }
 
     scm {
@@ -88,7 +39,7 @@ job("${folderPath}/offline-repo-builder") {
     }
 
     steps {
-        shell(offline)
+        shell(commands)
     }
 
     publishers {
