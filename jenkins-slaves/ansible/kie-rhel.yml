@@ -31,6 +31,7 @@
     npmclilogin_version: ^0.1.1
     # rhel_version=7|8 variable is set by Packer when calling Ansible, you have to set it when running the playbook directly
     # e.g. by using --extra-vars rhel_version=7
+    ant_version: 1.10.9
 
   roles:
     - common

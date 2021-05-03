@@ -150,6 +150,23 @@
   with_items:
     - "{{ maven_versions }}"
 
+### Ant ###
+-name: Download Ant archives
+  get url:
+    url: https://archive.apache.org/dist/ant/binaries/apache-ant-{{ ant_version }}-bin.tar.gz
+    dest: /tmp/downloads
+    owner: root
+    group: root
+
+-name: Extract Ant archives
+  unarchive:
+    copy: no
+    src: /tmp/downloads/apache-ant-{{ ant_version }}-bin.tar.gz
+    dest: /opt/tools
+    owner: root
+    group: root
+
+
 ### GraalVM ###
 
 - name: Dowload GraalVM archives
