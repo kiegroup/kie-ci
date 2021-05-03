@@ -29,6 +29,9 @@ pipeline {
     agent {
         label "$AGENT_LABEL"
     }
+    options{
+        timestamps()
+    }    
     tools {
         maven "$mvnVersion"
         jdk "$javadk"
