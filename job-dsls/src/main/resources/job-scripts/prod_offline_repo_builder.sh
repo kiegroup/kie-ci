@@ -13,9 +13,9 @@ then
   exit 1
 fi
 
-RELEASE_REPO=$(echo $RELEASE_REPO_URL | sed 's/\//\\\//g')
+RELEASE_REPO_GROUP=$(echo $RELEASE_REPO_GROUP_URL | sed 's/\//\\\//g')
 WRAPPER="ip-tooling/scripts/rhba/build-offline-repo.sh"
-sed -i "s/MRRC=.*/MRRC=$RELEASE_REPO/g" $WRAPPER
+sed -i "s/REPOS=.*/REPOS=\"$RELEASE_REPO_GROUP\"/g" $WRAPPER
 
 chmod 755 $WRAPPER
 OUTPUT="output.log"
