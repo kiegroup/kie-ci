@@ -13,7 +13,8 @@ cd jenkins-slaves
 rsync -av bxms-jenkins/jenkins-image-extra-bits/rhba-osbs/ansible/ ansible
 rsync -av bxms-jenkins/jenkins-image-extra-bits/rhba-sourceclear-integration/ansible/ ansible
 
-wget --no-check-certificate https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/packer
+wget https://releases.hashicorp.com/packer/1.7.2/packer_1.7.2_linux_amd64.zip -O packer.zip
+unzip packer.zip
 chmod u+x packer
 
 export ANSIBLE_SCP_IF_SSH=y
@@ -81,10 +82,15 @@ def jobDefinition = job("${folderPath}/slave-image-build") {
         credentialsBinding {
 
             // Sets a variable to the text given in the credentials.
-            string("PSI_PASSWORD", "psi-rhba-jenkins-password")
+            string {
+                variable('PSI_PASSWORD')
+                credentialsId('psi-rhba-jenkins-password')
+            }
 
-            // Copies the file given in the credentials to a temporary location, then sets the variable to that location.
-            file("PSI_PRIVATE_KEY", "kie-jenkis.pem")
+            sshUserPrivateKey {
+                keyFileVariable("PSI_PRIVATE_KEY")
+                credentialsId("kie-jenkins.pem")
+            }
         }
     }
 
