@@ -145,7 +145,7 @@
 
 - name: Download Groovy 2.x archive
   get_url:
-    url: https://dl.bintray.com/groovy/maven/apache-groovy-binary-2.4.7.zip
+    url: https://archive.apache.org/dist/groovy/2.4.7/distribution/apache-groovy-binary-2.4.7.zip
     dest: /tmp/downloads
 
 - name: Extract Groovy 2.x archive
