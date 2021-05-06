@@ -92,8 +92,8 @@ def jobDefinition = job("${folderPath}/slave-image-build") {
             }
 
             sshUserPrivateKey {
-                keyFileVariable("PSI_PRIVATE_KEY")
-                credentialsId("kie-jenkins.pem")
+                keyFileVariable('PSI_PRIVATE_KEY')
+                credentialsId('kie-jenkins.pem')
             }
         }
     }

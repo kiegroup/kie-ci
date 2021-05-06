@@ -103,8 +103,8 @@ job(jobName) {
                 credentialsId('psi-rhba-jenkins-password')
             }
             sshUserPrivateKey {
-                keyFileVariable("PSI_PRIVATE_KEY")
-                credentialsId("kie-jenkins.pem")
+                keyFileVariable('PSI_PRIVATE_KEY')
+                credentialsId('kie-jenkins.pem')
             }
         }
         colorizeOutput()
