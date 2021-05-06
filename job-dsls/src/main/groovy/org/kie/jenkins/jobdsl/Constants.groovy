@@ -55,5 +55,6 @@ class Constants {
     static final String LOCAL_MVN_REP = "/home/jenkins/.m2/repository"
     static final String REPO_FILE_URL = "https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/script/repository-list.txt"
     static final String SRCCLR_JOBS_FOLDER = "srcclr"
+    static final String PACKER_URL = "https://releases.hashicorp.com/packer/1.7.2/packer_1.7.2_linux_amd64.zip"
 
 }

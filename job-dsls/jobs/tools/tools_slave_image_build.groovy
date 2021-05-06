@@ -1,10 +1,14 @@
 import org.kie.jenkins.jobdsl.templates.BasicJob
+import org.kie.jenkins.jobdsl.Constants
+
+def packerUrl=Constants.PACKER_URL
 
 // Job Description
 String jobDescription = "Job responsible for building Jenkins agent image"
 
 
-String command = """#!/bin/bash +x
+String command = """
+#!/bin/bash +x
 cd jenkins-slaves
 
 # include functionality for osbs builds
@@ -13,7 +17,7 @@ cd jenkins-slaves
 rsync -av bxms-jenkins/jenkins-image-extra-bits/rhba-osbs/ansible/ ansible
 rsync -av bxms-jenkins/jenkins-image-extra-bits/rhba-sourceclear-integration/ansible/ ansible
 
-wget https://releases.hashicorp.com/packer/1.7.2/packer_1.7.2_linux_amd64.zip -O packer.zip
+wget $packerUrl -O packer.zip
 unzip packer.zip
 chmod u+x packer
 
