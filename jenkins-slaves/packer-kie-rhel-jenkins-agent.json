@@ -15,7 +15,7 @@
       "tenant_name": "rhba-jenkins",
       "source_image": "{{ user `source_image` }}",
       "image_name": "{{ user `image_name` }}",
-      "flavor": "ci.m1.medium.no.nested.virt",
+      "flavor": "ci.m1.medium",
       "networks": [
         "60cacaff-86a6-4f88-82a4-ed3023724df1"
         ],
