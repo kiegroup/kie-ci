@@ -56,6 +56,6 @@ class Constants {
     static final String REPO_FILE_URL = 'https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/script/repository-list.txt'
     static final String SRCCLR_JOBS_FOLDER = 'srcclr'
     static final String PACKER_URL = 'https://releases.hashicorp.com/packer/1.7.2/packer_1.7.2_linux_amd64.zip'
-    static final String FINDBUGS_FILE = "**/spotbugsXml.xml"
-    static final String CHECKSTYLE_FILE = "**/checkstyle.log"
+    static final String FINDBUGS_FILE = '**/spotbugsXml.xml'
+    static final String CHECKSTYLE_FILE = '**/checkstyle.log'
 }
