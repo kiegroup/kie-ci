@@ -3,7 +3,7 @@
  */
 
 def kogitoProps ='''
-node('kie-rhel7-priority&&!master') {
+node('kie-rhel7&&!master') {
     sh 'env\'
     def REPO_URL_FOLDER_VERSION = 'master'.equals(BRANCH_NAME) ? 'master' : (PRODUCT_VERSION =~ /\\d+\\.\\d+/)[0]
     println "Folder [${REPO_URL_FOLDER_VERSION}] based on BRANCH_NAME [${BRANCH_NAME}] and KOGITO_PRODUCT_VERSION [${KOGITO_PRODUCT_VERSION}]"
