@@ -16,35 +16,8 @@ def final DEFAULTS = [
 ]
 
 // override default config for specific repos (if needed)
+
 def final REPO_CONFIGS = [
-        "lienzo-core"               : [
-                timeoutMins: 30,
-                label: "kie-rhel7 && kie-mem4g"
-        ],
-        "lienzo-tests"              : [
-                timeoutMins: 30,
-                label: "kie-rhel7 && kie-mem4g"
-        ],
-        "droolsjbpm-build-bootstrap": [
-                timeoutMins: 30,
-                label      : "kie-rhel7 && kie-mem4g",
-                executionNumber : 25
-        ],
-        "kie-soup"                  : [
-                label: "kie-rhel7 && kie-mem4g"
-        ],
-        "appformer"                 : [
-                label    : "kie-rhel7 && kie-mem16g",
-                artifactsToArchive: [
-                        "**/dashbuilder-runtime.war"
-                ]
-        ],
-        "droolsjbpm-knowledge"      : [
-                label: "kie-rhel7 && kie-mem4g"
-        ],
-        "drools"                    : [
-                timeoutMins: 150
-        ],
         "optaplanner"               : [],
         "optaweb-employee-rostering" : [
                 artifactsToArchive: [
@@ -56,64 +29,6 @@ def final REPO_CONFIGS = [
                 artifactsToArchive: [
                         "**/cypress/screenshots/**",
                         "**/cypress/videos/**"
-                ]
-        ],
-        "jbpm"                      : [
-                timeoutMins: 150
-        ],
-        "kie-jpmml-integration"     : [
-                label: "kie-rhel7 && kie-mem4g"
-        ],
-        "droolsjbpm-integration"    : [
-                timeoutMins: 300,
-                label: "kie-rhel7 && kie-mem24g",
-                artifactsToArchive: [
-                        "**/gclog" // this is a temporary file used to do some analysis: Once https://github.com/kiegroup/kie-jenkins-scripts/pull/652 is reverted this will disappear
-                ],
-                executionNumber : 25
-        ],
-        "openshift-drools-hacep"    : [],
-        "kie-uberfire-extensions"   : [
-                label: "kie-rhel7 && kie-mem4g"
-        ],
-        "kie-wb-playground"         : [
-                label: "kie-rhel7 && kie-mem4g"
-        ],
-        "kie-wb-common"             : [
-                timeoutMins: 300,
-                label: "kie-rhel7 && kie-mem16g && gui-testing",
-                executionNumber : 25,
-                artifactsToArchive: [
-                        "**/target/screenshots/**"
-                ]
-        ],
-        "drools-wb"                 : [
-                label: "kie-rhel7 && kie-mem16g"
-        ],
-        "optaplanner-wb"            : [],
-        "jbpm-designer"             : [
-                label: "kie-rhel7 && kie-mem16g"
-        ],
-        "jbpm-work-items"           : [
-                label      : "kie-linux && kie-mem4g",
-                timeoutMins: 120,
-        ],
-        "jbpm-wb"                   : [
-                label: "kie-rhel7 && kie-mem16g",
-                artifactsToArchive: [
-                        "**/target/jbpm-wb-case-mgmt-showcase*.war",
-                        "**/target/jbpm-wb-showcase.war"
-                ]
-        ],
-        "kie-wb-distributions"      : [
-                label             : "kie-linux && kie-mem24g && gui-testing",
-                timeoutMins       : 200,
-                artifactsToArchive: [
-                        "**/target/screenshots/**",
-                        "**/target/business-monitoring-webapp.war",
-                        "**/target/business-central*eap*.war",
-                        "**/target/business-central*wildfly*.war",
-                        "**/target/jbpm-server*dist*.zip"
                 ]
         ]
 
@@ -146,7 +61,7 @@ for (repoConfig in REPO_CONFIGS) {
 
 
     // jobs for master branch don't use the branch in the name
-    String jobName = "${folderPath}/${repo}-${repoBranch}.pr"
+    String jobName = "${folderPath}/${repo}-7.x.pr"
 
     pipelineJob(jobName) {
 
@@ -213,16 +128,8 @@ for (repoConfig in REPO_CONFIGS) {
                         triggerPhrase(".*[j|J]enkins,?.*(retest|test) this.*")
                         allowMembersOfWhitelistedOrgsAsAdmin(true)
                         whiteListTargetBranches {
-                            boolean isOptaPlannerOrDependentRepo =
-                                    repo in ['optaplanner', 'optaweb-employee-rostering', 'optaweb-vehicle-routing']
-                            if (isOptaPlannerOrDependentRepo) {
-                                ghprbBranch {
-                                    branch("7.x")
-                                }
-                            } else {
-                                ghprbBranch {
-                                    branch("${repoBranch}")
-                                }
+                            ghprbBranch {
+                                branch("7.x")
                             }
                         }
                         useGitHubHooks(true)
