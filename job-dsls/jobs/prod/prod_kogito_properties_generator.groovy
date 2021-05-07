@@ -3,9 +3,9 @@
  */
 
 def kogitoProps ='''
-node() {
+node('kie-rhel7&&!master') {
     sh 'env\'
-    def REPO_URL_FOLDER_VERSION = 'master'.equals(BRANCH_NAME) ? 'master' : (PRODUCT_VERSION =~ /\\d+\\.\\d+/)[0]
+    def REPO_URL_FOLDER_VERSION = 'master'.equals(BRANCH_NAME) ? 'master' : (KOGITO_PRODUCT_VERSION =~ /\\d+\\.\\d+/)[0]
     println "Folder [${REPO_URL_FOLDER_VERSION}] based on BRANCH_NAME [${BRANCH_NAME}] and KOGITO_PRODUCT_VERSION [${KOGITO_PRODUCT_VERSION}]"
     def REPO_URL_FINAL = REPO_URL.replace("-master-", "-${REPO_URL_FOLDER_VERSION}-")
     println "REPO_URL_FINAL [${REPO_URL_FINAL}]"
@@ -18,7 +18,8 @@ node() {
             "OPTAPLANNER_PRODUCT_VERSION"       : OPTAPLANNER_PRODUCT_VERSION,
             "OPTAPLANNER_PRODUCT_VERSION_LONG"  : OPTAPLANNER_PRODUCT_VERSION_LONG,
             "PRODUCT_MILESTONE"                 : PRODUCT_MILESTONE,
-            "TIME_STAMP"                        : TIME_STAMP
+            "TIME_STAMP"                        : TIME_STAMP,
+            "GIT_INFORMATION_HASHES"            : GIT_INFORMATION_HASHES 
     ]
     if(Boolean.valueOf(IS_PROD)) {
         println "//TODO"    
