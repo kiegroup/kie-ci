@@ -12,7 +12,9 @@ def final DEFAULTS = [
         label                  : "kie-rhel7 && kie-mem8g",
         executionNumber        : 10,
         artifactsToArchive     : "",
-        excludedArtifacts      : ""
+        excludedArtifacts      : "",
+        checkstyleFile         : Constants.CHECKSTYLE_FILE,
+        findbugsFile           : Constants.FINDBUGS_FILE
 ]
 
 // override default config for specific repos (if needed)
@@ -50,6 +52,8 @@ for (repoConfig in REPO_CONFIGS) {
     addtionalExcludeArtifacts = addtionalExcludeArtifacts.replaceAll("[\\[\\]]", "")
     String timeout = get("timeoutMins")
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
+    String findbugsFile = get("findbugsFile")
+    String checkstyleFile = get("checkstyleFile")
 
     // Creation of folders where jobs are stored
     folder("KIE")
@@ -84,8 +88,8 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("ADDITIONAL_ARTIFACTS_TO_ARCHIVE","${additionalArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_EXCLUDED_ARTIFACTS","${addtionalExcludeArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_TIMEOUT","${timeout}","this parameter is provided by the job")
-            stringParam ("CHECKSTYLE_FILE","**/checkstyle.log","")
-            stringParam ("FINDBUGS_FILE","**/spotbugsXml.xml","")
+            stringParam ("CHECKSTYLE_FILE","${checkstyleFile}","")
+            stringParam ("FINDBUGS_FILE","${findbugsFile}","")
             stringParam ("PR_TYPE","Pull Request","")
         }
 
