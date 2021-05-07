@@ -255,9 +255,20 @@ for (repoConfig in REPO_CONFIGS) {
                 archiveJunit('**/target/*-reports/TEST-*.xml') {
                     allowEmptyResults()
                 }
-                findbugs("**/spotbugsXml.xml")
-
-                checkstyle("**/checkstyle.log")
+                recordIssues {
+                    tools {
+                        checkStyle {
+                            pattern("${Constants.CHECKSTYLE_FILE}")
+                        }
+                    }
+                }
+                recordIssues {
+                    tools {
+                        findBugs {
+                            pattern("${Constants.FINDBUGS_FILE}")
+                        }
+                    }
+                }
             }
 
             def artifactsToArchive = get("artifactsToArchive")
