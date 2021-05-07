@@ -13,7 +13,8 @@ def final DEFAULTS = [
         label                  : "kie-rhel7 && kie-mem16g",
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
-        artifactsToArchive     : []
+        artifactsToArchive     : [],
+        checkstyleFile         : Constants.CHECKSTYLE_FILE
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
@@ -53,8 +54,8 @@ for (repoConfig in REPO_CONFIGS) {
     additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
     String additionalExcludedArtifacts = ""
     String additionalTimeout = get("timeoutMins")
-
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
+    String checkstyleFile = get("checkstyleFile")
 
     // Creation of folders where jobs are stored
     folder("KIE")
@@ -88,7 +89,7 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("ADDITIONAL_LABEL","${additionalLabel}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_EXCLUDED_ARTIFACTS","${additionalExcludedArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_TIMEOUT","${additionalTimeout}","this parameter is provided by the job")
-            stringParam ("CHECKSTYLE_FILE","**/checkstyle.log","")
+            stringParam ("CHECKSTYLE_FILE","${checkstyleFile}","")
             stringParam ("PR_TYPE","Compile Downstream Build","")
         }
 

@@ -169,9 +169,21 @@ job(jobName) {
         archiveJunit('**/target/*-reports/TEST-*.xml') {
             allowEmptyResults()
         }
-        findbugs("**/findbugsXml.xml")
+        recordIssues {
+            tools {
+                checkStyle {
+                    pattern("${Constants.CHECKSTYLE_FILE}")
+                }
+            }
+        }
+        recordIssues {
+            tools {
+                findBugs {
+                    pattern("${Constants.FINDBUGS_FILE}")
+                }
+            }
+        }
 
-        checkstyle("**/checkstyle.log")
         def artifactsToArchive = get("artifactsToArchive")
         def excludedArtifacts = get("excludedArtifacts")
         if (artifactsToArchive) {
