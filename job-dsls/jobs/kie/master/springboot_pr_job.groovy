@@ -171,7 +171,7 @@ job(jobName) {
         }
         findbugs("**/findbugsXml.xml")
 
-        checkstyle("**/checkstyle-result.xml")
+        checkstyle("**/checkstyle.log")
         def artifactsToArchive = get("artifactsToArchive")
         def excludedArtifacts = get("excludedArtifacts")
         if (artifactsToArchive) {

@@ -88,7 +88,7 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("ADDITIONAL_LABEL","${additionalLabel}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_EXCLUDED_ARTIFACTS","${additionalExcludedArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_TIMEOUT","${additionalTimeout}","this parameter is provided by the job")
-            stringParam ("CHECKSTYLE_FILE","**/checkstyle-result.xml","")
+            stringParam ("CHECKSTYLE_FILE","**/checkstyle.log","")
             stringParam ("PR_TYPE","Compile Downstream Build","")
         }
 
