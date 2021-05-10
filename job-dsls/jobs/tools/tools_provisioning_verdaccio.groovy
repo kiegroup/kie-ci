@@ -12,8 +12,8 @@ def final DEFAULTS = [
 def final JOB_NAMES = [
         "provision-verdaccio-service"  : [
                 params : [
-                        [name: "IMAGE", default: "rhel-7.6-server-x86_64-released", description: "The name of the image to be used for machine creation." ],
-                        [name: "FLAVOUR", default: "ci.m1.medium.no.nested.virt", description: "The flavor (i.e. resources such as CPU cores, RAM, ...) defining the machine. m1.medium = 2 vCPUs, 4 GB RAM, 40 GB HDD" ]
+                        [name: "IMAGE", default: "rhel-7.9-server-x86_64-released", description: "The name of the image to be used for machine creation." ],
+                        [name: "FLAVOUR", default: "ci.m1.medium", description: "The flavor (i.e. resources such as CPU cores, RAM, ...) defining the machine. m1.medium = 2 vCPUs, 4 GB RAM, 40 GB HDD" ]
                 ],
                 jobDescription : "The job for provisioning verdaccio service node."
         ]
