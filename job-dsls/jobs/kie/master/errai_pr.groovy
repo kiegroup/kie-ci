@@ -81,13 +81,15 @@ job(jobName) {
     triggers {
         githubPullRequest {
             useGitHubHooks(true)
+            onlyTriggerPhrase(false)
+            triggerPhrase(".*[j|J]enkins,?.*(retest|test) this.*")
             cron("")
             orgWhitelist(["errai", "kiegroup"])
             allowMembersOfWhitelistedOrgsAsAdmin(true)
             whiteListTargetBranches([repoBranch])
             extensions {
                 commitStatus {
-                    context('Pull Request Execution')
+                    context('Linux - Pull Request')
                     addTestResults(true)
                 }
             }
