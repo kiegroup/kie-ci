@@ -488,14 +488,6 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e")
         }
-        maven{
-            mavenInstallation("${mvnVersion}")
-            goals("-nsu -B -e -fae clean verify -Dintegration-tests=true")
-            rootPOM("kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/pom.xml")
-            properties("webdriver.firefox.bin":"/opt/tools/firefox-60esr/firefox-bin")
-            mavenOpts("-Xms1024m -Xmx1536m")
-            providedSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e")
-        }
     }
 }
 
