@@ -154,7 +154,7 @@ class PrDroolsjbpmToolsJob extends BasicJob {
                     whiteListTargetBranches([branchName])
 
                     // trigger phrase fro re-triggering the job
-                    triggerPhrase(".*[j|J]enkins,?.*(retest|test) this.*")
+                    triggerPhrase(".*[j|J]enkins,?.*(retest|test).*")
 
                     extensions {
 

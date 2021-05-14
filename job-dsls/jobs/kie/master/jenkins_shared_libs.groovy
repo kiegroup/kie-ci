@@ -68,7 +68,7 @@ pipelineJob(jobName) {
                     gitHubAuthId(ghAuthTokenId)
                     adminlist('')
                     useGitHubHooks(true)
-                    triggerPhrase('.*[j|J]enkins,?.*(retest|test) this.*')
+                    triggerPhrase('.*[j|J]enkins,?.*(retest|test).*')
                     onlyTriggerPhrase(false)
                     autoCloseFailedPullRequests(false)
                     skipBuildPhrase(".*\\[skip\\W+ci\\].*")
