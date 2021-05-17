@@ -201,7 +201,7 @@ for (repoConfig in REPO_CONFIGS) {
                         orgslist("${ghOrgUnit}")
                         whitelist("")
                         cron("")
-                        triggerPhrase(".*[j|J]enkins,?.*(retest|test) this.*")
+                        triggerPhrase(".*[j|J]enkins,?.*(retest|test).*")
                         allowMembersOfWhitelistedOrgsAsAdmin(true)
                         whiteListTargetBranches {
                             ghprbBranch {

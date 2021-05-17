@@ -82,7 +82,7 @@ job(jobName) {
         githubPullRequest {
             useGitHubHooks(true)
             onlyTriggerPhrase(false)
-            triggerPhrase(".*[j|J]enkins,?.*(retest|test) this.*")
+            triggerPhrase(".*[j|J]enkins,?.*(retest|test).*")
             cron("")
             orgWhitelist(["errai", "kiegroup"])
             allowMembersOfWhitelistedOrgsAsAdmin(true)
