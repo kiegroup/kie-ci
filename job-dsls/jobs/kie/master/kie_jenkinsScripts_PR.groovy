@@ -107,9 +107,6 @@ job(jobName) {
 
     wrappers {
         timestamps()
-        timeout {
-            elastic(60, 5, 60)
-        }
         colorizeOutput()
         toolenv("${javaToolEnv}")
         preBuildCleanup()
