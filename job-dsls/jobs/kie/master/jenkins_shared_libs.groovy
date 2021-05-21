@@ -98,6 +98,9 @@ pipelineJob(jobName) {
                             triggeredStatus('')
                             startedStatus('')
                         }
+                        ghprbCancelBuildsOnUpdate {
+                            overrideGlobal(true)
+                        }
                     }
                     permitAll(false)
                     commentFilePath('')
