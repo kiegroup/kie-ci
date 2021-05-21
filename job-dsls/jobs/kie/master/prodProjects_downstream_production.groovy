@@ -136,6 +136,9 @@ for (repoConfig in REPO_CONFIGS) {
                                 triggeredStatus("")
                                 startedStatus("")
                             }
+                            ghprbCancelBuildsOnUpdate {
+                                overrideGlobal(true)
+                            }
                         }
                         includedRegions("")
                         excludedRegions("")
