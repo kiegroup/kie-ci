@@ -21,11 +21,7 @@ def final DEFAULTS = [
 
 def final REPO_CONFIGS = [
         "drools"    : [],
-        "jbpm"      : [repository : "jbpm"],
-        "optaplanner" : [
-                repository : "optaplanner",
-                mailRecip  : DEFAULTS["mailRecip"] + ",gdsmet@redhat.com"
-        ]
+        "jbpm"      : [repository : "jbpm"]
 ]
 
 for (reps in REPO_CONFIGS) {
