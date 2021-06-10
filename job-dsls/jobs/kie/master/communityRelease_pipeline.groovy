@@ -59,6 +59,14 @@ pipeline {
                     'git checkout -b $baseBranch\'
                 }
             }    
+        }
+        stage('User metadata'){
+            steps {
+                dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
+                    sh "git config user.email kie-ci@jenkins.redhat"
+                    sh "git config user.name kie-ci"
+                }
+            }
         }    
         // checks if release branch already exists
         stage ('Check if release branch exists') {
@@ -328,9 +336,11 @@ pipeline {
         // the tags of the release will be created and pushed to github
         stage('Push community tag') {
             steps {
-                script {
-                    execute {
-                        sh './droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
+                execute {
+                    sshagent(['kie-ci-user-key']) {
+                        script {
+                            sh './droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
+                        }
                     }
                 }        
             }
