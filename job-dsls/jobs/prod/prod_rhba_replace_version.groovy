@@ -10,7 +10,9 @@ pipeline {
         jdk 'kie-jdk1.8'
     }
     parameters {
+        string(description: 'Initial branch, in which the new KIE version should be applied.', name: 'BASE_BRANCH', defaultValue: 'master')
         string(description: 'The community version', name: 'VERSION_ORG_KIE', defaultValue: '7.50.0-SNAPSHOT')
+        string(description: 'The new product version', name: 'VERSION_RHBA', defaultValue='7.11')
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
@@ -34,7 +36,7 @@ pipeline {
                         def productionProjectListFile = readFile "${env.PRODUCTION_PROJECT_LIST}"
                         def projectCollection = productionProjectListFile.readLines()
                         println "Project Collection ${projectCollection}."
-                        
+
                         projectCollection.each { project ->
                             def projectGroupName = util.getProjectGroupName(project)
                             def group = projectGroupName[0]
@@ -47,9 +49,10 @@ pipeline {
 
                                     println "Executing maven set-property for ${project}"
                                     configFileProvider([configFile(fileId: SETTINGS_XML_ID, variable: 'MAVEN_SETTINGS_XML')]) {
+                                        sh "mvn -s $MAVEN_SETTINGS_XML versions:set -DnewVersion=${VERSION_RHBA} -DgenerateBackupPoms=false"
                                         sh "mvn -s $MAVEN_SETTINGS_XML versions:set-property -Dproperty=version.org.kie -DnewVersion=${VERSION_ORG_KIE} -DgenerateBackupPoms=false"
                                     }
-                                    
+
                                     def changes = sh(returnStdout: true, script: 'git status -s').split()
                                     println "changes ${changes}"
                                     if(changes.size() > 0) {
@@ -62,9 +65,9 @@ pipeline {
                                     } else {
                                         println 'No changes, so, nothing to push'
                                     }
-                                }                                 
-                                
-                            }                        
+                                }
+
+                            }
                         }
                     }
                 }
