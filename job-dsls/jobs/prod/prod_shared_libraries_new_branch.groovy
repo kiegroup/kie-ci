@@ -4,7 +4,7 @@ pipeline {
         label 'kie-rhel7 && kie-mem4g'
     }
     tools {
-        maven 'kie-maven-3.6.3'
+        maven 'kie-maven-3.8.1'
         jdk 'kie-jdk1.8'
     }
     stages {

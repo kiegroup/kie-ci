@@ -4,7 +4,7 @@
   gather_facts: false
 
   vars :
-    maven_versions: [3.3.9,3.5.0,3.5.2,3.5.4,3.6.0,3.6.2,3.6.3]
+    maven_versions: [3.3.9,3.5.0,3.5.2,3.5.4,3.6.0,3.6.2,3.6.3,3.8.1]
     maven_versions_needing_extension: [3.3.9,3.5.0,3.5.2,3.5.4,3.6.0]
     jdk_long_versions: [java-1.8.0-openjdk, java-11-openjdk]
     jdk_symlink_names: [jdk1.8, jdk11]
