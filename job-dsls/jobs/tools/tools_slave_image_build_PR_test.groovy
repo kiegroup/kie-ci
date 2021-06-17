@@ -12,7 +12,6 @@ cd jenkins-slaves
 
 # include functionality for osbs builds
 # clone from gerrit moved to scm, not needed here: ./add-osbs.sh https://code.engineering.redhat.com/gerrit/bxms-jenkins
-https://redhatbxms.slack.com/archives/CC7CY8GCT
 rsync -av bxms-jenkins/jenkins-image-extra-bits/rhba-osbs/ansible/ ansible
 rsync -av bxms-jenkins/jenkins-image-extra-bits/rhba-sourceclear-integration/ansible/ ansible
 
