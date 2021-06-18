@@ -310,7 +310,7 @@
 
 - name: Download Packer
   get_url:
-    url: https://rhba-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/userContent/packer
+    url: https://releases.hashicorp.com/packer/1.7.2/packer_1.7.2_linux_amd64.zip
     dest: /opt/packer/bin/
     validate_certs: no
 
