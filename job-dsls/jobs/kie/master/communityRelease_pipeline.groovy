@@ -59,15 +59,7 @@ pipeline {
                     'git checkout -b $baseBranch\'
                 }
             }    
-        }
-        stage('User metadata'){
-            steps {
-                dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
-                    sh "git config user.email kie-ci@jenkins.redhat"
-                    sh "git config user.name kie-ci"
-                }
-            }
-        }    
+        }   
         // checks if release branch already exists
         stage ('Check if release branch exists') {
             steps{
@@ -135,6 +127,14 @@ pipeline {
                 }    
             }
         }
+        stage('User metadata'){
+            steps {
+                dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
+                    sh "./script/git-all.sh config user.email kie-ci@jenkins.redhat"
+                    sh "./script/git-all.sh git config user.name kie-ci"
+                }
+            }
+        }          
         // part of the Maven rep will be erased
         stage ('Remove M2') {
             steps {
