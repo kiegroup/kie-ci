@@ -50,6 +50,12 @@ pipeline {
                 cleanWs()
             }
         }
+        stage('User metadata'){
+            steps {
+                sh "git config --global user.email kieciuser@gmail.com"
+                sh "git config --global user.name kie-ci"
+            }
+        }
         stage('Checkout droolsjbpm-build-bootstrap') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '$baseBranch']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:$organization/droolsjbpm-build-bootstrap.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'droolsjbpm-build-bootstrap']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$organization/droolsjbpm-build-bootstrap.git']]])
@@ -127,14 +133,6 @@ pipeline {
                 }    
             }
         }
-        stage('User metadata'){
-            steps {
-                dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
-                    sh "./script/git-all.sh config user.email kie-ci@jenkins.redhat"
-                    sh "./script/git-all.sh git config user.name kie-ci"
-                }
-            }
-        }          
         // part of the Maven rep will be erased
         stage ('Remove M2') {
             steps {
