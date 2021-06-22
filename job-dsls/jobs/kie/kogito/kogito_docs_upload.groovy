@@ -1,4 +1,4 @@
-// pipeline DSL job for uploading kogito-docs from master-kogito branch
+// pipeline DSL job for uploading kogito-docs from main-kogito branch
 
 import org.kie.jenkins.jobdsl.Constants
 
@@ -38,11 +38,11 @@ pipeline {
         }
         stage ('checkout kie-docs') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: 'master-kogito']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kie-docs.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-docs']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kie-docs.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: 'main-kogito']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kie-docs.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-docs']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kie-docs.git']]])
                 dir("${WORKSPACE}" + '/kie-docs') {
                     sh 'pwd \\n' +
                        'ls -al \\n' +
-                       'git checkout -b master-kogito \\n' +
+                       'git checkout -b main-kogito \\n' +
                        'git branch \\n' +
                        'git config --global user.email "kieciuser@gmail.com" \\n' +
                        'git config --global user.name "kieciuser"\'                       
@@ -114,7 +114,7 @@ pipeline {
                        'sed -i "s/<version>${currentKieSnapshot}<\\\\/version>/<version>${nextKieSnapshot}<\\\\/version>/" doc-content/pom.xml \\n' +
                        'sed -i "s/<version>${currentKieSnapshot}<\\\\/version>/<version>${nextKieSnapshot}<\\\\/version>/" doc-content/kogito-docs/pom.xml \\n' +
                        'sed -i "s/<version>${currentKogitoDocsVersion}<\\\\/version>/<version>${nextKogitoDocsSnapshot}<\\\\/version>/" doc-content/kogito-docs/pom.xml \\n' +
-                       /* uploading changed poms to kogito-master branch */
+                       /* uploading changed poms to kogito-main branch */
                        'git add . \\n' +
                        'git commit -m "upgraded kogito-docs to ${nextKogitoDocsSnapshot}" '
                 } 
@@ -124,7 +124,7 @@ pipeline {
             steps {
                 sshagent(['kie-ci-user-key']) {
                     dir("${WORKSPACE}" + '/kie-docs') {
-                        sh 'git push origin master-kogito'   
+                        sh 'git push origin main-kogito'   
                     }
                 }
             }
@@ -167,7 +167,7 @@ pipeline {
 pipelineJob("${folderPath}/uploadKogitoDocs") {
 
     description('''this job <b>uploadKogitoDocs</b>: <br><br>
-1. clones kie-docs - <b>“master-kogito”</b>  branch <br>
+1. clones kie-docs - <b>“main-kogito”</b>  branch <br>
 2. upgrades the kie-docs/doc-content/kogito-docs/pom.xml to <b>$currentKogitoDocsVersion</b> <br>
 3. executes a mvn clean install in kie-docs/doc-content/kogito-docs <br>
 4. creates a folder <b>$newKogitoDocsVersion</b> in filemgmt.jboss.org:docs_htdocs/kogito/release <br>
@@ -179,7 +179,7 @@ pipelineJob("${folderPath}/uploadKogitoDocs") {
 ''')
 
     parameters {
-        stringParam("currentKieSnapshot","${currentKieSnapshot}","please enter the <b>current kie snapshot version</b> in poms of <b>master-kogito</b> branch<br>look at <br> https://github.com/kiegroup/kie-docs/blob/master-kogito/pom.xml OR <br>https://github.com/kiegroup/kie-docs/blob/master-kogito/doc-content/pom.xml OR <br>https://github.com/kiegroup/kie-docs/blob/master-kogito/doc-content/kogito-docs/pom.xml#L9")
+        stringParam("currentKieSnapshot","${currentKieSnapshot}","please enter the <b>current kie snapshot version</b> in poms of <b>main-kogito</b> branch<br>look at <br> https://github.com/kiegroup/kie-docs/blob/main-kogito/pom.xml OR <br>https://github.com/kiegroup/kie-docs/blob/main-kogito/doc-content/pom.xml OR <br>https://github.com/kiegroup/kie-docs/blob/main-kogito/doc-content/kogito-docs/pom.xml#L9")
         stringParam("nextKieSnapshot","${nextKieSnapshot}","please enter the <b>next kie snapshot version</b>")
         stringParam("currentKogitoDocsSnaphot", "${currentKogitoDocsSnaphot}", "please enter the <b>current kogito-docs snapshot version</b>")
         stringParam("currentKogitoDocsVersion", "${currentKogitoDocsVersion}", "please enter the <b>current kogito-docs version</b>")

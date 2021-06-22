@@ -31,11 +31,11 @@ pipeline{
             }
         }
 
-        stage('trigger nightly job master') {
+        stage('trigger nightly job main') {
             steps {
-                build job: 'nightly/master', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-master/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'master'],
+                build job: 'nightly/main', propagate: false, wait: true, parameters: [
+                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-main/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
@@ -43,13 +43,13 @@ pipeline{
         }
 
         // Kogito prod nightlies
-        stage('trigger kogito nightly job master') {
+        stage('trigger kogito nightly job main') {
             steps {
-                build job: 'kogito.nightly/master', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-master-nightly-with-upstream'],
+                build job: 'kogito.nightly/main', propagate: false, wait: true, parameters: [
+                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-main-nightly-with-upstream'],
                         [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: "${RHBA_VERSION_PREFIX}"],
-                        [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-master/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'master'],
+                        [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-main/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '8.6.0'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
@@ -75,7 +75,7 @@ pipeline{
         stage('trigger kogito-tooling nightly job main') {
             steps {
                 build job: 'kogito-tooling.nightly/main', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-master/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-main/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.11.0'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]

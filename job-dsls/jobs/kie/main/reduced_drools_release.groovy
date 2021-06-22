@@ -16,9 +16,9 @@ def AGENT_LABEL="kie-rhel7 && kie-mem24g"
 
 // Creation of folders where jobs are stored
 folder("KIE")
-folder("KIE/master")
-folder("KIE/master/reduced-drools-release")
-def folderPath = ("KIE/master/reduced-drools-release")
+folder("KIE/${baseBranch}")
+folder("KIE/${baseBranch}/reduced-drools-release")
+def folderPath = ("KIE/${baseBranch}/reduced-drools-release")
 
 
 def redRelease='''

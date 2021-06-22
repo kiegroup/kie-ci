@@ -43,8 +43,8 @@ for (repoConfig in REPO_CONFIGS) {
     folder("KIE/${repoBranch}/" + Constants.DEPLOY_FOLDER)
     def folderPath = ("KIE/${repoBranch}/" + Constants.DEPLOY_FOLDER)
 
-    // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? "${folderPath}/${repo}-turtleTests" : "${folderPath}/${repo}-${repoBranch}-turtleTests"
+    // jobs for main branch don't use the branch in the name
+    String jobName = (repoBranch == "main") ? "${folderPath}/${repo}-turtleTests" : "${folderPath}/${repo}-${repoBranch}-turtleTests"
 
     mavenJob(jobName) {
 

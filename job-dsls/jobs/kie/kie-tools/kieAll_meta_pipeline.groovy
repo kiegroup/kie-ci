@@ -19,14 +19,14 @@ pipeline{
         stage('trigger daily build pipeline') {
             steps {
                 parallel (
-                    "master-pipeline" : {
-                        build job: "../master/daily-build/daily-build-pipeline-master", propagate: false
+                    "main-pipeline" : {
+                        build job: "../main/daily-build/daily-build-pipeline-main", propagate: false
                     },  
-                    "master-jdk11-pipeline" : {
-                        build job: "../master/daily-build-jdk11/daily-build-jdk11-pipeline-master", propagate: false
+                    "main-jdk11-pipeline" : {
+                        build job: "../main/daily-build-jdk11/daily-build-jdk11-pipeline-main", propagate: false
                     }, 
-                    "prod-master-pipeline" : {
-                        build job: '../master/daily-build-prod/daily-build-prod-pipeline-master', propagate: false
+                    "prod-main-pipeline" : {
+                        build job: '../main/daily-build-prod/daily-build-prod-pipeline-main', propagate: false
                     },
                     "7.52.x-pipeline" : {
                         build job: "../7.52.x/daily-build/daily-build-pipeline-7.52.x", propagate: false

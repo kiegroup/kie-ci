@@ -35,7 +35,7 @@ for (jobNames in JOB_NAMES) {
     def params = get("params")
     def logRot = get("logRot")
 
-    // jobs for master branch don't use the branch in the name
+    // jobs for main branch don't use the branch in the name
     String jobN = "$folderPath/$jobName"
 
     job(jobN) {
@@ -63,7 +63,7 @@ for (jobNames in JOB_NAMES) {
                 remote {
                     url('git@github.com:kiegroup/kie-jenkins-scripts.git')
                     credentials("kie-qe-ci-user-key")
-                    branch('*/master')
+                    branch('*/main')
                 }
                 extensions {
                     relativeTargetDirectory {

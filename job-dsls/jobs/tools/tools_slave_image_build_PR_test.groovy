@@ -54,7 +54,7 @@ job(jobName) {
 
     parameters {
         stringParam ("OWNER","kiegroup","")
-        stringParam ("BRANCH","master","")
+        stringParam ("BRANCH","main","")
         stringParam ("PACKER_VAR_FILE","packer-kie-rhel7-vars.json","")
 
     }
@@ -85,7 +85,7 @@ job(jobName) {
                 url('ssh://jb-ip-tooling-jenkins@code.engineering.redhat.com/bxms-jenkins')
                 credentials('code.engineering.redhat.com')
             }
-            branch ("master")
+            branch ("main")
             extensions {
                 relativeTargetDirectory {
                     relativeTargetDir('jenkins-slaves/bxms-jenkins')

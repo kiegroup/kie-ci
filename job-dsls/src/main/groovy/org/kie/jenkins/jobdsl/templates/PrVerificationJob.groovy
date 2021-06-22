@@ -143,9 +143,9 @@ class PrVerificationJob extends BasicJob {
                     useGitHubHooks(true)
 
                     // Adding branches to this whitelist allows you to selectively test pull requests destined for these branches only.
-                    // Supports regular expressions (e.g. 'master', 'feature-.*').
+                    // Supports regular expressions (e.g. 'main', 'feature-.*').
                     if (projectName == "kie-docs") {
-                        whiteListTargetBranches([branchName, "master-kogito"])
+                        whiteListTargetBranches([branchName, "main-kogito"])
                     } else {
                         whiteListTargetBranches([branchName])
                     }

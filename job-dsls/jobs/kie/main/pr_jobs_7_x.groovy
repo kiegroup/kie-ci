@@ -68,7 +68,7 @@ for (repoConfig in REPO_CONFIGS) {
     def folderPath = ("KIE/${repoBranch}/" + Constants.PULL_REQUEST_FOLDER)
 
 
-    // jobs for master branch don't use the branch in the name
+    // jobs for main branch don't use the branch in the name
     String jobName = "${folderPath}/${repo}-7.x.pr"
 
     pipelineJob(jobName) {

@@ -508,12 +508,13 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieServerMatrix") {
     // Label which specifies which nodes this job can run on.
     label('kie-rhel7&&!master')
 
+
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
         stringParam("baseBranch", "${baseBranch}", "please edit the branch of the KIE release <br> Will be supplied by the parent job. <br> Normally the baseBranch will be supplied by parent job <br> ******************************************************** <br> ")
 
     }
-    
+
     axes {
         jdk("${javadk}")
         text("container", "wildfly", "eap7", "tomcat9")
@@ -658,7 +659,7 @@ pipelineJob("${dockerPath}/daily-build-${baseBranch}-docker-images") {
         }
     }
 
-    description('Builds CI Docker images for master branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ')
+    description('Builds CI Docker images for main branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ')
 
     logRotator {
         numToKeep(5)

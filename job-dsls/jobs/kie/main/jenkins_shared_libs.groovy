@@ -15,7 +15,7 @@ folder("KIE/${baseBranch}/" + Constants.PULL_REQUEST_FOLDER){
 def folderPath = ("KIE/${baseBranch}/" + Constants.PULL_REQUEST_FOLDER)
 
 
-// jobs for master branch don't use the branch in the name
+// jobs for main branch don't use the branch in the name
 String jobName = "${folderPath}/${repository}-${baseBranch}.pr"
 String repoUrl = "https://github.com/${ghOrgUnit}/${repository}/"
 
@@ -83,7 +83,7 @@ pipelineJob(jobName) {
                     blackListCommitAuthor('')
                     whiteListTargetBranches {
                         ghprbBranch {
-                            branch('master')
+                            branch('main')
                         }
                     }
                     blackListTargetBranches {}

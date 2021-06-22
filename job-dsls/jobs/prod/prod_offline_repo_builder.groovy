@@ -25,7 +25,7 @@ job("${folderPath}/offline-repo-builder") {
         git {
             remote {
                 url("ssh://jb-ip-tooling-jenkins@code.engineering.redhat.com/integration-platform-tooling")
-                branch("master")
+                branch("main")
                 credentials("code.engineering.redhat.com")
             }
             extensions {

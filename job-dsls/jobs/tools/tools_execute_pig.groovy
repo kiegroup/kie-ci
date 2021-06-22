@@ -6,7 +6,7 @@
 
  def folderPath = ("Tools")
 
-// jobs for master branch don't use the branch in the name
+// jobs for main branch don't use the branch in the name
 String jobName = "${folderPath}/pigExecution"
 
 job(jobName) {
@@ -19,7 +19,7 @@ job(jobName) {
 
     parameters {
         stringParam("repo", "https://gitlab.cee.redhat.com/middleware/build-configurations.git", "the build configuration repo")
-        stringParam("repoBranch", "master", "the build configuration branch to be checked out")
+        stringParam("repoBranch", "main", "the build configuration branch to be checked out")
         stringParam("buildConfiguration", "rhba/7.5.1", "the build configuration folder")
         stringParam("scmRevision", "", "the revision `sync-7.26.x-2019.10.29` for instance")
         stringParam("additionalParameters", "--skipBuilds --skipPncUpdate", "")
