@@ -12,7 +12,7 @@ pipeline {
     parameters {
         string(description: 'Initial branch, in which the new KIE version should be applied.', name: 'BASE_BRANCH', defaultValue: 'master')
         string(description: 'The community version', name: 'VERSION_ORG_KIE', defaultValue: '7.50.0-SNAPSHOT')
-        string(description: 'The new product version', name: 'VERSION_RHBA', defaultValue='7.11.0')
+        string(description: 'The new product version', name: 'VERSION_RHBA', defaultValue: '7.11.0')
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
