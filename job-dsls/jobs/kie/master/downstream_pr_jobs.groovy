@@ -14,7 +14,9 @@ def final DEFAULTS = [
         ghJenkinsfilePwd       : "kie-ci",
         artifactsToArchive     : [],
         checkstyleFile         : Constants.CHECKSTYLE_FILE,
-        findbugsFile           : Constants.FINDBUGS_FILE
+        findbugsFile           : Constants.FINDBUGS_FILE,
+        buildJDKTool           : '',
+        buildMavenTool         : ''
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
@@ -28,7 +30,9 @@ def final REPO_CONFIGS = [
         "appformer"                 : [],
         "droolsjbpm-knowledge"      : [],
         "drools"                    : [],
-        "optaplanner"               : [],
+        "optaplanner"               : [
+                buildJDKTool: "kie-jdk11"
+        ],
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [
@@ -68,6 +72,8 @@ for (repoConfig in REPO_CONFIGS) {
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
     String findbugsFile = get("findbugsFile")
     String checkstyleFile = get("checkstyleFile")
+    String buildJDKTool = get("buildJDKTool")
+    String buildMavenTool = get("buildMavenTool")
 
     // Creation of folders where jobs are stored
     folder("KIE")
@@ -104,6 +110,8 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("CHECKSTYLE_FILE","${checkstyleFile}","")
             stringParam ("FINDBUGS_FILE","${findbugsFile}","")
             stringParam ("PR_TYPE","Full Downstream Build","")
+            stringParam ("BUILD_JDK_TOOL","${buildJDKTool}","")
+            stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}","")
         }
 
         definition {
