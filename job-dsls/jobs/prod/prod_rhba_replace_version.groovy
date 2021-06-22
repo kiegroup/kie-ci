@@ -101,6 +101,8 @@ pipelineJob(jobName) {
 
     parameters {
         stringParam ("VERSION_ORG_KIE","7.50.0-SNAPSHOT","The recent community (SNAPSHOT) version")
+        stringParam ("BASE_BRANCH","master","Initial branch, in which the new KIE version should be applied")
+        stringParam ("VERSION_RHBA","7.11.0","The new product version")
     }
 
     logRotator {
