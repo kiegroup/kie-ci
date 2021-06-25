@@ -29,7 +29,7 @@ def final REPO_CONFIGS = [
         "drools"                    : [],
         "optaplanner"               : [
                 buildJDKTool: "kie-jdk11"
-        ]
+        ],
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [],
