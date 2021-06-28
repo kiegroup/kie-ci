@@ -52,7 +52,13 @@ pipeline {
                     }
                 }                
             }
-        }        
+        }
+        stage('User metadata'){
+            steps {
+                sh "git config --global user.email kieciuser@gmail.com"
+                sh "git config --global user.name kie-ci"
+            }
+        }                
         stage('Checkout droolsjbpm-build-bootstrap') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '$baseBranch']], browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/$organization/droolsjbpm-build-bootstrap'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'droolsjbpm-build-bootstrap']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/$organization/droolsjbpm-build-bootstrap.git']]])
@@ -70,12 +76,6 @@ pipeline {
                 }    
             }
         } 
-        stage ('Global git conf') {
-            steps{
-                sh 'git config --global user.name "kie-ci"'
-                sh 'git config --global user.email "kieciuser@gmail.com"'                
-            }
-        }
         stage ('Remove M2') {
             steps {
                 sh "./droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"

@@ -36,6 +36,12 @@ pipeline {
                 cleanWs()
             }
         }
+        stage('User metadata'){
+            steps {
+                sh "git config --global user.email kieciuser@gmail.com"
+                sh "git config --global user.name kie-ci"
+            }
+        }        
         stage('Checkout droolsjbpm-build-bootstrap') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '$baseBranch']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:$organization/droolsjbpm-build-bootstrap.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'droolsjbpm-build-bootstrap']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$organization/droolsjbpm-build-bootstrap.git']]])
@@ -104,13 +110,7 @@ pipeline {
             steps {
                 sh "./droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
             }
-        }        
-        stage ('Configure github user'){
-            steps {
-                sh './droolsjbpm-build-bootstrap/script/git-all.sh config --global user.email "kie-ci@gmail.com"\'
-                sh './droolsjbpm-build-bootstrap/script/git-all.sh config --global user.name "kie-ci"\'
-            }  
-        }          
+        }                
         // poms will be upgraded to new version ($kieVersion)
         stage('Update versions') {
             when{
@@ -138,7 +138,7 @@ pipeline {
             }
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh './droolsjbpm-build-bootstrap/script/release/04_pushReleaseBranches.sh $releaseBranch\'
+                    sh './droolsjbpm-build-bootstrap/script/release/04_pushReleaseBranches.sh $releaseBranch'
                 }
             }
         }
