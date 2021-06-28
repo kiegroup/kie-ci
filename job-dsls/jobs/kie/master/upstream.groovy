@@ -11,7 +11,9 @@ def final DEFAULTS = [
         label                  : "kie-rhel7 && kie-mem24g",
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
-        artifactsToArchive     : []
+        artifactsToArchive     : [],
+        buildJDKTool           : '',
+        buildMavenTool         : ''
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
@@ -22,7 +24,9 @@ def final REPO_CONFIGS = [
         "appformer"                 : [],
         "droolsjbpm-knowledge"      : [],
         "drools"                    : [],
-        "optaplanner"               : [],
+        "optaplanner"               : [
+                buildJDKTool: "kie-jdk11"
+        ],
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [],
@@ -53,6 +57,8 @@ for (repoConfig in REPO_CONFIGS) {
     String additionalArtifacts = get("artifactsToArchive")
     additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
     String additionalTimeout = get("timeoutMins")
+    String buildJDKTool = get("buildJDKTool")
+    String buildMavenTool = get("buildMavenTool")
 
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
 
@@ -89,6 +95,8 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("ADDITIONAL_LABEL","${additionalLabel}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_TIMEOUT","${additionalTimeout}","this parameter is provided by the job")
             stringParam ("PR_TYPE","Upstream Build","")
+            stringParam ("BUILD_JDK_TOOL","${buildJDKTool}","")
+            stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}","")
         }
 
         definition {

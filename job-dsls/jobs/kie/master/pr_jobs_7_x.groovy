@@ -14,7 +14,9 @@ def final DEFAULTS = [
         artifactsToArchive     : "",
         excludedArtifacts      : "",
         checkstyleFile         : Constants.CHECKSTYLE_FILE,
-        findbugsFile           : Constants.FINDBUGS_FILE
+        findbugsFile           : Constants.FINDBUGS_FILE,
+        buildJDKTool           : '',
+        buildMavenTool         : ''
 ]
 
 // override default config for specific repos (if needed)
@@ -54,6 +56,8 @@ for (repoConfig in REPO_CONFIGS) {
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
     String findbugsFile = get("findbugsFile")
     String checkstyleFile = get("checkstyleFile")
+    String buildJDKTool = get("buildJDKTool")
+    String buildMavenTool = get("buildMavenTool")
 
     // Creation of folders where jobs are stored
     folder("KIE")
@@ -91,6 +95,8 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("CHECKSTYLE_FILE","${checkstyleFile}","")
             stringParam ("FINDBUGS_FILE","${findbugsFile}","")
             stringParam ("PR_TYPE","Pull Request","")
+            stringParam ("BUILD_JDK_TOOL","${buildJDKTool}","")
+            stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}","")
         }
 
         definition {
