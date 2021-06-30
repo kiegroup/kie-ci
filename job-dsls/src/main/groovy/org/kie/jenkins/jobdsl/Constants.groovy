@@ -58,4 +58,5 @@ class Constants {
     static final String PACKER_URL = 'https://releases.hashicorp.com/packer/1.7.2/packer_1.7.2_linux_amd64.zip'
     static final String FINDBUGS_FILE = '**/spotbugsXml.xml'
     static final String CHECKSTYLE_FILE = '**/checkstyle.log'
+    static final String RHBA_VERSION_PREFIX = "${KIE_PREFIX}.redhat-"
 }
