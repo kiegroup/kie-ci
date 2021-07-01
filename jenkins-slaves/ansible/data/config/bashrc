@@ -7,7 +7,7 @@ fi
 
 export LANG=en_US.UTF-8
 export JAVA_HOME=/opt/tools/jdk1.8
-export MAVEN_HOME=/opt/tools/apache-maven-3.6.3
+export MAVEN_HOME=/opt/tools/apache-maven-3.8.1
 export ANT_HOME=/opt/tools/apache-ant-1.10.9
 export OPERATORSDK_HOME=/opt/tools/extras/operator-sdk
 export MAVEN_OPTS="-Xmx2g"
