@@ -1,5 +1,4 @@
 import org.kie.jenkins.jobdsl.Constants
-
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -25,6 +24,7 @@ folder("KIE/${baseBranch}/prod-tag")
 def folderPath = ("KIE/${baseBranch}/prod-tag")
 
 def productTag='''
+retry=0
 pipeline {
     agent {
         label "$AGENT_LABEL"
@@ -136,10 +136,14 @@ pipeline {
         }  
         stage ('Create & push tags to Gerrit') {
             steps {
-                echo 'Name of the tag: ' + "$tagName"
-                sshagent(['code.engineering.redhat.com']) {
-                    sh './droolsjbpm-build-bootstrap/script/release/08b_prodPushTags.sh $tagName'
-                } 
+                script {
+                    execute {
+                        echo 'Name of the tag: ' + "$tagName"
+                        sshagent(['code.engineering.redhat.com']) {
+                            sh './droolsjbpm-build-bootstrap/script/release/08b_prodPushTags.sh $tagName'
+                        }
+                    }    
+                }
             }
         }
         stage('Clone, create and push kie-release-reports') {
@@ -180,6 +184,16 @@ pipeline {
                     '${BUILD_LOG, maxLines=750}', subject: 'prod-tag-${baseBranch} for ${TPB}: ' + "${currentBuild.currentResult}", to: 'bxms-prod@redhat.com'
         }
     }       
+}
+void execute(Closure closure) {
+    try {
+        closure()
+    } catch(error) {
+        input "Retry step?"
+        retry++
+        echo "This is retry number ${retry}"
+        execute(closure)
+    } 
 }
 '''
 
