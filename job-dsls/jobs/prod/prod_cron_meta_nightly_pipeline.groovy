@@ -18,57 +18,59 @@ pipeline{
         jdk "$javadk"        
     }   
     // IMPORTANT: In case you trigger a new branch here, please create the same branch on build-configuration project
-  
-    stage('trigger nightly job 7.52.x') {
-        build job: 'nightly/7.52.x', propagate: false, wait: true, parameters: [
-                [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.11/content-compressed'],
-                [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '711'],
-                [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.11.0'],
-                [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
-        ]
-    }
     
-    stage('trigger nightly job master') {
-        build job: 'nightly/master', propagate: false, wait: true, parameters: [
-                [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-master/content-compressed'],
-                [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'master'],
-                [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
-                [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
-        ]
-    }
-    
-    // Kogito prod nightlies
-    stage('trigger kogito nightly job master') {
-        build job: 'kogito.nightly/master', propagate: false, wait: true, parameters: [
-                [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-master-nightly-with-upstream'],
-                [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: "${RHBA_VERSION_PREFIX}"],
-                [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-master/content-compressed'],
-                [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'master'],
-                [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
-                [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '8.6.0'],
-                [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
-        ]
-    }
-    
-    stage('trigger kogito nightly job 1.5.x') {
-        build job: 'kogito.nightly/1.5.x', propagate: false, wait: true, parameters: [
-                [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-7.11-nightly-with-upstream'],
-                [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '7.52.1.redhat-'],
-                [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-1.5/content-compressed'],
-                [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '15'],
-                [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '1.5.0'],
-                [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '8.5.0'],
-                [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
-        ]
-    }
-    
-    // Kogito-tooling prod nightlies
-    stage('trigger kogito-tooling nightly job main') {
-        build job: 'kogito-tooling.nightly/main', propagate: false, wait: true, parameters: [
-                [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
-                [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.11.0'],
-                [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
-        ]
+    stages {
+          stage('trigger nightly job 7.52.x') {
+            build job: 'nightly/7.52.x', propagate: false, wait: true, parameters: [
+                    [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.11/content-compressed'],
+                    [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '711'],
+                    [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.11.0'],
+                    [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
+            ]
+        }
+
+        stage('trigger nightly job master') {
+            build job: 'nightly/master', propagate: false, wait: true, parameters: [
+                    [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-master/content-compressed'],
+                    [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'master'],
+                    [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
+                    [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
+            ]
+        }
+
+        // Kogito prod nightlies
+        stage('trigger kogito nightly job master') {
+            build job: 'kogito.nightly/master', propagate: false, wait: true, parameters: [
+                    [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-master-nightly-with-upstream'],
+                    [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: "${RHBA_VERSION_PREFIX}"],
+                    [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-master/content-compressed'],
+                    [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'master'],
+                    [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
+                    [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '8.6.0'],
+                    [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
+            ]
+        }
+
+        stage('trigger kogito nightly job 1.5.x') {
+            build job: 'kogito.nightly/1.5.x', propagate: false, wait: true, parameters: [
+                    [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-7.11-nightly-with-upstream'],
+                    [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '7.52.1.redhat-'],
+                    [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-1.5/content-compressed'],
+                    [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '15'],
+                    [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '1.5.0'],
+                    [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '8.5.0'],
+                    [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
+            ]
+        }
+
+        // Kogito-tooling prod nightlies
+        stage('trigger kogito-tooling nightly job main') {
+            build job: 'kogito-tooling.nightly/main', propagate: false, wait: true, parameters: [
+                    [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
+                    [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.11.0'],
+                    [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
+            ]
+        }
     }
 }    
 """
