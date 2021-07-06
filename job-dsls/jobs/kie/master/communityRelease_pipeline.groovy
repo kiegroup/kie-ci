@@ -678,7 +678,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
     label('kie-rhel7&&kie-mem8g&&!master')
 
     logRotator {
-        numToKeep(3)
+        numToKeep(8)
     }
 
     properties{
