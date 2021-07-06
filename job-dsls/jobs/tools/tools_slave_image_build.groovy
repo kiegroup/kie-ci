@@ -81,10 +81,15 @@ def jobDefinition = job("${folderPath}/slave-image-build") {
         credentialsBinding {
 
             // Sets a variable to the text given in the credentials.
-            string("PSI_PASSWORD", "psi-rhba-jenkins-password")
+            string {
+                credentialsId('psi-rhba-jenkins-password')
+                variable('PSI_PASSWORD')
+            }
 
-            // Copies the file given in the credentials to a temporary location, then sets the variable to that location.
-            file("PSI_PRIVATE_KEY", "kie-jenkis.pem")
+            sshUserPrivateKey {
+                credentialsId('kie-jenkins.pem')
+                keyFileVariable('PSI_PRIVATE_KEY')
+            }
         }
     }
 
