@@ -13,6 +13,7 @@ def final DEFAULTS = [
         executionNumber        : 10,
         artifactsToArchive     : "",
         excludedArtifacts      : "",
+        ghOrgUnit              : "",
         checkstyleFile         : Constants.CHECKSTYLE_FILE,
         findbugsFile           : Constants.FINDBUGS_FILE,
         buildJDKTool           : '',
@@ -109,7 +110,7 @@ def final REPO_CONFIGS = [
         ],
         "kogito-rhba"             : [
                 label: "kie-rhel7 && kie-mem16g",
-                ghOrgUnit = 'jboss-integration'
+                ghOrgUnit : 'jboss-integration'
         ]
 
 ]
