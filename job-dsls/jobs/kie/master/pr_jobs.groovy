@@ -13,7 +13,6 @@ def final DEFAULTS = [
         executionNumber        : 10,
         artifactsToArchive     : "",
         excludedArtifacts      : "",
-        ghOrgUnit              : "",
         checkstyleFile         : Constants.CHECKSTYLE_FILE,
         findbugsFile           : Constants.FINDBUGS_FILE,
         buildJDKTool           : '',
