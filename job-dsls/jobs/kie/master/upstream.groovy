@@ -121,7 +121,7 @@ for (repoConfig in REPO_CONFIGS) {
                         gitTool("")
                     }
                 }
-                scriptPath("Jenkinsfile.buildchain")
+                scriptPath(".ci/jenkins/Jenkinsfile.buildchain")
             }
         }
 

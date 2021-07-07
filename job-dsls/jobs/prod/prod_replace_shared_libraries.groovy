@@ -19,7 +19,7 @@ pipeline {
         stage('Replace projects') {
             steps {
                 script {
-                    def sharedLibrariesProjects = ['kiegroup/droolsjbpm-build-bootstrap': ['Jenkinsfile', 'Jenkinsfile.nightly'], 'jboss-integration/rhba' : ['Jenkinsfile']]
+                    def sharedLibrariesProjects = ['kiegroup/droolsjbpm-build-bootstrap': ['.ci/jenkins/Jenkinsfile', '.ci/jenkins/Jenkinsfile.nightly'], 'jboss-integration/rhba' : ['.ci/jenkins/Jenkinsfile']]
                     sharedLibrariesProjects.each { key, val ->
                         println "[INFO] Treating project ${key}"
                         def projectGroupName = util.getProjectGroupName(key) 
