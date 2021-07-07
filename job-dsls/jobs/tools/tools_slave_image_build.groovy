@@ -87,13 +87,13 @@ def jobDefinition = job("${folderPath}/slave-image-build") {
 
             // Sets a variable to the text given in the credentials.
             string {
-                variable('PSI_PASSWORD')
                 credentialsId('psi-rhba-jenkins-password')
+                variable('PSI_PASSWORD')
             }
 
             sshUserPrivateKey {
-                keyFileVariable('PSI_PRIVATE_KEY')
                 credentialsId('kie-jenkins.pem')
+                keyFileVariable('PSI_PRIVATE_KEY')
             }
         }
     }
