@@ -81,9 +81,6 @@ def final REPO_CONFIGS = [
         "drools-wb"                 : [
                 label: "kie-rhel7 && kie-mem16g"
         ],
-        "optaplanner"               : [
-                buildJDKTool: "kie-jdk11"
-        ],
         "optaplanner-wb"            : [],
         "jbpm-designer"             : [
                 label: "kie-rhel7 && kie-mem16g"
