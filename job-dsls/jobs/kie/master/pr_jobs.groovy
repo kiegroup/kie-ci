@@ -106,6 +106,10 @@ def final REPO_CONFIGS = [
                         "**/target/business-central*wildfly*.war",
                         "**/target/jbpm-server*dist*.zip"
                 ]
+        ],
+        "kogito-rhba"             : [
+                label: "kie-rhel7 && kie-mem16g",
+                ghOrgUnit = 'jboss-integration'
         ]
 
 ]
