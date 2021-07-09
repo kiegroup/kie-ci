@@ -73,7 +73,7 @@ pipelineJob("${folderPath}/kieAll_meta_pipeline") {
         pipelineTriggers {
             triggers {
                 cron{
-                    spec("H 20 * * *")
+                    spec("H 17 * * *")
                 }
             }
         }
