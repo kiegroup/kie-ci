@@ -104,6 +104,7 @@ job(jobName) {
             sshUserPrivateKey {
                 keyFileVariable('PSI_PRIVATE_KEY')
                 credentialsId('kie-jenkins.pem')
+                usernameVariable('PSI_PRIVATE_KEY_USERNAME')
             }
         }
         colorizeOutput()
