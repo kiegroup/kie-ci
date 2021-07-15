@@ -580,7 +580,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-jbpmTestCoverageMatrix"
         }
     }
 
-    label('kie-rhel7&&kie-mem8g&&!master')
+    label('kie-rhel7&&!master')
 
     axes {
         labelExpression("label-exp","kie-linux&&kie-mem8g")
@@ -655,6 +655,9 @@ rm -rf kie-wb-common-$kieVersion'''
 matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
     description("This job: <br> - Runs the KIE WB integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
+    // Label which specifies which nodes this job can run on.
+    label('kie-rhel7&&!master')
+
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
         stringParam("baseBranch", "${baseBranch}", "please edit the branch of the KIE release <br> Will be supplied by the parent job. <br> Normally the baseBranch will be supplied by parent job <br> ******************************************************** <br> ")
@@ -674,8 +677,6 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
-
-    label('kie-rhel7&&kie-mem8g&&!master')
 
     logRotator {
         numToKeep(8)
@@ -741,14 +742,6 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("3f317dd7-4d08-4ee4-b9bb-969c309e782c")
         }
-        maven{
-            mavenInstallation("${mvnVersion}")
-            goals("-nsu -B -e -fae clean verify -Dintegration-tests=true")
-            rootPOM("kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/pom.xml")
-            properties("webdriver.firefox.bin":"/opt/tools/firefox-60esr/firefox-bin")
-            mavenOpts("-Xms1024m -Xmx1536m")
-            providedSettings("3f317dd7-4d08-4ee4-b9bb-969c309e782c")
-        }
     }
 }
 
@@ -765,7 +758,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     // Label which specifies which nodes this job can run on.
-    label("master")
+    label('kie-rhel7&&!master')
 
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
@@ -784,8 +777,6 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
-
-    label('kie-rhel7&&kie-mem8g&&!master')
 
     logRotator {
         numToKeep(3)
