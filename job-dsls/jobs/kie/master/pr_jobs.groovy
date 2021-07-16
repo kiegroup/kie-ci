@@ -110,6 +110,10 @@ def final REPO_CONFIGS = [
         "kogito-rhba"             : [
                 label: "kie-rhel7 && kie-mem16g",
                 ghOrgUnit : 'jboss-integration'
+        ],
+        "process-migration-service" :[
+                label: "kie-rhel7 && kie-mem16g",
+                branch : "main"
         ]
 
 ]
