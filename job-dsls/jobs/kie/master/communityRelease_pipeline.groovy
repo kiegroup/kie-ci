@@ -2,7 +2,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def kieVersion=Constants.KIE_PREFIX + ".Final"
 def baseBranch=Constants.BRANCH
-def releaseBranch="r7.53.0.Final"
+def releaseBranch="r7.58.0.Final"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def MAVEN_OPTS="-Xms1g -Xmx3g"
@@ -669,8 +669,8 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
     }
 
     axes {
-        labelExpression("label_exp", "kie-rhel7&&kie-mem8g&&gui-testing")
-        text("container", "wildfly")
+        labelExpression("label_exp","kie-rhel7&&kie-mem8g&&gui-testing")
+        text("container","wildfly")
         text("war","business-central")
         jdk("${javadk}")
         text("browser","firefox")
@@ -772,8 +772,8 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
 
     axes {
         jdk("${javadk}")
-        text("container", "wildfly", "eap7", "tomcat9")
-        labelExpression("label_exp", "kie-linux&&kie-mem8g")
+        text("container", "wildfly","eap7","tomcat9")
+        labelExpression("label_exp","kie-linux&&kie-mem8g")
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
