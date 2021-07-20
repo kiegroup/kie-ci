@@ -108,14 +108,12 @@ def final REPO_CONFIGS = [
                 ]
         ],
         "kogito-rhba"             : [
-                label: "kie-rhel7 && kie-mem16g",
+                label: 'kie-rhel7 && kie-mem16g',
                 ghOrgUnit : 'jboss-integration'
         ],
-        "process-migration-service" :[
-                label: "kie-rhel7 && kie-mem16g",
-                branch : "main"
+        "process-migration-service" : [
+                label : 'kie-rhel7 && kie-mem16g'
         ]
-
 ]
 
 for (repoConfig in REPO_CONFIGS) {
@@ -220,6 +218,9 @@ for (repoConfig in REPO_CONFIGS) {
                         whiteListTargetBranches {
                             ghprbBranch {
                                 branch("${repoBranch}")
+                            }
+                            ghprbBranch {
+                                branch("main")
                             }
                         }
                         useGitHubHooks(true)
