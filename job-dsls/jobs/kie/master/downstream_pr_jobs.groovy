@@ -38,9 +38,7 @@ def final REPO_CONFIGS = [
         "droolsjbpm-integration"    : [
                 executionNumber : 25
         ],
-        "process-migration-service" : [
-                branch : "main"
-        ],
+        "process-migration-service" : [],
         "openshift-drools-hacep"    : [],
         "kie-wb-playground"         : [],
         "kie-uberfire-extensions"   : [],
@@ -161,6 +159,9 @@ for (repoConfig in REPO_CONFIGS) {
                             }
                             ghprbBranch {
                                 branch("7.x")
+                            }
+                            ghprbBranch {
+                                branch("main")
                             }
                         }
                         useGitHubHooks(true)
