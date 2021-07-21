@@ -189,8 +189,12 @@ pipeline {
         // the tags of the release will be created and pushed to github
         stage('Push community tag') {
             steps {
-                sh './droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
-            }
+                sshagent(['kie-ci-user-key']) {
+                    script {
+                        sh './droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
+                    }
+                }
+            }        
         }                                      
         stage ('Email send with BUILD result') {       
             steps {
