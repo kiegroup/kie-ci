@@ -83,7 +83,7 @@ pipeline {
                 }
             }
         }
-        /* when release branches don't exist clone master branch */
+        /* when release branches don't exist clone main branch */
         stage ('Clone others when release branches do not exist'){
             when{
                 expression { branchExists == '0'}

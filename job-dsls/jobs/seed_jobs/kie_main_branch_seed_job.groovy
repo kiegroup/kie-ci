@@ -11,8 +11,8 @@ def javadk=Constants.JDK_VERSION
 
 // creation of folder where this seed job should run
 folder("KIE")
-folder("KIE/master")
-def folderPath = "KIE/master"
+folder("KIE/${baseBranch}")
+def folderPath = "KIE/${baseBranch}"
 job("${folderPath}/a-seed-job-${baseBranch}") {
 
     description("this job creates all needed Jenkins jobs for the ${baseBranch}-branch ")
@@ -47,8 +47,8 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
 
     steps {
         jobDsl {
-            targets("job-dsls/jobs/kie/master/*.groovy\n" +
-                    "job-dsls/jobs/seed_jobs/kie_master_branch_seed_job.groovy")
+            targets("job-dsls/jobs/kie/main/*.groovy\n" +
+                    "job-dsls/jobs/seed_jobs/kie_main_branch_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)

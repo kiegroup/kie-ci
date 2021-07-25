@@ -10,7 +10,7 @@ pipeline {
         jdk 'kie-jdk1.8'
     }
     parameters {
-        string(description: 'Initial branch, in which the new KIE version should be applied.', name: 'BASE_BRANCH', defaultValue: 'master')
+        string(description: 'Initial branch, in which the new KIE version should be applied.', name: 'BASE_BRANCH', defaultValue: 'main')
         string(description: 'The community version', name: 'VERSION_ORG_KIE', defaultValue: '7.50.0-SNAPSHOT')
         string(description: 'The new product version', name: 'VERSION_RHBA', defaultValue: '7.11.0')
     }
@@ -95,13 +95,13 @@ pipelineJob(jobName) {
                     |
                     |Every configuration change needs to be done directly in the DSL files.
                     |
-                    |This job has to be run when community master was upgraded to the next SNAPSHOT version.
+                    |This job has to be run when community main was upgraded to the next SNAPSHOT version.
                     |
                     |""".stripMargin())
 
     parameters {
         stringParam ("VERSION_ORG_KIE","7.50.0-SNAPSHOT","The recent community (SNAPSHOT) version")
-        stringParam ("BASE_BRANCH","master","Initial branch, in which the new KIE version should be applied")
+        stringParam ("BASE_BRANCH","main","Initial branch, in which the new KIE version should be applied")
         stringParam ("VERSION_RHBA","7.11.0","The new product version")
     }
 

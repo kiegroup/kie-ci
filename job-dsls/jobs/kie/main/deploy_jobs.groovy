@@ -161,8 +161,8 @@ for (repoConfig in REPO_CONFIGS) {
 
     def folderPath = ("KIE/${repoBranch}/" + Constants.DEPLOY_FOLDER)
 
-    // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? "${folderPath}/$repo" : "${folderPath}/$repo-$repoBranch"
+    // jobs for main branch don't use the branch in the name
+    String jobName = (repoBranch == "${repoBranch}") ? "${folderPath}/$repo" : "${folderPath}/$repo-$repoBranch"
 
     job(jobName) {
 

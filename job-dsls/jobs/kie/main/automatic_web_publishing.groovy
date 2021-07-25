@@ -4,11 +4,13 @@
 
 import org.kie.jenkins.jobdsl.Constants
 
+def baseBranch=Constants.BRANCH
+
 // creation of folder
 folder("KIE")
-folder("KIE/master")
-folder("KIE/master/webs")
-def folderPath="KIE/master/webs"
+folder("KIE/${baseBranch}")
+folder("KIE/${baseBranch}/webs")
+def folderPath="KIE/${baseBranch}/webs"
 
 def javadk=Constants.JDK_VERSION
 def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
@@ -46,7 +48,7 @@ for (reps in REPO_CONFIGS) {
             }
             stage ('checkout website') {
                 steps {
-                    checkout([\$class: 'GitSCM', branches: [[name: 'master']], browser: [\$class: 'GithubWeb', repoUrl: 'https://github.com/kiegroup/${repo}-website'], doGenerateSubmoduleConfigurations: false, extensions: [[\$class: 'RelativeTargetDirectory', relativeTargetDir: '${repo}-website']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/kiegroup/${repo}-website']]])
+                    checkout([\$class: 'GitSCM', branches: [[name: 'main']], browser: [\$class: 'GithubWeb', repoUrl: 'https://github.com/kiegroup/${repo}-website'], doGenerateSubmoduleConfigurations: false, extensions: [[\$class: 'RelativeTargetDirectory', relativeTargetDir: '${repo}-website']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/kiegroup/${repo}-website']]])
                     dir("\${WORKSPACE}" + '/${repo}-website') {
                         sh '''pwd  
                            ls -al
@@ -91,7 +93,7 @@ for (reps in REPO_CONFIGS) {
                                ls -l \$WORKSPACE/keys/id_rsa
                                docker images
                                docker build -t kiegroup/${repo}-website:latest _dockerPublisher
-                               docker run --cap-add net_raw --cap-add net_admin -i --rm --volume "\${WORKSPACE}"/keys/:/home/jenkins/.ssh/:Z --name ${repo}-container kiegroup/${repo}-website:latest bash -l -c 'echo "INSIDE THE CONTAINER" && echo "WHOAMI" && whoami && echo "PWD" && pwd && ls -al && echo "inside .ssh" && cd /home/jenkins/.ssh && ls -al && cd /home/jenkins/${repo}-website-master && sudo rake setup && rake clean build && rake publish'
+                               docker run --cap-add net_raw --cap-add net_admin -i --rm --volume "\${WORKSPACE}"/keys/:/home/jenkins/.ssh/:Z --name ${repo}-container kiegroup/${repo}-website:latest bash -l -c 'echo "INSIDE THE CONTAINER" && echo "WHOAMI" && whoami && echo "PWD" && pwd && ls -al && echo "inside .ssh" && cd /home/jenkins/.ssh && ls -al && cd /home/jenkins/${repo}-website-main && sudo rake setup && rake clean build && rake publish'
                                '''
                         }
                     }

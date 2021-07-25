@@ -56,7 +56,7 @@ folder("KIE/${repoBranch}/" + Constants.PULL_REQUEST_FOLDER){
 def folderPath = ("KIE/${repoBranch}/" + Constants.PULL_REQUEST_FOLDER)
 
 
-// jobs for master branch don't use the branch in the name
+// jobs for main branch don't use the branch in the name
 String jobName = "${folderPath}/${repo}-springboot-${repoBranch}.pr"
 
 job(jobName) {

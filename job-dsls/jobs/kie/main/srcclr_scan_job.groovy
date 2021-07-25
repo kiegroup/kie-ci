@@ -59,13 +59,13 @@ for (repo in repoList) {
                     name('origin')
                     url('$SRCCLR_INVOKER_REPO_URL')
                 }
-                branch('master')
+                branch('main')
             }
         }
 
         steps {
             maven {
-                mavenInstallation("kie-maven-3.5.4")
+                mavenInstallation("kie-maven-3.6.3")
                 goals('-Pjenkins test -Dmaven.buildNumber.skip=true -Dsourceclear="--processor=${PROCESSOR_TYPE} --product-version=${VERSION} --package=${PACKAGE} --product=\"${NAME}\" --threshold=${THRESHOLD} ${SCAN_TYPE} --url=${URL}" ')
             }
         }

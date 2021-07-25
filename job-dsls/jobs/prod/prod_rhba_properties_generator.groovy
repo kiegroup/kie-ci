@@ -12,9 +12,9 @@
 def propGen ='''
 node('kie-rhel7&&!master') {
     sh 'env\'
-    def REPO_URL_FOLDER_VERSION = 'master'.equals(BRANCH_NAME) ? 'master' : (PRODUCT_VERSION =~ /\\d+\\.\\d+/)[0]
+    def REPO_URL_FOLDER_VERSION = 'main'.equals(BRANCH_NAME) ? 'main' : (PRODUCT_VERSION =~ /\\d+\\.\\d+/)[0]
     println "Folder [${REPO_URL_FOLDER_VERSION}] based on BRANCH_NAME [${BRANCH_NAME}] and PRODUCT_VERSION [${PRODUCT_VERSION}]"
-    def REPO_URL_FINAL = REPO_URL.replace("-master-", "-${REPO_URL_FOLDER_VERSION}-")
+    def REPO_URL_FINAL = REPO_URL.replace("-main-", "-${REPO_URL_FOLDER_VERSION}-")
     println "REPO_URL_FINAL [${REPO_URL_FINAL}]"
 
     def binding = [
@@ -77,8 +77,8 @@ pipelineJob("${folderPath}/rhba-properties-generator") {
 
     parameters {
         booleanParam("IS_PROD", true, "it defines if the properties file is for prod or not")
-        stringParam("BRANCH_NAME", "master", "the branch the nightly was triggered for")
-        stringParam("REPO_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-master-nightly", "Prod possibility is http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging")
+        stringParam("BRANCH_NAME", "main", "the branch the nightly was triggered for")
+        stringParam("REPO_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-main-nightly", "Prod possibility is http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging")
         stringParam("DELIVERABLE_REPO_URL", "http://download.devel.redhat.com/devel/candidates")
         stringParam("PRODUCT_VERSION", "7.10.0")
         stringParam("PRODUCT_VERSION_LONG", "7.10.0.redhat-00003", "This is just for prod files")

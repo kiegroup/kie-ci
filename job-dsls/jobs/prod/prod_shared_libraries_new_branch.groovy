@@ -76,7 +76,7 @@ pipelineJob(jobName) {
 
     parameters {
         stringParam ("BRANCH_NAME","7.48.x","branch name of the <b><i>new branch</i></b> to create and that will be pushed to blessed repository")
-        stringParam ("BASE_BRANCH","master","branch that will be used as base to copy (checkout) a new branch. In most cases this will be the <b><i>master</b></i> branch")
+        stringParam ("BASE_BRANCH","main","branch that will be used as base to copy (checkout) a new branch. In most cases this will be the <b><i>main</b></i> branch")
     }
 
     logRotator {
