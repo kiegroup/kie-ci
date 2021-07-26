@@ -7,53 +7,63 @@ def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
         timeoutMins            : 120,
-        ghAuthTokenId          : "kie-ci-token",
-        ghJenkinsfilePwd       : "kie-ci",
-        label                  : "kie-rhel7 && kie-mem8g",
+        ghAuthTokenId          : 'kie-ci-token',
+        ghJenkinsfilePwd       : 'kie-ci',
+        label                  : 'kie-rhel7 && kie-mem8g',
         executionNumber        : 10,
-        artifactsToArchive     : "",
-        excludedArtifacts      : "",
+        artifactsToArchive     : '',
+        excludedArtifacts      : '',
         checkstyleFile         : Constants.CHECKSTYLE_FILE,
         findbugsFile           : Constants.FINDBUGS_FILE,
         buildJDKTool           : '',
-        buildMavenTool         : ''
+        buildMavenTool         : '',
+        excludedRegions         : ''
 ]
 
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
-        "lienzo-core"               : [
+        'lienzo-core'               : [
                 timeoutMins: 30,
-                label: "kie-rhel7 && kie-mem4g"
+                label: 'kie-rhel7 && kie-mem4g',
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
-        "lienzo-tests"              : [
+        'lienzo-tests'              : [
                 timeoutMins: 30,
-                label: "kie-rhel7 && kie-mem4g"
+                label: 'kie-rhel7 && kie-mem4g',
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
-        "droolsjbpm-build-bootstrap": [
+        'droolsjbpm-build-bootstrap': [
                 timeoutMins: 30,
-                label      : "kie-rhel7 && kie-mem4g",
-                executionNumber : 25
+                label      : 'kie-rhel7 && kie-mem4g',
+                executionNumber : 25,
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'docs/.*', 'ide-configuration/.*', 'script/.*']
         ],
-        "kie-soup"                  : [
-                label: "kie-rhel7 && kie-mem4g"
+        'kie-soup'                  : [
+                label: 'kie-rhel7 && kie-mem4g',
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'scripts/.*']
         ],
-        "appformer"                 : [
-                label    : "kie-rhel7 && kie-mem16g",
+        'appformer'                 : [
+                label    : 'kie-rhel7 && kie-mem16g',
                 artifactsToArchive: [
-                        "**/dashbuilder-runtime.war"
-                ]
+                        '**/dashbuilder-runtime.war'
+                ],
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "droolsjbpm-knowledge"      : [
-                label: "kie-rhel7 && kie-mem4g"
+                label: "kie-rhel7 && kie-mem4g",
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "drools"                    : [
-                timeoutMins: 150
+                timeoutMins: 150,
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "jbpm"                      : [
-                timeoutMins: 150
+                timeoutMins: 150,
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'docsimg/.*']
         ],
         "kie-jpmml-integration"     : [
-                label: "kie-rhel7 && kie-mem4g"
+                label: "kie-rhel7 && kie-mem4g",
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "droolsjbpm-integration"    : [
                 timeoutMins: 300,
@@ -61,14 +71,19 @@ def final REPO_CONFIGS = [
                 artifactsToArchive: [
                         "**/gclog" // this is a temporary file used to do some analysis: Once https://github.com/kiegroup/kie-jenkins-scripts/pull/652 is reverted this will disappear
                 ],
-                executionNumber : 25
+                executionNumber : 25,
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
-        "openshift-drools-hacep"    : [],
+        "openshift-drools-hacep"    : [
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'docs/.*']
+        ],
         "kie-uberfire-extensions"   : [
-                label: "kie-rhel7 && kie-mem4g"
+                label: "kie-rhel7 && kie-mem4g",
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "kie-wb-playground"         : [
-                label: "kie-rhel7 && kie-mem4g"
+                label: "kie-rhel7 && kie-mem4g",
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "kie-wb-common"             : [
                 timeoutMins: 300,
@@ -76,25 +91,32 @@ def final REPO_CONFIGS = [
                 executionNumber : 25,
                 artifactsToArchive: [
                         "**/target/screenshots/**"
-                ]
+                ],
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "drools-wb"                 : [
-                label: "kie-rhel7 && kie-mem16g"
+                label: "kie-rhel7 && kie-mem16g",
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
-        "optaplanner-wb"            : [],
+        "optaplanner-wb"            : [
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
         "jbpm-designer"             : [
-                label: "kie-rhel7 && kie-mem16g"
+                label: "kie-rhel7 && kie-mem16g",
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "jbpm-work-items"           : [
                 label      : "kie-linux && kie-mem4g",
                 timeoutMins: 120,
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', '\\.idea/.*']
         ],
         "jbpm-wb"                   : [
                 label: "kie-rhel7 && kie-mem16g",
                 artifactsToArchive: [
                         "**/target/jbpm-wb-case-mgmt-showcase*.war",
                         "**/target/jbpm-wb-showcase.war"
-                ]
+                ],
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "kie-wb-distributions"      : [
                 label             : "kie-linux && kie-mem24g && gui-testing",
@@ -105,14 +127,17 @@ def final REPO_CONFIGS = [
                         "**/target/business-central*eap*.war",
                         "**/target/business-central*wildfly*.war",
                         "**/target/jbpm-server*dist*.zip"
-                ]
+                ],
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "kogito-rhba"             : [
                 label: 'kie-rhel7 && kie-mem16g',
-                ghOrgUnit : 'jboss-integration'
+                ghOrgUnit : 'jboss-integration',
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "process-migration-service" : [
-                label : 'kie-rhel7 && kie-mem16g'
+                label : 'kie-rhel7 && kie-mem16g',
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ]
 ]
 
@@ -120,25 +145,26 @@ for (repoConfig in REPO_CONFIGS) {
     Closure<Object> get = { String key -> repoConfig.value[key] ?: DEFAULTS[key] }
 
     String repo = repoConfig.key
-    String repoBranch = get("branch")
-    String ghOrgUnit = get("ghOrgUnit")
-    String ghAuthTokenId = get("ghAuthTokenId")
-    String ghJenkinsfilePwd = get("ghJenkinsfilePwd")
-    String additionalLabel = get("label")
-    def exeNum = get("executionNumber")
-    String additionalArtifacts = get("artifactsToArchive")
-    additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
-    String addtionalExcludeArtifacts = get("excludedArtifacts")
-    addtionalExcludeArtifacts = addtionalExcludeArtifacts.replaceAll("[\\[\\]]", "")
-    String timeout = get("timeoutMins")
+    String repoBranch = get('branch')
+    String ghOrgUnit = get('ghOrgUnit')
+    String ghAuthTokenId = get('ghAuthTokenId')
+    String ghJenkinsfilePwd = get('ghJenkinsfilePwd')
+    String additionalLabel = get('label')
+    def exeNum = get('executionNumber')
+    String additionalArtifacts = get('artifactsToArchive')
+    additionalArtifacts = additionalArtifacts.replaceAll('[\\[\\]]', '')
+    String addtionalExcludeArtifacts = get('excludedArtifacts')
+    addtionalExcludeArtifacts = addtionalExcludeArtifacts.replaceAll('[\\[\\]]', '')
+    String timeout = get('timeoutMins')
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
-    String findbugsFile = get("findbugsFile")
-    String checkstyleFile = get("checkstyleFile")
-    String buildJDKTool = get("buildJDKTool")
-    String buildMavenTool = get("buildMavenTool")
+    String findbugsFile = get('findbugsFile')
+    String checkstyleFile = get('checkstyleFile')
+    String buildJDKTool = get('buildJDKTool')
+    String buildMavenTool = get('buildMavenTool')
+    String excludedRegions = get('excludedRegions')
 
     // Creation of folders where jobs are stored
-    folder("KIE")
+    folder('KIE')
     folder("KIE/${repoBranch}")
     folder("KIE/${repoBranch}/" + Constants.PULL_REQUEST_FOLDER){
         displayName(Constants.PULL_REQUEST_FOLDER_DISPLAY_NAME)
@@ -165,16 +191,16 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         parameters {
-            stringParam ("sha1","","this parameter will be provided by the PR")
+            stringParam ("sha1",'',"this parameter will be provided by the PR")
             stringParam ("ADDITIONAL_LABEL","${additionalLabel}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_ARTIFACTS_TO_ARCHIVE","${additionalArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_EXCLUDED_ARTIFACTS","${addtionalExcludeArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_TIMEOUT","${timeout}","this parameter is provided by the job")
-            stringParam ("CHECKSTYLE_FILE","${checkstyleFile}","")
-            stringParam ("FINDBUGS_FILE","${findbugsFile}","")
-            stringParam ("PR_TYPE","Pull Request","")
-            stringParam ("BUILD_JDK_TOOL","${buildJDKTool}","")
-            stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}","")
+            stringParam ("CHECKSTYLE_FILE","${checkstyleFile}",'')
+            stringParam ("FINDBUGS_FILE","${findbugsFile}",'')
+            stringParam ("PR_TYPE","Pull Request",'')
+            stringParam ("BUILD_JDK_TOOL","${buildJDKTool}",'')
+            stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}",'')
         }
 
         definition {
@@ -185,8 +211,8 @@ for (repoConfig in REPO_CONFIGS) {
                             userRemoteConfig {
                                 url("${gitHubJenkinsfileRepUrl}")
                                 credentialsId("${ghJenkinsfilePwd}")
-                                name("")
-                                refspec("")
+                                name('')
+                                refspec('')
                             }
                         }
                         branches {
@@ -196,7 +222,7 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                         browser { }
                         doGenerateSubmoduleConfigurations(false)
-                        gitTool("")
+                        gitTool('')
                     }
                 }
                 scriptPath(".ci/jenkins/Jenkinsfile.buildchain")
@@ -209,10 +235,10 @@ for (repoConfig in REPO_CONFIGS) {
                     ghprbTrigger {
                         onlyTriggerPhrase(false)
                         gitHubAuthId("${ghAuthTokenId}")
-                        adminlist("")
+                        adminlist('')
                         orgslist("${ghOrgUnit}")
-                        whitelist("")
-                        cron("")
+                        whitelist('')
+                        cron('')
                         triggerPhrase(".*[j|J]enkins,?.*(retest|test).*")
                         allowMembersOfWhitelistedOrgsAsAdmin(true)
                         whiteListTargetBranches {
@@ -227,30 +253,30 @@ for (repoConfig in REPO_CONFIGS) {
                         permitAll(false)
                         autoCloseFailedPullRequests(false)
                         displayBuildErrorsOnDownstreamBuilds(false)
-                        blackListCommitAuthor("")
-                        commentFilePath("")
-                        skipBuildPhrase("")
+                        blackListCommitAuthor('')
+                        commentFilePath('')
+                        skipBuildPhrase('')
                         msgSuccess("Success")
                         msgFailure("Failure")
-                        commitStatusContext("")
-                        buildDescTemplate("")
-                        blackListLabels("")
-                        whiteListLabels("")
+                        commitStatusContext('')
+                        buildDescTemplate('')
+                        blackListLabels('')
+                        whiteListLabels('')
                         extensions {
                             ghprbSimpleStatus {
                                 commitStatusContext("Linux - Pull Request")
                                 addTestResults(true)
                                 showMatrixStatus(false)
-                                statusUrl("")
-                                triggeredStatus("")
-                                startedStatus("")
+                                statusUrl('')
+                                triggeredStatus('')
+                                startedStatus('')
                             }
                             ghprbCancelBuildsOnUpdate {
                                 overrideGlobal(true)
                             }
                         }
-                        includedRegions("")
-                        excludedRegions("")
+                        includedRegions('')
+                        excludedRegions(excludedRegions)
                     }
                 }
             }

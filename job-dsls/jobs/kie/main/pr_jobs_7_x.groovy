@@ -11,8 +11,8 @@ def final DEFAULTS = [
         ghJenkinsfilePwd       : "kie-ci",
         label                  : "kie-rhel7 && kie-mem8g",
         executionNumber        : 10,
-        artifactsToArchive     : "",
-        excludedArtifacts      : "",
+        artifactsToArchive     : '',
+        excludedArtifacts      : '',
         checkstyleFile         : Constants.CHECKSTYLE_FILE,
         findbugsFile           : Constants.FINDBUGS_FILE,
         buildJDKTool           : '',
@@ -22,18 +22,22 @@ def final DEFAULTS = [
 // override default config for specific repos (if needed)
 
 def final REPO_CONFIGS = [
-        "optaplanner"               : [],
+        "optaplanner"               : [
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'build/.*', 'ide-configuration/.*']
+        ],
         "optaweb-employee-rostering" : [
                 artifactsToArchive: [
                         "**/cypress/screenshots/**",
                         "**/cypress/videos/**"
-                ]
+                ],
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'runOnOpenShift\\.sh', 'ide-configuration/.*']
         ],
         "optaweb-vehicle-routing" : [
                 artifactsToArchive: [
                         "**/cypress/screenshots/**",
                         "**/cypress/videos/**"
-                ]
+                ],
+                excludedRegions: ['LICENSE.*', 'CODEOWNERS', '\\.gitignore', '\\.gitattributes', '\\.travis\\.yml', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'runOnOpenShift\\.sh', 'runLocally\\.sh', 'ide-configuration/.*']
         ]
 
 ]
@@ -49,15 +53,16 @@ for (repoConfig in REPO_CONFIGS) {
     String additionalLabel = get("label")
     def exeNum = get("executionNumber")
     String additionalArtifacts = get("artifactsToArchive")
-    additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
+    additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", '')
     String addtionalExcludeArtifacts = get("excludedArtifacts")
-    addtionalExcludeArtifacts = addtionalExcludeArtifacts.replaceAll("[\\[\\]]", "")
+    addtionalExcludeArtifacts = addtionalExcludeArtifacts.replaceAll("[\\[\\]]", '')
     String timeout = get("timeoutMins")
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
     String findbugsFile = get("findbugsFile")
     String checkstyleFile = get("checkstyleFile")
     String buildJDKTool = get("buildJDKTool")
     String buildMavenTool = get("buildMavenTool")
+    String excludedRegions = get("excludedRegions")
 
     // Creation of folders where jobs are stored
     folder("KIE")
@@ -87,16 +92,16 @@ for (repoConfig in REPO_CONFIGS) {
         }
 
         parameters {
-            stringParam ("sha1","","this parameter will be provided by the PR")
+            stringParam ("sha1",'',"this parameter will be provided by the PR")
             stringParam ("ADDITIONAL_LABEL","${additionalLabel}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_ARTIFACTS_TO_ARCHIVE","${additionalArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_EXCLUDED_ARTIFACTS","${addtionalExcludeArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_TIMEOUT","${timeout}","this parameter is provided by the job")
-            stringParam ("CHECKSTYLE_FILE","${checkstyleFile}","")
-            stringParam ("FINDBUGS_FILE","${findbugsFile}","")
-            stringParam ("PR_TYPE","Pull Request","")
-            stringParam ("BUILD_JDK_TOOL","${buildJDKTool}","")
-            stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}","")
+            stringParam ("CHECKSTYLE_FILE","${checkstyleFile}",'')
+            stringParam ("FINDBUGS_FILE","${findbugsFile}",'')
+            stringParam ("PR_TYPE","Pull Request",'')
+            stringParam ("BUILD_JDK_TOOL","${buildJDKTool}",'')
+            stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}",'')
         }
 
         definition {
@@ -107,8 +112,8 @@ for (repoConfig in REPO_CONFIGS) {
                             userRemoteConfig {
                                 url("${gitHubJenkinsfileRepUrl}")
                                 credentialsId("${ghJenkinsfilePwd}")
-                                name("")
-                                refspec("")
+                                name('')
+                                refspec('')
                             }
                         }
                         branches {
@@ -118,7 +123,7 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                         browser { }
                         doGenerateSubmoduleConfigurations(false)
-                        gitTool("")
+                        gitTool('')
                     }
                 }
                 scriptPath(".ci/jenkins/Jenkinsfile.buildchain")
@@ -131,10 +136,10 @@ for (repoConfig in REPO_CONFIGS) {
                     ghprbTrigger {
                         onlyTriggerPhrase(false)
                         gitHubAuthId("${ghAuthTokenId}")
-                        adminlist("")
+                        adminlist('')
                         orgslist("${ghOrgUnit}")
-                        whitelist("")
-                        cron("")
+                        whitelist('')
+                        cron('')
                         triggerPhrase(".*[j|J]enkins,?.*(retest|test).*")
                         allowMembersOfWhitelistedOrgsAsAdmin(true)
                         whiteListTargetBranches {
@@ -146,30 +151,30 @@ for (repoConfig in REPO_CONFIGS) {
                         permitAll(false)
                         autoCloseFailedPullRequests(false)
                         displayBuildErrorsOnDownstreamBuilds(false)
-                        blackListCommitAuthor("")
-                        commentFilePath("")
-                        skipBuildPhrase("")
+                        blackListCommitAuthor('')
+                        commentFilePath('')
+                        skipBuildPhrase('')
                         msgSuccess("Success")
                         msgFailure("Failure")
-                        commitStatusContext("")
-                        buildDescTemplate("")
-                        blackListLabels("")
-                        whiteListLabels("")
+                        commitStatusContext('')
+                        buildDescTemplate('')
+                        blackListLabels('')
+                        whiteListLabels('')
                         extensions {
                             ghprbSimpleStatus {
                                 commitStatusContext("Linux - Pull Request")
                                 addTestResults(true)
                                 showMatrixStatus(false)
-                                statusUrl("")
-                                triggeredStatus("")
-                                startedStatus("")
+                                statusUrl('')
+                                triggeredStatus('')
+                                startedStatus('')
                             }
                             ghprbCancelBuildsOnUpdate {
                                 overrideGlobal(true)
                             }
                         }
-                        includedRegions("")
-                        excludedRegions("")
+                        includedRegions('')
+                        excludedRegions(excludedRegions)
                     }
                 }
             }
