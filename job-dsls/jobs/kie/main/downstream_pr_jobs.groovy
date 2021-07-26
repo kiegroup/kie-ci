@@ -160,9 +160,6 @@ for (repoConfig in REPO_CONFIGS) {
                             ghprbBranch {
                                 branch("7.x")
                             }
-                            ghprbBranch {
-                                branch("main")
-                            }
                         }
                         useGitHubHooks(true)
                         permitAll(false)
