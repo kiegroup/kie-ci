@@ -219,9 +219,6 @@ for (repoConfig in REPO_CONFIGS) {
                             ghprbBranch {
                                 branch("${repoBranch}")
                             }
-                            ghprbBranch {
-                                branch("main")
-                            }
                         }
                         useGitHubHooks(true)
                         permitAll(false)
