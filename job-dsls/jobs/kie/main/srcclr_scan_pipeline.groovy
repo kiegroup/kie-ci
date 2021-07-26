@@ -86,8 +86,10 @@ pipelineJob("${folderPath}/srcclrpipeline") {
 
     properties {
         pipelineTriggers {
-            cron {
-                spec('0 23 14,28 * *')
+            triggers {
+                cron {
+                    spec('0 23 14,28 * *')
+                }
             }
         }
     }
