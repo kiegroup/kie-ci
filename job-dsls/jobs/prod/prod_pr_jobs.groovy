@@ -1,14 +1,12 @@
 def configs = [:]
 
 configs['izpack'] = [
-        mavenParams: '',
         pmeParams: '''
          -DversionOverride=${IZPACK_VERSION}
         '''
 ]
 
 configs['installer-commons'] = [
-        mavenParams: '',
         pmeParams: '''
          -DversionOverride=${INSTALLER_COMMONS_VERSION}
          -DizpackVersion=${IZPACK_VERSION}
@@ -17,7 +15,6 @@ configs['installer-commons'] = [
 ]
 
 configs['rhba-installers'] = [
-        mavenParams: '',
         pmeParams: '''
          -DversionOverride=${RHPAM_VERSION}
          -DizpackVersion=${IZPACK_VERSION}
@@ -28,6 +25,7 @@ configs['rhba-installers'] = [
 ]
 
 configs['bxms-patch-tools'] = [
+        branch: 'bxms-7.0',
         mavenParams: '-Prhpam,rhdm,integration-tests',
         pmeParams: '''
          -DversionOverride=${RHPAM_VERSION} 
@@ -42,13 +40,14 @@ folder("PROD")
 folder("PROD/main")
 folder("PROD/main/pullrequest")
 
-def commands = this.getClass().getResource("job-scripts/prod_pr_jobs.jenkinsfile").text
+def scriptTemplate = this.getClass().getResource("job-scripts/prod_pr_jobs.jenkinsfile").text
 
 configs.each { repository, config ->
 
-    def branchName = repository == 'izpack' ? 'bxms-7.0' : 'main'
-    def parsedCommands = commands.replaceAll(/\$\{(\w+)\}/) { config.containsKey(it[1]) ? config[it[1]] : it[0] }
+    // replace variables in placeholders with the format <%= variableName %>
+    def parsedScript = scriptTemplate.replaceAll(/<%=\s*(\w+)\s*%>/) { config[it[1]] }
 
+    def branchName = config.branch ?: 'main'
     pipelineJob("${folderPath}/${repository}-${branchName}.pr") {
 
         description("Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.\n" +
@@ -64,7 +63,7 @@ configs.each { repository, config ->
 
         definition {
             cps {
-                script(parsedCommands)
+                script(parsedScript)
                 sandbox()
             }
         }

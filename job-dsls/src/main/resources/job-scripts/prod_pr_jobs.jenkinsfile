@@ -83,12 +83,12 @@ pipeline {
 }
 
 def pmeParameters(bindings) {
-    def params = '''${pmeParams}'''
+    def params = '''<%= pmeParams %>'''
     return parseParameters(params, bindings)
 }
 
 def mavenParameters() {
-    def params = '''${mavenParams}'''
+    def params = '''<%= mavenParams %>'''
     return parseParameters(params, [:])
 }
 
