@@ -17,7 +17,7 @@ def final DEFAULTS = [
         findbugsFile           : Constants.FINDBUGS_FILE,
         buildJDKTool           : '',
         buildMavenTool         : '',
-        excludedRegions         : ''
+        excludedRegions        : []
 ]
 
 // override default config for specific repos (if needed)
@@ -161,7 +161,7 @@ for (repoConfig in REPO_CONFIGS) {
     String checkstyleFile = get('checkstyleFile')
     String buildJDKTool = get('buildJDKTool')
     String buildMavenTool = get('buildMavenTool')
-    String excludedRegions = get('excludedRegions')
+    String excludedRegionsValue = get('excludedRegions')
 
     // Creation of folders where jobs are stored
     folder('KIE')
@@ -276,7 +276,7 @@ for (repoConfig in REPO_CONFIGS) {
                             }
                         }
                         includedRegions('')
-                        excludedRegions(excludedRegions)
+                        excludedRegions("${excludedRegionsValue.join('\n')}")
                     }
                 }
             }
