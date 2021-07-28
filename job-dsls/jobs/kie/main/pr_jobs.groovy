@@ -7,8 +7,8 @@ def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
         timeoutMins            : 120,
-        ghAuthTokenId          : 'kie-ci-token',
-        ghJenkinsfilePwd       : 'kie-ci',
+        ghAuthTokenId          : Constants.KIE_CI_USER_TOKEN,
+        ghJenkinsfilePwd       : Constants.KIE_USER_SSH_KEY,
         label                  : 'kie-rhel7 && kie-mem8g',
         executionNumber        : 10,
         artifactsToArchive     : '',
@@ -176,7 +176,7 @@ for (repoConfig in REPO_CONFIGS) {
     String jobName = "${folderPath}/${repo}-${repoBranch}.pr"
 
     pipelineJob(jobName) {
-
+        disabled()
         description("""Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated.
                     |
                     |Every configuration change needs to be done directly in the DSL files. See the below listed 'Seed job' for more info.
@@ -210,7 +210,7 @@ for (repoConfig in REPO_CONFIGS) {
                         userRemoteConfigs {
                             userRemoteConfig {
                                 url("${gitHubJenkinsfileRepUrl}")
-                                credentialsId("${ghJenkinsfilePwd}")
+                                credentialsId("${ghAuthTokenId}")
                                 name('')
                                 refspec('')
                             }

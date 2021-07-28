@@ -6,7 +6,7 @@ import org.kie.jenkins.jobdsl.Constants
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
-        ghAuthKey              : "kie-ci-user-key",
+        ghAuthKey              : Constants.KIE_USER_SSH_KEY,
         timeoutMins            : 90,
         buildHistory           : 3,
         label                  : "kie-rhel7 && kie-mem8g",

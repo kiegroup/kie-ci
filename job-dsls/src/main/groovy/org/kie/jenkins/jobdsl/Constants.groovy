@@ -58,4 +58,6 @@ class Constants {
     static final String FINDBUGS_FILE = '**/spotbugsXml.xml'
     static final String CHECKSTYLE_FILE = '**/checkstyle.log'
     static final String RHBA_VERSION_PREFIX = "${KIE_PREFIX}.redhat-"
+    static final String KIE_USER_SSH_KEY = 'kie-ci-user-key'
+    static final String KIE_CI_USER_TOKEN = 'kie-ci-token'
 }

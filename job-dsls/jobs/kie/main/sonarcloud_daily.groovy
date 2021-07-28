@@ -8,7 +8,7 @@ def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
-        ghAuthTokenId          : "kie-ci-user-key",
+        ghAuthTokenId          : Constants.KIE_CI_USER_TOKEN,
         label                  : "kie-rhel7 && kie-mem8g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-B -e -nsu -fae -Pwildfly -Prun-code-coverage clean install",

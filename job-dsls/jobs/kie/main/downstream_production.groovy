@@ -9,8 +9,8 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 720,
         label                  : "kie-rhel7 && kie-mem24g",
-        ghAuthTokenId          : "kie-ci-token",
-        ghJenkinsfilePwd       : "kie-ci",
+        ghAuthTokenId          : Constants.KIE_CI_USER_TOKEN,
+        ghJenkinsfilePwd       : Constants.KIE_USER_SSH_KEY,
         artifactsToArchive     : [],
         buildJDKTool           : '',
         buildMavenTool         : ''

@@ -7,7 +7,8 @@ def repoBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_VERSION
 def repo="kie-jenkins-scripts"
-def ghAuthTokenId="kie-ci-token"
+def ghAuthTokenId=Constants.KIE_CI_USER_TOKEN
+def ghJenkinsfilePwd = Constants.KIE_USER_SSH_KEY
 def labelName="kie-rhel7 && kie-mem4g"
 
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -68,7 +69,7 @@ job(jobName) {
                 github("${organization}/${repo}")
                 branch("\${sha1}")
                 name("origin")
-                credentials("kie-ci-user-key")
+                credentials("${ghJenkinsfilePwd}")
                 refspec("+refs/pull/*:refs/remotes/origin/pr/*")
             }
             extensions {
@@ -93,7 +94,7 @@ job(jobName) {
             useGitHubHooks()
             triggerPhrase(".*[j|J]enkins,?.*(retest|test).*")
             cron("")
-            orgWhitelist(["kiegroup"])
+            orgWhitelist([organization])
             allowMembersOfWhitelistedOrgsAsAdmin()
             whiteListTargetBranches([repoBranch])
             extensions {

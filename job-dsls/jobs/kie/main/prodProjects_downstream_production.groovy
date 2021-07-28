@@ -9,8 +9,8 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 650,
         label                  : "kie-rhel7 && kie-mem24g",
-        ghAuthTokenId          : "kie-ci-token",
-        ghJenkinsfilePwd       : "kie-ci-user-key",
+        ghAuthTokenId          : Constants.KIE_CI_USER_TOKEN,
+        ghJenkinsfilePwd       : Constants.KIE_USER_SSH_KEY,
         artifactsToArchive     : []
 ]
 // override default config for specific repos (if needed)

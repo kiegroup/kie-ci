@@ -15,7 +15,7 @@ echo "gzip error.log" >> trace.sh'''
 def repo = "errai"
 def repoBranch = Constants.BRANCH
 def ghOrgUnit = "errai"
-def ghAuthTokenId = "kie-ci-token"
+def ghAuthTokenId = Constants.KIE_CI_USER_TOKEN
 def mvnGoals = "-B -e -fae -Dfull -Dmaven.test.failure.ignore=true -Pintegration-test clean install -Derrai.codegen.details=true -Dapt-generators"
 def javadk=Constants.JDK_VERSION
 def labelName = "kie-rhel7 && kie-mem16g"
