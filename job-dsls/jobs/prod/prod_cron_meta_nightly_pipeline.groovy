@@ -26,7 +26,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.11/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '711'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.11.0'],
-                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '7.52.x'],
+                        [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: '7.52.x'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
@@ -38,7 +38,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-main/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
-                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "\${env.MAIN_CONFIG_BRANCH}"],
+                        [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
