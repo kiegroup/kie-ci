@@ -1,0 +1,101 @@
+
+def productVersion, buildDate
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && !master'
+    }
+
+    tools {
+        maven 'kie-maven-3.8.1'
+        jdk 'kie-jdk1.8'
+    }
+
+    environment {
+        NEXUS_NIGHTLY_REPO = 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/groups/rhba-main-nightly'
+        NIGHTLY_STAGING_PATH = 'http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging'
+        MAVEN_SETTINGS_ID = 'rhba-prod-main'
+        BUILD_CHECKOUT_PATH = "${WORKSPACE}/build"
+        CONFIG_CHECKOUT_PATH = "${WORKSPACE}/config"
+    }
+
+    stages {
+        stage('Prepare workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Get version and date for latest successful nightly') {
+            steps {
+                script {
+                    def latestNightly = sh(returnStdout: true, script: "curl -s ${NEXUS_NIGHTLY_REPO}/org/kie/rhba/rhba-parent/maven-metadata.xml | grep '<latest>'")
+                    (productVersion, buildDate) = latestNightly.trim().replaceAll(/<\/?latest>/, '').split('.redhat-')
+                }
+            }
+        }
+
+        stage('Fetch nighly properties') {
+            steps {
+                sh "curl -s -o ${WORKSPACE}/nightly.properties ${NIGHTLY_STAGING_PATH}/rhpam/RHPAM-${productVersion}.NIGHTLY/rhpam-${buildDate}.properties"
+            }
+        }
+
+        stage('Checkout sources and configuration') {
+            steps {
+                dir("${BUILD_CHECKOUT_PATH}") {
+                    git url: "${ghprbAuthorRepoGitUrl}", branch: "${ghprbSourceBranch}", credentialsId: 'kie-ci'
+                }
+                dir("${CONFIG_CHECKOUT_PATH}") {
+                    git branch: "master", url: "${BUILD_CONFIGURATION_REPO_URL}"
+                }
+            }
+        }
+
+        stage('Execute PME') {
+            steps {
+                script {
+                    def bindings = readProperties file: "${WORKSPACE}/nightly.properties"
+                    def parameters = pmeParameters(bindings)
+                    dir("${BUILD_CHECKOUT_PATH}") {
+                        configFileProvider([configFile(fileId: "${MAVEN_SETTINGS_ID}", variable: 'MAVEN_SETTINGS')]) {
+                            sh "java -jar ${PME_CLI_PATH} -s ${MAVEN_SETTINGS} ${parameters}"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Execute build') {
+            steps {
+                script {
+                    def parameters = mavenParameters()
+                    dir("${BUILD_CHECKOUT_PATH}") {
+                        configFileProvider([configFile(fileId: "${MAVEN_SETTINGS_ID}", variable: 'MAVEN_SETTINGS')]) {
+                            sh "mvn verify -B -s ${MAVEN_SETTINGS} ${parameters}"
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+def pmeParameters(bindings) {
+    def params = '''<%= pmeParams %>'''
+    return parseParameters(params, bindings)
+}
+
+def mavenParameters() {
+    def params = '''<%= mavenParams %>'''
+    return parseParameters(params, [:])
+}
+
+def parseParameters(params, bindings) {
+    def bindingsWithEnvironment = bindings << [CONFIG_CHECKOUT_PATH: "${CONFIG_CHECKOUT_PATH}"]
+    // variable substitution
+    def parsed = params.replaceAll(/\$\{(\w+)\}/) { bindingsWithEnvironment[it[1]] ?: it[0] }
+    // remove new lines and extra spaces
+    return parsed.replaceAll(/(?m)\s*\n\s*/, ' ').trim()
+}
