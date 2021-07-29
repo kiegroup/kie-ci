@@ -54,6 +54,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '8.6.0'],
+                        [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
@@ -68,6 +69,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '15'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '1.5.0'],
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '8.5.0'],
+                        [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: '1.5.x'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
