@@ -254,7 +254,7 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-jbpmTestCoverageMatrix"
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()
@@ -329,7 +329,7 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-jbpmTestContainerMatrix
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()
@@ -427,7 +427,7 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-kieWbTestsMatrix") {
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()
@@ -513,7 +513,7 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-kieServerMatrix") {
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()

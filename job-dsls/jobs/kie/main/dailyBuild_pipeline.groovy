@@ -265,7 +265,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestCoverageMatrix") {
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()
@@ -342,7 +342,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestContainerMatrix") {
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()
@@ -442,7 +442,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()
@@ -529,7 +529,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieServerMatrix") {
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()
