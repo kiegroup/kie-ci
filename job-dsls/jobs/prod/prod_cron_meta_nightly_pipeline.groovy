@@ -20,18 +20,6 @@ pipeline{
     // IMPORTANT: In case you trigger a new branch here, please create the same branch on build-configuration project
     
     stages {
-        stage('trigger nightly job 7.52.x') {
-            steps {
-                build job: 'nightly/7.52.x', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.11/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '711'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.11.0'],
-                        [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: '7.52.x'],
-                        [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
-                ]
-            }
-        }
-
         stage('trigger nightly job main') {
             steps {
                 build job: 'nightly/main', propagate: false, wait: true, parameters: [
