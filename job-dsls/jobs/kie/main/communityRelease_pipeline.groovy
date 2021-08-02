@@ -593,7 +593,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-jbpmTestCoverageMatrix"
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()
@@ -696,7 +696,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()
@@ -784,7 +784,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()
