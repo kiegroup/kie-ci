@@ -285,14 +285,7 @@ pipeline {
             steps{
                 script {
                     execute {
-                        sh 'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly-deployable.zip \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly-deployable.zip \\n' +                    
-                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly19.war \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly19.war \\n' +
-                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/$kieVersion/business-monitoring-webapp-$kieVersion.war \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/$kieVersion/business-monitoring-webapp-$kieVersion.war \\n' +                    
-                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/$kieVersion/jbpm-server-distribution-$kieVersion-dist.zip \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/$kieVersion/jbpm-server-distribution-$kieVersion-dist.zip'                
+                        sh './droolsjbpm-build-bootstrap/script/release/curlsToProxies.sh $kieVersion kie-group'                
                     }
                 }
             }
@@ -311,7 +304,7 @@ pipeline {
                     'The artifacts are available here \\n' +
                     ' \\n' +
                     'business-central artifacts: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/ \\n' +  
-                    'business-central-webpp: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/ \\n' +
+                    'business-central-webapp: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/$kieVersion/ \\n' +
                     'business-monitoring-webapp: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/$kieVersion/ \\n' +
                     ' \\n' +
                     'Please download for sanity checks: jbpm-server-distribution.zip: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
@@ -348,14 +341,7 @@ pipeline {
             steps{
                 script {
                     execute {
-                        sh 'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly-deployable.zip \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly-deployable.zip \\n' +                    
-                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly19.war \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly19.war \\n' +
-                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/$kieVersion/business-monitoring-webapp-$kieVersion.war \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/$kieVersion/business-monitoring-webapp-$kieVersion.war \\n' +                    
-                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/jbpm-server-distribution-$kieVersion-dist.zip \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/jbpm-server-distribution-$kieVersion-dist.zip'                
+                        sh './droolsjbpm-build-bootstrap/script/release/curlsToProxies.sh $kieVersion public-jboss'                 
                     }
                 }
             }
