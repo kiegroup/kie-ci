@@ -106,7 +106,7 @@ def final REPO_CONFIGS = [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "jbpm-work-items"           : [
-                label      : "kie-linux && kie-mem4g",
+                label      : "kie-rhel7 && kie-mem4g",
                 timeoutMins: 120,
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', '\\.idea/.*']
         ],
@@ -119,7 +119,7 @@ def final REPO_CONFIGS = [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "kie-wb-distributions"      : [
-                label             : "kie-linux && kie-mem24g && gui-testing",
+                label             : "kie-rhel7 && kie-mem24g && gui-testing",
                 timeoutMins       : 200,
                 artifactsToArchive: [
                         "**/target/screenshots/**",

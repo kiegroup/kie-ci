@@ -6,7 +6,7 @@ def kieVersion=Constants.KIE_PREFIX
 def m2Dir = Constants.LOCAL_MVN_REP
 def javadk=Constants.JDK_VERSION
 def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
-def AGENT_LABEL="kie-linux&&kie-rhel7&&kie-mem24g"
+def AGENT_LABEL="kie-rhel7&&kie-mem24g"
 
 // creation of folder
 folder("KIE")

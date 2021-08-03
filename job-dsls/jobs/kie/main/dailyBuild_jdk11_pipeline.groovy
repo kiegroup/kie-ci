@@ -7,7 +7,7 @@ def organization=Constants.GITHUB_ORG_UNIT
 def deployDir="deploy-dir"
 def m2Dir = Constants.LOCAL_MVN_REP
 def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
-def AGENT_LABEL="kie-linux&&kie-rhel7&&kie-mem24g"
+def AGENT_LABEL="kie-rhel7&&kie-mem24g"
 
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
@@ -244,7 +244,7 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-jbpmTestCoverageMatrix"
     }
 
     axes {
-        labelExpression("label-exp","kie-linux&&kie-mem8g")
+        labelExpression("label-exp","kie-rhel7&&kie-mem8g")
         jdk("${javadk}")
     }
 
@@ -502,7 +502,7 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-kieServerMatrix") {
     axes {
         jdk("${javadk}")
         text("container", "wildfly", "eap7", "tomcat9")
-        labelExpression("label_exp", "kie-linux&&kie-mem8g")
+        labelExpression("label_exp", "kie-rhel7&&kie-mem8g")
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")

@@ -583,7 +583,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-jbpmTestCoverageMatrix"
     label('kie-rhel7&&!master')
 
     axes {
-        labelExpression("label-exp","kie-linux&&kie-mem8g")
+        labelExpression("label-exp","kie-rhel7&&kie-mem8g")
         jdk("${javadk}")
     }
 
@@ -773,7 +773,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
     axes {
         jdk("${javadk}")
         text("container", "wildfly","eap7","tomcat9")
-        labelExpression("label_exp","kie-linux&&kie-mem8g")
+        labelExpression("label_exp","kie-rhel7&&kie-mem8g")
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
