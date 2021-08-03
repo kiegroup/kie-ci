@@ -513,7 +513,7 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-kieServerMatrix") {
 
     wrappers {
         timeout {
-            absolute(150)
+            absolute(180)
         }
         timestamps()
         colorizeOutput()

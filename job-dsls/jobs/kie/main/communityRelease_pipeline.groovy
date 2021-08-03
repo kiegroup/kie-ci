@@ -784,7 +784,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
 
     wrappers {
         timeout {
-            absolute(150)
+            absolute(180)
         }
         timestamps()
         colorizeOutput()

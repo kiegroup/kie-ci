@@ -529,7 +529,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieServerMatrix") {
 
     wrappers {
         timeout {
-            absolute(150)
+            absolute(180)
         }
         timestamps()
         colorizeOutput()
