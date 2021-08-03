@@ -33,7 +33,7 @@ for (repo in repoList) {
             stringParam('SCMVERSION', '')
             stringParam('THRESHOLD', '1','Threshold from 1 to 10 for cvss processor')
         }
-        
+
         environmentVariables{
             groovy('''
           def map = [:]
@@ -59,7 +59,7 @@ for (repo in repoList) {
                     name('origin')
                     url('$SRCCLR_INVOKER_REPO_URL')
                 }
-                branch('main')
+                branch('master')
             }
         }
 
@@ -83,4 +83,3 @@ for (repo in repoList) {
         }
     }
 }
-
