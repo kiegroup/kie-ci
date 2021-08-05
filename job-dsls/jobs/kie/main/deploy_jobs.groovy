@@ -50,7 +50,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["appformer"]
         ],
         "appformer"                 : [
-                label                  : "kie-linux && kie-mem16g",
+                label                  : "kie-rhel7 && kie-mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
                 ],
@@ -112,7 +112,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["jbpm-work-items"]
         ],
         "jbpm-work-items"           : [
-                label      : "kie-linux && kie-mem4g",
+                label      : "kie-rhel7 && kie-mem4g",
                 timeoutMins: 30,
                 downstreamRepos        : ["jbpm-wb"]
         ],
