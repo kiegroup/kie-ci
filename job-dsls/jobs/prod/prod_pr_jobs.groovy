@@ -45,7 +45,7 @@ def scriptTemplate = this.getClass().getResource("job-scripts/prod_pr_jobs.jenki
 configs.each { repository, config ->
 
     // replace variables in placeholders with the format <%= variableName %>
-    def parsedScript = scriptTemplate.replaceAll(/<%=\s*(\w+)\s*%>/) { config[it[1]] }
+    def parsedScript = scriptTemplate.replaceAll(/<%=\s*(\w+)\s*%>/) { config[it[1]] ?: '' }
 
     def branchName = config.branch ?: 'main'
     pipelineJob("${folderPath}/${repository}-${branchName}.pr") {
