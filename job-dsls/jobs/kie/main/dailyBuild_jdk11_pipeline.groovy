@@ -7,7 +7,7 @@ def organization=Constants.GITHUB_ORG_UNIT
 def deployDir="deploy-dir"
 def m2Dir = Constants.LOCAL_MVN_REP
 def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
-def AGENT_LABEL="kie-rhel7&&kie-mem24g"
+def AGENT_LABEL="kie-rhel7-pipeline&&kie-mem24g"
 
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
