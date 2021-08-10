@@ -37,7 +37,7 @@ pipeline {
                         def projectCollection = productionProjectListFile.readLines()
                         println "Project Collection ${projectCollection}."
 
-                        projectCollection.each { project ->
+                        projectCollection.findAll{ !it.find(/izpack|installer-commons/) }.each { project ->
                             def projectGroupName = util.getProjectGroupName(project)
                             def group = projectGroupName[0]
                             def name = projectGroupName[1]
@@ -57,7 +57,7 @@ pipeline {
                                     println "changes ${changes}"
                                     if(changes.size() > 0) {
                                         println 'There are changes'
-                                        sh 'git add pom.xml'
+                                        sh 'git add .'
                                         sh 'git config user.email "kie-ci1@redhat.com"'
                                         sh 'git config user.name "kie-ci1"'
                                         sh "git commit -m 'version.org.kie updated to ${VERSION_ORG_KIE}'"
