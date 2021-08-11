@@ -91,8 +91,10 @@ pipeline {
         }         
         stage('Update versions') {
             steps {
-                sh "echo 'kieVersion: $kieVersion'"
-                sh "./droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion"
+                configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
+                    sh "echo 'kieVersion: $kieVersion'"
+                    sh "./droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion"
+                }            
             }
         }
         stage('Create clean up script') {
