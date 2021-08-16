@@ -1,11 +1,11 @@
 ---
-
-- debug: msg="ENCRYPTED_PASSWORD \"{{ lookup('env','ENCRYPTED_PASSWORD') }}\""
+- name: "Print encrypted_password variable"
+  debug: msg="encrypted_password:{{ encrypted_password }}"      
 
 - name: Install verdaccio
   npm:
     name: verdaccio
-    version: 4.10.0
+    version: "{{ verdaccio_version }}"
     global: yes
     production: yes
     state: present
@@ -19,6 +19,8 @@
     force: yes
     owner: root
     group: root
+  notify:
+    - "start verdaccio service"
 
 - name: Create verdaccio directory
   file:
@@ -26,23 +28,27 @@
     state: directory
     mode: 0775    
 
-- name: Copy Verdaccio Configuration
+- name: Copy verdaccio Configuration
   template:
-    src: data/config/verdaccio/config.yaml
-    dest: /verdaccio/config.yaml
+    src: data/config/verdaccio/config.yaml.j2
+    dest: "{{ verdaccio_config_path }}"
     mode: 0777
     force: yes
     owner: root
     group: root
+  notify:
+    - "start verdaccio service"
 
 - name: Copy Verdaccio user/pass
   template:
     src: data/config/verdaccio/htpasswd.j2
-    dest: /verdaccio/htpasswd
+    dest: "{{ verdaccio_htpasswd_path }}"
     mode: 0777
     force: yes
     owner: root
     group: root
+  notify:
+    - "start verdaccio service"
 
 - name: Register Verdaccio Service
   copy:
@@ -52,22 +58,24 @@
     group: root
     mode: 0644
 
-- name: Start Service
-  service:
-    name: verdaccio
-    enabled: yes
-    state: restarted
+- name: Get verdaccio.service content
+  shell: cat /etc/systemd/system/verdaccio.service
+  register: verdaccio_service_content
 
-- name: get verdaccio status
-  command: systemctl status verdaccio.service
-  register: verdaccio_service_status
+- name: Print verdaccio.service content
+  debug: "msg={{ verdaccio_service_content.stdout_lines }}"
 
-- debug: msg="{{ verdaccio_service_status.stdout }}"
+- name: Assure firewalld package is installed
+  package:
+    name: firewalld
+    state: 'present'
 
 - name: firewall setup
-  command: firewall-cmd --zone=public --add-port=80/tcp --permanent
-
-- name: firewall reload
-  command: firewall-cmd --reload
+  firewalld:
+    state: enabled
+    port: "{{ verdaccio_service_port }}/tcp"
+    permanent: yes
+  notify:
+    - "reload service firewalld"
 
 ...

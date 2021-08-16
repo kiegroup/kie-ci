@@ -1,0 +1,20 @@
+---
+- name: start verdaccio service
+  service:
+    name: verdaccio
+    enabled: yes
+    state: restarted
+
+- name: get verdaccio service status
+  command: systemctl status verdaccio.service
+  register: verdaccio_service_status
+  listen: "start verdaccio service"
+
+- name: print verdaccio service status
+  debug: msg="{{ verdaccio_service_status.stdout_lines }}"
+  listen: "start verdaccio service"
+
+- name: reload service firewalld
+  systemd:
+    name: firewalld
+    state: reloaded  
