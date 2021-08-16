@@ -24,7 +24,7 @@ def final REPO_CONFIGS = [
         "lienzo-tests"              : [],
         "droolsjbpm-build-bootstrap": [
                 executionNumber : 25,
-                timeoutMins     : 840
+                timeoutMins     : 960
         ],
         "kie-soup"                  : [],
         "appformer"                 : [],
