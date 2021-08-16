@@ -29,8 +29,9 @@ pipeline {
         stage('Get version and date for latest successful nightly') {
             steps {
                 script {
-                    def latestNightly = sh(returnStdout: true, script: "curl -s ${NEXUS_NIGHTLY_REPO}/org/kie/rhba/rhba-parent/maven-metadata.xml | grep '<latest>'")
-                    (productVersion, buildDate) = latestNightly.trim().replaceAll(/<\/?latest>/, '').split('.redhat-')
+                    def nightlyVersions = sh(returnStdout: true, script: "curl -s ${NEXUS_NIGHTLY_REPO}/org/kie/rhba/rhba-parent/maven-metadata.xml | grep '<version>'")
+                    def lastNightly = nightlyVersions.replaceAll(/<\/?version>/, '').split('\n').findAll{ it.find(/\.redhat-/) }[-1]
+                    (productVersion, buildDate) = lastNightly.trim().split(/\.redhat-/)
                 }
             }
         }
