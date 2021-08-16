@@ -1,7 +1,6 @@
 ---
-
-- debug: msg="WEBHOOK_URL \"{{ lookup('env','WEBHOOK_URL') }}\""
-- debug: msg="TARGET_URL \"{{ lookup('env','TARGET_URL') }}\""
+- name: "Print webhook and target variables"
+  debug: msg="webhook_url:{{ webhook_url }}; target_url:{{ target_url }}"    
 
 - name: Copy Pulp repos config - RHEL 7
   copy:
@@ -20,7 +19,7 @@
 #- name: Install Smee Client
 #  npm:
 #    name: smee-client
-#    version: 1.1.0
+#    version: {{ smee_client_version }}
 #    global: yes
 #    production: yes
 #    state: present
@@ -43,31 +42,28 @@
     force: yes
     owner: root
     group: root
+  notify:
+    - start smee service
 
-- name: Get smee.service content
+- name: Get smee.service.sh content
   shell: cat /usr/local/bin/smee.service.sh
-  register: cat
+  register: smee_content
 
-- debug: msg="{{ cat.stdout }}"
+- name: Print smee.service.sh content
+  debug: "msg={{ smee_content.stdout_lines }}"
 
 - name: Register Smee Service
   copy:
     src: data/service/smee.service
-    dest: /etc/systemd/system/smee.service
+    dest: "{{ smee_service_path }}"
     owner: root
     group: root
     mode: 0644
 
-- name: Start Service
-  service:
-    name: smee
-    enabled: yes
-    state: restarted
+- name: Get smee.service content
+  command: cat {{ smee_service_path }}
+  register: smee_service_content
 
-- name: get smee status
-  command: systemctl status smee.service
-  register: smee_service_status
-
-- debug: msg="{{ smee_service_status.stdout }}"
-
+- name: Print smee.service content
+  debug: "msg={{ smee_service_content.stdout_lines }}"   
 ...

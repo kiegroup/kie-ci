@@ -1,5 +1,5 @@
 #!/bin/bash
-export NODE_EXTRA_CA_CERTS=/etc/pki/ca-trust/source/anchors/RH-IT-Root-CA.crt
+export NODE_EXTRA_CA_CERTS={{ nodejs_cert_file }}
 # TODO revert after https://github.com/probot/smee-client/pull/162 is merged and smee-client released!!
-# smee -u {{ lookup('env','WEBHOOK_URL') }} -t {{ lookup('env','TARGET_URL') }}
-/root/smee-client/bin/smee.js -u {{ lookup('env','WEBHOOK_URL') }} -t {{ lookup('env','TARGET_URL') }}
+# smee -u {{ webhook_url }} -t {{ target_url }}
+/root/smee-client/bin/smee.js -u {{ webhook_url }} -t {{ target_url }}

@@ -1,0 +1,5 @@
+---
+cert_url: "https://password.corp.redhat.com"
+cert_file_list: ["legacy.crt", "RH-IT-Root-CA.crt"]
+nodejs_cert: "{{ cert_file_list[1] }}"
+cert_files_folder: "/etc/pki/ca-trust/source/anchors"
