@@ -27,7 +27,7 @@ web:
 
 auth:
   htpasswd:
-    file: /verdaccio/htpasswd
+    file: {{ verdaccio_htpasswd_path }}
     # Maximum amount of users allowed to register, defaults to "+inf".
     # You can set this to -1 to disable registration.
     # max_users: 1000

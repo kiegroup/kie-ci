@@ -35,8 +35,7 @@
       "playbook_file": "ansible/verdaccio-service.yml",
       "groups": [
         "verdaccio-service"
-      ],
-      "ansible_env_vars": [ "ENCRYPTED_PASSWORD={{user `encrypted_password`}}" ]
+      ]
     },
     {
       "type": "shell",

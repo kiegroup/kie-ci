@@ -36,8 +36,7 @@
       "playbook_file": "ansible/smee-client.yml",
       "groups": [
         "smee-client"
-      ],
-      "ansible_env_vars": [ "WEBHOOK_URL={{user `webhook_url`}}", "TARGET_URL={{user `target_url`}}"]
+      ]
     },
     {
       "type": "shell",
