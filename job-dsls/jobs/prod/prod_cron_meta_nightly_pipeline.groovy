@@ -39,7 +39,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-main-nightly-with-upstream'],
                         [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: "${RHBA_VERSION_PREFIX}"],
                         [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-main/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '712'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '8.6.0'],
                         [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
@@ -53,8 +53,8 @@ pipeline{
             steps {
                 build job: 'kogito-tooling.nightly/main', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-main/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.11.0'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '712'],
+                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
