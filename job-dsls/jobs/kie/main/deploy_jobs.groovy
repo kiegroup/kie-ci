@@ -184,7 +184,7 @@ for (repoConfig in REPO_CONFIGS) {
                 }
                 extensions {
                     cloneOptions {
-                        // git repo cache which is present on the slaves
+                        // git repo cache which is present on the agents
                         // it significantly reduces the clone time and also saves a lot of bandwidth
                         reference("/home/jenkins/git-repos/${repo}.git")
                     }

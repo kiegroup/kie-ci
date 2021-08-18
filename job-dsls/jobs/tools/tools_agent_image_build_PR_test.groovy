@@ -8,7 +8,7 @@ def packerUrl=Constants.PACKER_URL
 
 def jenkinsSlaves="""
 #!/bin/bash +x
-cd jenkins-slaves
+cd jenkins-agents
 
 # include functionality for osbs builds
 # clone from gerrit moved to scm, not needed here: ./add-osbs.sh https://code.engineering.redhat.com/gerrit/bxms-jenkins
@@ -36,7 +36,7 @@ folder("Tools")
 def folderPath="Tools"
 
 //job name
-String jobName="$folderPath/slave-image-build-PR-test"
+String jobName="$folderPath/agent-image-build-PR-test"
 
 String OWNER=""
 String BRANCH=""
@@ -48,7 +48,7 @@ job(jobName) {
                     |
                     |Every configuration change needs to be done directly in the DSL files.
                     |
-                    |Job responsible for building slave image from a specified PR for testing purposes.
+                    |Job responsible for building agent image from a specified PR for testing purposes.
                     |
                     |""".stripMargin())
 
@@ -88,7 +88,7 @@ job(jobName) {
             branch ("main")
             extensions {
                 relativeTargetDirectory {
-                    relativeTargetDir('jenkins-slaves/bxms-jenkins')
+                    relativeTargetDir('jenkins-agents/bxms-jenkins')
                 }
             }
         }
