@@ -58,7 +58,7 @@ for (jobNames in JOB_NAMES) {
 
     String fullName = getFullName(jobAbr)
 
-    // jobs for master branch don't use the branch in the name
+    // jobs for main branch don't use the branch in the name
     String jobN = "$folderPath/$jobName"
 
     job(jobN) {

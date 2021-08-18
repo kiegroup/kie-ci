@@ -63,13 +63,13 @@ for (repoConfig in REPO_CONFIGS) {
 
     // Creation of folders where jobs are stored
     folder("KIE")
-    folder("KIE/master")
-    folder("KIE/master/" + Constants.DEPLOY_FOLDER)
+    folder("KIE/${repoBranch}")
+    folder("KIE/${repoBranch}/" + Constants.DEPLOY_FOLDER)
 
-    def folderPath = ("KIE/master/" + Constants.DEPLOY_FOLDER)
+    def folderPath = ("KIE/${repoBranch}/" + Constants.DEPLOY_FOLDER)
 
-    // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? "${folderPath}/$repo" : "${folderPath}/$repo-$repoBranch"
+    // jobs for main branch don't use the branch in the name
+    String jobName = (repoBranch == "${repoBranch}") ? "${folderPath}/$repo" : "${folderPath}/$repo-$repoBranch"
 
     job(jobName) {
 
@@ -122,7 +122,7 @@ for (repoConfig in REPO_CONFIGS) {
             colorizeOutput()
 
             configFiles {
-                mavenSettings("settings-local-maven-repo-nexus"){
+                mavenSettings("7774c60d-cab3-425a-9c3b-26653e5feba1"){
                     variable("SETTINGS_XML_FILE")
                     targetLocation("jenkins-settings.xml")
                 }

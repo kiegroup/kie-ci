@@ -1,0 +1,8 @@
+---
+verdaccio_version: "4.10.0"
+verdaccio_service_port: "80"
+verdaccio_config_path: "/verdaccio/config.yaml"
+verdaccio_htpasswd_path: "/verdaccio/htpasswd"
+encrypted_password: ""
+nodejs_cert_file: "/etc/pki/ca-trust/source/anchors/RH-IT-Root-CA.crt"
+

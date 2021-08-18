@@ -64,7 +64,7 @@ for (repoConfig in REPO_CONFIGS) {
     def folderPath = ("KIE/${repoBranch}/" + Constants.SONARCLOUD_FOLDER)
 
 
-    // jobs for master branch don't use the branch in the name
+    // jobs for main branch don't use the branch in the name
     String jobName = "${folderPath}/$repo-sonarcloud-periodic"
 
     job(jobName) {

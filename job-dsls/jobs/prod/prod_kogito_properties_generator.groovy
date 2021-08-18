@@ -5,9 +5,9 @@
 def kogitoProps ='''
 node('kie-rhel7&&!master') {
     sh 'env\'
-    def REPO_URL_FOLDER_VERSION = 'master'.equals(BRANCH_NAME) ? 'master' : (KOGITO_PRODUCT_VERSION =~ /\\d+\\.\\d+/)[0]
+    def REPO_URL_FOLDER_VERSION = 'main'.equals(BRANCH_NAME) ? 'main' : (KOGITO_PRODUCT_VERSION =~ /\\d+\\.\\d+/)[0]
     println "Folder [${REPO_URL_FOLDER_VERSION}] based on BRANCH_NAME [${BRANCH_NAME}] and KOGITO_PRODUCT_VERSION [${KOGITO_PRODUCT_VERSION}]"
-    def REPO_URL_FINAL = REPO_URL.replace("-master-", "-${REPO_URL_FOLDER_VERSION}-")
+    def REPO_URL_FINAL = REPO_URL.replace("-main-", "-${REPO_URL_FOLDER_VERSION}-")
     println "REPO_URL_FINAL [${REPO_URL_FINAL}]"
 
     def binding = [
@@ -61,8 +61,8 @@ pipelineJob("${folderPath}/kogito-properties-generator") {
 
     parameters {
         booleanParam("IS_PROD", true, "it defines if the properties file is for prod or not")
-        stringParam("BRANCH_NAME", "master", "the branch the nightly was triggered for")
-        stringParam("REPO_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kogito-master-nightly", "Prod possibility is http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging")
+        stringParam("BRANCH_NAME", "main", "the branch the nightly was triggered for")
+        stringParam("REPO_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kogito-main-nightly", "Prod possibility is http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging")
         stringParam("DELIVERABLE_REPO_URL", "http://download.devel.redhat.com/devel/candidates","")
         stringParam("KOGITO_PRODUCT_VERSION", "1.0","")
         stringParam("KOGITO_PRODUCT_VERSION_LONG", "1.0.redhat-00001", "This is just for prod files")

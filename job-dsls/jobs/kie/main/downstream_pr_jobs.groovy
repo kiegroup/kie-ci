@@ -1,42 +1,60 @@
 /**
- * Creates pullrequest (PR) jobs for kiegroup GitHub org. units.
+ * Creates full downstream pullrequest (PR) jobs for kiegroup GitHub org. units.
+ * These jobs execute the full downstream build for a specific PR to make sure the changes do not break the downstream repos.
  */
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
-        timeoutMins            : 120,
+        timeoutMins            : 720,
+        label                  : "kie-rhel7 && kie-mem24g",
+        executionNumber        : 10,
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
-        label                  : "kie-rhel7 && kie-mem8g",
-        executionNumber        : 10,
-        artifactsToArchive     : "",
-        excludedArtifacts      : "",
+        artifactsToArchive     : [],
         checkstyleFile         : Constants.CHECKSTYLE_FILE,
         findbugsFile           : Constants.FINDBUGS_FILE,
         buildJDKTool           : '',
         buildMavenTool         : ''
 ]
-
 // override default config for specific repos (if needed)
-
 def final REPO_CONFIGS = [
-        "optaplanner"               : [],
-        "optaweb-employee-rostering" : [
-                artifactsToArchive: [
-                        "**/cypress/screenshots/**",
-                        "**/cypress/videos/**"
-                ]
+        "lienzo-core"               : [],
+        "lienzo-tests"              : [],
+        "droolsjbpm-build-bootstrap": [
+                executionNumber : 25,
+                timeoutMins     : 960
         ],
-        "optaweb-vehicle-routing" : [
-                artifactsToArchive: [
-                        "**/cypress/screenshots/**",
-                        "**/cypress/videos/**"
-                ]
-        ]
-
+        "kie-soup"                  : [],
+        "appformer"                 : [],
+        "droolsjbpm-knowledge"      : [],
+        "drools"                    : [],
+        "optaplanner"               : [
+                buildJDKTool: "kie-jdk11"
+        ],
+        "jbpm"                      : [],
+        "kie-jpmml-integration"     : [],
+        "droolsjbpm-integration"    : [
+                executionNumber : 25
+        ],
+        "process-migration-service" : [],
+        "openshift-drools-hacep"    : [],
+        "kie-wb-playground"         : [],
+        "kie-uberfire-extensions"   : [],
+        "kie-wb-common"             : [
+                executionNumber : 25
+        ],
+        "drools-wb"                 : [],
+        "optaplanner-wb"            : [],
+        "jbpm-designer"             : [],
+        "jbpm-work-items"           : [],
+        "jbpm-wb"                   : [],
+        "optaweb-employee-rostering": [],
+        "optaweb-vehicle-routing"   : [],
+        "kie-wb-distributions"      : []
 ]
+
 
 for (repoConfig in REPO_CONFIGS) {
     Closure<Object> get = { String key -> repoConfig.value[key] ?: DEFAULTS[key] }
@@ -50,9 +68,8 @@ for (repoConfig in REPO_CONFIGS) {
     def exeNum = get("executionNumber")
     String additionalArtifacts = get("artifactsToArchive")
     additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
-    String addtionalExcludeArtifacts = get("excludedArtifacts")
-    addtionalExcludeArtifacts = addtionalExcludeArtifacts.replaceAll("[\\[\\]]", "")
-    String timeout = get("timeoutMins")
+    String additionalExcludedArtifacts = ""
+    String additionalTimeout = get("timeoutMins")
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
     String findbugsFile = get("findbugsFile")
     String checkstyleFile = get("checkstyleFile")
@@ -62,14 +79,13 @@ for (repoConfig in REPO_CONFIGS) {
     // Creation of folders where jobs are stored
     folder("KIE")
     folder("KIE/${repoBranch}")
-    folder("KIE/${repoBranch}/" + Constants.PULL_REQUEST_FOLDER){
-        displayName(Constants.PULL_REQUEST_FOLDER_DISPLAY_NAME)
+    folder("KIE/${repoBranch}/" + Constants.FDB_FOLDER){
+        displayName(Constants.FDB_FOLDER_DISPLAY_NAME)
     }
-    def folderPath = ("KIE/${repoBranch}/" + Constants.PULL_REQUEST_FOLDER)
+    def folderPath = ("KIE/${repoBranch}/" + Constants.FDB_FOLDER)
 
-
-    // jobs for master branch don't use the branch in the name
-    String jobName = "${folderPath}/${repo}-7.x.pr"
+    // FDB name
+    String jobName = "${folderPath}/${repo}-${repoBranch}.fdb"
 
     pipelineJob(jobName) {
 
@@ -88,13 +104,13 @@ for (repoConfig in REPO_CONFIGS) {
 
         parameters {
             stringParam ("sha1","","this parameter will be provided by the PR")
-            stringParam ("ADDITIONAL_LABEL","${additionalLabel}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_ARTIFACTS_TO_ARCHIVE","${additionalArtifacts}","this parameter is provided by the job")
-            stringParam ("ADDITIONAL_EXCLUDED_ARTIFACTS","${addtionalExcludeArtifacts}","this parameter is provided by the job")
-            stringParam ("ADDITIONAL_TIMEOUT","${timeout}","this parameter is provided by the job")
+            stringParam ("ADDITIONAL_LABEL","${additionalLabel}","this parameter is provided by the job")
+            stringParam ("ADDITIONAL_EXCLUDED_ARTIFACTS","${additionalExcludedArtifacts}","this parameter is provided by the job")
+            stringParam ("ADDITIONAL_TIMEOUT","${additionalTimeout}","this parameter is provided by the job")
             stringParam ("CHECKSTYLE_FILE","${checkstyleFile}","")
             stringParam ("FINDBUGS_FILE","${findbugsFile}","")
-            stringParam ("PR_TYPE","Pull Request","")
+            stringParam ("PR_TYPE","Full Downstream Build","")
             stringParam ("BUILD_JDK_TOOL","${buildJDKTool}","")
             stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}","")
         }
@@ -129,15 +145,18 @@ for (repoConfig in REPO_CONFIGS) {
             pipelineTriggers {
                 triggers {
                     ghprbTrigger {
-                        onlyTriggerPhrase(false)
+                        onlyTriggerPhrase(true)
                         gitHubAuthId("${ghAuthTokenId}")
                         adminlist("")
                         orgslist("${ghOrgUnit}")
                         whitelist("")
                         cron("")
-                        triggerPhrase(".*[j|J]enkins,?.*(retest|test).*")
+                        triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) fdb.*")
                         allowMembersOfWhitelistedOrgsAsAdmin(true)
                         whiteListTargetBranches {
+                            ghprbBranch {
+                                branch("${repoBranch}")
+                            }
                             ghprbBranch {
                                 branch("7.x")
                             }
@@ -157,7 +176,7 @@ for (repoConfig in REPO_CONFIGS) {
                         whiteListLabels("")
                         extensions {
                             ghprbSimpleStatus {
-                                commitStatusContext("Linux - Pull Request")
+                                commitStatusContext("Linux - Full Downstream Build")
                                 addTestResults(true)
                                 showMatrixStatus(false)
                                 statusUrl("")

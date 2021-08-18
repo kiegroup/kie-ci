@@ -1,0 +1,15 @@
+---
+- name: start smee service
+  service:
+    name: smee
+    enabled: yes
+    state: restarted
+
+- name: get smee service status
+  command: systemctl status smee.service
+  register: smee_service_status
+  listen: "start smee service"
+
+- name: print smee service status
+  debug: msg="{{ smee_service_status }}"
+  listen: "start smee service"

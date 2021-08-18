@@ -16,9 +16,9 @@ def AGENT_LABEL="kie-rhel7 && kie-mem24g"
 
 // Creation of folders where jobs are stored
 folder("KIE")
-folder("KIE/master")
-folder("KIE/master/reduced-drools-release")
-def folderPath = ("KIE/master/reduced-drools-release")
+folder("KIE/${baseBranch}")
+folder("KIE/${baseBranch}/reduced-drools-release")
+def folderPath = ("KIE/${baseBranch}/reduced-drools-release")
 
 
 def redRelease='''
@@ -117,8 +117,10 @@ pipeline {
                 expression { branchExists == '0'}
             }
             steps {
-                echo 'kieVersion: ' + "{$kieVersion}"
-                sh './droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion'
+                configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
+                    echo 'kieVersion: ' + "{$kieVersion}"
+                    sh './droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion'
+                }    
             }
         }
         stage ('Add and commit version upgrades') {

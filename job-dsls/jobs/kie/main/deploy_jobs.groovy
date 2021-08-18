@@ -50,7 +50,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["appformer"]
         ],
         "appformer"                 : [
-                label                  : "kie-linux && kie-mem16g",
+                label                  : "kie-rhel7 && kie-mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
                 ],
@@ -112,7 +112,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["jbpm-work-items"]
         ],
         "jbpm-work-items"           : [
-                label      : "kie-linux && kie-mem4g",
+                label      : "kie-rhel7 && kie-mem4g",
                 timeoutMins: 30,
                 downstreamRepos        : ["jbpm-wb"]
         ],
@@ -161,8 +161,8 @@ for (repoConfig in REPO_CONFIGS) {
 
     def folderPath = ("KIE/${repoBranch}/" + Constants.DEPLOY_FOLDER)
 
-    // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? "${folderPath}/$repo" : "${folderPath}/$repo-$repoBranch"
+    // jobs for main branch don't use the branch in the name
+    String jobName = (repoBranch == "${repoBranch}") ? "${folderPath}/$repo" : "${folderPath}/$repo-$repoBranch"
 
     job(jobName) {
 
@@ -223,7 +223,7 @@ for (repoConfig in REPO_CONFIGS) {
             colorizeOutput()
 
             configFiles {
-                mavenSettings("settings-local-maven-repo-nexus"){
+                mavenSettings("7774c60d-cab3-425a-9c3b-26653e5feba1"){
                     variable("SETTINGS_XML_FILE")
                     targetLocation("jenkins-settings.xml")
                 }

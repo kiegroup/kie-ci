@@ -150,7 +150,7 @@ class PrDroolsjbpmToolsJob extends BasicJob {
                     useGitHubHooks(true)
 
                     // Adding branches to this whitelist allows you to selectively test pull requests destined for these branches only.
-                    // Supports regular expressions (e.g. 'master', 'feature-.*').
+                    // Supports regular expressions (e.g. 'main', 'feature-.*').
                     whiteListTargetBranches([branchName])
 
                     // trigger phrase fro re-triggering the job

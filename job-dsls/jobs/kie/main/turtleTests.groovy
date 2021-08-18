@@ -7,7 +7,7 @@ def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
-        label                  : "kie-linux && kie-mem16g",
+        label                  : "kie-rhel7 && kie-mem16g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-e -B -T1C -fae -Dfull -DrunTurtleTests clean install",
         javadk                 : Constants.JDK_VERSION,
@@ -43,8 +43,8 @@ for (repoConfig in REPO_CONFIGS) {
     folder("KIE/${repoBranch}/" + Constants.DEPLOY_FOLDER)
     def folderPath = ("KIE/${repoBranch}/" + Constants.DEPLOY_FOLDER)
 
-    // jobs for master branch don't use the branch in the name
-    String jobName = (repoBranch == "master") ? "${folderPath}/${repo}-turtleTests" : "${folderPath}/${repo}-${repoBranch}-turtleTests"
+    // jobs for main branch don't use the branch in the name
+    String jobName = (repoBranch == "main") ? "${folderPath}/${repo}-turtleTests" : "${folderPath}/${repo}-${repoBranch}-turtleTests"
 
     mavenJob(jobName) {
 

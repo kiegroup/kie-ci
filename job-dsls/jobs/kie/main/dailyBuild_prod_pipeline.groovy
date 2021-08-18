@@ -6,7 +6,7 @@ def kieVersion=Constants.KIE_PREFIX
 def m2Dir = Constants.LOCAL_MVN_REP
 def javadk=Constants.JDK_VERSION
 def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
-def AGENT_LABEL="kie-linux&&kie-rhel7&&kie-mem24g"
+def AGENT_LABEL="kie-rhel7-pipeline&&kie-mem24g"
 
 // creation of folder
 folder("KIE")
@@ -83,8 +83,10 @@ pipeline {
         }         
         stage('Update versions') {
             steps {
-                sh "echo 'kieVersion: $kieVersion'"
-                sh "./droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion"
+                configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
+                    sh "echo 'kieVersion: $kieVersion'"
+                    sh "./droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion"
+                }    
             }
         }
         stage('Create clean up script') {

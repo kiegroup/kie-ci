@@ -83,7 +83,7 @@ pipeline {
                 }
             }
         }
-        /* when release branches don't exist clone master branch */
+        /* when release branches don't exist clone main branch */
         stage ('Clone others when release branches do not exist'){
             when{
                 expression { branchExists == '0'}
@@ -145,8 +145,10 @@ pipeline {
                 expression { branchExists == '0'}
             }
             steps {
-                echo 'kieVersion: ' + "{$kieVersion}"
-                sh './droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion'
+                configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
+                    echo 'kieVersion: ' + "{$kieVersion}"
+                    sh './droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion'
+                }    
             }
         }
         stage ('Add and commit version upgrades') {
@@ -285,14 +287,7 @@ pipeline {
             steps{
                 script {
                     execute {
-                        sh 'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly-deployable.zip \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly-deployable.zip \\n' +                    
-                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly19.war \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly19.war \\n' +
-                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/$kieVersion/business-monitoring-webapp-$kieVersion.war \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/$kieVersion/business-monitoring-webapp-$kieVersion.war \\n' +                    
-                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/$kieVersion/jbpm-server-distribution-$kieVersion-dist.zip \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/$kieVersion/jbpm-server-distribution-$kieVersion-dist.zip'                
+                        sh './droolsjbpm-build-bootstrap/script/release/curlsToProxies.sh $kieVersion kie-group'                
                     }
                 }
             }
@@ -311,7 +306,7 @@ pipeline {
                     'The artifacts are available here \\n' +
                     ' \\n' +
                     'business-central artifacts: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/ \\n' +  
-                    'business-central-webpp: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central/$kieVersion/ \\n' +
+                    'business-central-webapp: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-central-webapp/$kieVersion/ \\n' +
                     'business-monitoring-webapp: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/business-monitoring-webapp/$kieVersion/ \\n' +
                     ' \\n' +
                     'Please download for sanity checks: jbpm-server-distribution.zip: https://repository.jboss.org/nexus/content/groups/kie-group/org/kie/jbpm-server-distribution/$kieVersion/ \\n' +
@@ -348,14 +343,7 @@ pipeline {
             steps{
                 script {
                     execute {
-                        sh 'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly-deployable.zip \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly-deployable.zip \\n' +                    
-                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly19.war \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-central/$kieVersion/business-central-$kieVersion-wildfly19.war \\n' +
-                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/$kieVersion/business-monitoring-webapp-$kieVersion.war \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/business-monitoring-webapp/$kieVersion/business-monitoring-webapp-$kieVersion.war \\n' +                    
-                         'curl --head https://proxy01-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/jbpm-server-distribution-$kieVersion-dist.zip \\n' +
-                         'curl --head https://proxy02-repository.jboss.org/nexus/content/groups/public-jboss/org/kie/jbpm-server-distribution/$kieVersion/jbpm-server-distribution-$kieVersion-dist.zip'                
+                        sh './droolsjbpm-build-bootstrap/script/release/curlsToProxies.sh $kieVersion public-jboss'                 
                     }
                 }
             }
@@ -583,7 +571,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-jbpmTestCoverageMatrix"
     label('kie-rhel7&&!master')
 
     axes {
-        labelExpression("label-exp","kie-linux&&kie-mem8g")
+        labelExpression("label-exp","kie-rhel7&&kie-mem8g")
         jdk("${javadk}")
     }
 
@@ -593,7 +581,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-jbpmTestCoverageMatrix"
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()
@@ -696,7 +684,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(150)
         }
         timestamps()
         colorizeOutput()
@@ -773,7 +761,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
     axes {
         jdk("${javadk}")
         text("container", "wildfly","eap7","tomcat9")
-        labelExpression("label_exp","kie-linux&&kie-mem8g")
+        labelExpression("label_exp","kie-rhel7&&kie-mem8g")
     }
 
     childCustomWorkspace("\${SHORT_COMBINATION}")
@@ -784,7 +772,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
 
     wrappers {
         timeout {
-            absolute(120)
+            absolute(180)
         }
         timestamps()
         colorizeOutput()

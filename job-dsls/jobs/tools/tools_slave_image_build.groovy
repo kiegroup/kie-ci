@@ -51,7 +51,7 @@ def jobDefinition = job("${folderPath}/slave-image-build") {
         git {
 
             // Specify the branches to examine for changes and to build.
-            branch("master")
+            branch("main")
 
             // Adds a remote.
             remote {
@@ -64,7 +64,7 @@ def jobDefinition = job("${folderPath}/slave-image-build") {
         git {
 
             // Specify the branches to examine for changes and to build.
-            branch("master")
+            branch("main")
 
             // Adds a remote.
             remote {

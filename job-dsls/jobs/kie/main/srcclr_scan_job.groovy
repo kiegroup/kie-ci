@@ -33,7 +33,7 @@ for (repo in repoList) {
             stringParam('SCMVERSION', '')
             stringParam('THRESHOLD', '1','Threshold from 1 to 10 for cvss processor')
         }
-        
+
         environmentVariables{
             groovy('''
           def map = [:]
@@ -65,7 +65,7 @@ for (repo in repoList) {
 
         steps {
             maven {
-                mavenInstallation("kie-maven-3.5.4")
+                mavenInstallation("kie-maven-3.6.3")
                 goals('-Pjenkins test -Dmaven.buildNumber.skip=true -Dsourceclear="--processor=${PROCESSOR_TYPE} --product-version=${VERSION} --package=${PACKAGE} --product=\"${NAME}\" --threshold=${THRESHOLD} ${SCAN_TYPE} --url=${URL}" ')
             }
         }
@@ -83,4 +83,3 @@ for (repo in repoList) {
         }
     }
 }
-

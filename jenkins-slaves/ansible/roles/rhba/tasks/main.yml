@@ -40,7 +40,7 @@
 - name: Dowload PME extension
   get_url:
     url: https://repo.maven.apache.org/maven2/org/commonjava/maven/ext/pom-manipulation-cli/{{pme_version}}/pom-manipulation-cli-{{pme_version}}.jar
-    dest: /opt/tools/pme
+    dest: /opt/tools/pme/pom-manipulation-cli.jar
     owner: root
     group: root
 
