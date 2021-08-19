@@ -204,7 +204,7 @@ String getScripts() {
 String getScripts_II() {
     return "ansible smee-client -u root -i \$INVENTORY_FILE -m ping\n" +
             "\n" +
-            "pushd kie-jenkins-scripts/jenkins-slaves/ansible\n" +
+            "pushd kie-jenkins-scripts/jenkins-agents/ansible\n" +
             "ansible-playbook -i \$INVENTORY_FILE smee-client.yml -e webhook_url=\$WEBHOOK_URL -e target_url=\$TARGET_URL\n" +
             "popd"
 }

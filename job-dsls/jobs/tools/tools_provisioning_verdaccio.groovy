@@ -204,7 +204,7 @@ String getScripts() {
 String getScripts_II() {
     return "ansible verdaccio-service -u root -i \$INVENTORY_FILE -m ping\n" +
             "\n" +
-            "pushd kie-jenkins-scripts/jenkins-slaves/ansible\n" +
+            "pushd kie-jenkins-scripts/jenkins-agents/ansible\n" +
             "ansible-playbook -i \$INVENTORY_FILE verdaccio-service.yml -e encrypted_password=\$ENCRYPTED_PASSWORD\n" +
             "popd"
 }

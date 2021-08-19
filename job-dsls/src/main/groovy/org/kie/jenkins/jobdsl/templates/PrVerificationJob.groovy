@@ -49,7 +49,7 @@ class PrVerificationJob extends BasicJob {
      * @param githubGroup - GitHub group name
      * @param githubCredentialsId - GitHub credentials id.
      * @param branchName - Branch name for PR job (default is ${sha1})
-     * @param labelName - Jenkins slave nodes label name
+     * @param labelName - Jenkins agent nodes label name
      * @param timeoutValue - Job timeout value in minutes
      * @param mavenGoals - Build maven goals
      * @param archiveArtifactsPattern - regexp that matches artifacts to archive

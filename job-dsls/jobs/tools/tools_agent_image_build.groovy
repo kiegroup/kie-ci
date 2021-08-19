@@ -9,7 +9,7 @@ String jobDescription = "Job responsible for building Jenkins agent image"
 
 String command = """
 #!/bin/bash +x
-cd jenkins-slaves
+cd jenkins-agents
 
 # include functionality for osbs builds
 # clone from gerrit moved to scm, not needed here: ./add-osbs.sh https://code.engineering.redhat.com/gerrit/bxms-jenkins
@@ -38,7 +38,7 @@ folder("Tools")
 def folderPath = "Tools"
 
 // Creates or updates a free style job.
-def jobDefinition = job("${folderPath}/slave-image-build") {
+def jobDefinition = job("${folderPath}/agent-image-build") {
 
     parameters {
         choiceParam('PACKER_VAR_FILE', ['packer-kie-rhel7-vars.json', 'packer-kie-rhel8-vars.json'], 'The file defining variables specific for different RHEL versions.')
@@ -73,7 +73,7 @@ def jobDefinition = job("${folderPath}/slave-image-build") {
                 credentials('code.engineering.redhat.com')
             }
             extensions {
-                relativeTargetDirectory('jenkins-slaves/bxms-jenkins')
+                relativeTargetDirectory('jenkins-agents/bxms-jenkins')
             }
         }
 
