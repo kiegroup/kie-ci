@@ -38,7 +38,9 @@ def final REPO_CONFIGS = [
         "droolsjbpm-integration"    : [
                 executionNumber : 25
         ],
-        "process-migration-service" : [],
+        "process-migration-service" : [
+                buildJDKTool: 'kie-jdk11'
+        ],
         "openshift-drools-hacep"    : [],
         "kie-wb-playground"         : [],
         "kie-uberfire-extensions"   : [],
