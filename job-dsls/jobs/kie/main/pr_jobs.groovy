@@ -137,7 +137,8 @@ def final REPO_CONFIGS = [
         ],
         "process-migration-service" : [
                 label : 'kie-rhel7 && kie-mem16g',
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt'],
+                buildJDKTool: 'kie-jdk11'
         ]
 ]
 
