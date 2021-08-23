@@ -46,10 +46,12 @@ pipeline {
             
         stage('Update versions') {
             steps {
-                sh "echo 'next development version: $nextDevVer'"
-                sh "./droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $nextDevVer"
+                configFileProvider([configFile(fileId: '7774c60d-cab3-425a-9c3b-26653e5feba1', targetLocation: 'uploadNexus-settings.xml', variable: 'SETTINGS_XML_FILE')]) {            
+                    sh "echo 'next development version: $nextDevVer'"
+                    sh "./droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $nextDevVer"
+                }
             }
-        }
+        }    
                       
         stage ('deploy to next development version') {
             steps {
