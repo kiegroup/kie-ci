@@ -30,7 +30,7 @@ def final DEFAULTS = [
 // used to override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
         "optaplanner"               : [
-                downstreamRepos        : ["optaplanner-wb"],
+                downstreamRepos        : ["droolsjbpm-integration", "optaweb-employee-rostering-7.x"],
                 mvnGoals: "-e -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
                 mvnProps: [
                         "full"                     : "true",
@@ -48,7 +48,7 @@ def final REPO_CONFIGS = [
                 artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
                         "**/target/configurations/cargo-profile/profile-log.txt"
                 ],
-                downstreamRepos        : ["kie-wb-distributions"]
+                downstreamRepos        : []
         ]
 ]
 
@@ -63,13 +63,13 @@ for (repoConfig in REPO_CONFIGS) {
 
     // Creation of folders where jobs are stored
     folder("KIE")
-    folder("KIE/${repoBranch}")
-    folder("KIE/${repoBranch}/" + Constants.DEPLOY_FOLDER)
+    folder("KIE/main")
+    folder("KIE/main/" + Constants.DEPLOY_FOLDER)
 
-    def folderPath = ("KIE/${repoBranch}/" + Constants.DEPLOY_FOLDER)
+    def folderPath = ("KIE/main/" + Constants.DEPLOY_FOLDER)
 
     // jobs for main branch don't use the branch in the name
-    String jobName = (repoBranch == "${repoBranch}") ? "${folderPath}/$repo" : "${folderPath}/$repo-$repoBranch"
+    String jobName = "${folderPath}/$repo-7.x"
 
     job(jobName) {
 
@@ -173,6 +173,11 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                     }
                 }
+            }
+
+            def downstreamRepos = get("downstreamRepos")
+            if (downstreamRepos) {
+                downstream(downstreamRepos, 'UNSTABLE')
             }
 
             extendedEmail {
