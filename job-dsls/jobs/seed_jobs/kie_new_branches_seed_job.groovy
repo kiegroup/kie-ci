@@ -48,23 +48,23 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
 
     steps {
         jobDsl {
-            targets("job-dsls/jobs/**/pr_jobs.groovy\n" +
-                    "job-dsls/jobs/**/downstream_pr_jobs.groovy\n" +
-                    "job-dsls/jobs/**/compile_downstream_build.groovy\n" +
-                    "job-dsls/jobs/**/prodProjects_downstream_production.groovy \n" +
-                    "job-dsls/jobs/**/upstream.groovy\n" +
-                    "job-dsls/jobs/**/dailyBuild_pipeline.groovy\n" +
-                    "job-dsls/jobs/**/dailyBuild_prod_pipeline.groovy\n" +
-                    "job-dsls/jobs/**/dailyBuild_jdk11_pipeline.groovy\n" +
-                    "job-dsls/jobs/**/deploy_jobs.groovy\n" +
-                    "job-dsls/jobs/**/kie_jenkinsScripts_PR.groovy\n" +
-                    "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
-                    "job-dsls/jobs/**/prodTag_pipeline.groovy\n" +
-                    "job-dsls/jobs/**/new_branches_seed_job.groovy\n" +
-                    "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
-                    "job-dsls/jobs/**/srcclr_scan_pipeline.groovy\n" +
-                    "job-dsls/jobs/**/srcclr_scan_job.groovy\n" +
-                    "job-dsls/jobs/**/jenkins_shared_libs.groovy")
+            targets("job-dsls/jobs/kie/main/pr_jobs.groovy\n" +
+                    "job-dsls/jobs/kie/main/downstream_pr_jobs.groovy\n" +
+                    "job-dsls/jobs/kie/main/compile_downstream_build.groovy\n" +
+                    "job-dsls/jobs/kie/main/prod_projects_downstream_production.groovy \n" +
+                    "job-dsls/jobs/kie/main/upstream.groovy\n" +
+                    "job-dsls/jobs/kie/main/dailyBuild_pipeline.groovy\n" +
+                    "job-dsls/jobs/kie/main/dailyBuild_prod_pipeline.groovy\n" +
+                    "job-dsls/jobs/kie/main/deploy_jobs.groovy\n" +
+                    "job-dsls/jobs/kie/seed-jobs/kie_jenkinsScripts_PR.groovy\n" +
+                    "job-dsls/jobs/kie/main/kie_docs_pr.groovy\n" +
+                    "job-dsls/jobs/kie/main/pr_droolsjbpm_tools.groovy\n" +
+                    "job-dsls/jobs/kie/main/prodTag_pipeline.groovy\n" +
+                    "job-dsls/jobs/kie/main/new_branches_seed_job.groovy\n" +
+                    "job-dsls/jobs/kie/main/springboot_pr_job.groovy\n" +
+                    "job-dsls/jobs/kie/main/srcclr_scan_pipeline.groovy\n" +
+                    "job-dsls/jobs/kie/main/srcclr_scan_job.groovy\n" +
+                    "job-dsls/jobs/kie/main/jenkins_shared_libs.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)
