@@ -30,6 +30,23 @@ def final DEFAULTS = [
 
 // used to override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
+        "droolsjbpm-build-bootstrap": [
+                timeoutMins            : 30,
+                label                  : "kie-rhel7 && kie-mem4g",
+                downstreamRepos        : ["kie-soup"]
+        ],
+        "kie-soup"                  : [
+                label                  : "kie-rhel7 && kie-mem4g",
+                downstreamRepos        : ["appformer", "droolsjbpm-knowledge"]
+        ],
+        "droolsjbpm-knowledge"      : [
+                timeoutMins            : 40,
+                downstreamRepos        : ["drools"]
+        ],
+        "drools"                    : [
+                downstreamRepos        : ["optaplanner-7.x", "jbpm"],
+                artifactsToArchive     : ["**/target/testStatusListener*"]
+        ],
         "lienzo-core"                  : [
                 timeoutMins            : 20,
                 label                  : "kie-rhel7 && kie-mem4g",
@@ -38,15 +55,6 @@ def final REPO_CONFIGS = [
         "lienzo-tests"              : [
                 timeoutMins            : 20,
                 label                  : "kie-rhel7 && kie-mem4g",
-                downstreamRepos        : ["kie-soup"]
-        ],
-        "droolsjbpm-build-bootstrap": [
-                timeoutMins            : 30,
-                label                  : "kie-rhel7 && kie-mem4g",
-                downstreamRepos        : ["kie-soup"]
-        ],
-        "kie-soup"                  : [
-                label                  : "kie-rhel7 && kie-mem4g",
                 downstreamRepos        : ["appformer"]
         ],
         "appformer"                 : [
@@ -54,40 +62,23 @@ def final REPO_CONFIGS = [
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
                 ],
-                downstreamRepos        : ["droolsjbpm-knowledge"]
+                downstreamRepos        : ["kie-uberfire-extensions"]
         ],
-        "droolsjbpm-knowledge"      : [
+        "kie-uberfire-extensions"   : [
                 timeoutMins            : 40,
-                downstreamRepos        : ["drools"]
-        ],
-        "drools"                    : [
-                downstreamRepos        : ["optaplanner-7.x", "jbpm", "kie-jpmml-integration"],
-                artifactsToArchive     : ["**/target/testStatusListener*"]
-        ],
-        "optaplanner"               : [
-                mvnGoals: "-e -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
-                mvnProps: [
-                        "full"                     : "true",
-                        "integration-tests"        : "true",
-                        "maven.test.failure.ignore": "true"
-                ]
+                downstreamRepos        : ["kie-wb-common"]
         ],
         "jbpm"                      : [
                 timeoutMins            : 120,
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly",
-                downstreamRepos        : ["jbpm-work-items", "kie-jpmml-integration"]
+                downstreamRepos        : ["kie-jpmml-integration"]
         ],
         "kie-jpmml-integration"     :[
                 downstreamRepos        : ["droolsjbpm-integration"]
         ],
         "droolsjbpm-integration"    : [
-                timeoutMins            : 180,
-                downstreamRepos        : ["kie-uberfire-extensions", "openshift-drools-hacep"]
-        ],
-        "openshift-drools-hacep"       : [:],
-        "kie-uberfire-extensions"   : [
-                timeoutMins            : 40,
-                downstreamRepos        : ["kie-wb-playground"]
+                timeoutMins            : 240,
+                downstreamRepos        : ["openshift-drools-hacep","kie-wb-playground","jbpm-work-items","process-migration-service"]
         ],
         "kie-wb-playground"         : [
                 downstreamRepos        : ["kie-wb-common"]
@@ -95,15 +86,11 @@ def final REPO_CONFIGS = [
         "kie-wb-common"             : [
                 timeoutMins            : 180,
                 label                  : "kie-rhel7 && kie-mem16g",
-                downstreamRepos        : ["drools-wb"]
+                downstreamRepos        : ["drools-wb","jbpm-designer"]
         ],
         "drools-wb"                 : [
                 label                  : "kie-rhel7 && kie-mem16g",
-                downstreamRepos        : ["jbpm-designer", "optaplanner-wb"]
-        ],
-        "optaplanner-wb"            : [
-                label                  : "kie-rhel7 && kie-mem16g",
-                downstreamRepos        : ["jbpm-wb"]
+                downstreamRepos        : ["jbpm-wb", "optaplanner-wb"]
         ],
         "jbpm-designer"             : [
                 mvnProps               : DEFAULTS["mvnProps"] + [
@@ -121,13 +108,11 @@ def final REPO_CONFIGS = [
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1"
                 ],
-                downstreamRepos        : ["kie-wb-distributions", "kie-docs"]
+                downstreamRepos        : ["kie-wb-distributions"]
         ],
-        "kie-docs"                  : [
-                artifactsToArchive     : [],
-                downstreamRepos        : ["optaweb-employee-rostering-7.x"],
-                mvnGoals               : "-e -B clean deploy -Dfull",
-                mvnProps               : []
+        "optaplanner-wb"            : [
+                label                  : "kie-rhel7 && kie-mem16g",
+                downstreamRepos        : ["kie-wb-distributions"]
         ],
         "kie-wb-distributions"      : [
                 timeoutMins            : 120,
@@ -142,6 +127,14 @@ def final REPO_CONFIGS = [
                         "business-central-tests/business-central-tests-gui/target/screenshots/**"
                 ],
                 downstreamRepos        : []
+        ],
+        "openshift-drools-hacep"       : [:],
+        "process-migration-service"    : [:],
+        "kie-docs"                  : [
+                artifactsToArchive     : [],
+                downstreamRepos        : ["optaweb-employee-rostering-7.x"],
+                mvnGoals               : "-e -B clean deploy -Dfull",
+                mvnProps               : []
         ]
 ]
 
@@ -286,6 +279,11 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                     }
                 }
+            }
+
+            def downstreamRepos = get("downstreamRepos")
+            if (downstreamRepos) {
+                downstream(downstreamRepos, 'UNSTABLE')
             }
 
             extendedEmail {
