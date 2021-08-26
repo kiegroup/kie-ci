@@ -51,7 +51,7 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
             targets("job-dsls/jobs/kie/main/pr_jobs.groovy\n" +
                     "job-dsls/jobs/kie/main/downstream_pr_jobs.groovy\n" +
                     "job-dsls/jobs/kie/main/compile_downstream_build.groovy\n" +
-                    "job-dsls/jobs/kie/main/prod_projects_downstream_production.groovy \n" +
+                    "job-dsls/jobs/kie/main/prodProjects_downstream_production.groovy \n" +
                     "job-dsls/jobs/kie/main/upstream.groovy\n" +
                     "job-dsls/jobs/kie/main/dailyBuild_pipeline.groovy\n" +
                     "job-dsls/jobs/kie/main/dailyBuild_prod_pipeline.groovy\n" +
