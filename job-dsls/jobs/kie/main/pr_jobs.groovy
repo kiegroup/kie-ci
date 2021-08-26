@@ -17,7 +17,8 @@ def final DEFAULTS = [
         findbugsFile           : Constants.FINDBUGS_FILE,
         buildJDKTool           : '',
         buildMavenTool         : '',
-        excludedRegions        : []
+        excludedRegions        : [],
+        gitHubJenkinsfileRepository : 'droolsjbpm-build-bootstrap'
 ]
 
 // override default config for specific repos (if needed)
@@ -133,7 +134,8 @@ def final REPO_CONFIGS = [
         "kogito-rhba"             : [
                 label: 'kie-rhel7 && kie-mem16g',
                 ghOrgUnit : 'jboss-integration',
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt'],
+                gitHubJenkinsfileRepository : 'kogito-rhba'
         ],
         "process-migration-service" : [
                 label : 'kie-rhel7 && kie-mem16g',
@@ -157,7 +159,7 @@ for (repoConfig in REPO_CONFIGS) {
     String addtionalExcludeArtifacts = get('excludedArtifacts')
     addtionalExcludeArtifacts = addtionalExcludeArtifacts.replaceAll('[\\[\\]]', '')
     String timeout = get('timeoutMins')
-    String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
+    String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/${get('gitHubJenkinsfileRepository')}/"
     String findbugsFile = get('findbugsFile')
     String checkstyleFile = get('checkstyleFile')
     String buildJDKTool = get('buildJDKTool')
