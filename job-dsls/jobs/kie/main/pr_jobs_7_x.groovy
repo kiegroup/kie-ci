@@ -23,6 +23,10 @@ def final DEFAULTS = [
 // override default config for specific repos (if needed)
 
 def final REPO_CONFIGS = [
+        "drools"                    : [
+                timeoutMins: 150,
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
         "optaplanner"               : [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'build/.*', 'ide-configuration/.*']
         ],
