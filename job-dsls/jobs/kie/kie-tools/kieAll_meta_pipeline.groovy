@@ -27,7 +27,7 @@ pipeline{
                     }, 
                     "prod-main-pipeline" : {
                         build job: '../main/daily-build-prod/daily-build-prod-pipeline-main', propagate: false
-                    }.
+                    },
                     "7.59.x-pipeline" : {
                         build job: "../7.59.x/daily-build/daily-build-pipeline-7.59.x", propagate: false
                     },  
