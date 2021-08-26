@@ -58,7 +58,6 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
                     "job-dsls/jobs/kie/main/deploy_jobs.groovy\n" +
                     "job-dsls/jobs/kie/main/kie_jenkinsScripts_PR.groovy\n" +
                     "job-dsls/jobs/kie/main/kie_docs_pr.groovy\n" +
-                    "job-dsls/jobs/kie/main/pr_droolsjbpm_tools.groovy\n" +
                     "job-dsls/jobs/kie/main/prodTag_pipeline.groovy\n" +
                     "job-dsls/jobs/seed_jobs/kie_new_branches_seed_job.groovy\n" +
                     "job-dsls/jobs/kie/main/springboot_pr_job.groovy\n" +
