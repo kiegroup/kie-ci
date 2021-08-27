@@ -81,7 +81,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-1.11/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '111'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '1.11.0'],
-                        [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '8.5.0'],
+                        [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '8.11.0'],
                         [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: '1.11.x'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
