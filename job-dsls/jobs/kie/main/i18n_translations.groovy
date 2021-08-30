@@ -89,7 +89,7 @@ pipeline {
     }
     post {
         success {
-            emailext body: 'Here are the most recent tarbnslation file (*Constants.properties) from the kiegroup repositories',
+            emailext body: 'Here are the most recent translation files (*Constants.properties) from kiegroup repositories',
             subject: 'kiegroup i18n translations',
             to: 'mbiarnes@redhat.com',
             attachmentsPattern: '*.zip'
