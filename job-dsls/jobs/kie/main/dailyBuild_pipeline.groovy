@@ -486,7 +486,7 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
             properties("maven.test.failure.ignore": true)
             properties("deployment.timeout.millis":"240000")
             properties("container.startstop.timeout.millis":"240000")
-            properties("webdriver.firefox.bin":"/opt/tools/firefox-60esr/firefox-bin")
+            properties("webdriver.firefox.bin":"/opt/tools/firefox-91esr/firefox-bin")
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e")
         }

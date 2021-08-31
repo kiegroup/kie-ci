@@ -9,8 +9,8 @@
     jdk_long_versions: [java-1.8.0-openjdk, java-11-openjdk]
     jdk_symlink_names: [jdk1.8, jdk11]
     jdk_cacerts_subdirs: ["jre/lib/security/cacerts", "lib/security/cacerts", "lib/security/cacerts", "lib/security/cacerts"]
-    firefox_short_versions: [45esr, 52esr, 60esr]
-    firefox_long_versions: [45.9.0esr, 52.9.0esr, 60.2.0esr]
+    firefox_short_versions: [60esr, 91esr]
+    firefox_long_versions: [60.2.0esr, 91.0.1esr]
     pme_version: 4.3
     pig_version: 1.0.5
     graalvm_version: 20.3.1.2
