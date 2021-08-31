@@ -185,6 +185,20 @@ pipeline {
                 }
             }
         }
+        stage('Deploy process-migration-service locally with jdk11'){
+            when{
+                expression { repBuild == 'YES'}
+            } 
+            steps {                
+                dir("${WORKSPACE}" + '/process-migration-service') {
+                    configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
+                        withEnv(["JAVA_HOME=${tool 'kie-jdk11'}", "PATH=${tool 'kie-jdk11'}/bin:${env.PATH}"]) {
+                            sh 'mvn -B -e -U clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$WORKSPACE/community-deploy-dir -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx10g"'
+                        }
+                    }
+                }    
+            }        
+        }        
         stage ('Send mail only if build fails') {
             when{
                 expression { currentBuild.currentResult == 'FAILURE'}
