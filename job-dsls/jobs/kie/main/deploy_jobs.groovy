@@ -192,7 +192,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        if (repo == "optaplanner") {
+        if (repo == "process-migration-service") {
             jdk("kie-jdk11")
         } else {
             jdk("kie-jdk1.8")}
