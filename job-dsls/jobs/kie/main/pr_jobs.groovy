@@ -17,21 +17,12 @@ def final DEFAULTS = [
         findbugsFile           : Constants.FINDBUGS_FILE,
         buildJDKTool           : '',
         buildMavenTool         : '',
-        excludedRegions        : []
+        excludedRegions        : [],
+        gitHubJenkinsfileRepository : 'droolsjbpm-build-bootstrap'
 ]
 
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
-        'lienzo-core'               : [
-                timeoutMins: 30,
-                label: 'kie-rhel7 && kie-mem4g',
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
-        ],
-        'lienzo-tests'              : [
-                timeoutMins: 30,
-                label: 'kie-rhel7 && kie-mem4g',
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
-        ],
         'droolsjbpm-build-bootstrap': [
                 timeoutMins: 30,
                 label      : 'kie-rhel7 && kie-mem4g',
@@ -42,6 +33,41 @@ def final REPO_CONFIGS = [
                 label: 'kie-rhel7 && kie-mem4g',
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'scripts/.*']
         ],
+        "droolsjbpm-knowledge"      : [
+                label: "kie-rhel7 && kie-mem4g",
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
+        "drools"                    : [
+                timeoutMins: 150,
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
+        "optaplanner"               : [
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
+        "optaweb-employee-rostering" : [
+                artifactsToArchive: [
+                        "**/cypress/screenshots/**",
+                        "**/cypress/videos/**"
+                ],
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
+        "optaweb-vehicle-routing" : [
+                artifactsToArchive: [
+                        "**/cypress/screenshots/**",
+                        "**/cypress/videos/**"
+                ],
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
+        'lienzo-core'               : [
+                timeoutMins: 30,
+                label: 'kie-rhel7 && kie-mem4g',
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
+        'lienzo-tests'              : [
+                timeoutMins: 30,
+                label: 'kie-rhel7 && kie-mem4g',
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
         'appformer'                 : [
                 label    : 'kie-rhel7 && kie-mem16g',
                 artifactsToArchive: [
@@ -49,12 +75,8 @@ def final REPO_CONFIGS = [
                 ],
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
-        "droolsjbpm-knowledge"      : [
+        "kie-uberfire-extensions"   : [
                 label: "kie-rhel7 && kie-mem4g",
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
-        ],
-        "drools"                    : [
-                timeoutMins: 150,
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "jbpm"                      : [
@@ -74,13 +96,6 @@ def final REPO_CONFIGS = [
                 executionNumber : 25,
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
-        "openshift-drools-hacep"    : [
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'docs/.*']
-        ],
-        "kie-uberfire-extensions"   : [
-                label: "kie-rhel7 && kie-mem4g",
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
-        ],
         "kie-wb-playground"         : [
                 label: "kie-rhel7 && kie-mem4g",
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
@@ -96,9 +111,6 @@ def final REPO_CONFIGS = [
         ],
         "drools-wb"                 : [
                 label: "kie-rhel7 && kie-mem16g",
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
-        ],
-        "optaplanner-wb"            : [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "jbpm-designer"             : [
@@ -118,6 +130,9 @@ def final REPO_CONFIGS = [
                 ],
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
+        "optaplanner-wb"            : [
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
         "kie-wb-distributions"      : [
                 label             : "kie-rhel7 && kie-mem24g && gui-testing",
                 timeoutMins       : 200,
@@ -130,15 +145,19 @@ def final REPO_CONFIGS = [
                 ],
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
-        "kogito-rhba"             : [
-                label: 'kie-rhel7 && kie-mem16g',
-                ghOrgUnit : 'jboss-integration',
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        "openshift-drools-hacep"    : [
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'docs/.*']
         ],
         "process-migration-service" : [
                 label : 'kie-rhel7 && kie-mem16g',
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt'],
                 buildJDKTool: 'kie-jdk11'
+        ],
+        "kogito-rhba"             : [
+                label: 'kie-rhel7 && kie-mem16g',
+                ghOrgUnit : 'jboss-integration',
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt'],
+                gitHubJenkinsfileRepository : 'kogito-rhba'
         ]
 ]
 
@@ -157,7 +176,7 @@ for (repoConfig in REPO_CONFIGS) {
     String addtionalExcludeArtifacts = get('excludedArtifacts')
     addtionalExcludeArtifacts = addtionalExcludeArtifacts.replaceAll('[\\[\\]]', '')
     String timeout = get('timeoutMins')
-    String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
+    String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/${get('gitHubJenkinsfileRepository')}/"
     String findbugsFile = get('findbugsFile')
     String checkstyleFile = get('checkstyleFile')
     String buildJDKTool = get('buildJDKTool')
