@@ -119,7 +119,7 @@ pipeline {
                 dir("${WORKSPACE}" + '/process-migration-service') {
                     configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
                         withEnv(["JAVA_HOME=${tool 'kie-jdk11'}", "PATH=${tool 'kie-jdk11'}/bin:${env.PATH}"]) {
-                            sh 'mvn -B -e -U clean deploy -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$WORKSPACE/deploy-dir -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx10g" --clean-up-script="$WORKSPACE/clean-up.sh"'
+                            sh 'mvn -B -e -U clean deploy -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$WORKSPACE/deploy-dir -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx10g" '
                         }
                     }
                 }    
