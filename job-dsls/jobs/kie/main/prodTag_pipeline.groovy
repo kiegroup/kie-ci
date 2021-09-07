@@ -102,18 +102,7 @@ pipeline {
                     sh "./droolsjbpm-build-bootstrap/script/release/05b_prodInstall.sh $SETTINGS_XML_FILE"
                 }
             }
-        }
-        stage('Deploy process-migration-service locally with jdk11'){
-            steps {                
-                dir("${WORKSPACE}" + '/process-migration-service') {
-                    configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
-                        withEnv(["JAVA_HOME=${tool 'kie-jdk11'}", "PATH=${tool 'kie-jdk11'}/bin:${env.PATH}"]) {
-                            sh 'mvn -B -e -U clean install -Dfull -Drelease -Dproductized -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx10g" '
-                        }
-                    }
-                }    
-            }        
-        }         
+        }        
         stage('Create log file for reports') {
             steps {
                     sh 'pwd \\n' +
