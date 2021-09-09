@@ -19,7 +19,7 @@ package org.kie.jenkins.jobdsl
 class Constants {
     static final String MAVEN_VERSION = '3.8.1'
     static final String UPSTREAM_BUILD_MAVEN_VERSION = '3.8.1'
-    static final String JDK_VERSION = 'kie-jdk1.8'
+    static final String JDK_VERSION = 'kie-jdk11'
     static final String BRANCH = 'main'
     static final String GITHUB_ORG_UNIT = 'kiegroup'
     static final String PULL_REQUEST_FOLDER = 'pullrequest'

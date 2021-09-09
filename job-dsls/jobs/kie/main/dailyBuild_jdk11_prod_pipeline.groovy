@@ -11,9 +11,9 @@ def AGENT_LABEL="kie-rhel7-pipeline&&kie-mem24g"
 // creation of folder
 folder("KIE")
 folder ("KIE/${baseBranch}")
-folder("KIE/${baseBranch}/daily-build-prod")
+folder("KIE/${baseBranch}/daily-build-jdk11-prod")
 
-def folderPath="KIE/${baseBranch}/daily-build-prod"
+def folderPath="KIE/${baseBranch}/daily-build-jdk11-prod"
 
 def dailyProdBuild='''
 pipeline {
@@ -105,31 +105,20 @@ pipeline {
                     sh "./droolsjbpm-build-bootstrap/script/release/05d_dailyBuildProdInstall.sh $SETTINGS_XML_FILE"
                 }
             }
-        }
-        stage('Deploy process-migration-service locally with jdk11'){
-            steps {                
-                dir("${WORKSPACE}" + '/process-migration-service') {
-                    configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
-                        withEnv(["JAVA_HOME=${tool 'kie-jdk11'}", "PATH=${tool 'kie-jdk11'}/bin:${env.PATH}"]) {
-                            sh 'mvn -B -e -U clean install -Dfull -Drelease -Dproductized -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx10g" '
-                        }
-                    }
-                }    
-            }        
-        }                                     
+        }                                    
     }
     post {
         always {
             script {
                 sh './trace.sh\'
             }
-            junit '**/target/surefire-reports/**/*.xml\'
+            junit '**/target/surefire-reports/**/*.xml'
         }
         failure{
             emailext body: 'Build log: ${BUILD_URL}consoleText\\n' +
                            'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
                            '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download and decompress attached file.)',
-                     subject: 'Build #${BUILD_NUMBER} of prod-daily-builds ${baseBranch} branch FAILED',
+                     subject: 'daily-build-jdk11-prod-${baseBranch} #${BUILD_NUMBER} FAILED',
                      to: 'kie-jenkins-builds@redhat.com',
                      attachmentsPattern: 'error.log.gz\'
             cleanWs()                     
@@ -139,13 +128,13 @@ pipeline {
                            'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
                            '***********************************************************************************************************************************************************\\n' +
                            '${FAILED_TESTS}',
-                     subject: 'Build #${BUILD_NUMBER} of prod-daily-builds ${baseBranch} branch was UNSTABLE',
+                     subject: 'daily-build-jdk11-prod-${baseBranch} #${BUILD_NUMBER} was UNSTABLE',
                      to: 'kie-jenkins-builds@redhat.com'
             cleanWs()         
         }
         fixed {
             emailext body: '',
-                 subject: 'Build #${BUILD_NUMBER} of prod-daily-builds ${baseBranch} branch is fixed and was SUCCESSFUL',
+                 subject: 'daily-build-jdk11-prod-${baseBranch} #${BUILD_NUMBER} was SUCCESSFUL',
                  to: 'kie-jenkins-builds@redhat.com'
         }
         success {
@@ -155,7 +144,7 @@ pipeline {
 }
 '''
 
-pipelineJob("${folderPath}/daily-build-prod-pipeline-${baseBranch}") {
+pipelineJob("${folderPath}/daily-build-jdk11-prod-pipeline-${baseBranch}") {
 
     description('this is a prod-pipeline job for the daily build of all reps')
 

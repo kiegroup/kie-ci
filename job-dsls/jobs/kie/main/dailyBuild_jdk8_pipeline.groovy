@@ -1,27 +1,22 @@
 import org.kie.jenkins.jobdsl.Constants
 
-def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def javadk="kie-jdk1.8"
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def deployDir="deploy-dir"
-def m2Dir=Constants.LOCAL_MVN_REP
-// def AGENT_DOCKER_LABEL= "furure docker machine"
-def AGENT_DOCKER_LABEL= "kieci-02-docker"
+def m2Dir = Constants.LOCAL_MVN_REP
+def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
 def AGENT_LABEL="kie-rhel7-pipeline&&kie-mem24g"
-def artifactsPath="/home/docker/kie-artifacts/$kieVersion"
 
 String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
 // creation of folder
 folder("KIE")
 folder ("KIE/${baseBranch}")
-folder("KIE/${baseBranch}/daily-build")
-folder("KIE/${baseBranch}/docker")
+folder("KIE/${baseBranch}/daily-build-jdk8")
 
-def folderPath="KIE/${baseBranch}/daily-build"
-def dockerPath="KIE/${baseBranch}/docker"
+def folderPath = "KIE/${baseBranch}/daily-build-jdk8"
 
 def daily_build='''
 pipeline {
@@ -58,7 +53,6 @@ pipeline {
                 script {
                     data = new Date().format('yyMMdd-hh')
                     kieVersion = "${kieVersion}.${data}"
-                    dockerAbsPath = "KIE/${baseBranch}/docker"
 
                     echo "data: ${data}"
                     echo "kieVersion: ${kieVersion}"
@@ -73,7 +67,7 @@ pipeline {
                 dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
                     sh 'pwd \\n' +
                        'git branch \\n' +
-                       'git checkout -b $baseBranch'
+                       'git checkout -b $baseBranch\'
                 } 
             }
         }
@@ -94,7 +88,7 @@ pipeline {
                 configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
                     sh "echo 'kieVersion: $kieVersion'"
                     sh "./droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion"
-                }            
+                }          
             }
         }
         stage('Create clean up script') {
@@ -113,18 +107,7 @@ pipeline {
                     sh "./droolsjbpm-build-bootstrap/script/release/05c_dailyBuildDeployLocally.sh $SETTINGS_XML_FILE"
                 }
             }
-        } 
-        stage('Deploy process-migration-service locally with jdk11'){
-            steps {                
-                dir("${WORKSPACE}" + '/process-migration-service') {
-                    configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
-                        withEnv(["JAVA_HOME=${tool 'kie-jdk11'}", "PATH=${tool 'kie-jdk11'}/bin:${env.PATH}"]) {
-                            sh 'mvn -B -e -U clean deploy -Dfull -Drelease -DaltDeploymentRepository=local::default::file://$WORKSPACE/deploy-dir -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx10g" '
-                        }
-                    }
-                }    
-            }        
-        }         
+        }                  
         stage('Unpack zip of artifacts to QA Nexus') {
             steps {
                 withCredentials([usernameColonPassword(credentialsId: 'unpacks-zip-on-qa-nexus', variable: 'kieUnpack')]) {
@@ -140,19 +123,16 @@ pipeline {
             steps {
                 parallel (
                     "jbpmTestCoverageMatrix" : {
-                        build job: "daily-build-${baseBranch}-jbpmTestCoverageMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
+                        build job: "daily-build-jdk8-${baseBranch}-jbpmTestCoverageMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
                     },
                     "jbpmTestContainerMatrix" : {
-                        build job: "daily-build-${baseBranch}-jbpmTestContainerMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
+                        build job: "daily-build-jdk8-${baseBranch}-jbpmTestContainerMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
                     },
                     "kieWbTestsMatrix" : {
-                            build job: "daily-build-${baseBranch}-kieWbTestsMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
+                            build job: "daily-build-jdk8-${baseBranch}-kieWbTestsMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
                      },
                     "kieServerMatrix" : {
-                            build job: "daily-build-${baseBranch}-kieServerMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
-                    },
-                    "daily-build-docker-images" : {
-                            build job: "${dockerAbsPath}/daily-build-${baseBranch}-docker-images", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
+                            build job: "daily-build-jdk8-${baseBranch}-kieServerMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
                     }
                 )    
             } 
@@ -169,7 +149,7 @@ pipeline {
             emailext body: 'Build log: ${BUILD_URL}consoleText\\n' +
                            'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
                            '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download and decompress attached file.)',
-                     subject: 'Build #${BUILD_NUMBER} of daily builds ${baseBranch} branch FAILED',
+                     subject: 'daily-build-jdk8-${baseBranch} #${BUILD_NUMBER} FAILED',
                      to: 'kie-jenkins-builds@redhat.com',
                      attachmentsPattern: 'error.log.gz'
             cleanWs()                     
@@ -179,13 +159,13 @@ pipeline {
                            'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
                            '***********************************************************************************************************************************************************\\n' +
                            '${FAILED_TESTS}',
-                     subject: 'Build #${BUILD_NUMBER} of daily builds ${baseBranch} branch was UNSTABLE',
+                     subject: 'daily-build-jdk8-${baseBranch} #${BUILD_NUMBER} was UNSTABLE',
                      to: 'kie-jenkins-builds@redhat.com'
             cleanWs()         
         }
         fixed {
             emailext body: '',
-                 subject: 'Build #${BUILD_NUMBER} of daily builds ${baseBranch} branch is fixed and was SUCCESSFUL',
+                 subject: 'daily-build-jdk8-${baseBranch} #${BUILD_NUMBER} was SUCCESSFUL',
                  to: 'kie-jenkins-builds@redhat.com'
         }
         success {
@@ -195,7 +175,7 @@ pipeline {
 }
 '''
 
-pipelineJob("${folderPath}/daily-build-pipeline-${baseBranch}") {
+pipelineJob("${folderPath}/daily-build-jdk8-pipeline-${baseBranch}") {
 
     description('this is a pipeline job for the daily build of all reps')
 
@@ -258,14 +238,12 @@ mv jbpm-$kieVersion/* .
 rm -rf jbpm-$kieVersion
 '''
 
-matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestCoverageMatrix") {
+matrixJob("${folderPath}/daily-build-jdk8-${baseBranch}-jbpmTestCoverageMatrix") {
     description("This job: <br> - Test coverage Matrix for jbpm <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
         stringParam("baseBranch", "${baseBranch}", "please edit the branch of the KIE release <br> Will be supplied by the parent job. <br> Normally the baseBranch will be supplied by parent job <br> ******************************************************** <br> ")
     }
-
-    label('kie-rhel7&&!master')
 
     axes {
         labelExpression("label-exp","kie-rhel7&&kie-mem8g")
@@ -331,15 +309,13 @@ mv jbpm-$kieVersion/* .
 rm -rf jbpm-$kieVersion
 '''
 
-matrixJob("${folderPath}/daily-build-${baseBranch}-jbpmTestContainerMatrix") {
+matrixJob("${folderPath}/daily-build-jdk8-${baseBranch}-jbpmTestContainerMatrix") {
     description("Version to test. Will be supplied by the parent job. Also used to donwload proper sources. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
         stringParam("baseBranch", "${baseBranch}", "please edit the branch of the KIE release <br> Will be supplied by the parent job. <br> Normally the baseBranch will be supplied by parent job <br> ******************************************************** <br> ")
 
     }
-
-    label('kie-rhel7&&!master')
 
     axes {
         labelExpression("label-exp","kie-rhel7&&kie-mem8g")
@@ -416,7 +392,7 @@ rm sources.tar.gz
 mv kie-wb-common-$kieVersion/* .
 rm -rf kie-wb-common-$kieVersion'''
 
-matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
+matrixJob("${folderPath}/daily-build-jdk8-${baseBranch}-kieWbTestsMatrix") {
     description("This job: <br> - Runs the KIE WB integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     parameters {
@@ -424,8 +400,6 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieWbTestsMatrix") {
         stringParam("baseBranch", "${baseBranch}", "please edit the branch of the KIE release <br> Will be supplied by the parent job. <br> Normally the baseBranch will be supplied by parent job <br> ******************************************************** <br> ")
 
     }
-
-    label('kie-rhel7&&!master')
 
     axes {
         labelExpression("label_exp", "kie-rhel7&&kie-mem8g&&gui-testing")
@@ -515,12 +489,11 @@ rm sources.tar.gz
 mv droolsjbpm-integration-$kieVersion/* .
 rm -rf droolsjbpm-integration-$kieVersion'''
 
-matrixJob("${folderPath}/daily-build-${baseBranch}-kieServerMatrix") {
+matrixJob("${folderPath}/daily-build-jdk8-${baseBranch}-kieServerMatrix") {
     description("This job: <br> - Runs the KIE Server integration tests on mutiple supported containers and JDKs <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ")
 
     // Label which specifies which nodes this job can run on.
-    label('kie-rhel7&&!master')
-
+    label("kie-rhel7&&kie-mem8g&&!master")
 
     parameters {
         stringParam("kieVersion", "${kieVersion}", "please edit the version of the KIE release <br> i.e. typically <b> major.minor.micro.<extension> </b>7.1.0.Beta1 for <b> community </b>or <b> major.minor.micro.<yyymmdd>-productized </b>(7.1.0.20170514-productized) for <b> productization </b> <br> Version to test. Will be supplied by the parent job. <br> Normally the KIE_VERSION will be supplied by parent job <br> ******************************************************** <br> ")
@@ -588,100 +561,3 @@ matrixJob("${folderPath}/daily-build-${baseBranch}-kieServerMatrix") {
     }
 }
 
-// *****************************************************************************************************
-// definition of kieDockerCi  script
-
-def dockImg='''pipeline {
-    agent {
-        label "$AGENT_DOCKER_LABEL"
-    }
-    tools {
-        maven "$mvnVersion"
-        jdk "$javadk"
-    }
-    environment {
-        JAVA_OPTS = '-Djsse.enableSNIExtension=false'
-    }
-    stages {
-        stage('CleanWorkspace') {
-            steps {
-                cleanWs()
-            }
-        }
-        stage('Checkout kie-docker-ci-images') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: '${baseBranch}']], browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/kiegroup/kie-docker-ci-images.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-docker-ci-images']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/kiegroup/kie-docker-ci-images.git']]])
-                dir("${WORKSPACE}" + '/kie-docker-ci-images') {
-                    sh 'pwd \\n' +
-                       'ls -al \\n' +
-                       'git branch'
-                }
-            }
-        }
-        stage('execute scripts for cleaning and updating') {
-            steps {
-                dir("${WORKSPACE}" + '/kie-docker-ci-images') {
-                    configFileProvider([configFile(fileId: '3ebb89ff-985c-43a2-965d-1cde56f31e1a', targetLocation: 'jenkins-settings.xml', variable: 'settingsXmlFile')]) {
-                        sh './scripts/docker-clean.sh $kieVersion \\n' +
-                           './scripts/update-versions.sh $kieVersion -s "$settingsXmlFile"'
-                    }
-                }
-            }
-        }
-        stage('build'){
-            steps{
-                dir("${WORKSPACE}" + '/kie-docker-ci-images') {
-                    configFileProvider([configFile(fileId: '3ebb89ff-985c-43a2-965d-1cde56f31e1a', targetLocation: 'jenkins-settings.xml', variable: 'settingsXmlFile')]) {
-                        sh 'mvn -e -B -U -s $settingsXmlFile clean install -Dkie.artifacts.deploy.path=$artifactsPath'
-                    }              
-               }   
-            }
-        }
-    }
-}
-'''
-
-pipelineJob("${dockerPath}/daily-build-${baseBranch}-docker-images") {
-
-    parameters {
-        stringParam("kieVersion", "${kieVersion}", "Version of kie. This will be usually set automatically by the parent pipeline job. ")
-        wHideParameterDefinition {
-            name('AGENT_DOCKER_LABEL')
-            defaultValue("${AGENT_DOCKER_LABEL}")
-            description('name of machine where to run this job')
-        }
-        wHideParameterDefinition {
-            name('mvnVersion')
-            defaultValue("${mvnVersion}")
-            description('version of maven')
-        }
-        wHideParameterDefinition {
-            name('javadk')
-            defaultValue("${javadk}")
-            description('version of jdk')
-        }
-        wHideParameterDefinition {
-            name('artifactsPath')
-            defaultValue("${artifactsPath}")
-            description('path of artifacts stored on the docker machine')
-        }
-        wHideParameterDefinition {
-            name('baseBranch')
-            defaultValue("${baseBranch}")
-            description('name of branch')
-        }
-    }
-
-    description('Builds CI Docker images for main branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ')
-
-    logRotator {
-        numToKeep(5)
-    }
-
-    definition {
-        cps {
-            script("${dockImg}")
-            sandbox()
-        }
-    }
-}

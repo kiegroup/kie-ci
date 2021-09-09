@@ -19,23 +19,23 @@ pipeline{
         stage('trigger daily build pipeline') {
             steps {
                 parallel (
-                    "main-pipeline" : {
-                        build job: "../main/daily-build/daily-build-pipeline-main", propagate: false
-                    },  
                     "main-jdk11-pipeline" : {
-                        build job: "../main/daily-build-jdk11/daily-build-jdk11-pipeline-main", propagate: false
-                    }, 
-                    "prod-main-pipeline" : {
-                        build job: '../main/daily-build-prod/daily-build-prod-pipeline-main', propagate: false
-                    },
-                    "7.59.x-pipeline" : {
-                        build job: "../7.59.x/daily-build/daily-build-pipeline-7.59.x", propagate: false
+                        build job: "../main/daily-build_jdk11/daily-build-jdk11-pipeline-main", propagate: false
                     },  
-                    "7.59.x-jdk11-pipeline" : {
-                        build job: "../7.59.x/daily-build-jdk11/daily-build-jdk11-pipeline-7.59.x", propagate: false
+                    "main-jdk8-pipeline" : {
+                        build job: "../main/daily-build-jdk8/daily-build-jdk8-pipeline-main", propagate: false
                     }, 
-                    "7.59.x-main-pipeline" : {
-                        build job: '../7.59.x/daily-build-prod/daily-build-prod-pipeline-7.59.x', propagate: false
+                    "main-jdk11-prod-pipeline" : {
+                        build job: '../main/daily-build-jdk11-prod/daily-build-jdk11-prod-pipeline-main', propagate: false
+                    },
+                    "7.59.x-jdk11-pipeline" : {
+                        build job: "../7.59.x/daily-build_jdk11/daily-build-jdk11-pipeline-7.59.x", propagate: false
+                    },  
+                    "7.59.x-jdk8-pipeline" : {
+                        build job: "../7.59.x/daily-build-jdk8/daily-build-jdk8-pipeline-7.59.x", propagate: false
+                    }, 
+                    "7.59.x-jdk11-prod-pipeline" : {
+                        build job: '../7.59.x/daily-build-jdk11-prod/daily-build-jdk11-prod-pipeline-7.59.x', propagate: false
                     }                    
                 )      
             }    
