@@ -20,7 +20,7 @@ pipeline{
             steps {
                 parallel (
                     "main-jdk11-pipeline" : {
-                        build job: "../main/daily-build_jdk11/daily-build-jdk11-pipeline-main", propagate: false
+                        build job: "../main/daily-build-jdk11/daily-build-jdk11-pipeline-main", propagate: false
                     },  
                     "main-jdk8-pipeline" : {
                         build job: "../main/daily-build-jdk8/daily-build-jdk8-pipeline-main", propagate: false
@@ -29,7 +29,7 @@ pipeline{
                         build job: '../main/daily-build-jdk11-prod/daily-build-jdk11-prod-pipeline-main', propagate: false
                     },
                     "7.59.x-jdk11-pipeline" : {
-                        build job: "../7.59.x/daily-build_jdk11/daily-build-jdk11-pipeline-7.59.x", propagate: false
+                        build job: "../7.59.x/daily-build-jdk11/daily-build-jdk11-pipeline-7.59.x", propagate: false
                     },  
                     "7.59.x-jdk8-pipeline" : {
                         build job: "../7.59.x/daily-build-jdk8/daily-build-jdk8-pipeline-7.59.x", propagate: false
