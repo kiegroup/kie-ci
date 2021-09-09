@@ -53,8 +53,9 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
                     "job-dsls/jobs/kie/main/compile_downstream_build.groovy\n" +
                     "job-dsls/jobs/kie/main/prodProjects_downstream_production.groovy \n" +
                     "job-dsls/jobs/kie/main/upstream.groovy\n" +
-                    "job-dsls/jobs/kie/main/dailyBuild_pipeline.groovy\n" +
-                    "job-dsls/jobs/kie/main/dailyBuild_prod_pipeline.groovy\n" +
+                    "job-dsls/jobs/kie/main/dailyBuild_jdk8_pipeline.groovy\n" +
+                    "job-dsls/jobs/kie/main/dailyBuild_jdk11_pipeline.groovy\n" +
+                    "job-dsls/jobs/kie/main/dailyBuild_jdk11_prod_pipeline.groovy\n" +
                     "job-dsls/jobs/kie/main/deploy_jobs.groovy\n" +
                     "job-dsls/jobs/kie/main/kie_jenkinsScripts_PR.groovy\n" +
                     "job-dsls/jobs/kie/main/kie_docs_pr.groovy\n" +
