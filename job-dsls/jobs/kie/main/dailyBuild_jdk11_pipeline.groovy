@@ -17,10 +17,10 @@ String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-midd
 // creation of folder
 folder("KIE")
 folder ("KIE/${baseBranch}")
-folder("KIE/${baseBranch}/daily-build_jdk11")
+folder("KIE/${baseBranch}/daily-build-jdk11")
 folder("KIE/${baseBranch}/docker")
 
-def folderPath="KIE/${baseBranch}/daily-build_jdk11"
+def folderPath="KIE/${baseBranch}/daily-build-jdk11"
 def dockerPath="KIE/${baseBranch}/docker"
 
 def daily_build='''
