@@ -81,6 +81,7 @@ dependencies {
     testPlugins 'org.jenkins-ci.plugins:envinject:2.4.0'
     testPlugins 'org.jenkins-ci.plugins:git:4.7.2'
     testPlugins 'org.jenkins-ci.plugins:ghprb:1.42.2'
+    testPlugins 'org.jenkins-ci.plugins:github-branch-source:2.10.0'
     testPlugins 'org.jenkins-ci.plugins:groovy:2.4'
     testPlugins 'org.jenkins-ci.plugins:jms-messaging:1.1.22'
     testPlugins 'org.jenkins-ci.plugins:junit:1.50'
