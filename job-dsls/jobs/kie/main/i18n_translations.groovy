@@ -71,11 +71,11 @@ pipeline {
                             echo "************************"
                             cd $REPOSITORY
                             pwd
-                            find . -path "*/i18n/*" -type f -name "*.properties" -not -name "*_*.properties" -exec zip -u ${REPOSITORY}_properties.zip {} \\\\;
-                            mv ${REPOSITORY}_properties.zip $WORKSPACE
+                            find . -path "*/i18n/*" -type f -name "*.properties" -not -name "*_*.properties" -exec zip -u ${REPOSITORY}.zip {} \\\\;
+                            mv ${REPOSITORY}.zip $WORKSPACE
                             cd ..
                         done
-                        zip -m ${date}-kieTranslations.zip *_properties.zip\'\'\'
+                        zip -m ${date}-kieTranslations.zip *.zip\'\'\'
                 }
             }
         }    
