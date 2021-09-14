@@ -89,7 +89,7 @@ pipeline{
         }
 
         // Kogito-tooling prod nightlies
-        stage('trigger kogito-tooling nightly job 0.13.0-prerelease') {
+        /* stage('trigger kogito-tooling nightly job 0.13.0-prerelease') {
             steps {
                 build job: 'kogito-tooling.nightly/0.13.0-prerelease', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.12/content-compressed'],
@@ -97,7 +97,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
-            }
+            } */
         }
     }
 }
