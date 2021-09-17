@@ -29,7 +29,7 @@ def final REPO_CONFIGS = [
         //],
         //"kogito-tooling.nightly" : [
         //    prodJobName : 'kogito-tooling.nightly',
-        //    scrPath : 'Jenkinsfile.nightly',
+        //    scrPath : '.ci/jenkins/Jenkinsfile.nightly',
         //    repo : 'kogito-tooling',
         //    repUrl : 'https://github.com/kiegroup/kogito-tooling',
         //    jobId : '00363'
