@@ -48,8 +48,8 @@ pipeline {
         stage('Calculate versions') {
             steps {
                 script {
-                    dataProd = new Date().format('yyyyMMdd')
-                    kieVersion = "${kieVersion}.${dataProd}-prod"
+                    dataProd = new Date().format('yyMMdd')
+                    kieVersion = "${kieVersion}.${dataProd}-p"
                     dockerAbsPath = "KIE/${baseBranch}/Docker"
 
                     echo "dataProd: ${dataProd}"
