@@ -97,8 +97,9 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
-            } */
+            }
         }
+        */
     }
 }
 """
