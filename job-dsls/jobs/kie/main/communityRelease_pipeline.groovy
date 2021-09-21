@@ -20,9 +20,8 @@ def nexusUrl = "https://repository.jboss.org/nexus"
 // in case of testing the upload of binaries to Nexus the credentials should be uploadNexus_test: recent value is for prod
 def uploadCreds = "kie_upload_Nexus"
 // download URL of jboss-eap for the additional tests
+def EAP7_DOWNLOAD_URL=Constants.EAP7_DOWNLOAD_URL
 
-
-String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
 
 // creation of folder
 folder("KIE")
