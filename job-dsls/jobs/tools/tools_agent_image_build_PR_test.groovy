@@ -85,7 +85,7 @@ job(jobName) {
                 url('ssh://jb-ip-tooling-jenkins@code.engineering.redhat.com/bxms-jenkins')
                 credentials('code.engineering.redhat.com')
             }
-            branch ("main")
+            branch ("master")
             extensions {
                 relativeTargetDirectory {
                     relativeTargetDir('jenkins-agents/bxms-jenkins')
