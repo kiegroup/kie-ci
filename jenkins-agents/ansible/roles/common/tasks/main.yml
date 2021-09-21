@@ -266,7 +266,7 @@
 - name: Extract Golang archives
   unarchive:
     copy: no
-    src: /tmp/downloads/go{{ item }}.linux-amd64.tar.gz
+    src: /tmp/downloads/{{ item }}/go{{ item }}.linux-amd64.tar.gz
     dest: /opt/tools/golang/{{ item }}
     owner: jenkins
     group: jenkins
