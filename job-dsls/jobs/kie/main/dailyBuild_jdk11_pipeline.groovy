@@ -11,8 +11,7 @@ def m2Dir=Constants.LOCAL_MVN_REP
 def AGENT_DOCKER_LABEL= "kieci-02-docker"
 def AGENT_LABEL="kie-rhel7-pipeline&&kie-mem24g"
 def artifactsPath="/home/docker/kie-artifacts/$kieVersion"
-
-String EAP7_DOWNLOAD_URL = "http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.3.0/jboss-eap-7.3.0.zip"
+def EAP7_DOWNLOAD_URL=Constants.EAP7_DOWNLOAD_URL
 
 // creation of folder
 folder("KIE")
