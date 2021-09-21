@@ -58,4 +58,5 @@ class Constants {
     static final String FINDBUGS_FILE = '**/spotbugsXml.xml'
     static final String CHECKSTYLE_FILE = '**/checkstyle.log'
     static final String RHBA_VERSION_PREFIX = "${KIE_PREFIX}.redhat-"
+    static final String EAP7_DOWNLOAD_URL = 'http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.4.0/jboss-eap-7.4.0.zip'
 }
