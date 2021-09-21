@@ -209,37 +209,85 @@
     owner: root
     group: root
   with_items:
-    - "{{ operator_sdk_version }}"
+    - "{{ operator_sdk_versions_old_format }}"
+    - "{{ operator_sdk_versions_new_format }}"
 
-- name: Install Operator-sdk
+- name: Install Operator-sdk old download format
   get_url:
     url: https://github.com/operator-framework/operator-sdk/releases/download/{{ item }}/operator-sdk-{{ item }}-x86_64-linux-gnu
     dest: /opt/tools/extras/operator-sdk/{{ item }}/operator-sdk
     mode: '0755'
   with_items:
-    - "{{ operator_sdk_version }}"
+    - "{{ operator_sdk_versions_old_format }}"
+
+- name: Install Operator-sdk new download format
+  get_url:
+    url: https://github.com/operator-framework/operator-sdk/releases/download/{{ item }}/operator-sdk_linux_amd64
+    dest: /opt/tools/extras/operator-sdk/{{ item }}/operator-sdk
+    mode: '0755'
+  with_items:
+    - "{{ operator_sdk_versions_new_format }}"
 
 ### Golang ###
-- name: Download golang archives
-  get_url:
-    url: https://dl.google.com/go/go{{golang_version}}.linux-amd64.tar.gz
-    dest: /tmp/downloads/
-    owner: jenkins
-    group: jenkins
-- name: Extract Golang archives
-  unarchive:
-    copy: no
-    src: /tmp/downloads/go{{golang_version}}.linux-amd64.tar.gz
-    dest: /opt/tools/
-    owner: jenkins
-    group: jenkins
-
-- name: Create GOPATH directory
+- name: Create golang subdir downloads directories
   file:
-    path: /home/jenkins/go/
+    path: /tmp/downloads/{{ item }}
     state: directory
     owner: jenkins
     group: jenkins
+  with_items:
+    - "{{ golang_versions }}"
+
+- name: Download golang archives
+  get_url:
+    url: https://dl.google.com/go/go{{ item }}.linux-amd64.tar.gz
+    dest: /tmp/downloads/{{ item }}
+    owner: jenkins
+    group: jenkins
+  with_items:
+    - "{{ golang_versions }}"
+
+- name: Create golang tools directory
+  file:
+    path: /opt/tools/golang
+    state: directory
+    owner: jenkins
+    group: jenkins
+
+- name: Create golang subdir tools directories
+  file:
+    path: /opt/tools/golang/{{ item }}
+    state: directory
+    owner: jenkins
+    group: jenkins
+  with_items:
+    - "{{ golang_versions }}"
+
+- name: Extract Golang archives
+  unarchive:
+    copy: no
+    src: /tmp/downloads/go{{ item }}.linux-amd64.tar.gz
+    dest: /opt/tools/golang/{{ item }}
+    owner: jenkins
+    group: jenkins
+  with_items:
+    - "{{ golang_versions }}"
+
+- name: Create GOPATH main directory
+  file:
+    path: /home/jenkins/go
+    state: directory
+    owner: jenkins
+    group: jenkins
+
+- name: Create GOPATH directories
+  file:
+    path: /home/jenkins/go/{{ item }}
+    state: directory
+    owner: jenkins
+    group: jenkins
+  with_items:
+    - "{{ golang_versions }}"
 
 ### Sudoers Entry for Jenkins user ###
 - name: sudo without password for wheel group
