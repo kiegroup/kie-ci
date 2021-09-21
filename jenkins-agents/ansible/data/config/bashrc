@@ -12,6 +12,4 @@ export ANT_HOME=/opt/tools/apache-ant-1.10.9
 export OPERATORSDK_HOME=/opt/tools/extras/operator-sdk/${OPERATOR_SDK_VERSION}
 export MAVEN_OPTS="-Xmx2g"
 export GRAALVM_HOME=/opt/tools/graalvm
-export GOROOT=/opt/tools/golang/${GOLANG_VERSION}/go
-export GOPATH=/home/jenkins/go/${GOLANG_VERSION}
-export PATH=$JAVA_HOME/bin:$MAVEN_HOME/bin:$ANT_HOME/bin:$GOROOT/bin:$OPERATORSDK_HOME:$GOPATH/bin:/opt/tools/mercurial/:/opt/tools/extras/:$PATH:$GRAALVM_HOME/bin
+export PATH=$JAVA_HOME/bin:$MAVEN_HOME/bin:$ANT_HOME/bin:/opt/tools/mercurial/:/opt/tools/extras/:$PATH:$GRAALVM_HOME/bin

@@ -14,8 +14,6 @@
     pme_version: 4.3
     pig_version: 1.0.5
     graalvm_version: 21.1.0
-    operator_sdk_versions_old_format: [v1.2.0]
-    operator_sdk_versions_new_format: [v1.11.0]
     golang_versions: [1.14,1.16]
     mercurial_version: 5.3.1
     openshift_clients_version: 4.4.12
