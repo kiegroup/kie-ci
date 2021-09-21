@@ -64,7 +64,7 @@ def jobDefinition = job("${folderPath}/agent-image-build") {
         git {
 
             // Specify the branches to examine for changes and to build.
-            branch("main")
+            branch("master")
 
             // Adds a remote.
             remote {
