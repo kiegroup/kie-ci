@@ -237,15 +237,6 @@
     owner: jenkins
     group: jenkins
 
-- name: Create GOPATH directories
-  file:
-    path: /home/jenkins/go/{{ item }}
-    state: directory
-    owner: jenkins
-    group: jenkins
-  with_items:
-    - "{{ golang_versions }}"
-
 ### Sudoers Entry for Jenkins user ###
 - name: sudo without password for wheel group
   copy:
