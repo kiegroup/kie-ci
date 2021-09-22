@@ -15,4 +15,4 @@ export GOROOT=/opt/tools/golang/1.16/go
 export PATH=$GOROOT/bin:$JAVA_HOME/bin:$MAVEN_HOME/bin:$ANT_HOME/bin:/opt/tools/mercurial/:/opt/tools/extras/:$PATH:$GRAALVM_HOME/bin
 
 export GOPATH=$(go env GOPATH)
-export PATH = $GOPATH/bin:$PATH
+export PATH=$GOPATH/bin:$PATH
