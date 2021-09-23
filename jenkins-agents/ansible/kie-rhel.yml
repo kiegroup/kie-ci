@@ -6,8 +6,10 @@
   vars :
     maven_versions: [3.3.9,3.5.0,3.5.2,3.5.4,3.6.0,3.6.2,3.6.3,3.8.1]
     maven_versions_needing_extension: [3.3.9,3.5.0,3.5.2,3.5.4,3.6.0]
-    jdk_long_versions: [java-1.8.0-openjdk, java-11-openjdk]
-    jdk_symlink_names: [jdk1.8, jdk11]
+    jdk_packages: [java-1.8.0-openjdk-devel, java-11-openjdk-devel]
+    jdk_long_versions: [java-1.8.0-openjdk, java-11-openjdk, jdk-17]
+    jdk_urls_to_download: ["https://download.java.net/java/GA/jdk17/0d483333a00540d886896bac774ff48b/35/GPL/openjdk-17_linux-x64_bin.tar.gz"]
+    jdk_symlink_names: [jdk1.8, jdk11, jdk17]
     jdk_cacerts_subdirs: ["jre/lib/security/cacerts", "lib/security/cacerts", "lib/security/cacerts", "lib/security/cacerts"]
     firefox_short_versions: [45esr, 52esr, 60esr]
     firefox_long_versions: [45.9.0esr, 52.9.0esr, 60.2.0esr]
@@ -35,6 +37,7 @@
 
   roles:
     - common
+    - jdk
     - kie
     - kogito
     - rhba
