@@ -1,0 +1,37 @@
+---
+# 'jenkins' user is required
+# '/tmp/downloads' folder is required
+# '/opt/tools' folder is required
+
+### RPM repositories ###
+
+- name: Install jdk packages
+  yum:
+    pkg: "{{ jdk_packages }}"
+    state: latest
+
+### Download and unarchive jdk files (not present in yum repository)
+
+- name: Extract openjdk archives
+  unarchive:
+    copy: no
+    src: "{{ item }}"
+    dest: /usr/lib/jvm/
+    owner: jenkins
+    group: jenkins
+  with_items:
+    - "{{ jdk_urls_to_download }}"
+
+### JDK ###
+
+- name: Create JDK symlinks
+  file:
+    src: /usr/lib/jvm/{{ item.0 }}
+    dest: /opt/tools/{{ item.1 }}
+    state: link
+    follow: no
+    mode: 0644
+  with_together:
+  - "{{ jdk_long_versions }}"
+  - "{{ jdk_symlink_names }}"
+...
