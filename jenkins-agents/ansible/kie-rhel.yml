@@ -15,9 +15,8 @@
     firefox_long_versions: [45.9.0esr, 52.9.0esr, 60.2.0esr]
     pme_version: 4.3
     pig_version: 1.0.5
-    graalvm_version: 20.3.1.2
-    operator_sdk_version: [v0.18.2,v1.2.0]
-    golang_version: 1.14
+    graalvm_version: 21.1.0
+    golang_versions: [1.14,1.16]
     mercurial_version: 5.3.1
     openshift_clients_version: 4.4.12
     jenkins_script_security_approved_signatures_present:

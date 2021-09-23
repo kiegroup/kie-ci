@@ -180,49 +180,45 @@
 - name: Install native-image
   command: "/opt/tools/graalvm/bin/gu install native-image"
 
-### Operator-sdk ###
-- name: Create OperatorSDK directory
-  file:
-    path: /opt/tools/extras/operator-sdk
-    state: directory
-    owner: root
-    group: root
-
-- name: Create OperatorSDK subdir downloads directory
-  file:
-    path: /opt/tools/extras/operator-sdk/{{ item }}
-    state: directory
-    owner: root
-    group: root
-  with_items:
-    - "{{ operator_sdk_version }}"
-
-- name: Install Operator-sdk
-  get_url:
-    url: https://github.com/operator-framework/operator-sdk/releases/download/{{ item }}/operator-sdk-{{ item }}-x86_64-linux-gnu
-    dest: /opt/tools/extras/operator-sdk/{{ item }}/operator-sdk
-    mode: '0755'
-  with_items:
-    - "{{ operator_sdk_version }}"
-
 ### Golang ###
 - name: Download golang archives
   get_url:
-    url: https://dl.google.com/go/go{{golang_version}}.linux-amd64.tar.gz
+    url: https://dl.google.com/go/go{{ item }}.linux-amd64.tar.gz
     dest: /tmp/downloads/
     owner: jenkins
     group: jenkins
-- name: Extract Golang archives
-  unarchive:
-    copy: no
-    src: /tmp/downloads/go{{golang_version}}.linux-amd64.tar.gz
-    dest: /opt/tools/
+  with_items:
+    - "{{ golang_versions }}"
+
+- name: Create golang tools directory
+  file:
+    path: /opt/tools/golang
+    state: directory
     owner: jenkins
     group: jenkins
 
-- name: Create GOPATH directory
+- name: Create golang subdir tools directories
   file:
-    path: /home/jenkins/go/
+    path: /opt/tools/golang/{{ item }}
+    state: directory
+    owner: jenkins
+    group: jenkins
+  with_items:
+    - "{{ golang_versions }}"
+
+- name: Extract Golang archives
+  unarchive:
+    copy: no
+    src: /tmp/downloads/go{{ item }}.linux-amd64.tar.gz
+    dest: /opt/tools/golang/{{ item }}
+    owner: jenkins
+    group: jenkins
+  with_items:
+    - "{{ golang_versions }}"
+
+- name: Create GOPATH main directory
+  file:
+    path: /home/jenkins/go
     state: directory
     owner: jenkins
     group: jenkins
