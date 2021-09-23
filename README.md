@@ -15,7 +15,7 @@ Just execute
 
 ```
 docker run --name ansible-managed-node --privileged -p 2222:22 -d -it chusiang/ansible-managed-node:centos-7 /usr/sbin/init
-ansible-playbook -e ansible_ssh_pass=root -e encrypted_password=root_pass kie-rhel.yml
+ansible-playbook -e ansible_ssh_pass=root -e encrypted_password=root_pass -e rhel_version=7 kie-rhel.yml
 ```
 
 
