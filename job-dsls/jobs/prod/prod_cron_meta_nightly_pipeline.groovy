@@ -31,13 +31,25 @@ pipeline{
                 ]
             }
         }
+        
+        stage('trigger nightly job 7.59.x') {
+            steps {
+                build job: 'nightly/7.59.x', propagate: false, wait: true, parameters: [
+                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.12/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '712'],
+                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
+                        [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: '7.59.x'],
+                        [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
+                ]
+            }
+        }
 
         // Kogito prod nightlies
         stage('trigger kogito nightly job main') {
             steps {
                 build job: 'kogito.nightly/main', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-main-nightly-with-upstream'],
-                        [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: "${RHBA_VERSION_PREFIX}"],
+                        [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: "7.59.1.redhat-"],
                         [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-main/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
@@ -59,25 +71,13 @@ pipeline{
                 ]
             }
         }
-        
-        stage('trigger nightly job 7.59.x') {
-            steps {
-                build job: 'nightly/7.59.x', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.12/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '712'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
-                        [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: '7.59.x'],
-                        [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
-                ]
-            }
-        }
 
         // Kogito prod nightlies
         stage('trigger kogito nightly job 1.11.x') {
             steps {
                 build job: 'kogito.nightly/1.11.x', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-7.12-nightly-with-upstream'],
-                        [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: "${RHBA_VERSION_PREFIX}"],
+                        [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: "7.59.0.redhat-"],
                         [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-1.11/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '111'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '1.11.0'],
