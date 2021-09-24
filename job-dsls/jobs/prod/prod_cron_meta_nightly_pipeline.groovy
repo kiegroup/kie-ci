@@ -8,6 +8,7 @@ import org.kie.jenkins.jobdsl.Constants
 def javadk=Constants.JDK_VERSION
 def AGENT_LABEL="kie-rhel7 && kie-mem4g"
 def RHBA_VERSION_PREFIX=Constants.RHBA_VERSION_PREFIX
+def PRODUCT_VERSION=Constants.PROD_VERSION
 
 def metaJob="""
 pipeline{
@@ -25,7 +26,7 @@ pipeline{
                 build job: 'nightly/main', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-main/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
+                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PROD_VERSION}"],
                         [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
@@ -40,8 +41,8 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: "${RHBA_VERSION_PREFIX}"],
                         [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-main/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
-                        [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '7.12.0'],
+                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PROD_VERSION}"],
+                        [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: "${PROD_VERSION}"],
                         [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
@@ -54,7 +55,7 @@ pipeline{
                 build job: 'kogito-tooling.nightly/main', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-main/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
+                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PROD_VERSION}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
@@ -65,7 +66,7 @@ pipeline{
                 build job: 'nightly/7.59.x', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.12/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '712'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
+                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PROD_VERSION}"],
                         [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: '7.59.x'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
@@ -94,7 +95,7 @@ pipeline{
                 build job: 'kogito-tooling.nightly/0.13.0-prerelease', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.12/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '712'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '7.12.0'],
+                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PROD_VERSION}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
