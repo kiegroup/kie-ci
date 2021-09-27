@@ -26,7 +26,7 @@ configs['rhba-installers'] = [
 
 configs['bxms-patch-tools'] = [
         branch: 'bxms-7.0',
-        mavenParams: '-Prhpam,rhdm,integration-tests',
+        mavenParams: '-Prhpam,integration-tests',
         pmeParams: '''
          -DversionOverride=${RHPAM_VERSION} 
          -DkieVersion=${KIE_VERSION} 
