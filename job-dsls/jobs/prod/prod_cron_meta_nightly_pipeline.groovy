@@ -95,7 +95,7 @@ pipeline{
                 build job: 'kogito-tooling.nightly/0.13.0-prerelease', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.12/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '712'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PROD_VERSION}"],
+                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PRODUCT_VERSION}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
