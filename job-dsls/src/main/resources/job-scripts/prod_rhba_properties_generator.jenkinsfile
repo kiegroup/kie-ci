@@ -25,13 +25,8 @@ node() {
         // RHPAM
         publishFile("6ad7aff1-2d3d-4cdc-81de-b62dae1f39e9", "rhpam-deliverable-list-staging.properties", binding, "${RCM_GUEST_FOLDER}/rhpam/RHPAM-${PRODUCT_VERSION}.${PRODUCT_MILESTONE}")
         publishFile("f5eb870f-53d8-426c-bcfa-04668965e3ef", "rhpam-deliverable-list.properties", binding, "${RCM_GUEST_FOLDER}/rhpam/RHPAM-${PRODUCT_VERSION}.${PRODUCT_MILESTONE}")
-
-        // RHDM
-        publishFile("8862cf74-d316-4eea-a99e-f74d90be6931", "rhdm-deliverable-list-staging.properties", binding, "${RCM_GUEST_FOLDER}/rhdm/RHDM-${PRODUCT_VERSION}.${PRODUCT_MILESTONE}")
-        publishFile("598bedb7-780f-4f46-994f-e6314d55d8b9", "rhdm-deliverable-list.properties", binding, "${RCM_GUEST_FOLDER}/rhdm/RHDM-${PRODUCT_VERSION}.${PRODUCT_MILESTONE}")
     } else {
         publishFile("aff8076d-3a5d-4e45-b41e-413ca9b34258", "rhpam-${TIME_STAMP}.properties", binding, "${RCM_GUEST_FOLDER}/rhpam/RHPAM-${PRODUCT_VERSION}.NIGHTLY")
-        publishFile("8196c1f9-71ee-4bb1-8244-6b7711715c66", "rhdm-${TIME_STAMP}.properties", binding, "${RCM_GUEST_FOLDER}/rhdm/RHDM-${PRODUCT_VERSION}.NIGHTLY")
     }
 }
 

@@ -17,24 +17,16 @@ node {
                 [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "kie-server-ee7"],
                 [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "monitoring-ee7"],
                 [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "reference-implementation"],
-                [product: "rhdm", group: "org.kie.rhba", name: "rhdm", package: "zip", classifier: "add-ons"],
-                [product: "rhdm", group: "org.kie.rhba", name: "rhdm", package: "zip", classifier: "decision-central-eap7-deployable"],
-                [product: "rhdm", group: "org.kie.rhba", name: "rhdm", package: "jar", classifier: "decision-central-standalone"],
-                [product: "rhdm", group: "org.kie.rhba", name: "rhdm", package: "zip", classifier: "kie-server-ee8"],
-                [product: "rhdm", group: "org.kie.rhba", name: "rhdm", package: "zip", classifier: "kie-server-ee7"],
-                [product: "rhdm", group: "org.kie.rhba", name: "rhdm", package: "zip", classifier: "reference-implementation"]
             ]
         ], [
             name: "rhba-installers",
             artifacts: [
-                [product: "rhpam", group: "org.jboss.installer", name: "rhpam-installer", package: "jar"],
-                [product: "rhdm", group: "org.jboss.installer", name: "rhdm-installer", package: "jar"]
+                [product: "rhpam", group: "org.jboss.installer", name: "rhpam-installer", package: "jar"]
             ]
         ], [
             name: "jboss-integration/bxms-patch-tools",
             artifacts: [
-                [product: "rhpam", group: "org.jboss.brms-bpmsuite.patching", name: "rhpam", package: "zip", classifier: "update"],
-                [product: "rhdm", group: "org.jboss.brms-bpmsuite.patching", name: "rhdm", package: "zip", classifier: "update"]
+                [product: "rhpam", group: "org.jboss.brms-bpmsuite.patching", name: "rhpam", package: "zip", classifier: "update"]
             ]
         ]
     ]
