@@ -48,18 +48,6 @@ pipeline{
                 ]
             }
         }
-
-        // Kogito-tooling prod nightlies
-        stage('trigger kogito-tooling nightly job main') {
-            steps {
-                build job: 'kogito-tooling.nightly/main', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-main/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PRODUCT_VERSION}"],
-                        [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
-                ]
-            }
-        }
         
         stage('trigger nightly job 7.59.x') {
             steps {
@@ -88,6 +76,18 @@ pipeline{
                 ]
             }
         }
+
+        // Kogito-tooling prod nightlies
+        /* stage('trigger kogito-tooling nightly job main') {
+            steps {
+                build job: 'kogito-tooling.nightly/main', propagate: false, wait: true, parameters: [
+                        [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-main/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
+                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PRODUCT_VERSION}"],
+                        [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
+                ]
+            }
+        } */
 
         // Kogito-tooling prod nightlies
         /* stage('trigger kogito-tooling nightly job 0.13.0-prerelease') {
