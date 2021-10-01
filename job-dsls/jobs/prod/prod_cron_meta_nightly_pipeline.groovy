@@ -150,6 +150,5 @@ pipelineJob("${folderPath}/cron-meta-nightly-pipeline") {
 
 String getUMBFromVersion(def version) {
     def matcher = version =~ /(\d*)\.(\d*)\.?/
-    println matcher.size()
     return "${matcher[0][1]}${matcher[0][2]}"
 }
