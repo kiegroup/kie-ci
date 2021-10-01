@@ -9,7 +9,7 @@ String jobDescription = "Job responsible for seed jobs to building rhpm/rhdm ope
 def prodComponent = ['rhpam-businesscentral','rhpam-businesscentral-monitoring','rhpam-controller','rhpam-kieserver','rhpam-smartrouter','rhdm-decisioncentral','rhdm-controller','rhdm-kieserver','rhpam-process-migration','rhdm-optaweb-employee-rostering']
 
 def buildDate=Constants.BUILD_DATE
-def prodVersion=Constants.PROD_VERSION
+def prodVersion=Constants.NEXT_PROD_VERSION
 def osbsBuildTarget=Constants.OSBS_BUILD_TARGET
 def cekitBuildOptions=Constants.CEKIT_BUILD_OPTIONS
 def kerberosPrincipal=Constants.KERBEROS_PRINCIPAL
