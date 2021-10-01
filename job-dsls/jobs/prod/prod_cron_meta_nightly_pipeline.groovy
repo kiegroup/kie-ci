@@ -53,7 +53,7 @@ pipeline{
             steps {
                 build job: 'nightly/7.59.x', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.12/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '712'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: "${getUMBFromVersion(PRODUCT_VERSION)}"],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PRODUCT_VERSION}"],
                         [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: '7.59.x'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
@@ -94,7 +94,7 @@ pipeline{
             steps {
                 build job: 'kogito-tooling.nightly/0.13.0-prerelease', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.12/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '712'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: "${getUMBFromVersion(PRODUCT_VERSION)}"],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PRODUCT_VERSION}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
@@ -146,4 +146,10 @@ pipelineJob("${folderPath}/cron-meta-nightly-pipeline") {
             sandbox()
         }
     }
+}
+
+String getUMBFromVersion(def version) {
+    def matcher = version =~ /(\d*)\.(\d*)\.?/
+    println matcher.size()
+    return "${matcher[0][1]}${matcher[0][2]}"
 }
