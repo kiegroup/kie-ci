@@ -52,7 +52,7 @@ pipeline{
         stage('trigger nightly job 7.59.x') {
             steps {
                 build job: 'nightly/7.59.x', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.12/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-${getNexusFromVersion(PRODUCT_VERSION)}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: "${getUMBFromVersion(PRODUCT_VERSION)}"],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PRODUCT_VERSION}"],
                         [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: '7.59.x'],
@@ -65,7 +65,7 @@ pipeline{
         stage('trigger kogito nightly job 1.11.x') {
             steps {
                 build job: 'kogito.nightly/1.11.x', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-7.12-nightly-with-upstream'],
+                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-${getNexusFromVersion(PRODUCT_VERSION)}-nightly-with-upstream'],
                         [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: "${RHBA_VERSION_PREFIX}"],
                         [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-1.11/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '111'],
@@ -93,7 +93,7 @@ pipeline{
         /* stage('trigger kogito-tooling nightly job 0.13.0-prerelease') {
             steps {
                 build job: 'kogito-tooling.nightly/0.13.0-prerelease', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-7.12/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-${getNexusFromVersion(PRODUCT_VERSION)}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: "${getUMBFromVersion(PRODUCT_VERSION)}"],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${PRODUCT_VERSION}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
@@ -151,4 +151,9 @@ pipelineJob("${folderPath}/cron-meta-nightly-pipeline") {
 String getUMBFromVersion(def version) {
     def matcher = version =~ /(\d*)\.(\d*)\.?/
     return "${matcher[0][1]}${matcher[0][2]}"
+}
+
+String getNexusFromVersion(def version) {
+    def matcher = version =~ /(\d*)\.(\d*)\.?/
+    return "${matcher[0][1]}.${matcher[0][2]}"
 }
