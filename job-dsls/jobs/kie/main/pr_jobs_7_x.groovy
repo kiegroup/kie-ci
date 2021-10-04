@@ -17,7 +17,9 @@ def final DEFAULTS = [
         findbugsFile           : Constants.FINDBUGS_FILE,
         buildJDKTool           : '',
         buildMavenTool         : '',
-        excludedRegions        : []
+        excludedRegions        : [],
+        buildChainGroup        : 'kiegroup',
+        buildChainBranch       : 'main'
 ]
 
 // override default config for specific repos (if needed)
@@ -68,6 +70,8 @@ for (repoConfig in REPO_CONFIGS) {
     String buildJDKTool = get("buildJDKTool")
     String buildMavenTool = get("buildMavenTool")
     String excludedRegionsValue = get('excludedRegions')
+    String buildChainGroup = get('buildChainGroup')
+    String buildChainBranch = get('buildChainBranch')
 
     // Creation of folders where jobs are stored
     folder("KIE")
@@ -107,6 +111,8 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("PR_TYPE","Pull Request",'')
             stringParam ("BUILD_JDK_TOOL","${buildJDKTool}",'')
             stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}",'')
+            stringParam ("BUILDCHAIN_GROUP","${buildChainGroup}",'')
+            stringParam ("BUILDCHAIN_BRANCH","${buildChainBranch}",'')
         }
 
         definition {
