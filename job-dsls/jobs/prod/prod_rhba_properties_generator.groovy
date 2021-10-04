@@ -73,7 +73,7 @@ pipelineJob("${folderPath}/rhba-properties-generator") {
     parameters {
         booleanParam("IS_PROD", true, "it defines if the properties file is for prod or not")
         stringParam("BRANCH_NAME", "main", "the branch the nightly was triggered for")
-        stringParam("REPO_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-main-nightly", "Prod possibility is http://download.devel.redhat.com/staging")
+        stringParam("REPO_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-main-nightly", "Prod possibility is http://download.devel.redhat.com/rcm-guest/staging/")
         stringParam("DELIVERABLE_REPO_URL", "http://download.devel.redhat.com/devel/candidates")
         stringParam("PRODUCT_VERSION", "7.10.0")
         stringParam("PRODUCT_VERSION_LONG", "7.10.0.redhat-00003", "This is just for prod files")
