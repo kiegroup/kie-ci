@@ -42,7 +42,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-${NEXT_PRODUCT_BRANCH}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${NEXT_PRODUCT_BRANCH}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${NEXT_PRODUCT_VERSION}"],
-                        [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
+                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
@@ -58,7 +58,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${KOGITO_NEXT_PRODUCT_BRANCH}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${KOGITO_NEXT_PRODUCT_VERSION}'],
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${NEXT_PRODUCT_VERSION}'],
-                        [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
+                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
@@ -70,7 +70,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-${getNexusFromVersion(CURRENT_PRODUCT_VERSION)}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(CURRENT_PRODUCT_VERSION)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${CURRENT_PRODUCT_VERSION}'],
-                        [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: '${CURRENT_PRODUCT_BRANCH}'],
+                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${CURRENT_PRODUCT_BRANCH}'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
@@ -86,7 +86,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(KOGITO_CURRENT_PRODUCT_VERSION)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${KOGITO_CURRENT_PRODUCT_VERSION}'],
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${OPTAPLANNER_CURRENT_PRODUCT_VERSION}'],
-                        [\$class: 'StringParameterValue', name: 'DEFAULT_CONFIG_BRANCH', value: '${KOGITO_CURRENT_PRODUCT_BRANCH}'],
+                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${KOGITO_CURRENT_PRODUCT_BRANCH}'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
