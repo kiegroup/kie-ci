@@ -11,13 +11,15 @@
 */
 
 def propGen ='''
-import groovy.json.JsonSlurper
+import groovy.json.JsonSlurperClassic
 
 node('kie-rhel7&&!master') {
     sh 'env\'
     println "Folder '${RCM_GUEST_FOLDER}/${FOLDER_PATH}'"
 
-    def binding = new JsonSlurper().parseText(BINDING)
+    def binding = new JsonSlurperClassic().parseText(BINDING)
+    println "Parsed binding: ${binding}"
+
     publishFile("${FILE_ID}", "${FILE_NAME}", binding, "${RCM_GUEST_FOLDER}/${FOLDER_PATH}")
 }
 
