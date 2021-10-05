@@ -10,8 +10,9 @@
  */
 
 def propGen ='''
+import groovy.json.JsonOutput
+
 node('kie-rhel7&&!master') {
-    import groovy.json.JsonOutput
 
     sh 'env\'
     def REPO_URL_FOLDER_VERSION = 'main'.equals(BRANCH_NAME) ? 'main' : (PRODUCT_VERSION =~ /\\d+\\.\\d+/)[0]
