@@ -1,4 +1,11 @@
 ---
+### Install dnf ###
+
+- name: Install dnf
+  yum:
+    pkg: ['dnf']
+    state: latest
+
 ### Install required gh-cli repo ###
 
 - name: Install gh-cli.repo
@@ -8,6 +15,6 @@
 ### Install required gh-cli repo ###
 
 - name: Install gh-cli.repo
-  command: sudo dnf install gh
+  command: sudo dnf install gh -y
 
 ...
