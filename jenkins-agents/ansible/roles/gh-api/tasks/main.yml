@@ -6,6 +6,9 @@
     pkg: ['dnf']
     state: latest
 
+- name: Install gh-cli.repo
+  command: dnf install 'dnf-command(config-manager)'
+
 ### Install required gh-cli repo ###
 
 - name: Install gh-cli.repo
