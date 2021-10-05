@@ -9,12 +9,12 @@
 ### Install required gh-cli repo ###
 
 - name: Install gh-cli.repo
-  command: sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+  command: dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
   
 
 ### Install required gh-cli repo ###
 
 - name: Install gh-cli.repo
-  command: sudo dnf install gh -y
+  command: dnf install gh -y
 
 ...
