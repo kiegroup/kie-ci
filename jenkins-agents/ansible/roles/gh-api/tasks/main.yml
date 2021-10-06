@@ -1,23 +1,17 @@
 ---
-### Install dnf ###
+### Add Repository dnf ###
 
-- name: Install dnf
+- name: Add GH-CLI repository
+  yum_repository:
+    name: gh-cli
+    description: GitHub CLI Repo
+    baseurl: https://cli.github.com/packages/rpm/gh-cli.repo
+
+### Install gh-cli package ###
+
+- name: Install packages
   yum:
-    pkg: ['dnf']
+    pkg: ['gh']
     state: latest
-
-- name: Install gh-cli.repo
-  command: dnf install 'dnf-command(config-manager)'
-
-### Install required gh-cli repo ###
-
-- name: Install gh-cli.repo
-  command: dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
-  
-
-### Install required gh-cli repo ###
-
-- name: Install gh-cli.repo
-  command: dnf install gh -y
 
 ...
