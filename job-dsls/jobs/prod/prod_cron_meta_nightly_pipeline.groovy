@@ -7,13 +7,14 @@ import org.kie.jenkins.jobdsl.Constants
 
 def javadk=Constants.JDK_VERSION
 def AGENT_LABEL="kie-rhel7 && kie-mem4g"
-def RHBA_VERSION_PREFIX=Constants.RHBA_VERSION_PREFIX
 
 def NEXT_PRODUCT_VERSION=Constants.NEXT_PROD_VERSION
 def NEXT_PRODUCT_BRANCH='main'
+def NEXT_RHBA_VERSION_PREFIX=Constants.RHBA_VERSION_PREFIX
 
 def CURRENT_PRODUCT_VERSION=Constants.CURRENT_PROD_VERSION
 def CURRENT_PRODUCT_BRANCH='7.59.x'
+def CURRENT_RHBA_VERSION_PREFIX='7.59.1.redhat-'
 
 def KOGITO_NEXT_PRODUCT_VERSION=NEXT_PRODUCT_VERSION
 def KOGITO_NEXT_PRODUCT_BRANCH=NEXT_PRODUCT_BRANCH
@@ -53,7 +54,7 @@ pipeline{
             steps {
                 build job: 'kogito.nightly/${KOGITO_NEXT_PRODUCT_BRANCH}', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-${NEXT_PRODUCT_BRANCH}-nightly-with-upstream'],
-                        [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '${RHBA_VERSION_PREFIX}'],
+                        [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '${NEXT_RHBA_VERSION_PREFIX}'],
                         [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${KOGITO_NEXT_PRODUCT_BRANCH}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${KOGITO_NEXT_PRODUCT_BRANCH}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${KOGITO_NEXT_PRODUCT_VERSION}'],
@@ -80,8 +81,8 @@ pipeline{
         stage('trigger kogito nightly job ${KOGITO_CURRENT_PRODUCT_VERSION}') {
             steps {
                 build job: 'kogito.nightly/${KOGITO_CURRENT_PRODUCT_VERSION}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-${NEXT_PRODUCT_BRANCH}-nightly-with-upstream'],
-                        [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '${RHBA_VERSION_PREFIX}'],
+                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-${getNexusFromVersion(NEXT_PRODUCT_VERSION)}-nightly-with-upstream'],,
+                        [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '${CURRENT_RHBA_VERSION_PREFIX}'],
                         [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${getNexusFromVersion(KOGITO_CURRENT_PRODUCT_VERSION)}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(KOGITO_CURRENT_PRODUCT_VERSION)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${KOGITO_CURRENT_PRODUCT_VERSION}'],
