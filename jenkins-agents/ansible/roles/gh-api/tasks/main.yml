@@ -1,13 +1,11 @@
 ---
-### Add Repository dnf ###
-
-- name: Add GH-CLI repository
-  yum_repository:
-    name: gh-cli
-    description: GitHub CLI Repo
-    baseurl: https://cli.github.com/packages/rpm/gh-cli.repo
-
-### Install gh-cli package ###
+- name: Download GH-CLI repo config
+  get_url:
+    url: https://cli.github.com/packages/rpm/gh-cli.repo
+    dest: /etc/yum.repos.d/gh-cli.repo
+    owner: root
+    group: root
+    mode: 0644
 
 - name: Install packages
   yum:
