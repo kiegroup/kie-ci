@@ -36,13 +36,13 @@
 
   roles:
     - common
-    - gh-api
     - jdk
     - kie
     - kogito
     - rhba
     - rhba-osbs
     - rhba-sourceclear-integration
+    - gh-api
 
   tasks:
   ### Clean up ###
