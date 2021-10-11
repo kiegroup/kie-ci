@@ -9,6 +9,7 @@ def final DEFAULTS = [
         ghAuthKey              : "kie-ci-user-key",
         timeoutMins            : 90,
         label                  : "kie-rhel7 && kie-mem8g",
+        javadk                 : Constants.JDK_VERSION,
         mvnGoals               : "-e -fae -B -Pwildfly clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
         mvnProps: [
                 "full"                     : "true",
@@ -106,7 +107,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        jdk("kie-jdk11")
+        jdk(get("javadk"))
 
         label(get("label"))
 
