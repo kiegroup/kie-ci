@@ -88,6 +88,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${KOGITO_CURRENT_PRODUCT_VERSION}'],
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${OPTAPLANNER_CURRENT_PRODUCT_VERSION}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${KOGITO_CURRENT_PRODUCT_BRANCH}'],
+                        [\$class: 'StringParameterValue', name: 'RHBA_RELEASE_VERSION', value: '${getNexusFromVersion(CURRENT_PRODUCT_VERSION)}'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
