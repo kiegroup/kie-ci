@@ -6,6 +6,7 @@ import org.kie.jenkins.jobdsl.Constants
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
+        javadk                 : Constants.JDK_VERSION,
         ghAuthKey              : "kie-ci-user-key",
         timeoutMins            : 90,
         buildHistory           : 3,
@@ -214,10 +215,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        if (repo == "process-migration-service") {
-            jdk("kie-jdk11")
-        } else {
-            jdk("kie-jdk1.8")}
+        jdk(get("javadk"))
 
         label(get("label"))
 
