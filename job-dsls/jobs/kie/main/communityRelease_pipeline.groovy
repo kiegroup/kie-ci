@@ -245,7 +245,7 @@ pipeline {
                             sh """ 
                                 cd $zipDir
                                 zip -r kiegroup .
-                                repoID=\\$(curl --header 'Content-Type: application/xml' -X POST -u "${CREDS}" --data '<promoteRequest><data><description>$kieVersion</description></data></promoteRequest>' -v $nexusUrl/service/local/staging/profiles/15c58a1abc895b/start | grep -oP '(?<=stagedRepositoryId)[^<]+' | sed 's/>//' | tr -d '\\n')
+                                repoID=\\$(curl --header 'Content-Type: application/xml' -X POST -u "${CREDS}" --data '<promoteRequest><data><description>kie-$kieVersion</description></data></promoteRequest>' -v $nexusUrl/service/local/staging/profiles/15c58a1abc895b/start | grep -oP '(?<=stagedRepositoryId)[^<]+' | sed 's/>//' | tr -d '\\n')
                                 echo "repoID= " \\$repoID
                                 echo " "
                                 ls -al
