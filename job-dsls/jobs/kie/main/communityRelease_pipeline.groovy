@@ -2,7 +2,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def kieVersion=Constants.KIE_PREFIX + ".Final"
 def baseBranch=Constants.BRANCH
-def releaseBranch="r7.58.0.Final"
+def releaseBranch="r" + Constants.KIE_PREFIX + ".Final"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def MAVEN_OPTS="-Xms1g -Xmx3g"
