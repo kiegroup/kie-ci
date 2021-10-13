@@ -4,9 +4,9 @@
 
 import org.kie.jenkins.jobdsl.Constants
 
-def kieVersion=Constants.KIE_PREFIX
+def kieVersion=Constants.DROOLS_8_SERIES + "Beta"
 def baseBranch=Constants.BRANCH
-def releaseBranch="r7.45.0.t20201015"
+def releaseBranch="r" + Constants.DROOLS_8_SERIES + "Beta"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def commitMsg="Upgraded version to "
@@ -17,8 +17,8 @@ def AGENT_LABEL="kie-rhel7 && kie-mem24g"
 // Creation of folders where jobs are stored
 folder("KIE")
 folder("KIE/${baseBranch}")
-folder("KIE/${baseBranch}/reduced-drools-release")
-def folderPath = ("KIE/${baseBranch}/reduced-drools-release")
+folder("KIE/${baseBranch}/drools-8-series-beta-release")
+def folderPath = ("KIE/${baseBranch}/drools-8-series-beta-release")
 
 
 def redRelease='''
@@ -218,9 +218,9 @@ pipeline {
 '''
 
 
-pipelineJob("${folderPath}/drools-pipeline-${baseBranch}") {
-
-    description('This job is a pipeline for a drools release (reduced repositories)<br>The reps in repository-list will be from lienzo-core until droolsjbpm-integration')
+pipelineJob("${folderPath}/drools-8-series-pipeline-${baseBranch}") {
+    
+    description('This job is a pipeline for a drools 8 series release<br>The reps in repository-list will be<br>droolsjbpm-build-bootstrap<br>droolsjbpm-knowledge<br>drools')
 
     parameters{
         stringParam("kieVersion", "${kieVersion}", "please edit the version for the current release, format should be: i.e. 7.45.0.t20201014 ")
