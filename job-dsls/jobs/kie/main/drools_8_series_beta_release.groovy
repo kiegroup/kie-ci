@@ -4,15 +4,15 @@
 
 import org.kie.jenkins.jobdsl.Constants
 
-def kieVersion=Constants.DROOLS_8_SERIES + "Beta"
+def kieVersion=Constants.DROOLS_8_SERIES + ".Beta"
 def baseBranch=Constants.BRANCH
-def releaseBranch="r" + Constants.DROOLS_8_SERIES + "Beta"
+def releaseBranch="r" + Constants.DROOLS_8_SERIES + ".Beta"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def commitMsg="Upgraded version to "
 def javadk=Constants.JDK_VERSION
 def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
-def AGENT_LABEL="kie-rhel7 && kie-mem24g"
+def AGENT_LABEL="kie-rhel7-pipeline&&kie-mem24g&&!kie-releases"
 
 // Creation of folders where jobs are stored
 folder("KIE")
@@ -42,39 +42,21 @@ pipeline {
                 sh "git config --global user.name kie-ci"
             }
         }        
-        stage('Checkout droolsjbpm-build-bootstrap') {
+        stage('Checkout drools') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '$baseBranch']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:$organization/droolsjbpm-build-bootstrap.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'droolsjbpm-build-bootstrap']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$organization/droolsjbpm-build-bootstrap.git']]])
-                dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
+                checkout([$class: 'GitSCM', branches: [[name: '$baseBranch']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:$organization/drools.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'drools']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$organization/drools.git']]])
+                dir("${WORKSPACE}" + '/drools') {
                     sh  'pwd \\n' +
                         'git branch \\n' +
                         'git checkout -b $baseBranch'
                 }
             }    
         }
-        stage ('Replace repository-list.txt') {
-            steps {
-                configFileProvider([configFile(fileId: '1a43573a-318c-426a-bb2b-c9df7fe97a02', targetLocation: 'repository-list.txt', variable: 'REP_LIST')]) {
-                    dir("${WORKSPACE}") {
-                        sh 'cp repository-list.txt droolsjbpm-build-bootstrap/script/repository-list.txt \\n' +
-                           'cat droolsjbpm-build-bootstrap/script/repository-list.txt \\n' +
-                           'rm droolsjbpm-build-bootstrap/script/branched-7-repository-list.txt'
-                    }       
-                }
-            }
-        }        
-        stage ('Clone others'){
-            steps {
-                sshagent(['kie-ci-user-key']) {
-                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch\'
-                }    
-            }
-        }
         // checks if release branch already exists
         stage ('Check if branch exists') {
             steps{
                 sshagent(['kie-ci-user-key']) {
-                    dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
+                    dir("${WORKSPACE}" + '/drools') {
                         script {
                             branchExists = sh(script: 'git ls-remote --heads origin ${releaseBranch} | wc -l', returnStdout: true).trim()
                         }
@@ -94,21 +76,23 @@ pipeline {
                 }
             }
         }
-        // if release branches doesn't exist they will be created
-        stage('Create release branches') {
+        // if release branch doesn't exist it will be created
+        stage('Create drools release branch') {
             when{
                 expression { branchExists == '0'}
             }
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh './droolsjbpm-build-bootstrap/script/release/02_createReleaseBranches.sh $releaseBranch'
+                    dir("${WORKSPACE}" + '/drools') {
+                        sh 'git checkout -b $releaseBranch $baseBranch'
+                    }    
                 }
             }
         }
         // part of the Maven rep will be erased
         stage ('Remove M2') {
             steps {
-                sh "./droolsjbpm-build-bootstrap/script/release/eraseM2.sh $m2Dir"
+                sh "rm -rf ${m2Dir}/drools"
             }
         }                
         // poms will be upgraded to new version ($kieVersion)
@@ -117,9 +101,16 @@ pipeline {
                 expression { branchExists == '0'}
             }
             steps {
-                configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
-                    echo 'kieVersion: ' + "{$kieVersion}"
-                    sh './droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $kieVersion'
+                sshagent(['kie-ci-user-key']) {
+                    dir("${WORKSPACE}" + '/drools') {
+                        configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
+                            echo 'kieVersion: ' + "{$kieVersion}"
+                            // update parent pom
+                            sh 'mvn -B -N -e -s $SETTINGS_XML_FILE versions:update-parent -Dfull -DparentVersion="[$kieVersion]" -DallowSnapshots=true -DgenerateBackupPoms=false'
+                            // update child poms
+                            sh 'mvn -B -N -e -s $SETTINGS_XML_FILE versions:update-child-modules -Dfull -DallowSnapshots=true -DgenerateBackupPoms=false'
+                        }
+                    }        
                 }    
             }
         }
@@ -128,9 +119,14 @@ pipeline {
                 expression { branchExists == '0'}
             }
             steps {
-                echo 'kieVersion: ' + "{$kieVersion}"
-                echo 'commitMsg: ' + "{$commitMsg}"
-                sh './droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$commitMsg" $kieVersion'
+                sshagent(['kie-ci-user-key']) {
+                    dir("${WORKSPACE}" + '/drools') {
+                        echo 'kieVersion: ' + "{$kieVersion}"
+                        echo 'commitMsg: ' + "{$commitMsg}"
+                        sh 'git add .'
+                        sh 'git commit -m "${commitMsg} ${kieVersion}"'
+                    }    
+                }
             }
         }
         //release branches are pushed to github
@@ -139,9 +135,11 @@ pipeline {
                 expression { branchExists == '0'}
             }
             steps {
-                sshagent(['kie-ci-user-key']) {
-                    sh './droolsjbpm-build-bootstrap/script/release/04_pushReleaseBranches.sh $releaseBranch'
-                }
+                sshagent(['kie-ci-user-key']) {            
+                    dir("${WORKSPACE}" + '/drools') {
+                        sh 'git push origin $releaseBranch'
+                    }
+                }    
             }
         }
         // if the release branches already exist they will be fetched from github
@@ -151,17 +149,24 @@ pipeline {
             }
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh './droolsjbpm-build-bootstrap/script/git-all.sh fetch origin\'
-                    sh './droolsjbpm-build-bootstrap/script/git-all.sh checkout ' + "$releaseBranch"
-                }
+                    dir("${WORKSPACE}" + '/drools') {
+                        sh 'git fetch origin'
+                        sh 'git checkout ' + "$releaseBranch"
+                    }
+                }    
             }
         }
-        // mvn clean deploy of each repository to a locally directory that will be uploaded later on - this saves time
-        stage('Build & deploy repositories locally'){
+        // mvn clean deploy of drools repository to a locally directory that will be uploaded later on - this saves time
+        stage('Build & deploy drools repository locally'){
             steps {
-                configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
-                    sh './droolsjbpm-build-bootstrap/script/release/05a_communityDeployLocally.sh $SETTINGS_XML_FILE'
-                }
+                sshagent(['kie-ci-user-key']) {
+                    dir("${WORKSPACE}" + '/drools') {            
+                        configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
+                            sh 'deployDir=$WORKSPACE/drools/drools-deploy-dir'
+                            sh 'mvn-all.sh -B -e -U clean deploy -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dfull -Drelease -Pwildfly -DaltDeploymentRepository=local::default::file://$deployDir -Dmaven.test.failure.ignore=true -Dgwt.memory.settings="-Xmx10g" -Prun-code-coverage -Dcontainer.profile=wildfly -Dcontainer=wildfly -Dintegration-tests=true -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3'
+                        }
+                    }
+                }        
             }
         }
         stage ('Send mail only if build fails') {
@@ -183,17 +188,29 @@ pipeline {
         // binaries created in previous step will be uploaded to Nexus
         stage('Upload binaries to staging repository to Nexus') {        
             steps {
-                configFileProvider([configFile(fileId: '3f317dd7-4d08-4ee4-b9bb-969c309e782c', targetLocation: 'uploadNexus-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
-                    sh './droolsjbpm-build-bootstrap/script/release/06_uploadBinariesToNexus.sh $SETTINGS_XML_FILE\'
+               sshagent(['kie-ci-user-key']) {
+                    dir("${WORKSPACE}" + '/drools/drools-deploy-dir') { 
+                        configFileProvider([configFile(fileId: '3f317dd7-4d08-4ee4-b9bb-969c309e782c', targetLocation: 'uploadNexus-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
+                            script {
+                                stagingRep=15c58a1abc895b
+                                deployDir=$WORKSPACE/drools/drools-deploy-dir
+                                // upload the content to remote staging repo on Nexus
+                                mvn -B -e -s ${SETTINGS_XML_FILE} -Dkie.maven.settings.custom=${SETTINGS_XML_FILE} org.sonatype.plugins:nexus-staging-maven-plugin:1.6.5:deploy-staged-repository -DnexusUrl=https://repository.jboss.org/nexus -DserverId=jboss-releases-repository -DrepositoryDirectory=$deployDir -DstagingProfileId=$stagingRep -DstagingDescription="kie-$kieVersion" -DkeepStagingRepositoryOnCloseRuleFailure=true -DkeepStagingRepositoryOnFailure=true -DstagingProgressTimeoutMinutes=120'
+                            }
+                        }    
+                    }        
                 }    
             }
         }
-        // the tags of the release will be created and pushed to github
+        // the tag of the drools release will be created and pushed to github
         stage('Push community tag') {
             steps {
-                sshagent(['kie-ci-user-key']) {
-                    script {
-                        sh './droolsjbpm-build-bootstrap/script/release/08a_communityPushTags.sh'
+               sshagent(['kie-ci-user-key']) {
+                    dir("${WORKSPACE}" + '/drools') {
+                        script {
+                            sh 'git tag -a $kieVersion" -m "tagged ${kieVersion}"' 
+                            sh 'git push -n origin $kieVersion'
+                        }    
                     }
                 }
             }        
@@ -219,7 +236,7 @@ pipeline {
 
 
 pipelineJob("${folderPath}/drools-8-series-pipeline-${baseBranch}") {
-    
+
     description('This job is a pipeline for a drools 8 series release<br>The reps in repository-list will be<br>droolsjbpm-build-bootstrap<br>droolsjbpm-knowledge<br>drools')
 
     parameters{
