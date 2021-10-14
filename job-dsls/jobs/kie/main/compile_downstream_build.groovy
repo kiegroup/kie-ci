@@ -16,7 +16,8 @@ def final DEFAULTS = [
         artifactsToArchive     : [],
         checkstyleFile         : Constants.CHECKSTYLE_FILE,
         buildJDKTool           : '',
-        buildMavenTool         : ''
+        buildMavenTool         : '',
+        numBuildsKeep          : 10
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
@@ -26,7 +27,7 @@ def final REPO_CONFIGS = [
         "kie-soup"                  : [],
         "appformer"                 : [],
         "droolsjbpm-knowledge"      : [],
-        "drools"                    : [],
+        "drools"                    : [numBuildsKeep : 20 ],
         "optaplanner"               : [
                 buildJDKTool: "kie-jdk11"
         ],
@@ -62,6 +63,7 @@ for (repoConfig in REPO_CONFIGS) {
     String checkstyleFile = get("checkstyleFile")
     String buildJDKTool = get("buildJDKTool")
     String buildMavenTool = get("buildMavenTool")
+    int buildsNumToKeep = get('numBuildsKeep')
 
     // Creation of folders where jobs are stored
     folder("KIE")
@@ -82,7 +84,7 @@ for (repoConfig in REPO_CONFIGS) {
                     |""".stripMargin())
 
         logRotator {
-            numToKeep(10)
+            numToKeep(buildsNumToKeep)
         }
 
         properties {
