@@ -17,7 +17,7 @@ def final DEFAULTS = [
         checkstyleFile         : Constants.CHECKSTYLE_FILE,
         buildJDKTool           : '',
         buildMavenTool         : '',
-        numBuildsKeep          : '10'
+        numBuildsKeep          : 10
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
