@@ -63,7 +63,7 @@ for (repoConfig in REPO_CONFIGS) {
     String checkstyleFile = get("checkstyleFile")
     String buildJDKTool = get("buildJDKTool")
     String buildMavenTool = get("buildMavenTool")
-    String buildsNumToKeep = get('numBuildsKeep')
+    int buildsNumToKeep = get('numBuildsKeep')
 
     // Creation of folders where jobs are stored
     folder("KIE")
