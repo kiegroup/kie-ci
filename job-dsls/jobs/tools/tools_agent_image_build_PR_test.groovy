@@ -32,8 +32,8 @@ export ANSIBLE_SCP_IF_SSH=y
 """
 
 // Creation of folders where jobs are stored
-folder("Tools")
-def folderPath="Tools"
+def folderPath = "Tools/images"
+folder(folderPath)
 
 //job name
 String jobName="$folderPath/agent-image-build-PR-test"

@@ -60,4 +60,9 @@ class Constants {
     static final String CHECKSTYLE_FILE = '**/checkstyle.log'
     static final String RHBA_VERSION_PREFIX = "${KIE_PREFIX}.redhat-"
     static final String EAP7_DOWNLOAD_URL = 'http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.4.0/jboss-eap-7.4.0.zip'
+    /**
+     * The value of Use custom child workspace field for matrix jobs - the SHORT_COMBINATION environment variable
+     * is handled by the short-workspace-path Jenkins plugin.
+     */
+    static final String MATRIX_SHORT_CHILD_WORKSPACE = '${SHORT_COMBINATION}'
 }
