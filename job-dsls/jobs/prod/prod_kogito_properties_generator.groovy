@@ -1,10 +1,10 @@
-import groovy.json.JsonOutput
-
 /**
  * Generate properties files for kogito builds.
  */
 
 def kogitoProps ='''
+import groovy.json.JsonOutput
+
 node('kie-rhel7&&!master') {
     sh 'env\'
     def REPO_URL_FOLDER_VERSION = 'main'.equals(BRANCH_NAME) ? 'main' : (KOGITO_PRODUCT_VERSION =~ /\\d+\\.\\d+/)[0]
