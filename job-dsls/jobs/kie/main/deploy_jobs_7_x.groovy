@@ -30,8 +30,16 @@ def final DEFAULTS = [
 
 // used to override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
+        "droolsjbpm-knowledge"      : [
+                timeoutMins            : 40,
+                downstreamRepos        : ["drools-7.x"]
+        ],
+        "drools"                    : [
+                downstreamRepos        : ["optaplanner-7.x", "/KIE/main/deployedRepo/jbpm"],
+                artifactsToArchive     : ["**/target/testStatusListener*"]
+        ],
         "optaplanner"               : [
-                downstreamRepos        : ["droolsjbpm-integration", "optaweb-employee-rostering-7.x"],
+                downstreamRepos     : ["/KIE/main/deployedRepo/droolsjbpm-integration", "optaweb-employee-rostering-7.x"],
                 mvnGoals: "-e -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
                 mvnProps: [
                         "full"                     : "true",
@@ -40,16 +48,16 @@ def final REPO_CONFIGS = [
                 ]
         ],
         "optaweb-employee-rostering" : [
-                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
+                artifactsToArchive   : DEFAULTS["artifactsToArchive"] + [
                         "**/target/configurations/cargo-profile/profile-log.txt"
                 ],
-                downstreamRepos        : ["optaweb-vehicle-routing-7.x"]
+                downstreamRepos      : ["optaweb-vehicle-routing-7.x"]
         ],
-        "optaweb-vehicle-routing" : [
-                artifactsToArchive     : DEFAULTS["artifactsToArchive"] + [
+        "optaweb-vehicle-routing"    : [
+                artifactsToArchive   : DEFAULTS["artifactsToArchive"] + [
                         "**/target/configurations/cargo-profile/profile-log.txt"
                 ],
-                downstreamRepos        : []
+                downstreamRepos      : []
         ]
 ]
 
@@ -64,13 +72,13 @@ for (repoConfig in REPO_CONFIGS) {
 
     // Creation of folders where jobs are stored
     folder("KIE")
-    folder("KIE/main")
-    folder("KIE/main/" + Constants.DEPLOY_FOLDER)
+    folder("KIE/${repoBranch}")
+    folder("KIE/${repoBranch}/" + Constants.DEPLOY_FOLDER)
 
-    def folderPath = ("KIE/main/" + Constants.DEPLOY_FOLDER)
+    def folderPath = ("KIE/${repoBranch}/" + Constants.DEPLOY_FOLDER)
 
     // jobs for main branch don't use the branch in the name
-    String jobName = "${folderPath}/$repo-7.x"
+    String jobName = "${folderPath}/$repo-${repoBranch}"
 
     job(jobName) {
 

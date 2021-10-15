@@ -38,15 +38,7 @@ def final REPO_CONFIGS = [
         ],
         "kie-soup"                  : [
                 label                  : "kie-rhel7 && kie-mem4g",
-                downstreamRepos        : ["appformer", "droolsjbpm-knowledge"]
-        ],
-        "droolsjbpm-knowledge"      : [
-                timeoutMins            : 40,
-                downstreamRepos        : ["drools"]
-        ],
-        "drools"                    : [
-                downstreamRepos        : ["optaplanner-7.x", "jbpm"],
-                artifactsToArchive     : ["**/target/testStatusListener*"]
+                downstreamRepos        : ["appformer", "/KIE/7.x/deployedRepo/droolsjbpm-knowledge-7.x"]
         ],
         "lienzo-core"                  : [
                 timeoutMins            : 20,
@@ -133,7 +125,7 @@ def final REPO_CONFIGS = [
         "process-migration-service"    : [:],
         "kie-docs"                  : [
                 artifactsToArchive     : [],
-                downstreamRepos        : ["optaweb-employee-rostering-7.x"],
+                downstreamRepos        : ["/KIE/7.x/deployedRepo/optaweb-employee-rostering-7.x"],
                 mvnGoals               : "-e -B clean deploy -Dfull",
                 mvnProps               : []
         ]

@@ -50,14 +50,6 @@ def final REPO_CONFIGS = [
                 ],
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
-        "droolsjbpm-knowledge"      : [
-                label: "kie-rhel7 && kie-mem4g",
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
-        ],
-        "drools"                    : [
-                timeoutMins: 150,
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
-        ],
         "jbpm"                      : [
                 timeoutMins: 150,
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'docsimg/.*']

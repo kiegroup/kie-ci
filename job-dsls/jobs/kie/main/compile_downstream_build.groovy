@@ -26,11 +26,6 @@ def final REPO_CONFIGS = [
         "droolsjbpm-build-bootstrap": [],
         "kie-soup"                  : [],
         "appformer"                 : [],
-        "droolsjbpm-knowledge"      : [],
-        "drools"                    : [numBuildsKeep : 20 ],
-        "optaplanner"               : [
-                buildJDKTool: "kie-jdk11"
-        ],
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [],
@@ -149,9 +144,6 @@ for (repoConfig in REPO_CONFIGS) {
                         whiteListTargetBranches {
                             ghprbBranch {
                                 branch("${repoBranch}")
-                            }
-                            ghprbBranch {
-                                branch("7.x")
                             }
                         }
                         useGitHubHooks(true)

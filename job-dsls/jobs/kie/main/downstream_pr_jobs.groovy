@@ -28,11 +28,6 @@ def final REPO_CONFIGS = [
         ],
         "kie-soup"                  : [],
         "appformer"                 : [],
-        "droolsjbpm-knowledge"      : [],
-        "drools"                    : [],
-        "optaplanner"               : [
-                buildJDKTool: "kie-jdk11"
-        ],
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [
@@ -49,8 +44,6 @@ def final REPO_CONFIGS = [
         "jbpm-designer"             : [],
         "jbpm-work-items"           : [],
         "jbpm-wb"                   : [],
-        "optaweb-employee-rostering": [],
-        "optaweb-vehicle-routing"   : [],
         "kie-wb-distributions"      : []
 ]
 
@@ -155,9 +148,6 @@ for (repoConfig in REPO_CONFIGS) {
                         whiteListTargetBranches {
                             ghprbBranch {
                                 branch("${repoBranch}")
-                            }
-                            ghprbBranch {
-                                branch("7.x")
                             }
                         }
                         useGitHubHooks(true)

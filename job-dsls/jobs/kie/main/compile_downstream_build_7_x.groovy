@@ -1,40 +1,31 @@
 /**
- * Creates full downstream pullrequest (PR) jobs for kiegroup GitHub org. units.
- * These jobs execute the full downstream build for a specific PR to make sure the changes do not break the downstream repos.
+ * Creates compile downstream pullrequest (PR) jobs for kiegroup GitHub org. units.
+ * These jobs execute the downstream build skipping tests and skipping the gwt compilation
+ * for a specific PR to make sure the changes do not break the downstream repos.
  */
+
 import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
-        branch                 : Constants.BRANCH,
+        branch                 : "7.x",
         timeoutMins            : 720,
-        label                  : "kie-rhel7 && kie-mem24g",
+        label                  : "kie-rhel7 && kie-mem16g",
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
         artifactsToArchive     : [],
+        checkstyleFile         : Constants.CHECKSTYLE_FILE,
         buildJDKTool           : '',
-        buildMavenTool         : ''
+        buildMavenTool         : '',
+        numBuildsKeep          : 10,
+        buildChainGroup        : 'kiegroup',
+        buildChainBranch       : 'main'
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
-        "lienzo-core"               : [],
-        "lienzo-tests"              : [],
-        "droolsjbpm-build-bootstrap": [],
-        "kie-soup"                  : [],
-        "appformer"                 : [],
-        "jbpm"                      : [],
-        "kie-jpmml-integration"     : [],
-        "droolsjbpm-integration"    : [],
-        "openshift-drools-hacep"    : [],
-        "kie-wb-playground"         : [],
-        "kie-uberfire-extensions"   : [],
-        "kie-wb-common"             : [],
-        "drools-wb"                 : [],
-        "optaplanner-wb"            : [],
-        "jbpm-designer"             : [],
-        "jbpm-work-items"           : [],
-        "jbpm-wb"                   : [],
-        "kie-wb-distributions"      : []
+        "droolsjbpm-knowledge"               : [],
+        "drools"                             : [],
+        "optaplanner"                        : []
 ]
 
 
@@ -49,23 +40,26 @@ for (repoConfig in REPO_CONFIGS) {
     String additionalLabel = get("label")
     String additionalArtifacts = get("artifactsToArchive")
     additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
+    String additionalExcludedArtifacts = ""
     String additionalTimeout = get("timeoutMins")
+    String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
+    String checkstyleFile = get("checkstyleFile")
     String buildJDKTool = get("buildJDKTool")
     String buildMavenTool = get("buildMavenTool")
-
-    String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
+    int buildsNumToKeep = get('numBuildsKeep')
+    String buildChainGroup = get('buildChainGroup')
+    String buildChainBranch = get('buildChainBranch')
 
     // Creation of folders where jobs are stored
     folder("KIE")
     folder("KIE/${repoBranch}")
-    folder("KIE/${repoBranch}/" + Constants.DOWNSTREAM_PRODUCT_FOLDER){
-        displayName(Constants.DOWNSTREAM_PRODUCT_FOLDER_DISPLAY_NAME)
+    folder("KIE/${repoBranch}/" + Constants.CDB_FOLDER){
+        displayName(Constants.CDB_FOLDER_DISPLAY_NAME)
     }
-    def folderPath = ("KIE/${repoBranch}/" + Constants.DOWNSTREAM_PRODUCT_FOLDER)
+    def folderPath = ("KIE/${repoBranch}/" + Constants.CDB_FOLDER)
 
-    // DOWNSTREAM PRODUCTION name
-    String jobName = "${folderPath}/${repo}-${repoBranch}.fdbp"
-
+    // CDB name
+    String jobName = "${folderPath}/${repo}-${repoBranch}.compile"
 
     pipelineJob(jobName) {
 
@@ -75,7 +69,7 @@ for (repoConfig in REPO_CONFIGS) {
                     |""".stripMargin())
 
         logRotator {
-            numToKeep(10)
+            numToKeep(buildsNumToKeep)
         }
 
         properties {
@@ -86,10 +80,14 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("sha1","","this parameter will be provided by the PR")
             stringParam ("ADDITIONAL_ARTIFACTS_TO_ARCHIVE","${additionalArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_LABEL","${additionalLabel}","this parameter is provided by the job")
+            stringParam ("ADDITIONAL_EXCLUDED_ARTIFACTS","${additionalExcludedArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_TIMEOUT","${additionalTimeout}","this parameter is provided by the job")
-            stringParam ("PR_TYPE","Downstream Build Production","")
+            stringParam ("CHECKSTYLE_FILE","${checkstyleFile}","")
+            stringParam ("PR_TYPE","Compile Downstream Build","")
             stringParam ("BUILD_JDK_TOOL","${buildJDKTool}","")
             stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}","")
+            stringParam ("BUILDCHAIN_GROUP","${buildChainGroup}",'')
+            stringParam ("BUILDCHAIN_BRANCH","${buildChainBranch}",'')
         }
 
         definition {
@@ -106,7 +104,7 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                         branches {
                             branchSpec {
-                                name("*/${repoBranch}")
+                                name("*/main")
                             }
                         }
                         browser { }
@@ -122,13 +120,18 @@ for (repoConfig in REPO_CONFIGS) {
             pipelineTriggers {
                 triggers {
                     ghprbTrigger {
-                        onlyTriggerPhrase(true)
+                        // execute CDB for drools, droolsjbpm-knowledge and appformer by default
+                        if ((repo != "drools") && (repo != "droolsjbpm-knowledge") && (repo != "appformer")) {
+                            onlyTriggerPhrase(true)
+                        } else {
+                            onlyTriggerPhrase(false)
+                        }
                         gitHubAuthId("${ghAuthTokenId}")
                         adminlist("")
                         orgslist("${ghOrgUnit}")
                         whitelist("")
                         cron("")
-                        triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) product fdb.*")
+                        triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) cdb.*")
                         allowMembersOfWhitelistedOrgsAsAdmin(true)
                         whiteListTargetBranches {
                             ghprbBranch {
@@ -150,7 +153,7 @@ for (repoConfig in REPO_CONFIGS) {
                         whiteListLabels("")
                         extensions {
                             ghprbSimpleStatus {
-                                commitStatusContext("Linux - Full Downstream Production Build")
+                                commitStatusContext("Linux - Compile Downstream Build")
                                 addTestResults(true)
                                 showMatrixStatus(false)
                                 statusUrl("")

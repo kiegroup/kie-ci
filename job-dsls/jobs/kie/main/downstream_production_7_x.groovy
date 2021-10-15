@@ -6,35 +6,22 @@ import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
-        branch                 : Constants.BRANCH,
+        branch                 : "7.x",
         timeoutMins            : 720,
         label                  : "kie-rhel7 && kie-mem24g",
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
         artifactsToArchive     : [],
         buildJDKTool           : '',
-        buildMavenTool         : ''
+        buildMavenTool         : '',
+        buildChainGroup        : 'kiegroup',
+        buildChainBranch       : 'main'
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
-        "lienzo-core"               : [],
-        "lienzo-tests"              : [],
-        "droolsjbpm-build-bootstrap": [],
-        "kie-soup"                  : [],
-        "appformer"                 : [],
-        "jbpm"                      : [],
-        "kie-jpmml-integration"     : [],
-        "droolsjbpm-integration"    : [],
-        "openshift-drools-hacep"    : [],
-        "kie-wb-playground"         : [],
-        "kie-uberfire-extensions"   : [],
-        "kie-wb-common"             : [],
-        "drools-wb"                 : [],
-        "optaplanner-wb"            : [],
-        "jbpm-designer"             : [],
-        "jbpm-work-items"           : [],
-        "jbpm-wb"                   : [],
-        "kie-wb-distributions"      : []
+        "droolsjbpm-knowledge"  : [],
+        "drools"                : [],
+        "optaplanner"           : []
 ]
 
 
@@ -52,6 +39,8 @@ for (repoConfig in REPO_CONFIGS) {
     String additionalTimeout = get("timeoutMins")
     String buildJDKTool = get("buildJDKTool")
     String buildMavenTool = get("buildMavenTool")
+    String buildChainGroup = get('buildChainGroup')
+    String buildChainBranch = get('buildChainBranch')
 
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
 
@@ -90,6 +79,8 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("PR_TYPE","Downstream Build Production","")
             stringParam ("BUILD_JDK_TOOL","${buildJDKTool}","")
             stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}","")
+            stringParam ("BUILDCHAIN_GROUP","${buildChainGroup}",'')
+            stringParam ("BUILDCHAIN_BRANCH","${buildChainBranch}",'')
         }
 
         definition {
@@ -106,7 +97,7 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                         branches {
                             branchSpec {
-                                name("*/${repoBranch}")
+                                name("*/main")
                             }
                         }
                         browser { }
@@ -132,7 +123,7 @@ for (repoConfig in REPO_CONFIGS) {
                         allowMembersOfWhitelistedOrgsAsAdmin(true)
                         whiteListTargetBranches {
                             ghprbBranch {
-                                branch("${repoBranch}")
+                                branch("7.x")
                             }
                         }
                         useGitHubHooks(true)

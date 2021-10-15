@@ -6,35 +6,25 @@ import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
-        branch                 : Constants.BRANCH,
+        branch                 : "7.x",
         timeoutMins            : 720,
         label                  : "kie-rhel7 && kie-mem24g",
+        executionNumber        : 10,
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
         artifactsToArchive     : [],
+        checkstyleFile         : Constants.CHECKSTYLE_FILE,
+        findbugsFile           : Constants.FINDBUGS_FILE,
         buildJDKTool           : '',
-        buildMavenTool         : ''
+        buildMavenTool         : '',
+        buildChainGroup        : 'kiegroup',
+        buildChainBranch       : 'main'
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
-        "lienzo-core"               : [],
-        "lienzo-tests"              : [],
-        "droolsjbpm-build-bootstrap": [],
-        "kie-soup"                  : [],
-        "appformer"                 : [],
-        "jbpm"                      : [],
-        "kie-jpmml-integration"     : [],
-        "droolsjbpm-integration"    : [],
-        "openshift-drools-hacep"    : [],
-        "kie-wb-playground"         : [],
-        "kie-uberfire-extensions"   : [],
-        "kie-wb-common"             : [],
-        "drools-wb"                 : [],
-        "optaplanner-wb"            : [],
-        "jbpm-designer"             : [],
-        "jbpm-work-items"           : [],
-        "jbpm-wb"                   : [],
-        "kie-wb-distributions"      : []
+        "droolsjbpm-knowledge"               : [],
+        "drools"                             : [],
+        "optaplanner"                        : []
 ]
 
 
@@ -47,25 +37,29 @@ for (repoConfig in REPO_CONFIGS) {
     String ghAuthTokenId = get("ghAuthTokenId")
     String ghJenkinsfilePwd = get("ghJenkinsfilePwd")
     String additionalLabel = get("label")
+    def exeNum = get("executionNumber")
     String additionalArtifacts = get("artifactsToArchive")
     additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
+    String additionalExcludedArtifacts = ""
     String additionalTimeout = get("timeoutMins")
+    String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
+    String findbugsFile = get("findbugsFile")
+    String checkstyleFile = get("checkstyleFile")
     String buildJDKTool = get("buildJDKTool")
     String buildMavenTool = get("buildMavenTool")
-
-    String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
+    String buildChainGroup = get('buildChainGroup')
+    String buildChainBranch = get('buildChainBranch')
 
     // Creation of folders where jobs are stored
     folder("KIE")
     folder("KIE/${repoBranch}")
-    folder("KIE/${repoBranch}/" + Constants.DOWNSTREAM_PRODUCT_FOLDER){
-        displayName(Constants.DOWNSTREAM_PRODUCT_FOLDER_DISPLAY_NAME)
+    folder("KIE/${repoBranch}/" + Constants.FDB_FOLDER){
+        displayName(Constants.FDB_FOLDER_DISPLAY_NAME)
     }
-    def folderPath = ("KIE/${repoBranch}/" + Constants.DOWNSTREAM_PRODUCT_FOLDER)
+    def folderPath = ("KIE/${repoBranch}/" + Constants.FDB_FOLDER)
 
-    // DOWNSTREAM PRODUCTION name
-    String jobName = "${folderPath}/${repo}-${repoBranch}.fdbp"
-
+    // FDB name
+    String jobName = "${folderPath}/${repo}-${repoBranch}.fdb"
 
     pipelineJob(jobName) {
 
@@ -75,7 +69,7 @@ for (repoConfig in REPO_CONFIGS) {
                     |""".stripMargin())
 
         logRotator {
-            numToKeep(10)
+            numToKeep(exeNum)
         }
 
         properties {
@@ -86,10 +80,15 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("sha1","","this parameter will be provided by the PR")
             stringParam ("ADDITIONAL_ARTIFACTS_TO_ARCHIVE","${additionalArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_LABEL","${additionalLabel}","this parameter is provided by the job")
+            stringParam ("ADDITIONAL_EXCLUDED_ARTIFACTS","${additionalExcludedArtifacts}","this parameter is provided by the job")
             stringParam ("ADDITIONAL_TIMEOUT","${additionalTimeout}","this parameter is provided by the job")
-            stringParam ("PR_TYPE","Downstream Build Production","")
+            stringParam ("CHECKSTYLE_FILE","${checkstyleFile}","")
+            stringParam ("FINDBUGS_FILE","${findbugsFile}","")
+            stringParam ("PR_TYPE","Full Downstream Build","")
             stringParam ("BUILD_JDK_TOOL","${buildJDKTool}","")
             stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}","")
+            stringParam ("BUILDCHAIN_GROUP","${buildChainGroup}",'')
+            stringParam ("BUILDCHAIN_BRANCH","${buildChainBranch}",'')
         }
 
         definition {
@@ -106,7 +105,7 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                         branches {
                             branchSpec {
-                                name("*/${repoBranch}")
+                                name("*/main")
                             }
                         }
                         browser { }
@@ -128,7 +127,7 @@ for (repoConfig in REPO_CONFIGS) {
                         orgslist("${ghOrgUnit}")
                         whitelist("")
                         cron("")
-                        triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) product fdb.*")
+                        triggerPhrase(".*[j|J]enkins,?.*(execute|run|trigger|start|do) fdb.*")
                         allowMembersOfWhitelistedOrgsAsAdmin(true)
                         whiteListTargetBranches {
                             ghprbBranch {
@@ -150,7 +149,7 @@ for (repoConfig in REPO_CONFIGS) {
                         whiteListLabels("")
                         extensions {
                             ghprbSimpleStatus {
-                                commitStatusContext("Linux - Full Downstream Production Build")
+                                commitStatusContext("Linux - Full Downstream Build")
                                 addTestResults(true)
                                 showMatrixStatus(false)
                                 statusUrl("")
