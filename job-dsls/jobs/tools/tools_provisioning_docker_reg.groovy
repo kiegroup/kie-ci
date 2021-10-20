@@ -13,7 +13,7 @@ def final JOB_NAMES = [
         "provision-docker-registry"    : [
                 params : [
                         [name: "IMAGE", default: "bxms-packer-rhel7-snapshot-updated", description: "The name of the image to be used for machine creation." ],
-                        [name: "FLAVOUR", default: "m1.medium", description: "The flavor (i.e. resources such as CPU cores, RAM, ...) defining the machine. m1.medium = 2 vCPUs, 4 GB RAM, 40 GB HDD" ],
+                        [name: "FLAVOR", default: "m1.medium", description: "The flavor (i.e. resources such as CPU cores, RAM, ...) defining the machine. m1.medium = 2 vCPUs, 4 GB RAM, 40 GB HDD" ],
                         [name: "DDNS_HOSTNAME", default: "ba-docker-registry", description: "Hostname to use in DDNS service" ],
                         [name: "DDNS_HASH", default: "efbc8e76038362a51614055313907d5a", description: "Hash used as authorization for use of specified hostname." ]
                 ],
@@ -63,7 +63,7 @@ for (jobNames in JOB_NAMES) {
                 remote {
                     url('git@github.com:jboss-integration/bxms-central-ci.git')
                     credentials("kie-qe-ci-user-key")
-                    branch('main')
+                    branch('master')
                 }
                 extensions {
                     relativeTargetDirectory {
@@ -192,7 +192,7 @@ String getScripts() {
             "  echo \$FULL_NAME >> \$MACHINES_FILE\n" +
             "  \n" +
             "  export NETWORKS=`openstack server list -f value -c Networks --name \$FULL_NAME`\n" +
-            "  export INSTANCE_IP=\${NETWORKS # *=}\n" +
+            "  export INSTANCE_IP=\${NETWORKS#*=}\n" +
             " \n" +
             "  echo \$INSTANCE_IP >> \$IP_FILE\n" +
             "}\n" +
