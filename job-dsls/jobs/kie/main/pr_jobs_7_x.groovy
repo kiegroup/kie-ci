@@ -5,7 +5,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
-        branch                 : Constants.BRANCH,
+        branch                 : "7.x",
         timeoutMins            : 120,
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
@@ -87,7 +87,7 @@ for (repoConfig in REPO_CONFIGS) {
 
 
     // jobs for main branch don't use the branch in the name
-    String jobName = "${folderPath}/${repo}-7.x.pr"
+    String jobName = "${folderPath}/${repo}-${repoBranch}.pr"
 
     pipelineJob(jobName) {
 
@@ -133,7 +133,7 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                         branches {
                             branchSpec {
-                                name("*/${repoBranch}")
+                                name("*/main")
                             }
                         }
                         browser { }
@@ -159,7 +159,7 @@ for (repoConfig in REPO_CONFIGS) {
                         allowMembersOfWhitelistedOrgsAsAdmin(true)
                         whiteListTargetBranches {
                             ghprbBranch {
-                                branch("7.x")
+                                branch("${repoBranch}")
                             }
                         }
                         useGitHubHooks(true)
