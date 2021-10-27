@@ -24,6 +24,7 @@ def KOGITO_CURRENT_PRODUCT_BRANCH='1.11.x'
 
 def OPTAPLANNER_NEXT_PRODUCT_VERSION=NEXT_PRODUCT_VERSION
 def OPTAPLANNER_CURRENT_PRODUCT_VERSION='8.11.0'
+// def DROOLS_CURRENT_PRODUCT_VERSION='8.11.0' // Should be uncommented once Current is set for RHPAM 7.13.0
 
 
 def metaJob="""
@@ -58,6 +59,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${KOGITO_NEXT_PRODUCT_BRANCH}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${KOGITO_NEXT_PRODUCT_BRANCH}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${KOGITO_NEXT_PRODUCT_VERSION}'],
+                        [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${NEXT_PRODUCT_VERSION}'],
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${NEXT_PRODUCT_VERSION}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
@@ -86,6 +88,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${getNexusFromVersion(KOGITO_CURRENT_PRODUCT_VERSION)}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(KOGITO_CURRENT_PRODUCT_VERSION)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${KOGITO_CURRENT_PRODUCT_VERSION}'],
+                        // [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${DROOLS_CURRENT_PRODUCT_VERSION}'], // Should be uncommented once Current is set for RHPAM 7.13.0
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${OPTAPLANNER_CURRENT_PRODUCT_VERSION}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${KOGITO_CURRENT_PRODUCT_BRANCH}'],
                         [\$class: 'StringParameterValue', name: 'RHBA_RELEASE_VERSION', value: '${getNexusFromVersion(CURRENT_PRODUCT_VERSION)}'],
