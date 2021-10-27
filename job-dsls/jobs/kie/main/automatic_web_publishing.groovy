@@ -17,13 +17,12 @@ def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
 def AGENT_LABEL="kie-rhel7 && kie-mem4g"
 
 def final DEFAULTS = [
-        repository : "drools",
+        repository : "jbpm",
         mailRecip : "mbiarnes@redhat.com"
 ]
 
 def final REPO_CONFIGS = [
-        "drools"    : [],
-        "jbpm"      : [repository : "jbpm"]
+        "jbpm"      : []
 ]
 
 for (reps in REPO_CONFIGS) {
