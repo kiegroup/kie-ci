@@ -76,6 +76,14 @@ pipeline {
                 } 
             }
         }
+        /* before cloning all other repos first there have to be removed optaweb* 7.x repos from repository-list.txt */
+        stage ('Remove optawebs 7.x from repository-list.txt'){
+            steps {
+                sshagent(['kie-ci-user-key']) {          
+                        sh './droolsjbpm-build-bootstrap/script/release/11_removeOptaWebRepos.sh' 
+                }    
+            }
+        }        
         stage('Clone all other reps') {
             steps {        
                 sshagent(['kie-ci-user-key']) {        

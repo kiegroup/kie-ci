@@ -82,6 +82,17 @@ pipeline {
                 }
             }
         }
+        /* before cloning all other repos first there have to be removed optaweb* 7.x repos from repository-list.txt */
+        stage ('Remove optawebs 7.x from repository-list.txt'){
+            when{
+                expression { branchExists == '0'}
+            }
+            steps {
+                sshagent(['kie-ci-user-key']) {          
+                        sh './droolsjbpm-build-bootstrap/script/release/11_removeOptaWebRepos.sh' 
+                }    
+            }
+        } 
         /* when release branches don't exist clone main branch */
         stage ('Clone others when release branches do not exist'){
             when{
