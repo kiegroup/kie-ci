@@ -26,7 +26,7 @@ node('kie-rhel7&&!master') {
     if(Boolean.valueOf(IS_RELEASE)) {
         println "//TODO"    
     } else {
-        def folder = "${RCM_GUEST_FOLDER}/kogito/KOGITO-${KOGITO_PRODUCT_VERSION}.NIGHTLY"
+        def folder = "kogito/KOGITO-${KOGITO_PRODUCT_VERSION}.NIGHTLY"
 
         build job: env.PROPERTIES_GENERATOR_PATH, parameters: [
             [$class: 'StringParameterValue', name: 'FILE_ID', value: 'kogito-nightly-properties-template'],
