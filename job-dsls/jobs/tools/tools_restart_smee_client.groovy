@@ -7,7 +7,7 @@ folder("Tools/Provisioning")
 def folderPath = "Tools/Provisioning"
 
 String labExp = "ansible"
-String jobDescription = "The job for provisioning smee client node."
+String jobDescription = "The job for restarting the smee service on all current smee client nodes."
 int buildsToKeep = 3
 
 job(folderPath + '/smee-clients-restart') {
