@@ -35,7 +35,8 @@ export ANSIBLE_SCP_IF_SSH=y
 
 // create needed folder(s) for where the jobs are created
 folder("Tools")
-def folderPath = "Tools"
+folder("Tools/Images")
+def folderPath = "Tools/Images"
 
 // Creates or updates a free style job.
 def jobDefinition = job("${folderPath}/agent-image-build") {
