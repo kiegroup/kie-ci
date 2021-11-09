@@ -28,10 +28,7 @@
 - name: Install Yarn
   shell: npm install -g yarn --registry=${NPM_REGISTRY_URL}
 
-- name: Install build-chain-action
-  shell: npm install -g @kie/build-chain-action@{{buildchain_version}} --registry=${NPM_REGISTRY_URL}
-
-- name: Install build-chain-action
+- name: Install npm-cli-login npm library
   shell: npm install -g npm-cli-login@{{npmclilogin_version}} --registry=${NPM_REGISTRY_URL}
 
 ### Configure jenkins user to use podman ###
