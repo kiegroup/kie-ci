@@ -18,8 +18,7 @@ def final DEFAULTS = [
         buildJDKTool           : '',
         buildMavenTool         : '',
         numBuildsKeep          : 10,
-        buildChainGroup        : 'kiegroup',
-        buildChainBranch       : 'main'
+        buildChainGroup        : 'kiegroup'
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
@@ -48,7 +47,6 @@ for (repoConfig in REPO_CONFIGS) {
     String buildMavenTool = get("buildMavenTool")
     int buildsNumToKeep = get('numBuildsKeep')
     String buildChainGroup = get('buildChainGroup')
-    String buildChainBranch = get('buildChainBranch')
 
     // Creation of folders where jobs are stored
     folder("KIE")
@@ -87,7 +85,6 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("BUILD_JDK_TOOL","${buildJDKTool}","")
             stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}","")
             stringParam ("BUILDCHAIN_GROUP","${buildChainGroup}",'')
-            stringParam ("BUILDCHAIN_BRANCH","${buildChainBranch}",'')
         }
 
         definition {
