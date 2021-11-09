@@ -2,7 +2,8 @@ import org.kie.jenkins.jobdsl.Constants
 
 // definition of parameters
 
-def javaToolEnv="KIE_JDK1_8"
+def javaToolEnv="KIE_JDK11_HOME"
+def mvnToolEnv="KIE_MAVEN_3_8_1_HOME"
 def repoBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_VERSION
@@ -108,7 +109,7 @@ job(jobName) {
     wrappers {
         timestamps()
         colorizeOutput()
-        toolenv("${javaToolEnv}")
+        toolenv("${javaToolEnv}","${mvnToolEnv}")
         preBuildCleanup()
     }
 
