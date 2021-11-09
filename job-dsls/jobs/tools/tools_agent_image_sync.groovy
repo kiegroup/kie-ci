@@ -1,3 +1,4 @@
+import org.kie.jenkins.jobdsl.Constants
 
 CURRENT_IMAGE_NAMES = [
         "kie-rhel7-latest",
@@ -50,6 +51,7 @@ matrixJob("$path/agent-image-sync-matrix") {
         labelExpression('label_exp', labelExp)
         text('IMAGE_NAME', CURRENT_IMAGE_NAMES)
     }
+    childCustomWorkspace(Constants.MATRIX_SHORT_CHILD_WORKSPACE)
     configureAgentImageSyncJob(delegate)
 }
 
