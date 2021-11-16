@@ -262,7 +262,7 @@ pipeline {
                                 ls -al
                                 echo " "
                                 curl --silent --upload-file kiegroup.zip -u \\$CREDS -v \\$nexusUrl/service/local/repositories/\\$repoID/content-compressed
-                                curl --header "Content-Type: application/xml" -X POST -u \\$CREDS --data "<promoteRequest><data><stagedRepositoryId>\\$repoID</stagedRepositoryId><description>$kieVersion</description></data></promoteRequest>" -v $nexusUrl/service/local/staging/profiles/15c58a1abc895b/finish 
+                                curl --header "Content-Type: application/xml" -X POST -u \\$CREDS --data "<promoteRequest><data><stagedRepositoryId>\\$repoID</stagedRepositoryId><description>kie-$kieVersion</description></data></promoteRequest>" -v $nexusUrl/service/local/staging/profiles/15c58a1abc895b/finish 
                                 """
                         }
                     }
