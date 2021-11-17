@@ -2,11 +2,11 @@ import org.kie.jenkins.jobdsl.Constants
 
 // definition of parameters
 
-def javaToolEnv="KIE_JDK11_HOME"
-def mvnToolEnv="KIE_MAVEN_3_8_1_HOME"
+def mvnToolEnv=Constants.MAVEN_TOOL
+def jdkToolEnv=Constants.JDK_TOOL
 def repoBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
-def javadk=Constants.JDK_VERSION
+def javadk=Constants.JDK_TOOL
 def repo="kie-jenkins-scripts"
 def ghAuthTokenId="kie-ci-token"
 def labelName="kie-rhel7 && kie-mem4g"
@@ -109,7 +109,7 @@ job(jobName) {
     wrappers {
         timestamps()
         colorizeOutput()
-        toolenv("${javaToolEnv}","${mvnToolEnv}")
+        toolenv("${jdkToolEnv}","${mvnToolEnv}")
         preBuildCleanup()
     }
 

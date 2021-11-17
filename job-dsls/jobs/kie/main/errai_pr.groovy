@@ -16,8 +16,9 @@ def repo = "errai"
 def repoBranch = Constants.BRANCH
 def ghOrgUnit = "errai"
 def ghAuthTokenId = "kie-ci-token"
+def javadk=Constants.JDK_TOOL
+def mvnToolEnv=Constants.MAVEN_TOOL
 def mvnGoals = "-B -e -fae -Dfull -Dmaven.test.failure.ignore=true -Pintegration-test clean install -Derrai.codegen.details=true -Dapt-generators"
-def javadk=Constants.JDK_VERSION
 def labelName = "kie-rhel7 && kie-mem16g"
 
 
@@ -115,7 +116,7 @@ job(jobName) {
 
     steps {
         maven {
-            mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
+            mavenInstallation("${mvnToolEnv}")
             mavenOpts("-Xms1g -Xmx4g -XX:+CMSClassUnloadingEnabled")
             goals(mvnGoals)
             providedSettings("settings-local-maven-repo-nexus")

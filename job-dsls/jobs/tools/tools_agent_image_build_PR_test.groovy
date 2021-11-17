@@ -1,7 +1,7 @@
 import org.kie.jenkins.jobdsl.Constants
 
 // definition of parameters
-def javadk=Constants.JDK_VERSION
+def javadk=Constants.JDK_TOOL
 def label_="kie-linux&&kie-mem512m"
 def organization=Constants.GITHUB_ORG_UNIT
 def packerUrl=Constants.PACKER_URL

@@ -12,8 +12,8 @@ folder("KIE/${baseBranch}")
 folder("KIE/${baseBranch}/webs")
 def folderPath="KIE/${baseBranch}/webs"
 
-def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def javadk=Constants.JDK_TOOL
+def mvnToolEnv=Constants.MAVEN_TOOL
 def AGENT_LABEL="kie-rhel7 && kie-mem4g"
 
 def final DEFAULTS = [
@@ -36,7 +36,7 @@ for (reps in REPO_CONFIGS) {
             label "$AGENT_LABEL"
         }
         tools {
-            maven "$mvnVersion"
+            maven "$mvnToolEnv"
             jdk "$javadk"
         }
         stages {
@@ -130,8 +130,8 @@ for (reps in REPO_CONFIGS) {
                 description('name of machine where to run this job')
             }
             wHideParameterDefinition {
-                name('mvnVersion')
-                defaultValue("${mvnVersion}")
+                name('mvnToolEnv')
+                defaultValue("${mvnToolEnv}")
                 description('version of maven')
             }
             wHideParameterDefinition {

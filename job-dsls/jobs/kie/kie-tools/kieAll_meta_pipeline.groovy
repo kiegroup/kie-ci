@@ -4,7 +4,7 @@
 
 import org.kie.jenkins.jobdsl.Constants
 
-def javadk=Constants.JDK_VERSION
+def javadk=Constants.JDK_TOOL
 def AGENT_LABEL="kie-linux && kie-rhel7 && kie-mem8g"
 
 def metaJob="""

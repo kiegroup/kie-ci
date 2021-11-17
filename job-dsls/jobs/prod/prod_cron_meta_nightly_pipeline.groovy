@@ -5,7 +5,7 @@
 
 import org.kie.jenkins.jobdsl.Constants
 
-def javadk=Constants.JDK_VERSION
+def javadk=Constants.JDK_TOOL
 def AGENT_LABEL="kie-rhel7 && kie-mem4g"
 
 def NEXT_PRODUCT_VERSION=Constants.NEXT_PROD_VERSION

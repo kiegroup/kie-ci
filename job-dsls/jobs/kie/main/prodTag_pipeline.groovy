@@ -12,8 +12,8 @@ def reportBranch=Constants.REPORT_BRANCH
 def MAVEN_OPTS="-Xms1g -Xmx3g"
 def cutOffDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 def commitMsg="Upgraded version to "
-def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def javadk=Constants.JDK_TOOL
+def mvnToolEnv=Constants.MAVEN_TOOL
 def AGENT_LABEL="kie-rhel7-pipeline&&kie-mem24g"
 
 
@@ -33,7 +33,7 @@ pipeline {
         timestamps()
     }    
     tools {
-        maven "$mvnVersion"
+        maven "$mvnToolEnv"
         jdk "$javadk"
     }
     stages {
@@ -242,8 +242,8 @@ pipelineJob("${folderPath}/prod-tag-pipeline-${baseBranch}") {
             description('name of machine where to run this job')
         }
         wHideParameterDefinition {
-            name('mvnVersion')
-            defaultValue("${mvnVersion}")
+            name('mvnToolEnv')
+            defaultValue("${mvnToolEnv}")
             description('version of maven')
         }
         wHideParameterDefinition {

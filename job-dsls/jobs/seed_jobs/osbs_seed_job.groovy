@@ -5,7 +5,7 @@ import org.kie.jenkins.jobdsl.Constants
 def javaToolEnv="KIE_JDK1_8"
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
-def javadk=Constants.JDK_VERSION
+def javadk=Constants.JDK_TOOL
 
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
