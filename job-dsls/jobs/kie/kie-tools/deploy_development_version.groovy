@@ -5,8 +5,8 @@ import org.kie.jenkins.jobdsl.Constants
 def nextDevVer="x.x.0-SNAPSHOT"
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
-def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def javadk=Constants.JDK_TOOL
+def mvnToolEnv=Constants.MAVEN_TOOL
 def AGENT_LABEL="kie-rhel7 && kie-mem24g"
 
 
@@ -16,7 +16,7 @@ pipeline {
         label "$AGENT_LABEL"
     }
     tools {
-        maven "$mvnVersion"
+        maven "$mvnToolEnv"
         jdk "$javadk"
     }
     stages {
@@ -88,8 +88,8 @@ pipelineJob("${folderPath}/deploy-development-version") {
             description('name of machine where to run this job')
         }
         wHideParameterDefinition {
-            name('mvnVersion')
-            defaultValue("${mvnVersion}")
+            name('mvnToolEnv')
+            defaultValue("${mvnToolEnv}")
             description('version of maven')
         }
         wHideParameterDefinition {

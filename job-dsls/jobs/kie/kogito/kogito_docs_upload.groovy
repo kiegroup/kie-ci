@@ -9,8 +9,8 @@ def currentKogitoDocsVersion = "0.17.0"
 def currentKogitoDocsTagName = "0.17.0-kogito"
 def nextKogitoDocsSnapshot = "0.18.0-SNAPSHOT"
 def sshKogitoDocsPath = "kogito@filemgmt.jboss.org:/docs_htdocs/kogito/release"
-def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def javadk=Constants.JDK_TOOL
+def mvnToolEnv=Constants.MAVEN_TOOL
 def AGENT_LABEL="kie-rhel7 && kie-mem4g"
 
 // creation of folder
@@ -27,7 +27,7 @@ pipeline {
         label "$AGENT_LABEL"      
     }
     tools {
-        maven "$mvnVersion"
+        maven "$mvnToolEnv"
         jdk "$javadk"
     }
     stages {
@@ -196,8 +196,8 @@ pipelineJob("${folderPath}/uploadKogitoDocs") {
             description('name of machine where to run this job')
         }
         wHideParameterDefinition {
-            name('mvnVersion')
-            defaultValue("${mvnVersion}")
+            name('mvnToolEnv')
+            defaultValue("${mvnToolEnv}")
             description('version of maven')
         }
         wHideParameterDefinition {

@@ -1,7 +1,7 @@
 import org.kie.jenkins.jobdsl.Constants
 
-def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def javadk=Constants.JDK_TOOL
+def mvnToolEnv=Constants.MAVEN_TOOL
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
@@ -31,7 +31,7 @@ pipeline {
         timestamps()
     }    
     tools {
-        maven "$mvnVersion"
+        maven "$mvnToolEnv"
         jdk "$javadk"
     }
     stages {
@@ -216,8 +216,8 @@ pipelineJob("${folderPath}/daily-build-jdk11-pipeline-${baseBranch}") {
             description('name of machine where to run this job')
         }
         wHideParameterDefinition {
-            name('mvnVersion')
-            defaultValue("${mvnVersion}")
+            name('mvnToolEnv')
+            defaultValue("${mvnToolEnv}")
             description('version of maven')
         }
         wHideParameterDefinition {
@@ -306,7 +306,7 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-jbpmTestCoverageMatrix"
     steps {
         shell(jbpmTestCoverage)
         maven{
-            mavenInstallation("${mvnVersion}")
+            mavenInstallation("${mvnToolEnv}")
             goals("clean verify -e -B -Dmaven.test.failure.ignore=true -Dintegration-tests")
             rootPOM("jbpm-test-coverage/pom.xml")
             mavenOpts("-Xmx3g")
@@ -383,7 +383,7 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-jbpmTestContainerMatrix
     steps {
         shell(jbpmContainerTest)
         maven{
-            mavenInstallation("${mvnVersion}")
+            mavenInstallation("${mvnToolEnv}")
             goals("-e -B clean install")
             rootPOM("jbpm-container-test/pom.xml")
             mavenOpts("-Xmx3g")
@@ -487,7 +487,7 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-kieWbTestsMatrix") {
     steps {
         shell(kieWbTest)
         maven{
-            mavenInstallation("${mvnVersion}")
+            mavenInstallation("${mvnToolEnv}")
             goals("-nsu -B -e -fae clean verify -P\$container,\$war")
             rootPOM("business-central-tests/pom.xml")
             properties("maven.test.failure.ignore": true)
@@ -570,7 +570,7 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-kieServerMatrix") {
     steps {
         shell(kieServerTest)
         maven{
-            mavenInstallation("${mvnVersion}")
+            mavenInstallation("${mvnToolEnv}")
             goals("-B -e -fae -nsu clean verify -P\$container -Pjenkins-pr-builder")
             rootPOM("kie-server-parent/kie-server-tests/pom.xml")
             properties("kie.server.testing.kjars.build.settings.xml":"\$SETTINGS_XML_FILE")
@@ -592,7 +592,7 @@ def dockImg='''pipeline {
         label "$AGENT_DOCKER_LABEL"
     }
     tools {
-        maven "$mvnVersion"
+        maven "$mvnToolEnv"
         jdk "$javadk"
     }
     environment {
@@ -647,8 +647,8 @@ pipelineJob("${dockerPath}/daily-build-jdk11-${baseBranch}-docker-images") {
             description('name of machine where to run this job')
         }
         wHideParameterDefinition {
-            name('mvnVersion')
-            defaultValue("${mvnVersion}")
+            name('mvnToolEnv')
+            defaultValue("${mvnToolEnv}")
             description('version of maven')
         }
         wHideParameterDefinition {

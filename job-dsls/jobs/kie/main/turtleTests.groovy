@@ -10,7 +10,7 @@ def final DEFAULTS = [
         label                  : "kie-rhel7 && kie-mem16g",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-e -B -T1C -fae -Dfull -DrunTurtleTests clean install",
-        javadk                 : Constants.JDK_VERSION,
+        javadk                 : Constants.JDK_TOOL,
         trigga                 : "H 22 * * *",
         jobDesc                : "Slow (turtle) tests which are disabled for default Drools build, as they take considerable amount of time (tens of minutes). The job is executed once a day. \n" +
                 "Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will be lost next time the job is generated. \n" +

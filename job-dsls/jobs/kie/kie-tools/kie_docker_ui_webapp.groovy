@@ -11,8 +11,8 @@ def labelName = "kieci-02-docker"
 def ghJenkinsfilePwd = "kie-ci"
 def repoBranch = Constants.BRANCH
 def gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/${repo}/"
-def mavenVersion = Constants.MAVEN_VERSION
-def javaVersion = Constants.JDK_VERSION
+def mvnToolEnv = Constants.MAVEN_TOOL
+def javaVersion = Constants.JDK_TOOL
 
 def exeScript = ''' ./scripts/kie-docker-ui-containers-clean.sh '''
 
@@ -73,7 +73,7 @@ job("${folderPath}/docker-ui-build") {
         }
         shell(exeScript)
         maven {
-            mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
+            mavenInstallation("${Constants.MAVEN_TOOL}")
             goals(mvnGoals)
             property("kie.dockerui.privateHost","172.17.0.1")
             property("kie.dockerui.publicHost","kieci-02.lab.eng.brq.redhat.com")
@@ -89,7 +89,7 @@ job("${folderPath}/docker-ui-build") {
         }
         timestamps()
         colorizeOutput()
-        toolenv(javaVersion, mavenVersion)
+        toolenv(javaVersion, mvnToolEnv)
         preBuildCleanup()
     }
 

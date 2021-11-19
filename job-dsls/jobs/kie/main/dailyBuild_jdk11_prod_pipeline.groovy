@@ -4,8 +4,8 @@ def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def kieVersion=Constants.KIE_PREFIX
 def m2Dir = Constants.LOCAL_MVN_REP
-def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def javadk=Constants.JDK_TOOL
+def mvnToolEnv=Constants.MAVEN_TOOL
 def AGENT_LABEL="kie-rhel7-pipeline&&kie-mem24g"
 
 // creation of folder
@@ -24,7 +24,7 @@ pipeline {
         timestamps()
     }    
     tools {
-        maven "$mvnVersion"
+        maven "$mvnToolEnv"
         jdk "$javadk"
     }
     stages {
@@ -172,8 +172,8 @@ pipelineJob("${folderPath}/daily-build-jdk11-prod-pipeline-${baseBranch}") {
             description('name of machine where to run this job')
         }
         wHideParameterDefinition {
-            name('mvnVersion')
-            defaultValue("${mvnVersion}")
+            name('mvnToolEnv')
+            defaultValue("${mvnToolEnv}")
             description('version of maven')
         }
         wHideParameterDefinition {

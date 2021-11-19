@@ -7,8 +7,8 @@ def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def MAVEN_OPTS="-Xms1g -Xmx3g"
 def commitMsg="Upgraded version to "
-def javadk=Constants.JDK_VERSION
-def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
+def javadk=Constants.JDK_TOOL
+def mvnToolEnv=Constants.MAVEN_TOOL
 // number of build that has stored the binaries (*tar.gz) that are wanted to upload
 def binariesNR=1
 def toolsVer="7.46.0.Final"
@@ -40,7 +40,7 @@ pipeline {
         timestamps()
     }
     tools {
-        maven "$mvnVersion"
+        maven "$mvnToolEnv"
         jdk "$javadk"
     }
     stages {
@@ -515,8 +515,8 @@ pipelineJob("${folderPath}/community-release-pipeline-${baseBranch}") {
             description('name of machine where to run this job')
         }
         wHideParameterDefinition {
-            name('mvnVersion')
-            defaultValue("${mvnVersion}")
+            name('mvnToolEnv')
+            defaultValue("${mvnToolEnv}")
             description('version of maven')
         }
         wHideParameterDefinition {
@@ -623,7 +623,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-jbpmTestCoverageMatrix"
     steps {
         shell(jbpmTestCoverage)
         maven{
-            mavenInstallation("${mvnVersion}")
+            mavenInstallation("${mvnToolEnv}")
             goals("clean verify -e -B -Dmaven.test.failure.ignore=true -Dintegration-tests")
             rootPOM("jbpm-test-coverage/pom.xml")
             mavenOpts("-Xmx3g")
@@ -730,7 +730,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieWbTestsMatrix") {
     steps {
         shell(kieWbTest)
         maven{
-            mavenInstallation("${mvnVersion}")
+            mavenInstallation("${mvnToolEnv}")
             goals("-nsu -B -e -fae clean verify -P\$container,\$war")
             rootPOM("business-central-tests/pom.xml")
             properties("maven.test.failure.ignore": true)
@@ -814,7 +814,7 @@ matrixJob("${folderPath}/community-release-${baseBranch}-kieServerMatrix") {
     steps {
         shell(kieServerTest)
         maven{
-            mavenInstallation("${mvnVersion}")
+            mavenInstallation("${mvnToolEnv}")
             goals("-B -e -fae -nsu clean verify -P\$container -Pjenkins-pr-builder")
             rootPOM("kie-server-parent/kie-server-tests/pom.xml")
             properties("kie.server.testing.kjars.build.settings.xml":"\$SETTINGS_XML_FILE")
