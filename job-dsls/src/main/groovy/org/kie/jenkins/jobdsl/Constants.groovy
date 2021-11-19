@@ -30,8 +30,6 @@ class Constants {
     static final String FDB_FOLDER_DISPLAY_NAME = 'fullDownstream'
     static final String CDB_FOLDER = 'compile'
     static final String CDB_FOLDER_DISPLAY_NAME = 'compileDownstream'
-    static final String UPSTREAM_FOLDER = 'upstream'
-    static final String UPSTREAM_FOLDER_DISPLAY_NAME = 'upstream'
     static final String DOWNSTREAM_PRODUCT_FOLDER = 'fdbp'
     static final String DOWNSTREAM_PRODUCT_FOLDER_DISPLAY_NAME = 'downstream-production'
     static final String DEPLOY_FOLDER = 'deployedRep'
