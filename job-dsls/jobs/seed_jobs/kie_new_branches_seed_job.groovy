@@ -52,7 +52,6 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
                     "job-dsls/jobs/**/downstream_pr_jobs.groovy\n" +
                     "job-dsls/jobs/**/compile_downstream_build.groovy\n" +
                     "job-dsls/jobs/**/prod_projects_downstream_production.groovy \n" +
-                    "job-dsls/jobs/**/upstream.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_jdk11_pipeline.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_jdk11_prod_pipeline.groovy\n" +
                     "job-dsls/jobs/**/dailyBuild_jdk8_pipeline.groovy\n" +
