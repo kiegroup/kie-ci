@@ -26,7 +26,7 @@ export ANSIBLE_SCP_IF_SSH=y
  -var "openstack_endpoint=https://rhos-d.infra.prod.upshift.rdu2.redhat.com:13000/v3"\\
  -var "openstack_username=psi-rhba-jenkins"\\
  -var "openstack_password=\$PSI_PASSWORD"\\
- -var "image_name=kie-rhel7-with-osbs-\$BUILD_NUMBER"\\
+ -var "image_name=kie-rhel\${BASE_RHEL_VERSION}-latest-new"\\
  -var "ssh_private_key_file=\$PSI_PRIVATE_KEY"\\
  -on-error=cleanup \\
  -var-file \$PACKER_VAR_FILE \\
@@ -42,7 +42,7 @@ def folderPath = "Tools/Images"
 def jobDefinition = job("${folderPath}/agent-image-build") {
 
     parameters {
-        choiceParam('PACKER_VAR_FILE', ['packer-kie-rhel7-vars.json', 'packer-kie-rhel8-vars.json'], 'The file defining variables specific for different RHEL versions.')
+        choiceParam('BASE_RHEL_VERSION', ['7', '8'], 'RHEL version of the base image to be used as the source image.')
     }
 
     // Allows a job to check out sources from an SCM provider.
@@ -97,6 +97,10 @@ def jobDefinition = job("${folderPath}/agent-image-build") {
                 keyFileVariable('PSI_PRIVATE_KEY')
                 usernameVariable('PSI_PRIVATE_KEY_USERNAME')
             }
+        }
+
+        environmentVariables {
+            env("PACKER_VAR_FILE", 'packer-kie-rhel${BASE_RHEL_VERSION}-vars.json')
         }
     }
 
