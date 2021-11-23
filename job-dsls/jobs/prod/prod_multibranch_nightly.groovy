@@ -33,7 +33,12 @@ def final REPO_CONFIGS = [
         //    repo : 'kogito-tooling',
         //    repUrl : 'https://github.com/kiegroup/kogito-tooling',
         //    jobId : '00363'
-        ]
+        ],
+        "nightly.rhos01"  : [
+            prodJobName : 'nightly.rhos01',
+            scrPath : '.ci/jenkins/Jenkinsfile.nightly_rhos-01',
+            jobId : '09242'
+        ],
 ]
 
 for (repoConfig in REPO_CONFIGS) {
