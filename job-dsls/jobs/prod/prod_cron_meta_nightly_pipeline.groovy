@@ -39,14 +39,29 @@ pipeline{
     
     stages {
         stage('trigger RHBA nightly job ${NEXT_PRODUCT_BRANCH}') {
-            steps {
-                build job: 'nightly/${NEXT_PRODUCT_BRANCH}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-${NEXT_PRODUCT_BRANCH}/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${NEXT_PRODUCT_BRANCH}'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${NEXT_PRODUCT_VERSION}"],
-                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
-                        [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
-                ]
+            parallel {
+                stage('Real nightly') {
+                    steps {
+                        build job: 'nightly/${NEXT_PRODUCT_BRANCH}', propagate: false, wait: true, parameters: [
+                                [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-${NEXT_PRODUCT_BRANCH}/content-compressed'],
+                                [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${NEXT_PRODUCT_BRANCH}'],
+                                [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${NEXT_PRODUCT_VERSION}"],
+                                [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
+                                [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
+                        ]
+                    }
+                }
+                stage('Mock nightly rhos01') {
+                    steps {
+                        build job: 'nightly.rhos01/${NEXT_PRODUCT_BRANCH}', propagate: false, wait: true, parameters: [
+                                [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-${NEXT_PRODUCT_BRANCH}/content-compressed'],
+                                [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${NEXT_PRODUCT_BRANCH}'],
+                                [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${NEXT_PRODUCT_VERSION}"],
+                                [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
+                                [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
+                        ]
+                    }
+                }
             }
         }
 
