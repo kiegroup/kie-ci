@@ -10,7 +10,7 @@ def releaseBranch="r7.45.0.t20201015"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def commitMsg="Upgraded version to "
-def javadk=Constants.JDK_VERSION
+def javadk=Constants.JDK_TOOL
 def mvnVersion="kie-maven-" + Constants.MAVEN_VERSION
 def AGENT_LABEL="kie-rhel7 && kie-mem24g"
 
