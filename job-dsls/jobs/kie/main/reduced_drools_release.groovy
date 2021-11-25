@@ -54,12 +54,9 @@ pipeline {
         }
         stage ('Replace repository-list.txt') {
             steps {
-                configFileProvider([configFile(fileId: '1a43573a-318c-426a-bb2b-c9df7fe97a02', targetLocation: 'repository-list.txt', variable: 'REP_LIST')]) {
-                    dir("${WORKSPACE}") {
-                        sh 'cp repository-list.txt droolsjbpm-build-bootstrap/script/repository-list.txt \\n' +
-                           'cat droolsjbpm-build-bootstrap/script/repository-list.txt \\n' +
-                           'rm droolsjbpm-build-bootstrap/script/branched-7-repository-list.txt'
-                    }       
+                dir("${WORKSPACE}") {
+                    sh 'echo -e "droolsjbpm-build-bootstrap\\nkie-soup\\ndroolsjbpm-knowledge\\ndrools" > droolsjbpm-build-bootstrap/script/repository-list.txt \\n' +
+                        'rm droolsjbpm-build-bootstrap/script/branched-7-repository-list.txt'
                 }
             }
         }        
