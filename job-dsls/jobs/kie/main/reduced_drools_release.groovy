@@ -62,8 +62,9 @@ pipeline {
         stage ('Clone others'){
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch\'
-                }    
+                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch\\n' +
+                       'rm ./droolsjbpm-build-bootstrap/script/branched-7-repository-list.txt'
+                }
             }
         }
         // checks if release branch already exists
