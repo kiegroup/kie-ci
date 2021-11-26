@@ -6,7 +6,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
-def releaseBranch="r7.45.0.t20201015"
+def releaseBranch="r7.63.0.t20201015"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def commitMsg="Upgraded version to "
@@ -52,11 +52,10 @@ pipeline {
                 }
             }    
         }
-        stage ('Replace repository-list.txt') {
+        stage ('Make repository-list.txt for only Drools related repositories') {
             steps {
                 dir("${WORKSPACE}") {
-                    sh 'echo -e "droolsjbpm-build-bootstrap\\nkie-soup\\ndroolsjbpm-knowledge\\ndrools" > droolsjbpm-build-bootstrap/script/repository-list.txt \\n' +
-                        'rm droolsjbpm-build-bootstrap/script/branched-7-repository-list.txt'
+                    sh 'echo -e "droolsjbpm-build-bootstrap\\nkie-soup\\ndroolsjbpm-knowledge\\ndrools" > droolsjbpm-build-bootstrap/script/repository-list.txt'
                 }
             }
         }        
