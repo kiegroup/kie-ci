@@ -6,7 +6,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def kieVersion=Constants.KIE_PREFIX
 def baseBranch=Constants.BRANCH
-def releaseBranch="r7.45.0.t20201015"
+def releaseBranch="r7.63.0.t20201015"
 def organization=Constants.GITHUB_ORG_UNIT
 def m2Dir = Constants.LOCAL_MVN_REP
 def commitMsg="Upgraded version to "
@@ -52,22 +52,19 @@ pipeline {
                 }
             }    
         }
-        stage ('Replace repository-list.txt') {
+        stage ('Make repository-list.txt for only Drools related repositories') {
             steps {
-                configFileProvider([configFile(fileId: '1a43573a-318c-426a-bb2b-c9df7fe97a02', targetLocation: 'repository-list.txt', variable: 'REP_LIST')]) {
-                    dir("${WORKSPACE}") {
-                        sh 'cp repository-list.txt droolsjbpm-build-bootstrap/script/repository-list.txt \\n' +
-                           'cat droolsjbpm-build-bootstrap/script/repository-list.txt \\n' +
-                           'rm droolsjbpm-build-bootstrap/script/branched-7-repository-list.txt'
-                    }       
+                dir("${WORKSPACE}") {
+                    sh 'echo -e "droolsjbpm-build-bootstrap\\nkie-soup\\ndroolsjbpm-knowledge\\ndrools" > droolsjbpm-build-bootstrap/script/repository-list.txt'
                 }
             }
         }        
         stage ('Clone others'){
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch\'
-                }    
+                    sh './droolsjbpm-build-bootstrap/script/release/01_cloneBranches.sh $baseBranch\\n' +
+                       'rm ./droolsjbpm-build-bootstrap/script/branched-7-repository-list.txt'
+                }
             }
         }
         // checks if release branch already exists
