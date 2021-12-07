@@ -37,6 +37,7 @@
     - common
     - jdk
     - kie
+    - node
     - kogito
     - rhba
     - rhba-osbs
