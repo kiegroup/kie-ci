@@ -16,4 +16,11 @@
 
 - debug: msg="{{ node.stdout }}"
 
+- name: Copy .npmrc file
+  copy:
+    src: data/config/npm/.npmrc
+    dest: /home/jenkins/.npmrc
+    owner: jenkins
+    group: jenkins
+
 ...
