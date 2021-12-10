@@ -129,7 +129,7 @@ pipeline {
                 '@leads: Please look at the sanity checks: https://docs.google.com/spreadsheets/d/1jPtRilvcOji__qN0QmVoXw6KSi4Nkq8Nz_coKIVfX6A/edit#gid=167259416 \\n' +
                 'and assign tasks to people who should run these checks (if not done yet) \\n' +
                 ' \\n' +
-                'Thank you', subject: 'build for community-release $kieVersion started', to: 'bsig@redhat.com etirelli@redhat.com lazarotti@redhat.com dward@redhat.com dgutierr@redhat.com'
+                'Thank you', subject: 'build for community-release $kieVersion started', to: 'bsig@redhat.com etirelli@redhat.com lazarotti@redhat.com dward@redhat.com dgutierr@redhat.com aparedes@redhat.com doliver@redhat.com'
             }
         }
         // if release branches doesn't exist they will be created
