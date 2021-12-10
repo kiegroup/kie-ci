@@ -49,6 +49,7 @@ job("${folderPath}/a-seed-job-kie-tools") {
     steps {
         jobDsl {
             targets("job-dsls/jobs/kie/kie-tools/*.groovy\n" +
+                    "job-dsls/jobs/kie/kie-tools/upgradeVersions/*.groovy\n" +
                     "job-dsls/jobs/seed_jobs/kie_tools_seed_job.groovy")
             useScriptText(false)
             sandbox(false)

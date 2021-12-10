@@ -66,9 +66,10 @@ pipeline {
 // creates folder if is not existing
 folder("KIE")
 folder("KIE/kie-tools")
-def folderPath="KIE/kie-tools"
+folder("KIE/kie-tools/upgradeVersions")
+def folderPath="KIE/kie-tools/upgradeVersions"
 
-pipelineJob("${folderPath}/deploy-development-version") {
+pipelineJob("${folderPath}/deploy-SNAPSHOT-version") {
 
     description('''
     Pipeline job for upgrading all kiegroup reps to the next SNAPSHOT version<br>
