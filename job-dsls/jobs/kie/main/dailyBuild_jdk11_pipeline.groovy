@@ -146,9 +146,6 @@ pipeline {
                      },
                     "kieServerMatrix" : {
                             build job: "daily-build-jdk11-${baseBranch}-kieServerMatrix", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion], [$class: 'StringParameterValue', name: 'baseBranch', value: baseBranch]]
-                    },
-                    "daily-build-docker-images" : {
-                            build job: "${dockerAbsPath}/daily-build-jdk11-${baseBranch}-docker-images", propagate: false, parameters: [[$class: 'StringParameterValue', name: 'kieVersion', value: kieVersion]]
                     }
                 )    
             } 
@@ -580,104 +577,6 @@ matrixJob("${folderPath}/daily-build-jdk11-${baseBranch}-kieServerMatrix") {
             properties("eap7.download.url":EAP7_DOWNLOAD_URL)
             mavenOpts("-Xms1024m -Xmx1536m")
             providedSettings("771ff52a-a8b4-40e6-9b22-d54c7314aa1e")
-        }
-    }
-}
-
-// *****************************************************************************************************
-// definition of kieDockerCi  script
-
-def dockImg='''pipeline {
-    agent {
-        label "$AGENT_DOCKER_LABEL"
-    }
-    tools {
-        maven "$mvnToolEnv"
-        jdk "$javadk"
-    }
-    environment {
-        JAVA_OPTS = '-Djsse.enableSNIExtension=false'
-    }
-    stages {
-        stage('CleanWorkspace') {
-            steps {
-                cleanWs()
-            }
-        }
-        stage('Checkout kie-docker-ci-images') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: '${baseBranch}']], browser: [$class: 'GithubWeb', repoUrl: 'https://github.com/kiegroup/kie-docker-ci-images.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-docker-ci-images']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/kiegroup/kie-docker-ci-images.git']]])
-                dir("${WORKSPACE}" + '/kie-docker-ci-images') {
-                    sh 'pwd \\n' +
-                       'ls -al \\n' +
-                       'git branch'
-                }
-            }
-        }
-        stage('execute scripts for cleaning and updating') {
-            steps {
-                dir("${WORKSPACE}" + '/kie-docker-ci-images') {
-                    configFileProvider([configFile(fileId: '3ebb89ff-985c-43a2-965d-1cde56f31e1a', targetLocation: 'jenkins-settings.xml', variable: 'settingsXmlFile')]) {
-                        sh './scripts/docker-clean.sh $kieVersion \\n' +
-                           './scripts/update-versions.sh $kieVersion -s "$settingsXmlFile"'
-                    }
-                }
-            }
-        }
-        stage('build'){
-            steps{
-                dir("${WORKSPACE}" + '/kie-docker-ci-images') {
-                    configFileProvider([configFile(fileId: '3ebb89ff-985c-43a2-965d-1cde56f31e1a', targetLocation: 'jenkins-settings.xml', variable: 'settingsXmlFile')]) {
-                        sh 'mvn -e -B -U -s $settingsXmlFile clean install -Dkie.artifacts.deploy.path=$artifactsPath'
-                    }
-                }
-            }
-        }
-    }
-}
-'''
-
-pipelineJob("${dockerPath}/daily-build-jdk11-${baseBranch}-docker-images") {
-
-    parameters {
-        stringParam("kieVersion", "${kieVersion}", "Version of kie. This will be usually set automatically by the parent pipeline job. ")
-        wHideParameterDefinition {
-            name('AGENT_DOCKER_LABEL')
-            defaultValue("${AGENT_DOCKER_LABEL}")
-            description('name of machine where to run this job')
-        }
-        wHideParameterDefinition {
-            name('mvnToolEnv')
-            defaultValue("${mvnToolEnv}")
-            description('version of maven')
-        }
-        wHideParameterDefinition {
-            name('javadk')
-            defaultValue("${javadk}")
-            description('version of jdk')
-        }
-        wHideParameterDefinition {
-            name('artifactsPath')
-            defaultValue("${artifactsPath}")
-            description('path of artifacts stored on the docker machine')
-        }
-        wHideParameterDefinition {
-            name('baseBranch')
-            defaultValue("${baseBranch}")
-            description('name of branch')
-        }
-    }
-
-    description('Builds CI Docker images for main branch. <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated. ')
-
-    logRotator {
-        numToKeep(5)
-    }
-
-    definition {
-        cps {
-            script("${dockImg}")
-            sandbox()
         }
     }
 }
