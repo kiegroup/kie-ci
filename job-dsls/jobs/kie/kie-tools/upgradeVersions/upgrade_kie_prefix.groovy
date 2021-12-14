@@ -1,16 +1,15 @@
-// pipeline DSL job to bump up the branch (BASE_BRANCH) of kie-cloud-tests to certain version (NEW_KIE_VERSION)
+// pipeline DSL job to bump up the kie-prefix (KIE_PREFIX) in Constants of kie-jenkins-scripts
 
 import org.kie.jenkins.jobdsl.Constants
 def AGENT_LABEL="kie-rhel7 && kie-mem8g"
 def MVN_TOOL = Constants.MAVEN_TOOL
 def JDK_TOOL = Constants.JDK_TOOL
 def BASE_BRANCH = ""
-def CURRENT_KIE_VERSION = ""
-def NEW_KIE_VERSION=""
+def KIE_PREFIX = ""
 def ORGANIZATION=""
-def COMMIT_MSG="upgraded kie version to "
+def COMMIT_MSG="upgraded kie-prefix to "
 
-def updateKieCloudTests='''
+def updateKiePrefix='''
 pipeline {
     agent {
         label "$AGENT_LABEL"
@@ -34,10 +33,10 @@ pipeline {
                 sh "git config --global user.name kie-ci"
             }
         }
-        stage('clone kie-benchmarks') {
+        stage('clone kie-jenkins-scripts') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '$BASE_BRANCH']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:$ORGANIZATION/kie-cloud-tests.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-cloud-tests']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$ORGANIZATION/kie-cloud-tests.git']]])
-                dir("${WORKSPACE}" + '/kie-cloud-tests') {
+                checkout([$class: 'GitSCM', branches: [[name: '$BASE_BRANCH']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:$ORGANIZATION/kie-jenkins-scripts.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-jenkins-scripts']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$ORGANIZATION/kie-jenkins-scripts.git']]])
+                dir("${WORKSPACE}" + '/kie-jenkins-scripts') {
                     sh 'pwd \\n' +
                     'git branch \\n' +
                     'git checkout -b $BASE_BRANCH \\n' +
@@ -45,10 +44,10 @@ pipeline {
                 }
             }
         }
-        stage ('create upstream for kie-cloud-tests'){
+        stage ('create upstream for kie-jenkins-scripts'){
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    dir("${WORKSPACE}" + '/kie-cloud-tests') {
+                    dir("${WORKSPACE}" + '/kie-jenkins-scripts') {
                         sh 'git push --set-upstream origin $BASE_BRANCH'
                     }
                 }
@@ -56,29 +55,40 @@ pipeline {
         }
         stage('change version via sed'){
             steps{
-                sh "egrep -lRZ '${CURRENT_KIE_VERSION}' . | xargs -0 -l sed -i -e 's/${CURRENT_KIE_VERSION}/${NEW_KIE_VERSION}/g' "
+                dir("${WORKSPACE}" + '/kie-jenkins-scripts') {
+                    sh 'sed -i "s/KIE_PREFIX = .*/KIE_PREFIX = \\'${KIE_PREFIX}\\'/g" job-dsls/src/main/groovy/org/kie/jenkins/jobdsl/Constants.groovy'
+            
+                }    
+            }
+        }
+        stage('view changes'){
+            steps{
+                sh 'cat kie-jenkins-scripts/job-dsls/src/main/groovy/org/kie/jenkins/jobdsl/Constants.groovy'
             }
         }
         stage ('add and commit version upgrades') {
             steps {
-                dir("${WORKSPACE}" + '/kie-cloud-tests'){
-                    echo "NEW_KIE_VERSION: ${NEW_KIE_VERSION}"
-                    echo "COMMIT_MSG: ${COMMIT_MSG}"
-                    sh 'git add .'
-                    sh 'git commit -m "${COMMIT_MSG} ${NEW_KIE_VERSION}"'
+                dir("${WORKSPACE}" + '/kie-jenkins-scripts'){
+                    sh 'git add .\'
+                    sh 'git commit -m "${COMMIT_MSG} ${KIE_PREFIX}"'
                 }
             }
-        }
+        }        
         stage('push BASE_BRANCH to origin') {
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    dir("${WORKSPACE}" + '/kie-cloud-tests') {
+                    dir("${WORKSPACE}" + '/kie-jenkins-scripts') {
                         sh 'git push origin'
                     }
                 }
             }
         }
     }
+    post{
+        always{
+            cleanWs()
+        }
+    }    
 }
 '''
 
@@ -88,14 +98,13 @@ folder("KIE/kie-tools")
 folder("KIE/kie-tools/upgradeVersions")
 def folderPath="KIE/kie-tools/upgradeVersions"
 
-pipelineJob("${folderPath}/upgrade-kie-cloud-tests") {
+pipelineJob("${folderPath}/upgrade-kie-prefix") {
 
-    description('Pipeline job for upgrading the version of kie-cloud-test on BASE_BRANCH')
+    description('Pipeline job for upgrading the kie-prefix in Constants of kie-jenkins-scripts')
 
     parameters {
         stringParam("BASE_BRANCH", "${BASE_BRANCH}", "Branch to clone and update")
-        stringParam("CURRENT_KIE_VERSION", "${CURRENT_KIE_VERSION}", "the current version of KIE repositories on BASE_BRANCH")
-        stringParam("NEW_KIE_VERSION", "${NEW_KIE_VERSION}", "KIE versions on BASE_BRANCH should be bumped up to this version")
+        stringParam("KIE_PREFIX", "${KIE_PREFIX}", "the new KIE prefix. i.e. 7.65.0")
         stringParam("ORGANIZATION", "${ORGANIZATION}", "organization of github: mostly kiegroup")
         wHideParameterDefinition {
             name('AGENT_LABEL')
@@ -125,7 +134,7 @@ pipelineJob("${folderPath}/upgrade-kie-cloud-tests") {
 
     definition {
         cps {
-            script("${updateKieCloudTests}")
+            script("${updateKiePrefix}")
             sandbox()
         }
     }

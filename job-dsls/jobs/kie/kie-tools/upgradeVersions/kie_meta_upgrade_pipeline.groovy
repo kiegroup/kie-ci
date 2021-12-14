@@ -14,6 +14,7 @@ def JDK_TOOL = Constants.JDK_TOOL
 def BASE_BRANCH = ""
 def CURRENT_KIE_VERSION = ""
 def NEW_KIE_VERSION=""
+def KIE_PREFIX=""
 def ORGANIZATION="kiegroup"
 
 def metaJob='''
@@ -45,10 +46,18 @@ pipeline {
                     }, 
                     "kie-cloud-tests" : {
                         build job: 'upgrade-kie-cloud-tests', propagate: false, parameters: [[$class: 'StringParameterValue', name: 'BASE_BRANCH', value: BASE_BRANCH], [$class: 'StringParameterValue', name: 'CURRENT_KIE_VERSION', value: CURRENT_KIE_VERSION], [$class: 'StringParameterValue', name: 'NEW_KIE_VERSION', value: NEW_KIE_VERSION], [$class: 'StringParameterValue', name: 'ORGANIZATION', value: ORGANIZATION]]
+                    },
+                    "kie-prefix" : {
+                        build job: 'upgrade-kie-prefix', propagate: false, parameters: [[$class: 'StringParameterValue', name: 'BASE_BRANCH', value: BASE_BRANCH], [$class: 'StringParameterValue', name: 'KIE_PREFIX', value: KIE_PREFIX], [$class: 'StringParameterValue', name: 'ORGANIZATION', value: ORGANIZATION]]                    
                     }                   
                 )      
             }    
         } 
+    }
+    post{
+        always{
+            cleanWs()
+        }
     }
 }                     
 '''
@@ -67,6 +76,7 @@ pipelineJob("${folderPath}/kie-meta-upgrade-pipeline") {
         stringParam("CURRENT_KIE_VERSION", "${CURRENT_KIE_VERSION}", "the current version of KIE repositories on BASE_BRANCH")
         stringParam("NEW_KIE_VERSION", "${NEW_KIE_VERSION}", "KIE versions on BASE_BRANCH should be bumped up to this version")
         stringParam("ORGANIZATION", "${ORGANIZATION}", "organization of github: mostly kiegroup")
+        stringParam("KIE_PREFIX","${KIE_PREFIX}","prefix for kie versions. i.e. 7.65.0")
         wHideParameterDefinition {
             name('AGENT_LABEL')
             defaultValue("${AGENT_LABEL}")
