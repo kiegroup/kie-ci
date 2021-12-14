@@ -60,7 +60,12 @@ pipeline {
                 }
             }    
         }             
-    }  
+    }
+    post{
+        always{
+            cleanWs()
+        }
+    }      
 }
 '''
 // creates folder if is not existing
