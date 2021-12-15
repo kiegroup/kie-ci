@@ -1,13 +1,14 @@
 // pipeline DSL job to bump up branches ($baseBranch) of all community kiegroup repositories to certain version (NEW_KIE_VERSION)
 
 import org.kie.jenkins.jobdsl.Constants
-def AGENT_LABEL="kie-rhel7 && kie-mem16g"
+def AGENT_LABEL="rhos-d && kie-rhel7 && kie-mem16g"
 def MVN_TOOL = Constants.MAVEN_TOOL
 def JDK_TOOL = Constants.JDK_TOOL
 def BASE_BRANCH = ""
 def CURRENT_KIE_VERSION = ""
 def NEW_KIE_VERSION=""
 def ORGANIZATION=""
+def NEW_BRANCH=""
 def COMMIT_MSG="upgraded kie version to "
 
 def updateAll='''
@@ -36,21 +37,21 @@ pipeline {
         }
         stage('clone droolsjbpm-build-bootstrap') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '$BASE_BRANCH']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:$ORGANIZATION/droolsjbpm-build-bootstrap.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'droolsjbpm-build-bootstrap']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$ORGANIZATION/droolsjbpm-build-bootstrap.git']]])
+                checkout([\n
+                $class: 'GitSCM', \n
+                branches: [[name: '$BASE_BRANCH']], \n
+                browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:$ORGANIZATION/droolsjbpm-build-bootstrap.git'], \n
+                doGenerateSubmoduleConfigurations: false, \n
+                extensions: [[$class: 'RelativeTargetDirectory', \n
+                relativeTargetDir: 'droolsjbpm-build-bootstrap']], \n
+                submoduleCfg: [], \n
+                userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$ORGANIZATION/droolsjbpm-build-bootstrap.git']]\n
+                ])
                 dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
                     sh 'pwd \\n' +
                     'git branch \\n' +
                     'git checkout -b $BASE_BRANCH \\n' +
                     'git remote -v'
-                }
-            }
-        }
-        stage ('create upstream for droolsjbpm-build-bootstrap'){
-            steps {
-                sshagent(['kie-ci-user-key']) {
-                    dir("${WORKSPACE}" + '/droolsjbpm-build-bootstrap') {
-                        sh 'git push --set-upstream origin $BASE_BRANCH\'
-                    }
                 }
             }
         }
@@ -61,9 +62,18 @@ pipeline {
                 }
             }
         }
+        stage('create new branches'){
+            when{
+                expression {createNewBranch == 'YES'}
+            }
+            steps {
+                sh './droolsjbpm-build-bootstrap/script/git-all.sh checkout -b $NEW_BRANCH'
+            }
+        }              
         stage('upgrade versions') {
             steps {
-                configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
+                configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', \n
+                variable: 'SETTINGS_XML_FILE')]) {
                     echo "NEW_KIE_VERSION: ${NEW_KIE_VERSION}"
                     sh './droolsjbpm-build-bootstrap/script/release/03_upgradeVersions.sh $NEW_KIE_VERSION'
                 }
@@ -81,13 +91,19 @@ pipeline {
                 sh './droolsjbpm-build-bootstrap/script/release/addAndCommit.sh "$COMMIT_MSG" $NEW_KIE_VERSION'
             }
         }
-        stage('push BASE_BRANCH to origin') {
+        stage('push FINAL_BRANCH to origin') {
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    sh './droolsjbpm-build-bootstrap/script/git-all.sh push origin'
+                    sh ' if [[ "${createNewBranch}" == "YES" ]] \\n' +
+                        'then \\n' +
+                            'FINAL_BRANCH=$(echo $NEW_BRANCH) \\n' +
+                            './droolsjbpm-build-bootstrap/script/git-all.sh push --set-upstream origin $FINAL_BRANCH \\n' +
+                        'else \\n' +
+                            './droolsjbpm-build-bootstrap/script/git-all.sh push origin \\n' +
+                        'fi'
                 }
             }
-        }
+        }        
     }
     post{
         always{
@@ -112,6 +128,9 @@ pipelineJob("${folderPath}/upgrade-kiegroup-all") {
         stringParam("CURRENT_KIE_VERSION", "${CURRENT_KIE_VERSION}", "the current version of KIE repositories on BASE_BRANCH")
         stringParam("NEW_KIE_VERSION", "${NEW_KIE_VERSION}", "KIE versions on BASE_BRANCH should be bumped up to this version")
         stringParam("ORGANIZATION", "${ORGANIZATION}", "organization of github: mostly kiegroup")
+        choiceParam("createNewBranch",["NO", "YES"],"should a new branch be created?")
+        stringParam("NEW_BRANCH","${NEW_BRANCH}","makes only sense if you want to create a new branch based on BASE_BRANCH and \n" +
+                "upgrade it's version. This parameter can be empty if the previous choice parameter is NO")
         wHideParameterDefinition {
             name('AGENT_LABEL')
             defaultValue("${AGENT_LABEL}")

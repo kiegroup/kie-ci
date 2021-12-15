@@ -1,13 +1,14 @@
 // pipeline DSL job to bump up the branch (BASE_BRANCH) of kie-cloud-tests to certain version (NEW_KIE_VERSION)
 
 import org.kie.jenkins.jobdsl.Constants
-def AGENT_LABEL="kie-rhel7 && kie-mem8g"
+def AGENT_LABEL="rhos-d && kie-rhel7 && kie-mem8g"
 def MVN_TOOL = Constants.MAVEN_TOOL
 def JDK_TOOL = Constants.JDK_TOOL
 def BASE_BRANCH = ""
 def CURRENT_KIE_VERSION = ""
 def NEW_KIE_VERSION=""
 def ORGANIZATION=""
+def NEW_BRANCH=""
 def COMMIT_MSG="upgraded kie version to "
 
 def updateKieCloudTests='''
@@ -34,9 +35,17 @@ pipeline {
                 sh "git config --global user.name kie-ci"
             }
         }
-        stage('clone kie-benchmarks') {
+        stage('clone kie-cloud-tests') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '$BASE_BRANCH']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:$ORGANIZATION/kie-cloud-tests.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-cloud-tests']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$ORGANIZATION/kie-cloud-tests.git']]])
+                checkout([\n
+                $class: 'GitSCM', \n
+                branches: [[name: '$BASE_BRANCH']], \n
+                browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:$ORGANIZATION/kie-cloud-tests.git'], \n
+                doGenerateSubmoduleConfigurations: false, \n 
+                extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-cloud-tests']], \n
+                submoduleCfg: [], \n 
+                userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$ORGANIZATION/kie-cloud-tests.git']]\n
+                ])
                 dir("${WORKSPACE}" + '/kie-cloud-tests') {
                     sh 'pwd \\n' +
                     'git branch \\n' +
@@ -45,15 +54,16 @@ pipeline {
                 }
             }
         }
-        stage ('create upstream for kie-cloud-tests'){
-            steps {
-                sshagent(['kie-ci-user-key']) {
-                    dir("${WORKSPACE}" + '/kie-cloud-tests') {
-                        sh 'git push --set-upstream origin $BASE_BRANCH'
-                    }
-                }
+        stage('create new branch'){
+            when{
+                expression {createNewBranch == 'YES'}
             }
-        }
+            steps{
+                dir("${WORKSPACE}" + '/kie-cloud-tests'){
+                    sh 'git checkout -b $NEW_BRANCH $BASE_BRANCH'
+                }               
+            }
+        }                 
         stage('change version via sed'){
             steps{
                 sh "egrep -lRZ '${CURRENT_KIE_VERSION}' . | xargs -0 -l sed -i -e 's/${CURRENT_KIE_VERSION}/${NEW_KIE_VERSION}/g' "
@@ -69,11 +79,17 @@ pipeline {
                 }
             }
         }
-        stage('push BASE_BRANCH to origin') {
+        stage('push FINAL_BRANCH to origin') {
             steps {
                 sshagent(['kie-ci-user-key']) {
                     dir("${WORKSPACE}" + '/kie-cloud-tests') {
-                        sh 'git push origin'
+                        sh ' if [[ "\${createNewBranch}" == "YES" ]] \\n' +
+                           'then \\n' +
+                               'FINAL_BRANCH=$(echo $NEW_BRANCH) \\n' +
+                           'else \\n' +
+                               'FINAL_BRANCH=$(echo $BASE_BRANCH) \\n' +
+                           'fi \\n' +
+                           'git push --set-upstream origin $FINAL_BRANCH'
                     }
                 }
             }
@@ -102,6 +118,9 @@ pipelineJob("${folderPath}/upgrade-kie-cloud-tests") {
         stringParam("CURRENT_KIE_VERSION", "${CURRENT_KIE_VERSION}", "the current version of KIE repositories on BASE_BRANCH")
         stringParam("NEW_KIE_VERSION", "${NEW_KIE_VERSION}", "KIE versions on BASE_BRANCH should be bumped up to this version")
         stringParam("ORGANIZATION", "${ORGANIZATION}", "organization of github: mostly kiegroup")
+        choiceParam("createNewBranch",["NO", "YES"],"should a new branch be created?")
+        stringParam("NEW_BRANCH","${NEW_BRANCH}","makes only sense if you want to create a new branch based on BASE_BRANCH \n" +
+                "and upgrade it's version. This parameter can be empty if the previous choice parameter is NO")
         wHideParameterDefinition {
             name('AGENT_LABEL')
             defaultValue("${AGENT_LABEL}")

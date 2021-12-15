@@ -1,7 +1,7 @@
 // pipeline DSL job to bump up the kie-prefix (KIE_PREFIX) in Constants of kie-jenkins-scripts
 
 import org.kie.jenkins.jobdsl.Constants
-def AGENT_LABEL="kie-rhel7 && kie-mem8g"
+def AGENT_LABEL="rhos-d && kie-rhel7 && kie-mem8g"
 def MVN_TOOL = Constants.MAVEN_TOOL
 def JDK_TOOL = Constants.JDK_TOOL
 def BASE_BRANCH = ""
@@ -35,21 +35,20 @@ pipeline {
         }
         stage('clone kie-jenkins-scripts') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '$BASE_BRANCH']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:$ORGANIZATION/kie-jenkins-scripts.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-jenkins-scripts']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$ORGANIZATION/kie-jenkins-scripts.git']]])
+                checkout([$class: 'GitSCM', \n
+                branches: [[name: '$BASE_BRANCH']], \n
+                browser: [$class: 'GithubWeb', \n
+                repoUrl: 'git@github.com:$ORGANIZATION/kie-jenkins-scripts.git'], \n
+                doGenerateSubmoduleConfigurations: false, \n
+                extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-jenkins-scripts']], \n
+                submoduleCfg: [], \n
+                userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$ORGANIZATION/kie-jenkins-scripts.git']]\n
+                ])
                 dir("${WORKSPACE}" + '/kie-jenkins-scripts') {
                     sh 'pwd \\n' +
                     'git branch \\n' +
                     'git checkout -b $BASE_BRANCH \\n' +
                     'git remote -v'
-                }
-            }
-        }
-        stage ('create upstream for kie-jenkins-scripts'){
-            steps {
-                sshagent(['kie-ci-user-key']) {
-                    dir("${WORKSPACE}" + '/kie-jenkins-scripts') {
-                        sh 'git push --set-upstream origin $BASE_BRANCH'
-                    }
                 }
             }
         }
@@ -69,7 +68,7 @@ pipeline {
         stage ('add and commit version upgrades') {
             steps {
                 dir("${WORKSPACE}" + '/kie-jenkins-scripts'){
-                    sh 'git add .\'
+                    sh 'git add .'
                     sh 'git commit -m "${COMMIT_MSG} ${KIE_PREFIX}"'
                 }
             }
@@ -78,7 +77,7 @@ pipeline {
             steps {
                 sshagent(['kie-ci-user-key']) {
                     dir("${WORKSPACE}" + '/kie-jenkins-scripts') {
-                        sh 'git push origin'
+                        sh 'git push --set-upstream origin $BASE_BRANCH'
                     }
                 }
             }
