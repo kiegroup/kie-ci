@@ -13,7 +13,7 @@
 def propGen ='''
 import groovy.json.JsonSlurperClassic
 
-node('kie-rhel7&&!master') {
+node('kie-rhel||rhos-01-kie-rhel&&!master') {
     sh 'env\'
     println "Folder '${RCM_GUEST_FOLDER}/${FOLDER_PATH}'"
 

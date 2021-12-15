@@ -5,7 +5,7 @@
 def kogitoProps ='''
 import groovy.json.JsonOutput
 
-node('kie-rhel7&&!master') {
+node('kie-rhel||rhos-01-kie-rhel&&!master') {
     sh 'env\'
     def REPO_URL_FOLDER_VERSION = 'main'.equals(BRANCH_NAME) ? 'main' : (KOGITO_PRODUCT_VERSION =~ /\\d+\\.\\d+/)[0]
     println "Folder [${REPO_URL_FOLDER_VERSION}] based on BRANCH_NAME [${BRANCH_NAME}] and KOGITO_PRODUCT_VERSION [${KOGITO_PRODUCT_VERSION}]"
