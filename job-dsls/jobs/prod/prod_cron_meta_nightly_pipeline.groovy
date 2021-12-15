@@ -6,7 +6,7 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def javadk=Constants.JDK_TOOL
-def AGENT_LABEL="kie-rhel7 && kie-mem4g"
+def AGENT_LABEL="kie-rhel && kie-mem512m"
 
 def NEXT_PRODUCT_VERSION=Constants.NEXT_PROD_VERSION
 def NEXT_PRODUCT_BRANCH='main'
@@ -125,8 +125,8 @@ pipeline{
 }
 """
 // creates folder if is not existing
-folder("PROD")
 def folderPath="PROD"
+folder(folderPath)
 
 pipelineJob("${folderPath}/cron-meta-nightly-pipeline") {
 
