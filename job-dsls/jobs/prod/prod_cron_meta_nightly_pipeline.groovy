@@ -125,8 +125,8 @@ pipeline{
 }
 """
 // creates folder if is not existing
-folder("PROD")
 def folderPath="PROD"
+folder(folderPath)
 
 pipelineJob("${folderPath}/cron-meta-nightly-pipeline") {
 

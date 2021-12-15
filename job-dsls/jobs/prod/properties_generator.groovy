@@ -9,46 +9,47 @@
  * RCM_GUEST_FOLDER    the host folder
  * RCM_HOST            the host to upload the files
 */
+import org.kie.jenkins.jobdsl.Constants
 
-def propGen ='''
+def propGen ="""
 import groovy.json.JsonSlurperClassic
 
-node('kie-rhel||rhos-01-kie-rhel&&!master') {
+node('${Constants.LABEL_KIE_RHEL}') {
     sh 'env\'
-    println "Folder '${RCM_GUEST_FOLDER}/${FOLDER_PATH}'"
+    println "Folder '\${RCM_GUEST_FOLDER}/\${FOLDER_PATH}'"
 
     def binding = new JsonSlurperClassic().parseText(BINDING)
-    println "Parsed binding: ${binding}"
+    println "Parsed binding: \${binding}"
 
-    publishFile("${FILE_ID}", "${FILE_NAME}", binding, "${RCM_GUEST_FOLDER}/${FOLDER_PATH}")
+    publishFile("\${FILE_ID}", "\${FILE_NAME}", binding, "\${RCM_GUEST_FOLDER}/\${FOLDER_PATH}")
 }
 
 def replaceTemplate(String fileId, Map<String, String> binding) {
-    println "Replace Template ${fileId}"
+    println "Replace Template \${fileId}"
     def content = ""
     configFileProvider([configFile(fileId: fileId, variable: 'PROPERTIES_FILE')]) {
-        content = readFile "${env.PROPERTIES_FILE}"
+        content = readFile "\${env.PROPERTIES_FILE}"
         for (def bind : binding) {
-            content = content.replace("\\${" + bind.getKey() + "}", bind.getValue().toString())
+            content = content.replace("\\\${" + bind.getKey() + "}", bind.getValue().toString())
         }
     }
     return content
 }
 
 def publishFile(String fileId, String fileName, Map<String, String> binding, String folder) {
-    println "Publishing [${fileId}], name [${fileName}] into folder [${folder}] ..."
+    println "Publishing [\${fileId}], name [\${fileName}] into folder [\${folder}] ..."
     def content = replaceTemplate(fileId, binding)
     println content
-    writeFile file: "${fileName}", text: content
+    writeFile file: "\${fileName}", text: content
     sshagent(credentials: ['rcm-publish-server']) {
-        sh "ssh 'rhba@${RCM_HOST}' 'mkdir -p ${folder}'"
-        sh "scp -o StrictHostKeyChecking=no ${fileName} rhba@${RCM_HOST}:${folder}"
+        sh "ssh 'rhba@\${RCM_HOST}' 'mkdir -p \${folder}'"
+        sh "scp -o StrictHostKeyChecking=no \${fileName} rhba@\${RCM_HOST}:\${folder}"
     }
 }
-'''
+"""
 // create needed folder(s) for where the jobs are created
-folder("Tools")
 def folderPath = "Tools"
+folder(folderPath)
 
 pipelineJob("${folderPath}/properties-generator") {
     description("Generate properties files")

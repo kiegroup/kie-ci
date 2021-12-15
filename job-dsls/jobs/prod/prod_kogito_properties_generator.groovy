@@ -1,16 +1,17 @@
 /**
  * Generate properties files for kogito builds.
  */
+import org.kie.jenkins.jobdsl.Constants
 
-def kogitoProps ='''
+def kogitoProps ="""
 import groovy.json.JsonOutput
 
-node('kie-rhel||rhos-01-kie-rhel&&!master') {
+node('${Constants.LABEL_KIE_RHEL}') {
     sh 'env\'
     def REPO_URL_FOLDER_VERSION = 'main'.equals(BRANCH_NAME) ? 'main' : (KOGITO_PRODUCT_VERSION =~ /\\d+\\.\\d+/)[0]
-    println "Folder [${REPO_URL_FOLDER_VERSION}] based on BRANCH_NAME [${BRANCH_NAME}] and KOGITO_PRODUCT_VERSION [${KOGITO_PRODUCT_VERSION}]"
-    def REPO_URL_FINAL = REPO_URL.replace("-main-", "-${REPO_URL_FOLDER_VERSION}-")
-    println "REPO_URL_FINAL [${REPO_URL_FINAL}]"
+    println "Folder [\${REPO_URL_FOLDER_VERSION}] based on BRANCH_NAME [\${BRANCH_NAME}] and KOGITO_PRODUCT_VERSION [\${KOGITO_PRODUCT_VERSION}]"
+    def REPO_URL_FINAL = REPO_URL.replace("-main-", "-\${REPO_URL_FOLDER_VERSION}-")
+    println "REPO_URL_FINAL [\${REPO_URL_FINAL}]"
 
     def binding = JsonOutput.toJson([
             "REPO_URL"                          : REPO_URL_FINAL,
@@ -26,21 +27,21 @@ node('kie-rhel||rhos-01-kie-rhel&&!master') {
     if(Boolean.valueOf(IS_RELEASE)) {
         println "//TODO"    
     } else {
-        def folder = "kogito/KOGITO-${KOGITO_PRODUCT_VERSION}.NIGHTLY"
+        def folder = "kogito/KOGITO-\${KOGITO_PRODUCT_VERSION}.NIGHTLY"
 
         build job: env.PROPERTIES_GENERATOR_PATH, parameters: [
-            [$class: 'StringParameterValue', name: 'FILE_ID', value: 'kogito-nightly-properties-template'],
-            [$class: 'StringParameterValue', name: 'FILE_NAME', value: "kogito-${TIME_STAMP}.properties"],
-            [$class: 'StringParameterValue', name: 'FOLDER_PATH', value: folder],
-            [$class: 'StringParameterValue', name: 'BINDING', value: binding]
+            [\$class: 'StringParameterValue', name: 'FILE_ID', value: 'kogito-nightly-properties-template'],
+            [\$class: 'StringParameterValue', name: 'FILE_NAME', value: "kogito-\${TIME_STAMP}.properties"],
+            [\$class: 'StringParameterValue', name: 'FOLDER_PATH', value: folder],
+            [\$class: 'StringParameterValue', name: 'BINDING', value: binding]
         ]
     }
 }
-'''
+"""
 
 // create needed folder(s) for where the jobs are created
-folder("PROD")
 def folderPath = "PROD"
+folder(folderPath)
 
 pipelineJob("${folderPath}/kogito-properties-generator") {
     description("Generate properties files for kogito builds")

@@ -2,46 +2,47 @@
  * Sends umb message to a specific provider
  *
  */
+import org.kie.jenkins.jobdsl.Constants
 
-def metaJob='''
+def metaJob="""
 pipeline {
     agent {
         node {
-            label "kie-rhel||rhos-01-kie-rhel&&!master"
+            label '${Constants.LABEL_KIE_RHEL}'
         }
     }
     options {
-        timeout(time: "${TIMEOUT}", unit: 'MINUTES')
+        timeout(time: "\${TIMEOUT}", unit: 'MINUTES')
         ansiColor('xterm')
         timestamps()
     }
     stages {
-        stage ("Clean") {
+        stage ('Clean') {
             steps {
-                echo "[INFO] Cleaning the workspace."
+                echo '[INFO] Cleaning the workspace.'
                 cleanWs()
-                echo "[SUCCESS] Workspace was successfully cleaned up."
+                echo '[SUCCESS] Workspace was successfully cleaned up.'
             }
         }
         
-        stage ("Send message") {
+        stage ('Send message') {
             steps {
-                echo "[INFO] Sending message to '${PROVIDER_NAME}' provider with body: ${MESSAGE_BODY} "
+                echo "[INFO] Sending message to '\${PROVIDER_NAME}' provider with body: \${MESSAGE_BODY} "
                 script {
-                    def sendResult = sendCIMessage providerName: ${PROVIDER_NAME}, \
+                    def sendResult = sendCIMessage providerName: \${PROVIDER_NAME}, \
                         messageContent: MESSAGE_BODY, \
                         messageType: 'Custom', \
-                        messageProperties: "EVENT_TYPE=${EVENT_TYPE} \n label=${EVENT_LABEL}", \
+                        messageProperties: "EVENT_TYPE=\${EVENT_TYPE} \n label=\${EVENT_LABEL}", \
                         overrides: [topic: TOPIC], \
                         failOnError: true
-                    echo "[INFO] Sent message ID: ${sendResult.getMessageId()}"
-                    echo "[INFO] Sent message contents: ${sendResult.getMessageContent()}"
+                    echo "[INFO] Sent message ID: \${sendResult.getMessageId()}"
+                    echo "[INFO] Sent message contents: \${sendResult.getMessageContent()}"
                 }
             }
         }
     }
 }
-'''
+"""
 
 // creates folder if is not existing
 def folderPath='PROD'
