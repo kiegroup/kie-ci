@@ -29,11 +29,11 @@ pipeline {
             steps {
                 echo "[INFO] Sending message to '\${PROVIDER_NAME}' provider with body: \${MESSAGE_BODY} "
                 script {
-                    def sendResult = sendCIMessage providerName: \${PROVIDER_NAME}, \
-                        messageContent: MESSAGE_BODY, \
-                        messageType: 'Custom', \
-                        messageProperties: "EVENT_TYPE=\${EVENT_TYPE} \n label=\${EVENT_LABEL}", \
-                        overrides: [topic: TOPIC], \
+                    def sendResult = sendCIMessage providerName: \${PROVIDER_NAME}, \\
+                        messageContent: MESSAGE_BODY, \\
+                        messageType: 'Custom', \\
+                        messageProperties: "EVENT_TYPE=\${EVENT_TYPE} \\n label=\${EVENT_LABEL}", \\
+                        overrides: [topic: TOPIC], \\
                         failOnError: true
                     echo "[INFO] Sent message ID: \${sendResult.getMessageId()}"
                     echo "[INFO] Sent message contents: \${sendResult.getMessageContent()}"
