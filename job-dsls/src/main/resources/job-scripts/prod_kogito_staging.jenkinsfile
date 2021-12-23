@@ -8,25 +8,10 @@ MILESTONE = MILESTONE.trim()
 node {
     def projects = [
         [
-            name: "kiegroup/rhba",
+            name: "kiegroup/kogito-rhba",
             artifacts: [
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "add-ons"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "business-central-eap7-deployable"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "jar", classifier: "business-central-standalone"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "kie-server-ee8"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "kie-server-ee7"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "monitoring-ee7"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "reference-implementation"],
-            ]
-        ], [
-            name: "rhba-installers",
-            artifacts: [
-                [product: "rhpam", group: "org.jboss.installer", name: "rhpam-installer", package: "jar"]
-            ]
-        ], [
-            name: "jboss-integration/bxms-patch-tools",
-            artifacts: [
-                [product: "rhpam", group: "org.jboss.brms-bpmsuite.patching", name: "rhpam", package: "zip", classifier: "update"]
+                [product: "kogito", group: "org.kie.rhba", name: "kogito", package: "zip", classifier: "kogito-and-optaplanner-quickstarts", stagingNamePrefix: 'rhdm'],
+                [product: "kogito", group: "org.kie.rhba", name: "kogito", package: "zip", classifier: "kogito-and-optaplanner-quickstarts", stagingNamePrefix: 'rhpam']
             ]
         ]
     ]
@@ -45,10 +30,10 @@ node {
 
             for (artifact in project.artifacts) {
                 def identifier = identifier(artifact, lastVersion)
-                println "[INFO] staging artifact: ${identifier}"
+                println "[INFO] staging artifact: ${identifier} for version '${lastVersion}'"
 
                 def artifactMetadata = getArtifactMetadata(identifier)
-                def artifactPath = stagingPath(artifact)
+                def artifactPath = stagingPath(artifact, lastVersion)
                 def artifactDirectoryPath = artifactPath - ~/\/[^\/]+$/
 
                 println "[INFO] (re)creating staging target path in: ${artifactPath}"
@@ -122,11 +107,11 @@ def identifier(artifact, version) {
 /*
  * Staging management
  */
-def stagingPath(artifact) {
-    def productStagingCode = [artifact.product.toUpperCase(), MILESTONE].join("-")
+def stagingPath(artifact, version) {
+    def productStagingCode = [artifact.product, MILESTONE].join("-")
     def productStagingPath = "${STAGING_BASE_PATH}/${artifact.product}/${productStagingCode}"
-    def version = MILESTONE - ~/\.[^\.]+$/
-    def artifactName = [artifact.name, version, artifact.classifier].findAll({ it != null }).join("-")
+    def finalVersion = version - ~/\.[^\.]+$/
+    def artifactName = [artifact.stagingNamePrefix, finalVersion, artifact.classifier].findAll({ it != null }).join("-")
     return "${productStagingPath}/${artifactName}.${artifact.package}"
 }
 
