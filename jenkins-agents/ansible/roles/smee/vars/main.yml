@@ -1,6 +1,0 @@
----
-webhook_url: ""
-target_url: ""
-smee_client_version: "1.1.0"
-nodejs_cert_file: "/etc/pki/ca-trust/source/anchors/RH-IT-Root-CA.crt"
-smee_service_path: "/etc/systemd/system/smee.service"
