@@ -79,6 +79,7 @@ dependencies {
     testPlugins 'org.jenkins-ci.plugins:description-setter:1.10'
     testPlugins 'org.jenkins-ci.plugins:email-ext:2.83'
     testPlugins 'org.jenkins-ci.plugins:envinject:2.4.0'
+    testPlugins 'org.jenkins-ci.plugins:generic-webhook-trigger:1.72'
     testPlugins 'org.jenkins-ci.plugins:git:4.7.2'
     testPlugins 'org.jenkins-ci.plugins:ghprb:1.42.2'
     testPlugins 'org.jenkins-ci.plugins:github-branch-source:2.10.0'
