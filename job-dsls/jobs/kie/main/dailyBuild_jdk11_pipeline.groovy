@@ -7,22 +7,18 @@ def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def deployDir="deploy-dir"
 def m2Dir=Constants.LOCAL_MVN_REP
-// def AGENT_DOCKER_LABEL= "furure docker machine"
-def AGENT_DOCKER_LABEL= "kieci-02-docker"
 def AGENT_LABEL="kie-rhel7-pipeline&&kie-mem24g"
-def artifactsPath="/home/docker/kie-artifacts/$kieVersion"
 def EAP7_DOWNLOAD_URL=Constants.EAP7_DOWNLOAD_URL
 
 // creation of folder
 folder("KIE")
 folder ("KIE/${baseBranch}")
 folder("KIE/${baseBranch}/daily-build-jdk11")
-folder("KIE/${baseBranch}/docker")
 
 def folderPath="KIE/${baseBranch}/daily-build-jdk11"
-def dockerPath="KIE/${baseBranch}/docker"
 
 def daily_build='''
+@Library('jenkins-pipeline-shared-libraries')_
 pipeline {
     agent {
         label "$AGENT_LABEL"
@@ -120,6 +116,14 @@ pipeline {
                     sh "./droolsjbpm-build-bootstrap/script/release/05c_dailyBuildDeployLocally.sh $SETTINGS_XML_FILE"
                 }
             }
+            post {
+                always {
+                    script {
+                        saveReports()
+                        util.archiveConsoleLog()
+                    }
+                }
+            }
         }         
         stage('Unpack zip of artifacts to QA Nexus') {
             steps {
@@ -157,6 +161,9 @@ pipeline {
                 sh './trace.sh'
             }
             junit '**/target/surefire-reports/**/*.xml'
+            withCredentials([string(credentialsId: 'KIE_CI_EMAIL_TO', variable: 'KIE_TO')]) {
+                sendNotification()
+            }
         }
         failure{
             emailext body: 'Build log: ${BUILD_URL}consoleText\\n' +
@@ -185,6 +192,17 @@ pipeline {
             cleanWs()
         }                    
     }      
+}
+void saveReports() {
+    junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+}
+
+void sendNotification() {
+    if (currentBuild.result != "SUCCESS") {
+        mailer.sendMarkdownTestSummaryNotification('daily build jdk11 of main branch', "daily build jdk11 of main branch", ["${KIE_TO}"])
+    } else {
+        echo 'No notification sent per configuration'
+    }
 }
 '''
 
