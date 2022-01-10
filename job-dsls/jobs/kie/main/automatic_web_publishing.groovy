@@ -47,7 +47,11 @@ for (reps in REPO_CONFIGS) {
             }
             stage ('checkout website') {
                 steps {
-                    checkout([\$class: 'GitSCM', branches: [[name: 'main']], browser: [\$class: 'GithubWeb', repoUrl: 'https://github.com/kiegroup/${repo}-website'], doGenerateSubmoduleConfigurations: false, extensions: [[\$class: 'RelativeTargetDirectory', relativeTargetDir: '${repo}-website']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/kiegroup/${repo}-website']]])
+                    checkout([\$class: 'GitSCM', branches: [[name: 'main']], browser: [\$class: 'GithubWeb', \n
+                    repoUrl: 'https://github.com/kiegroup/${repo}-website'], \n
+                    doGenerateSubmoduleConfigurations: false, \n
+                    extensions: [[\$class: 'RelativeTargetDirectory', relativeTargetDir: '${repo}-website']], \n
+                    submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'https://github.com/kiegroup/${repo}-website']]])
                     dir("\${WORKSPACE}" + '/${repo}-website') {
                         sh '''pwd  
                            ls -al
@@ -59,7 +63,7 @@ for (reps in REPO_CONFIGS) {
             }
             stage('remove docker image kiegroup/${repo}-website if it exists') {
                 steps {
-                    dir("\${WORKSPACE}" + '/${repo}-website') {
+                    dir("\${WORKSPACE}") {
                         sh '''#!/bin/bash -e 
                            isImage=\$(docker images -q kiegroup/${repo}-website)
                            echo "Image: \$isImage"
@@ -70,7 +74,7 @@ for (reps in REPO_CONFIGS) {
                     }
                 }
             }
-            stage('create directory that stores key files'){
+            stage('create directory that stores secrets'){
                 steps{
                     withCredentials([sshUserPrivateKey(credentialsId: 'filemgmt-host', keyFileVariable: 'KNOWN_HOSTS')]) {
                         dir("\${WORKSPACE}") {
@@ -83,16 +87,32 @@ for (reps in REPO_CONFIGS) {
                     }
                 }
             }
+            stage('copy secrets to keys') {
+                steps {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'jbpm-filemgmt', keyFileVariable: 'FILEMGMT_KEY')]) {
+                        dir("\${WORKSPACE}") {
+                            sh '''
+                               cp \$FILEMGMT_KEY \$WORKSPACE/keys/id_rsa
+                               chmod 600 \$WORKSPACE/keys/id_rsa
+                               ls -l \$WORKSPACE/keys
+                               '''
+                        }
+                    }
+                }
+            }
             stage('build docker container') {
                 steps {
-                    withCredentials([sshUserPrivateKey(credentialsId: '${repo}-filemgmt', keyFileVariable: 'FILEMGMT_KEY')]) {
-                        dir("\${WORKSPACE}" + '/${repo}-website') {
-                            sh '''cp \$FILEMGMT_KEY \$WORKSPACE/keys/id_rsa
-                               chmod 600 \$WORKSPACE/keys/id_rsa
-                               ls -l \$WORKSPACE/keys/id_rsa
+                    withCredentials([sshUserPrivateKey(credentialsId: 'jbpm-filemgmt', keyFileVariable: 'FILEMGMT_KEY')]) {
+                        dir("\${WORKSPACE}" + '/jbpm-website') {
+                            sh '''
                                docker images
-                               docker build -t kiegroup/${repo}-website:latest _dockerPublisher
-                               docker run --cap-add net_raw --cap-add net_admin -i --rm --volume "\${WORKSPACE}"/keys/:/home/jenkins/.ssh/:Z --name ${repo}-container kiegroup/${repo}-website:latest bash -l -c 'echo "INSIDE THE CONTAINER" && echo "WHOAMI" && whoami && echo "PWD" && pwd && ls -al && echo "inside .ssh" && cd /home/jenkins/.ssh && ls -al && cd /home/jenkins/${repo}-website-main && sudo rake setup && rake clean build && rake publish'
+                               docker build -t kiegroup/jbpm-website:latest _dockerPublisher
+                               docker run --cap-add net_raw --cap-add net_admin -i --rm --volume "\${WORKSPACE}"/keys/:/home/jenkins/.ssh/:Z --name jbpm-container kiegroup/jbpm-website:latest bash -l -c 'echo "INSIDE THE CONTAINER" && \\n
+                               echo "WHOAMI" && whoami && echo "PWD" && pwd && ls -al && echo "inside .ssh" && \\n
+                               sudo chown -R jenkins:jenkins /home/jenkins/.ssh && \\n 
+                               cd /home/jenkins/.ssh && ls -al && cd /home/jenkins/jbpm-website-main && \\n 
+                               sudo rake setup && rake clean build && \\n
+                               rsync -Pavqr -e "ssh -i /home/jenkins/.ssh/id_rsa -o KexAlgorithms=diffie-hellman-group1-sha1 -o PubkeyAcceptedKeyTypes=ssh-rsa" --protocol=28 --delete-after _site/* jbpm@filemgmt.jboss.org:/www_htdocs/jbpm/'
                                '''
                         }
                     }
@@ -101,16 +121,17 @@ for (reps in REPO_CONFIGS) {
         }
         post {
             failure{
-                emailext body: 'Build log: \${BUILD_URL}consoleText\\n' +
-                '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download and decompress attached file.)',
-                subject: 'Build #\${BUILD_NUMBER} of ${repo}-web FAILED',
-                to: '${mailRecip}'
+                emailext body: 'Build log: \${BUILD_URL}consoleText \\n' +
+                '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download \\n' +
+                'and decompress attached file.)',
+                subject: 'Build #\${BUILD_NUMBER} of jbpm-web FAILED',
+                to: 'mbiarnes@redhat.com'
                 cleanWs()          
             }
             fixed {
                 emailext body: '',
-                subject: 'Build #\${BUILD_NUMBER} of ${repo}-web is fixed and was SUCCESSFUL',
-                to: '${mailRecip}'
+                subject: 'Build #\${BUILD_NUMBER} of jbpm-web is fixed and was SUCCESSFUL',
+                to: 'mbiarnes@redhat.com'
                 cleanWs()     
             }
             success {
