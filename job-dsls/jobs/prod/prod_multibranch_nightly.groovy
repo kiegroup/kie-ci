@@ -6,7 +6,7 @@
  */
 
 def final DEFAULTS = [
-        prodJobName : 'nightly',
+        prodJobName : 'rhba.nightly',
         scrPath : '.ci/jenkins/Jenkinsfile.nightly',
         repo : 'droolsjbpm-build-bootstrap',
         repUrl : 'https://github.com/kiegroup/droolsjbpm-build-bootstrap',
@@ -33,11 +33,6 @@ def final REPO_CONFIGS = [
         //    repo : 'kogito-tooling',
         //    repUrl : 'https://github.com/kiegroup/kogito-tooling',
         //    jobId : '00363'
-        ],
-        "nightly.rhos01"  : [
-            prodJobName : 'nightly.rhos01',
-            scrPath : '.ci/jenkins/Jenkinsfile.nightly_rhos-01',
-            jobId : '09242'
         ],
 ]
 
