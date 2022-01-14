@@ -140,7 +140,7 @@ for (reps in REPO_CONFIGS) {
         }
     }
 """
-    pipelineJob("${folderPath}/${repo}-automatic-web-publishing") {
+    pipelineJob("${folderPath}/${repo}-website-automatic-publishing") {
 
         description("this is a pipeline job for publishing automatically ${repo}-website")
 
