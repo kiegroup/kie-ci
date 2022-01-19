@@ -24,6 +24,7 @@ pipelineJob(jobName) {
  parameters {
   stringParam('ref', '')
   stringParam('ref_type', '')
+  stringParam('x_github_event', '')
  }
 
  triggers {
@@ -38,7 +39,11 @@ pipelineJob(jobName) {
      value("\$.ref_type")
     }
    }
-   tokenCredentialId(ghAuthTokenId)
+   genericHeaderVariables {
+    genericHeaderVariable {
+     key("x-github-event")
+    }
+   }
    printContributedVariables(true)
    printPostContent(true)
    silentResponse(false)
@@ -52,12 +57,12 @@ pipelineJob(jobName) {
         if (ref_type.equals("branch") && ref.endsWith("-prerelease")) {
             def kogitoToolingBranch = ref
             def kogitoToolingVersion = (ref =~ /[0-9]+\\.[0-9]+\\.[0-9]+/)[ 0 ]
-
-            println kogitoToolingBranch
-            println kogitoToolingVersion
-
-            def result = ["KOGITO_TOOLING_BRANCH":  kogitoToolingBranch, "KOGITO_TOOLING_VERSION": kogitoToolingVersion]
-            return result;
+            def kogitoToolingUmbVersion = kogitoToolingVersion.replaceAll("\\.", "-")
+            
+            def result = ["KOGITO_TOOLING_BRANCH":  kogitoToolingBranch, 
+                          "KOGITO_TOOLING_VERSION": kogitoToolingVersion, 
+                          "KOGITO_TOOLING_UMB_VERSION": kogitoToolingUmbVersion]
+              return result;
         } else {
             return null;
         }
@@ -68,28 +73,34 @@ pipelineJob(jobName) {
   cps {
    script('''
     node {
-     stage('Send UMB') {
-         ciMessageBuilder {
-            providerData {
-                activeMQPublisher {
-                    name('Red Hat Umb')
-                    messageContent('
-                                    {
-                                        \"npmRegistry\": \"\${NPM_REGISTRY_PUBLISH_URL}",
-                                        \"kogitoToolingVersion\": \"\${KOGITO_TOOLING_VERSION}\",
-                                        \"kogitoToolingBranch\": \"\${KOGITO_TOOLING_BRANCH}\"
-                                    }
-                    ')
-                    failOnError(false)
-                    messageProperties('CI_TYPE=custom label=rhba-ci')
-                    messageType('Custom')
-                    overrides {
-                        topic('VirtualTopic.qe.ci.ba.KOGITO_TOOLING.\${KOGITO_TOOLING_VERSION}.CR.trigger')
-                    }
+        stage('Send UMB') {
+            when {
+                expression {
+                    return (\${KOGITO_TOOLING_VERSION} != null)
                 }
             }
-        }  
-     }
+
+            ciMessageBuilder {
+                providerData {
+                    activeMQPublisher {
+                        name('Red Hat Umb')
+                        messageContent('
+                                        {
+                                            \"npmRegistry\": \"\${NPM_REGISTRY_PUBLISH_URL}",
+                                            \"kogitoToolingVersion\": \"\${KOGITO_TOOLING_VERSION}\",
+                                            \"kogitoToolingBranch\": \"\${KOGITO_TOOLING_BRANCH}\"
+                                        }
+                        ')
+                        failOnError(false)
+                        messageProperties('CI_TYPE=custom label=rhba-ci')
+                        messageType('Custom')
+                        overrides {
+                            topic('VirtualTopic.qe.ci.ba.KOGITO_TOOLING.\${KOGITO_TOOLING_UMB_VERSION}.CR.trigger')
+                        }
+                    }
+                }
+            }  
+        }
     }
    ''')
    sandbox()
