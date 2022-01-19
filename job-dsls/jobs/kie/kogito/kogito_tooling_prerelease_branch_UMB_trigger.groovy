@@ -42,6 +42,7 @@ pipelineJob(jobName) {
    genericHeaderVariables {
     genericHeaderVariable {
      key("x-github-event")
+     regexpFilter("")
     }
    }
    printContributedVariables(true)
@@ -62,7 +63,7 @@ pipelineJob(jobName) {
             def result = ["KOGITO_TOOLING_BRANCH":  kogitoToolingBranch, 
                           "KOGITO_TOOLING_VERSION": kogitoToolingVersion, 
                           "KOGITO_TOOLING_UMB_VERSION": kogitoToolingUmbVersion]
-              return result;
+            return result;
         } else {
             return null;
         }
