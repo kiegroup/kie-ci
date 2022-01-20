@@ -77,7 +77,7 @@ pipelineJob(jobName) {
         agent {
             label "$labelName"
         }
-        
+
         stage('Send UMB') {
             when {
                 expression {
@@ -100,7 +100,7 @@ pipelineJob(jobName) {
                         messageProperties('CI_TYPE=custom label=rhba-ci')
                         messageType('Custom')
                         overrides {
-                            topic('VirtualTopic.qe.ci.ba.KOGITO_TOOLING.\${KOGITO_TOOLING_UMB_VERSION}.CR.trigger')
+                            topic('VirtualTopic.qe.ci.ba.kogito-tooling.\${KOGITO_TOOLING_UMB_VERSION}.CR.trigger')
                         }
                     }
                 }
