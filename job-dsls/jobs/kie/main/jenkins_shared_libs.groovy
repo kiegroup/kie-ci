@@ -40,15 +40,15 @@ pipelineJob(jobName) {
                 gitSCM {
                     userRemoteConfigs {
                         userRemoteConfig {
-                            url("https://github.com/\${ghprbPullAuthorLogin}/${repository}/")
+                            url("https://github.com/${ghOrgUnit}/${repository}/")
                             credentialsId(ghJenkinsfilePwd)
                             name('')
-                            refspec('')
+                            refspec('+refs/pull/*:refs/remotes/origin/pr/*')
                         }
                     }
                     branches {
                         branchSpec {
-                            name('${ghprbSourceBranch}')
+                            name('${sha1}')
                         }
                     }
                     browser { }
