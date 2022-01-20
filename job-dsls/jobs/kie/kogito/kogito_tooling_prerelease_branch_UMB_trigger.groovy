@@ -8,7 +8,6 @@ def repo = "kogito-tooling"
 def repoBranch = ''
 def ghOrgUnit = "kiegroup"
 def ghAuthTokenId = "kie-ci"
-def labelName = "kie-rhel7"
 def regexpFilterRegexValue = '([0-9]+)\\.([0-9]+)\\.([0-9]+)-prerelease'
 
 // creation of folder
