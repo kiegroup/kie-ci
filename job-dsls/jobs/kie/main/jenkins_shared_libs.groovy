@@ -83,7 +83,7 @@ pipelineJob(jobName) {
                     blackListCommitAuthor('')
                     whiteListTargetBranches {
                         ghprbBranch {
-                            branch('main')
+                            branch(baseBranch)
                         }
                     }
                     blackListTargetBranches {}
