@@ -20,13 +20,13 @@ pipeline{
             steps {
                 parallel (
                     "main-jdk11-pipeline" : {
-                        build job: "../main/daily-build-jdk11/daily-build-jdk11-pipeline-main", propagate: false
+                        build job: "../main/daily-build-jdk11/jdk11-db-main", propagate: false
                     },  
                     "main-jdk8-pipeline" : {
-                        build job: "../main/daily-build-jdk8/daily-build-jdk8-pipeline-main", propagate: false
+                        build job: "../main/daily-build-jdk8/jdk8-db-main", propagate: false
                     }, 
                     "main-jdk11-prod-pipeline" : {
-                        build job: '../main/daily-build-jdk11-prod/daily-build-jdk11-prod-pipeline-main', propagate: false
+                        build job: '../main/daily-build-jdk11-prod/jdk11-prod-db-main', propagate: false
                     },
                     "7.59.x-jdk11-pipeline" : {
                         build job: "../7.59.x/daily-build-jdk11/daily-build-jdk11-pipeline-7.59.x", propagate: false
@@ -50,7 +50,7 @@ def folderPath="KIE/kie-tools"
 
 pipelineJob("${folderPath}/kieAll_meta_pipeline") {
     
-    description("This is a pipeline job for sending an UMB trigger to run all daily build jobs")
+    description("This is job to orchestrate and run all daily build jobs")
 
     parameters {
         wHideParameterDefinition {
