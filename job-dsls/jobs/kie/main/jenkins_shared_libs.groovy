@@ -3,7 +3,7 @@ import org.kie.jenkins.jobdsl.Constants
 String baseBranch = Constants.BRANCH
 String ghOrgUnit = Constants.GITHUB_ORG_UNIT
 String ghAuthTokenId = 'kie-ci-token'
-String ghJenkinsfilePwd = 'kie-ci'
+String ghJenkinsfilePwd = Constants.CREDENTIALS_ID
 String repository = 'jenkins-pipeline-shared-libraries'
 
 // Creation of folders where jobs are stored
