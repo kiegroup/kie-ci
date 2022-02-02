@@ -4,6 +4,7 @@
  * - kogito.nightly
  * - kogito-tooling.nightly (will be dropped soon)
  */
+import org.kie.jenkins.jobdsl.Constants
 
 def final DEFAULTS = [
         prodJobName : 'rhba.nightly',
@@ -146,6 +147,7 @@ for (repoConfig in REPO_CONFIGS) {
                                         traits {
                                             gitBranchDiscovery()
                                         }
+                                        credentialsId(Constants.CREDENTIALS_ID)
                                     }
                                 }
                             }
