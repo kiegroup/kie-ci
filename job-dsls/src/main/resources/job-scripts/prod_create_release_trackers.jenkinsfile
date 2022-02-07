@@ -19,7 +19,7 @@ pipeline {
 
         stage('Clone the repository') {
             steps {
-                sh "git clone ${INTEGRATION_PLATFORM_TOOLING_REPOSITORY}"
+                sh "git clone ${INTEGRATION_PLATFORM_TOOLING_REPOSITORY} integration-platform-tooling"
             }
         }
 
