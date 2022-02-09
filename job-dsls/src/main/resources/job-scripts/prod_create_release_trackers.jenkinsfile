@@ -1,0 +1,42 @@
+pipeline {
+    agent {
+        label 'kie-rhel7 && !master'
+    }
+
+    stages {
+        stage('Clean workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Print variables') {
+            steps {
+                println "[INFO] VERSION: ${VERSION}"
+                println "[INFO] TEMPLATE: ${TEMPLATE}"
+            }
+        }
+
+        stage('Clone the repository') {
+            steps {
+                sh "git clone ${INTEGRATION_PLATFORM_TOOLING_REPOSITORY} integration-platform-tooling"
+            }
+        }
+
+        stage('Create the release tracker tickets') {
+            steps {
+                withCredentials([string(credentialsId: 'jira-token', variable: 'JIRA_TOKEN')]) {
+                    dir('integration-platform-tooling') {
+                        sh "python3 release-generator.py --headless --authtoken ${JIRA_TOKEN} ${VERSION} ${TEMPLATE}.yaml"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
