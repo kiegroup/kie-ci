@@ -49,8 +49,8 @@ job("${folderPath}/a-seed-job-kie-tools") {
 
     steps {
         jobDsl {
-            targets("jobs-dsls/jobs/kie/kogito/kie_tools_prerelease_branch_UMB_trigger.groovy \n" +
-                    "jobs-dsls/jobs/seed_jobs/kogito_tools_seed_job.groovy")
+            targets("job-dsls/jobs/kie/kogito/kie_tools_prerelease_branch_UMB_trigger.groovy \n" +
+                    "job-dsls/jobs/seed_jobs/kogito_tools_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)
