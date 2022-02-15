@@ -27,29 +27,33 @@ pipelineJob(jobName) {
   stringParam('x_github_event', '')
  }
 
- triggers {
-  genericTrigger {
-   genericVariables {
-    genericVariable {
-     key("ref")
-     value("\$.ref")
-    }
-    genericVariable {
-     key("ref_type")
-     value("\$.ref_type")
+ properties {
+  pipelineTriggers {
+   triggers {
+    GenericTrigger {
+     genericVariables {
+      genericVariable {
+       key("ref")
+       value("\$.ref")
+      }
+      genericVariable {
+       key("ref_type")
+       value("\$.ref_type")
+      }
+     }
+     genericHeaderVariables {
+      genericHeaderVariable {
+       key("x-github-event")
+       regexpFilter("")
+      }
+     }
+     printContributedVariables(true)
+     printPostContent(true)
+     silentResponse(false)
+     regexpFilterText("\$ref")
+     regexpFilterExpression(regexpFilterRegexValue)
     }
    }
-   genericHeaderVariables {
-    genericHeaderVariable {
-     key("x-github-event")
-     regexpFilter("")
-    }
-   }
-   printContributedVariables(true)
-   printPostContent(true)
-   silentResponse(false)
-   regexpFilterText("\$ref")
-   regexpFilterExpression(regexpFilterRegexValue)
   }
  }
 
