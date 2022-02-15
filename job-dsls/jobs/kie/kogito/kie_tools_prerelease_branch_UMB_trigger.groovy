@@ -4,7 +4,7 @@
  */
 import org.kie.jenkins.jobdsl.Constants
 
-def repo = "kogito-tooling"
+def repo = "kie-tools"
 def repoBranch = ''
 def ghOrgUnit = "kiegroup"
 def ghAuthTokenId = "kie-ci"
@@ -14,9 +14,9 @@ def regexpFilterRegexValue = '([0-9]+)\\.([0-9]+)\\.([0-9]+)-prerelease'
 // creation of folder
 folder("KIE")
 folder ("KIE/kogito")
-folder ("KIE/kogito/kogito-tooling")
+folder ("KIE/kogito/kie-tools")
 
-def folderPath="KIE/kogito/kogito-tooling"
+def folderPath="KIE/kogito/kie-tools"
 
 String jobName = "${folderPath}/${repo}-prerelease-branch-UMB-trigger"
 
