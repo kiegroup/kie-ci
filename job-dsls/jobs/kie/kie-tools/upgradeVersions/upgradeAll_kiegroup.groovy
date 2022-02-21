@@ -99,7 +99,10 @@ pipeline {
                             'FINAL_BRANCH=$(echo $NEW_BRANCH) \\n' +
                             './droolsjbpm-build-bootstrap/script/git-all.sh push --set-upstream origin $FINAL_BRANCH \\n' +
                         'else \\n' +
-                            './droolsjbpm-build-bootstrap/script/git-all.sh push origin \\n' +
+                            'cd droolsjbpm-build-bootstrap \\n' +
+                            'git push --set-upstream origin main \\n' +
+                            'cd ..\\n' +
+                            './droolsjbpm-build-bootstrap/script/git-all.sh push origin \\n' +                        
                         'fi'
                 }
             }
