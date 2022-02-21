@@ -12,7 +12,7 @@ def mvnToolEnv=Constants.MAVEN_TOOL
 // number of build that has stored the binaries (*tar.gz) that are wanted to upload
 def binariesNR=1
 def toolsVer="7.46.0.Final"
-def AGENT_LABEL="kie-releases"
+def AGENT_LABEL="rhos-d-kie-releases"
 // directory where the zip with all binaries is stored
 def zipDir="\$WORKSPACE/community-deploy-dir"
 // in case of testing the uploads of binaries to Nexus the URL should be https://repository.stage.jboss.org/nexus
