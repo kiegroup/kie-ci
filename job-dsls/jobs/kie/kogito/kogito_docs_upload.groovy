@@ -157,7 +157,7 @@ pipeline {
         success{
             emailext body: 'Everything worked fine',
                  subject: 'Build #${BUILD_NUMBER} of kogito docs-upload was SUCCESSFUL',
-                 to: 'sterobin@redhat.com, hmanwani@redhat.com, mbiarnes@redhat.com'  
+                 to: 'kaldesai@redhat.com, mbiarnes@redhat.com'  
             cleanWs()                           
         }                        
     }  
