@@ -182,6 +182,16 @@ pipeline {
                 }    
             }
         }
+        stage('Create clean up script') {
+            steps {
+                sh 'cat > "$WORKSPACE/clean-up.sh" << EOT \\n' +
+                        'cd \\\\$1 \\n' +
+                        '# Add test reports to the index to prevent their removal in the following step \\n' +
+                        'git add --force **target/*-reports/TEST-*.xml \\n' +
+                        'git clean -ffdx \\n' +
+                        'EOT'
+            }
+        }        
         // mvn clean deploy of each repository to a locally directory that will be uploaded later on - this saves time        
         stage('Build & deploy repositories locally'){
             when{
