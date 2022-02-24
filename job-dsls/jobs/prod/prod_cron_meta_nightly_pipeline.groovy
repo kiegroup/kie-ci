@@ -22,8 +22,12 @@ def KOGITO_NEXT_PRODUCT_BRANCH=NEXT_PRODUCT_BRANCH
 def KOGITO_CURRENT_PRODUCT_VERSION='1.11.0'
 def KOGITO_CURRENT_PRODUCT_BRANCH='1.11.x'
 
+def KOGITO_1_13_PRODUCT_VERSION='1.13.0'
+def KOGITO_1_13_PRODUCT_BRANCH='1.13.x'
+
 def OPTAPLANNER_NEXT_PRODUCT_VERSION=NEXT_PRODUCT_VERSION
 def OPTAPLANNER_CURRENT_PRODUCT_VERSION='8.11.0'
+def OPTAPLANNER_1_13_PRODUCT_VERSION='8.13.0'
 // def DROOLS_CURRENT_PRODUCT_VERSION=OPTAPLANNER_CURRENT_PRODUCT_VERSION // Should be uncommented once Current is set for RHPAM 7.13.0
 
 
@@ -88,10 +92,26 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${getNexusFromVersion(KOGITO_CURRENT_PRODUCT_VERSION)}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(KOGITO_CURRENT_PRODUCT_VERSION)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${KOGITO_CURRENT_PRODUCT_VERSION}'],
-                        // [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '\${DROOLS_CURRENT_PRODUCT_VERSION}'], // Should be uncommented once Current is set for RHPAM 7.13.0
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${OPTAPLANNER_CURRENT_PRODUCT_VERSION}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${CURRENT_PRODUCT_BRANCH}'],
                         [\$class: 'StringParameterValue', name: 'RHBA_RELEASE_VERSION', value: '${getNexusFromVersion(CURRENT_PRODUCT_VERSION)}'],
+                        [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
+                ]
+            }
+        }
+
+        // Kogito prod nightlies for 1.13
+        stage('trigger KOGITO nightly job ${KOGITO_1_13_PRODUCT_VERSION}') {
+            steps {
+                build job: 'kogito.nightly/${KOGITO_1_13_PRODUCT_BRANCH}', propagate: false, wait: true, parameters: [
+                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-${getNexusFromVersion(NEXT_PRODUCT_VERSION)}-nightly-with-upstream'],
+                        [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '${CURRENT_RHBA_VERSION_PREFIX}'],
+                        [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${getNexusFromVersion(KOGITO_1_13_PRODUCT_BRANCH)}/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(KOGITO_1_13_PRODUCT_VERSION)}'],
+                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${KOGITO_1_13_PRODUCT_VERSION}'],
+                        [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${OPTAPLANNER_1_13_PRODUCT_VERSION}'],
+                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${NEXT_PRODUCT_BRANCH}'],
+                        [\$class: 'StringParameterValue', name: 'RHBA_RELEASE_VERSION', value: '${getNexusFromVersion(NEXT_PRODUCT_VERSION)}'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
