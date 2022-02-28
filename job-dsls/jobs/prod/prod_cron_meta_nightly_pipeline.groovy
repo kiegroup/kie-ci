@@ -28,6 +28,7 @@ def KOGITO_1_13_PRODUCT_BRANCH='1.13.x'
 def OPTAPLANNER_NEXT_PRODUCT_VERSION=NEXT_PRODUCT_VERSION
 def OPTAPLANNER_CURRENT_PRODUCT_VERSION='8.11.0'
 def OPTAPLANNER_1_13_PRODUCT_VERSION='8.13.0'
+def DROOLS_1_13_PRODUCT_VERSION='8.13.0'
 // def DROOLS_CURRENT_PRODUCT_VERSION=OPTAPLANNER_CURRENT_PRODUCT_VERSION // Should be uncommented once Current is set for RHPAM 7.13.0
 
 
@@ -110,6 +111,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(KOGITO_1_13_PRODUCT_VERSION)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${KOGITO_1_13_PRODUCT_VERSION}'],
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${OPTAPLANNER_1_13_PRODUCT_VERSION}'],
+                        [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${DROOLS_1_13_PRODUCT_VERSION}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${NEXT_PRODUCT_BRANCH}'],
                         [\$class: 'StringParameterValue', name: 'RHBA_RELEASE_VERSION', value: '${getNexusFromVersion(NEXT_PRODUCT_VERSION)}'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
