@@ -1,6 +1,6 @@
 /**
  * Creates job that triggers when a new `<MAJOR>-<MINOR>-<PATCH>-prerelease` branch is
-   pushed to kogito-tooling repository and notifies QE of this by sending and UMB message.
+   pushed to kie-tools repository and notifies QE of this by sending and UMB message.
  */
 import org.kie.jenkins.jobdsl.Constants
 
@@ -12,7 +12,7 @@ def labelName = "kie-rhel7"
 def regexpFilterRegexValue = '([0-9]+)\\.([0-9]+)\\.([0-9]+)-prerelease'
 
 // creation of folder
-folder("KIE")
+folder ("KIE")
 folder ("KIE/kogito")
 folder ("KIE/kogito/kie-tools")
 
@@ -60,13 +60,13 @@ pipelineJob(jobName) {
  environmentVariables{
     groovy('''
         if (ref_type.equals("branch") && ref.endsWith("-prerelease")) {
-            def kogitoToolingBranch = ref
-            def kogitoToolingVersion = (ref =~ /[0-9]+\\.[0-9]+\\.[0-9]+/)[ 0 ]
-            def kogitoToolingUmbVersion = kogitoToolingVersion.replaceAll("\\.", "-")
+            def kieToolingBranch = ref
+            def kieToolingVersion = (ref =~ /[0-9]+\\.[0-9]+\\.[0-9]+/)[ 0 ]
+            def kieToolingUmbVersion = kieToolingVersion.replaceAll("\\.", "-")
             
-            def result = ["KOGITO_TOOLING_BRANCH":  kogitoToolingBranch, 
-                          "KOGITO_TOOLING_VERSION": kogitoToolingVersion, 
-                          "KOGITO_TOOLING_UMB_VERSION": kogitoToolingUmbVersion]
+            def result = ["KIE_TOOLS_BRANCH":  kieToolingBranch, 
+                          "KIE_TOOLS_VERSION": kieToolingVersion, 
+                          "KIE_TOOLS_UMB_VERSION": kieToolingUmbVersion]
             return result;
         } else {
             return null;
@@ -85,7 +85,7 @@ pipelineJob(jobName) {
         stage('Send UMB') {
             when {
                 expression {
-                    return (\${KOGITO_TOOLING_VERSION} != null)
+                    return (\${KIE_TOOLS_VERSION} != null)
                 }
             }
 
@@ -96,15 +96,15 @@ pipelineJob(jobName) {
                         messageContent('
                                         {
                                             \"npmRegistry\": \"\${NPM_REGISTRY_PUBLISH_URL}",
-                                            \"kogitoToolingVersion\": \"\${KOGITO_TOOLING_VERSION}\",
-                                            \"kogitoToolingBranch\": \"\${KOGITO_TOOLING_BRANCH}\"
+                                            \"kieToolingVersion\": \"\${KIE_TOOLS_VERSION}\",
+                                            \"kieToolingBranch\": \"\${KIE_TOOLS_BRANCH}\"
                                         }
                         ')
                         failOnError(false)
                         messageProperties('CI_TYPE=custom label=rhba-ci')
                         messageType('Custom')
                         overrides {
-                            topic('VirtualTopic.qe.ci.ba.kogito-tooling.\${KOGITO_TOOLING_UMB_VERSION}.CR.trigger')
+                            topic('VirtualTopic.qe.ci.ba.kie-tools.\${KIE_TOOLS_UMB_VERSION}.CR.trigger')
                         }
                     }
                 }
