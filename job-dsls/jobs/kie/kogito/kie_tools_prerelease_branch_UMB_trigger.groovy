@@ -95,7 +95,7 @@ pipelineJob(jobName) {
                         name('Red Hat Umb')
                         messageContent('
                                         {
-                                            \"npmRegistry\": \"\${NPM_REGISTRY_PUBLISH_URL}",
+                                            \"npmRegistry\": \"\${NPM_REGISTRY_PUBLISH_URL}\",
                                             \"kieToolingVersion\": \"\${KIE_TOOLS_VERSION}\",
                                             \"kieToolingBranch\": \"\${KIE_TOOLS_BRANCH}\"
                                         }
