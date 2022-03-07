@@ -1,14 +1,12 @@
 /**
  * Creates job that triggers when a new `<MAJOR>-<MINOR>-<PATCH>-prerelease` branch is
-   pushed to kie-tools repository and notifies QE of this by sending and UMB message.
+ pushed to kie-tools repository and notifies QE of this by sending and UMB message.
  */
 import org.kie.jenkins.jobdsl.Constants
 
 def repo = "kie-tools"
-def repoBranch = ''
-def ghOrgUnit = "kiegroup"
-def ghAuthTokenId = "kie-ci"
-def labelName = "kie-rhel7"
+def labelName = "kie-rhel7 && kie-mem8g"
+def javadk = Constants.JDK_TOOL
 def regexpFilterRegexValue = '([0-9]+)\\.([0-9]+)\\.([0-9]+)-prerelease'
 
 // creation of folder
@@ -20,99 +18,103 @@ def folderPath="KIE/kogito/kie-tools"
 
 String jobName = "${folderPath}/${repo}-prerelease-branch-UMB-trigger"
 
-pipelineJob(jobName) {
- parameters {
-  stringParam('ref', '')
-  stringParam('ref_type', '')
-  stringParam('x_github_event', '')
- }
+job(jobName) {
 
- properties {
-  pipelineTriggers {
-   triggers {
-    GenericTrigger {
-     genericVariables {
-      genericVariable {
-       key("ref")
-       value("\$.ref")
-      }
-      genericVariable {
-       key("ref_type")
-       value("\$.ref_type")
-      }
-     }
-     genericHeaderVariables {
-      genericHeaderVariable {
-       key("x-github-event")
-       regexpFilter("")
-      }
-     }
-     printContributedVariables(true)
-     printPostContent(true)
-     silentResponse(false)
-     regexpFilterText("\$ref")
-     regexpFilterExpression(regexpFilterRegexValue)
+    description("this job sends an Red Hat UMB trigger when a new branch in kie-tools should be created")
+
+    logRotator{
+        numToKeep(5)
     }
-   }
-  }
- }
 
- environmentVariables{
-    groovy('''
-        if (ref_type.equals("branch") && ref.endsWith("-prerelease")) {
-            def kieToolingBranch = ref
-            def kieToolingVersion = (ref =~ /[0-9]+\\.[0-9]+\\.[0-9]+/)[ 0 ]
-            def kieToolingUmbVersion = kieToolingVersion.replaceAll("\\.", "-")
-            
-            def result = ["KIE_TOOLS_BRANCH":  kieToolingBranch, 
-                          "KIE_TOOLS_VERSION": kieToolingVersion, 
-                          "KIE_TOOLS_UMB_VERSION": kieToolingUmbVersion]
-            return result;
-        } else {
-            return null;
-        }
-    ''')
- }
+    jdk(javadk)
 
- definition {
-  cps {
-   script('''
-    node {
-        agent {
-            label "$labelName"
-        }
+    label(labelName)
 
-        stage('Send UMB') {
-            when {
-                expression {
-                    return (\${KIE_TOOLS_VERSION} != null)
+    parameters {
+        stringParam('ref', '')
+        stringParam('ref_type', '')
+        stringParam('x_github_event', '')
+    }
+
+    publishers {
+        cleanWs()
+        ciMessageNotifier {
+            providerData {
+                activeMQPublisher {
+                    name('Red Hat Umb')
+                    overrides {
+                        topic("VirtualTopic.qe.ci.ba.kie-tools.\${KIE_TOOLS_UMB_VERSION}.CR.trigger")
+                    }
+                    // Type of CI message to be sent.
+                    messageType('Custom')
+                    messageContent("""
+                            {
+                                \"npmRegistry\": \"\${NPM_REGISTRY_PUBLISH_URL}\",
+                                \"kieToolsVersion\": \"\${KIE_TOOLS_VERSION}\",
+                                \"kieToolsBranch\": \"\${KIE_TOOLS_BRANCH}\"
+                            }
+                            """)
+                    // Whether you want to fail the build if there is an error sending a message.
+                    failOnError(false)
+                    // KEY=value pairs, one per line (Java properties file format) to be used as message properties.
+                    messageProperties('CI_TYPE=custom\nlabel=rhba-ci')
+
                 }
             }
-
-            ciMessageBuilder {
-                providerData {
-                    activeMQPublisher {
-                        name('Red Hat Umb')
-                        messageContent('
-                                        {
-                                            \"npmRegistry\": \"\${NPM_REGISTRY_PUBLISH_URL}\",
-                                            \"kieToolingVersion\": \"\${KIE_TOOLS_VERSION}\",
-                                            \"kieToolingBranch\": \"\${KIE_TOOLS_BRANCH}\"
-                                        }
-                        ')
-                        failOnError(false)
-                        messageProperties('CI_TYPE=custom label=rhba-ci')
-                        messageType('Custom')
-                        overrides {
-                            topic('VirtualTopic.qe.ci.ba.kie-tools.\${KIE_TOOLS_UMB_VERSION}.CR.trigger')
-                        }
-                    }
-                }
-            }  
         }
     }
-   ''')
-   sandbox()
-  }
- }
+
+    environmentVariables{
+        keepBuildVariables(true)
+        keepSystemVariables(true)
+        groovy("""
+            print 'START'
+            if (ref_type.equals("branch") && ref.endsWith("-prerelease")) {
+                def kieToolsBranch = ref
+                def kieToolsVersion = (ref =~ /[0-9]+\\.[0-9]+\\.[0-9]+/)[ 0 ]
+                def kieToolsUmbVersion = kieToolsVersion.replaceAll("\\\\.", "-")
+
+                print kieToolsBranch
+                print kieToolsVersion
+                print kieToolsUmbVersion
+           
+                def result = ["KIE_TOOLS_BRANCH":  kieToolsBranch, 
+                              "KIE_TOOLS_VERSION": kieToolsVersion,
+                              "KIE_TOOLS_UMB_VERSION": kieToolsUmbVersion]
+                return result;
+                } else {
+                return null;
+            }
+        """)
+    }
+
+    triggers {
+        GenericTrigger{
+            genericVariables {
+                genericVariable {
+                    key('ref')
+                    value("\$.ref")
+                    expressionType('JSONPath')
+                }
+                genericVariable {
+                    key('ref_type')
+                    value("\$.ref_type")
+                    expressionType('JSONPath')
+                }
+            regexpFilterText('') //Optional, defaults to empty string
+            regexpFilterExpression('') //Optional, defaults to empty string
+            }
+            genericHeaderVariables {
+                genericHeaderVariable {
+                    key('x-github-event')
+                    regexpFilter("")
+                }
+                printContributedVariables(true)
+                printPostContent(true)
+                silentResponse(false)
+                regexpFilterText("\$ref") //Optional, defaults to empty string
+                regexpFilterExpression("$regexpFilterRegexValue") //Optional, defaults to empty string
+            }
+        }
+    }
 }

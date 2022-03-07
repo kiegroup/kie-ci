@@ -19,8 +19,6 @@ job("${folderPath}/a-seed-job-kie-tools") {
 
     description("this job creates needed Jenkins job for kie-tools in kogito folder")
 
-    disabled()
-
     label("kie-rhel7 && kie-mem8g")
 
     logRotator {
