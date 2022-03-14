@@ -2,7 +2,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 // definition of parameters
 
-def javaToolEnv="KIE_JDK1_8"
+def javaToolEnv=Constants.JDK_TOOL
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_TOOL
