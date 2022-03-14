@@ -29,10 +29,7 @@ pipeline {
             steps {
                 script {
                     dir('bxms-tooling/release_scripts') {
-                        def OPTIONAL_PARAMS = ""
-                        if (GITHUB_REFERENCE != "") {
-                            OPTIONAL_PARAMS = "--cref ${GITHUB_REFERENCE}"
-                        }
+                        def OPTIONAL_PARAMS = GITHUB_REFERENCE != "" ? "--cref ${GITHUB_REFERENCE}" : ''
                         sh "python3 GenerateOpenshiftSrc.py --builds ${BUILDS} --version ${VERSION} --of ${OVERRIDING_FILE} ${OPTIONAL_PARAMS}"
                     }
                 }

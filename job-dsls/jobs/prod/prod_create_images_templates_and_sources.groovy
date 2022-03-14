@@ -8,12 +8,12 @@ def folderPath = "PROD"
 folder(folderPath)
 
 pipelineJob("${folderPath}/create-images-templates-and-sources") {
-    description('This job creates the Openshift images templates and sources.')
+    description('This job creates the Openshift images templates and sources, it must be run separately for RHPAM and RHDM.')
 
     parameters {
         stringParam('VERSION', '', ' The milestone version, i.e. 7.12.1')
         stringParam('BUILDS', '', 'List of Brew builds separated by comma')
-        stringParam('OVERRIDING_FILE', '', 'The overriding file that will be fetched from the images repositories')
+        stringParam('OVERRIDING_FILE', 'branch-overrides.yaml', 'The overriding file that will be fetched from the images repositories')
         stringParam('GITHUB_REFERENCE', '', 'Override the GitHub reference for all cloned repositories')
     }
 
