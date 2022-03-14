@@ -9,7 +9,7 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def javadk=Constants.JDK_TOOL
-def AGENT_LABEL="rhos-d && kie-rhel7 && kie-mem8g"
+def AGENT_LABEL="rhos-01 && kie-rhel7 && kie-mem8g"
 def MVN_TOOL = Constants.MAVEN_TOOL
 def JDK_TOOL = Constants.JDK_TOOL
 def BASE_BRANCH = ""
