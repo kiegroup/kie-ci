@@ -15,6 +15,7 @@ pipeline {
                 println "[INFO] VERSION: ${VERSION}"
                 println "[INFO] BUILDS: ${BUILDS}"
                 println "[INFO] OVERRIDING_FILE: ${OVERRIDING_FILE}"
+                println "[INFO] GITHUB_REFERENCE: ${GITHUB_REFERENCE}"
             }
         }
 
@@ -26,8 +27,14 @@ pipeline {
 
         stage('Create images templates and sources') {
             steps {
-                dir('bxms-tooling/release_scripts') {
-                    sh "python3 GenerateOpenshiftSrc.py --builds ${BUILDS} --version ${VERSION} --of ${OVERRIDING_FILE}"
+                script {
+                    dir('bxms-tooling/release_scripts') {
+                        def OPTIONAL_PARAMS = ""
+                        if (GITHUB_REFERENCE != "") {
+                            OPTIONAL_PARAMS = "--cref ${GITHUB_REFERENCE}"
+                        }
+                        sh "python3 GenerateOpenshiftSrc.py --builds ${BUILDS} --version ${VERSION} --of ${OVERRIDING_FILE} ${OPTIONAL_PARAMS}"
+                    }
                 }
             }
         }

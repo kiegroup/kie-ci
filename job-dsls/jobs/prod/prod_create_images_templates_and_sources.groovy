@@ -11,9 +11,10 @@ pipelineJob("${folderPath}/create-images-templates-and-sources") {
     description('This job creates the Openshift images templates and sources.')
 
     parameters {
-        stringParam('VERSION', '', ' The release candidate version, i.e. 7.12.1.CR1')
+        stringParam('VERSION', '', ' The milestone version, i.e. 7.12.1')
         stringParam('BUILDS', '', 'List of Brew builds separated by comma')
         stringParam('OVERRIDING_FILE', '', 'The overriding file that will be fetched from the images repositories')
+        stringParam('GITHUB_REFERENCE', '', 'Override the GitHub reference for all cloned repositories')
     }
 
     logRotator {
