@@ -1,0 +1,46 @@
+pipeline {
+    agent {
+        label 'kie-rhel7 && !master'
+    }
+
+    stages {
+        stage('Clean workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Print variables') {
+            steps {
+                println "[INFO] VERSION: ${VERSION}"
+                println "[INFO] BUILDS: ${BUILDS}"
+                println "[INFO] OVERRIDING_FILE: ${OVERRIDING_FILE}"
+                println "[INFO] GITHUB_REFERENCE: ${GITHUB_REFERENCE}"
+            }
+        }
+
+        stage('Clone the repository') {
+            steps {
+                sh "git clone ${BXMS_TOOLING_REPOSITORY} bxms-tooling"
+            }
+        }
+
+        stage('Create images templates and sources') {
+            steps {
+                script {
+                    dir('bxms-tooling/release_scripts') {
+                        def OPTIONAL_PARAMS = GITHUB_REFERENCE != "" ? "--cref ${GITHUB_REFERENCE}" : ''
+                        sh "python3 GenerateOpenshiftSrc.py --builds ${BUILDS} --version ${VERSION} --of ${OVERRIDING_FILE} ${OPTIONAL_PARAMS}"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'bxms-tooling/release_scripts/*.zip', fingerprint: true
+            cleanWs()
+        }
+    }
+}
