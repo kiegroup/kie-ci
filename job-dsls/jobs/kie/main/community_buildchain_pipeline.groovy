@@ -22,7 +22,7 @@ def JENKINSFILE_REPO = 'droolsjbpm-build-bootstrap'
 def JENKINSFILE_PWD= 'kie-ci'
 def JENKINSFILE_URL = "https://github.com/${GH_ORG_UNIT}/${JENKINSFILE_REPO}"
 def JENKINSFILE_PATH = '.ci/jenkins/Jenkinsfile.release'
-def NEXUS_URL = "https://repository.jboss.org/nexus"
+def NEXUS_URL = "https://repository.jboss.org/nexus/content/groups/kie-group"
 def SETTINGS_XML = '3f317dd7-4d08-4ee4-b9bb-969c309e782c'
 
 
