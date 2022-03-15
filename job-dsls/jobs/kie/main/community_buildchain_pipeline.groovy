@@ -13,7 +13,7 @@ def MVN_TOOL=Constants.MAVEN_TOOL
 def BUILD_NR=1
 def TOOLS_VER="7.46.0.Final"
 //def AGENT_LABEL="rhos-d-kie-releases"
-def AGENT_LABEL='rhos-01-kie-rhel7-pipeline && kie-mem24g'
+def AGENT_LABEL='kie-releases'
 // directory where the zip with all binaries is stored
 def ZIP_DIR="community-deploy-dir"
 // download URL of jboss-eap for the additional tests
@@ -23,7 +23,7 @@ def JENKINSFILE_REPO = 'droolsjbpm-build-bootstrap'
 def JENKINSFILE_PWD= 'kie-ci'
 def JENKINSFILE_URL = "https://github.com/${GH_ORG_UNIT}/${JENKINSFILE_REPO}"
 def JENKINSFILE_PATH = '.ci/jenkins/Jenkinsfile.release'
-def NEXUS_URL = "https://repository.jboss.org/nexus/content/groups/kie-group"
+def NEXUS_URL = "https://repository.jboss.org/nexus"
 def SETTINGS_XML = '3f317dd7-4d08-4ee4-b9bb-969c309e782c'
 
 
