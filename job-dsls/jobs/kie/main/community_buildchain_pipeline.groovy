@@ -12,7 +12,6 @@ def MVN_TOOL=Constants.MAVEN_TOOL
 // number of build that has stored the binaries (*tar.gz) that are wanted to upload
 def BUILD_NR=1
 def TOOLS_VER="7.46.0.Final"
-//def AGENT_LABEL="rhos-d-kie-releases"
 def AGENT_LABEL='kie-releases'
 // directory where the zip with all binaries is stored
 def ZIP_DIR="community-deploy-dir"
