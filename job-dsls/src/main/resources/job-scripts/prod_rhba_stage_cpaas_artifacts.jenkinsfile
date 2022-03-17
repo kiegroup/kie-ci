@@ -1,0 +1,100 @@
+def artifacts = [
+    [originClassifier: "maven-repository.zip", finalClassifier: "maven-repository.zip", stageCommand: "cp", info: "Copying maven repository zip"],
+    [originClassifier: "license.zip", finalClassifier: "licenses.zip", stageCommand: "cp", info: "Copying licenses zip"],
+    [originClassifier: "src.zip", finalClassifier: "sources.zip", stageCommand: "cp", info: "Copying sources zip"],
+    [originClassifier: "offliner.zip", finalClassifier: "offliner.zip", stageCommand: "mv", info: "Moving offliner zip"]
+]
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && !master'
+    }
+
+    environment {
+        PRODUCT_NAME = PRODUCT_NAME.trim()
+        VERSION = VERSION.trim()
+        RCM_HOST = RCM_HOST.trim()
+        STAGING_BASE_PATH = STAGING_BASE_PATH.trim()
+        PRODUCT_NAME_LOWER_CASE = PRODUCT_NAME.toLowerCase()
+        RHBA_FOLDER_PATH = "${STAGING_BASE_PATH}/rhba/rhba-${VERSION}"
+        TARGET_FOLDER_PATH = "${STAGING_BASE_PATH}/${PRODUCT_NAME_LOWER_CASE}/${PRODUCT_NAME}-${VERSION}"
+    }
+
+    stages {
+        stage('Clean workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Print variables') {
+            steps {
+                println "[INFO] PRODUCT_NAME: ${PRODUCT_NAME}"
+                println "[INFO] VERSION: ${VERSION}"
+                println "[INFO] RCM_HOST: ${RCM_HOST}"
+                println "[INFO] STAGING_BASE_PATH: ${STAGING_BASE_PATH}"
+            }
+        }
+
+        stage('Clone integration-platform-tooling repository') {
+            steps {
+                sh "git clone ${INTEGRATION_PLATFORM_TOOLING_REPOSITORY} integration-platform-tooling"
+            }
+        }
+
+        stage("Create offliner zip") {
+            steps {
+                script {
+                    createOfflinerZip(RHBA_FOLDER_PATH)
+                }
+            }
+        }
+
+        stage('Stage artifacts produced by CPaaS') {
+            steps {
+                script {
+                    for (artifact in artifacts) {
+                        stageArtifact(artifact, RHBA_FOLDER_PATH, TARGET_FOLDER_PATH)
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+
+def createOfflinerZip(rhbaFolderPath) {
+    println "Creating offliner zip"
+    def offlinerFolderName = "${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-offliner"
+    def offlinerFolderPath = "${rhbaFolderPath}/${offlinerFolderName}"
+
+    remoteExec("mkdir -p ${offlinerFolderPath}")
+    remoteExec("cp ${rhbaFolderPath}/offliner.txt ${offlinerFolderPath}")
+    sshagent(credentials: ['rcm-publish-server']) {
+        sh "scp -o StrictHostKeyChecking=no integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba@${RCM_HOST}:${offlinerFolderPath}/offline-repo-builder.sh"
+    }
+    remoteExec("cd ${rhbaFolderPath}; zip -r rhba-${VERSION}-offliner.zip ${offlinerFolderName}")
+    remoteExec("rm -rf ${offlinerFolderPath}")
+}
+
+def stageArtifact(artifact, rhbaFolderPath, targetFolderPath) {
+    def artifactPath = "${rhbaFolderPath}/rhba-${VERSION}-${artifact.originClassifier}"
+    def targetArtifactPath = "${targetFolderPath}/${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-${artifact.finalClassifier}"
+    println "${artifact.info} from ${artifactPath} to ${targetArtifactPath}"
+    remoteExec("${artifact.stageCommand} ${artifactPath} ${targetArtifactPath}")
+}
+
+def getMilestoneVersion(version) {
+    return version.substring(0, version.lastIndexOf("."))
+}
+
+def remoteExec(command) {
+    sshagent(['rcm-publish-server']) {
+        return sh(script: "ssh -o StrictHostKeyChecking=no rhba@${RCM_HOST} '${command}'", returnStdout: true)
+    }
+}
