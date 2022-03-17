@@ -24,6 +24,7 @@ def KOGITO_CURRENT_PRODUCT_BRANCH='1.11.x'
 
 def KOGITO_1_13_PRODUCT_VERSION='1.13.0'
 def KOGITO_1_13_PRODUCT_BRANCH='1.13.x'
+def KOGITO_1_13_CONFIG_BRANCH="kogito/${KOGITO_1_13_PRODUCT_BRANCH}"
 
 def OPTAPLANNER_NEXT_PRODUCT_VERSION=NEXT_PRODUCT_VERSION
 def OPTAPLANNER_CURRENT_PRODUCT_VERSION='8.11.0'
@@ -111,7 +112,7 @@ pipeline{
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(KOGITO_1_13_PRODUCT_VERSION)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${KOGITO_1_13_PRODUCT_VERSION}'],
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${OPTAPLANNER_1_13_PRODUCT_VERSION}'],
-                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${CURRENT_PRODUCT_BRANCH}'],
+                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${KOGITO_1_13_CONFIG_BRANCH}'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
