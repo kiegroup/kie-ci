@@ -1,8 +1,8 @@
 def artifacts = [
-    [originClassifier: "maven-repository.zip", finalClassifier: "maven-repository.zip", stageCommand: "cp", info: "Copying maven repository zip"],
-    [originClassifier: "license.zip", finalClassifier: "licenses.zip", stageCommand: "cp", info: "Copying licenses zip"],
-    [originClassifier: "src.zip", finalClassifier: "sources.zip", stageCommand: "cp", info: "Copying sources zip"],
-    [originClassifier: "offliner.zip", finalClassifier: "offliner.zip", stageCommand: "mv", info: "Moving offliner zip"]
+    [originClassifier: 'maven-repository.zip', finalClassifier: 'maven-repository.zip', stageCommand: 'cp', info: 'Copying maven repository zip'],
+    [originClassifier: 'license.zip', finalClassifier: 'licenses.zip', stageCommand: 'cp', info: 'Copying licenses zip'],
+    [originClassifier: 'src.zip', finalClassifier: 'sources.zip', stageCommand: 'cp', info: 'Copying sources zip'],
+    [originClassifier: 'offliner.zip', finalClassifier: 'offliner.zip', stageCommand: 'mv', info: 'Moving offliner zip']
 ]
 
 pipeline {
@@ -42,10 +42,10 @@ pipeline {
             }
         }
 
-        stage("Create offliner zip") {
+        stage('Create offliner zip') {
             steps {
                 script {
-                    createOfflinerZip(RHBA_FOLDER_PATH)
+                    createOfflinerZip()
                 }
             }
         }
@@ -54,7 +54,7 @@ pipeline {
             steps {
                 script {
                     for (artifact in artifacts) {
-                        stageArtifact(artifact, RHBA_FOLDER_PATH, TARGET_FOLDER_PATH)
+                        stageArtifact(artifact)
                     }
                 }
             }
@@ -68,29 +68,29 @@ pipeline {
     }
 }
 
-def createOfflinerZip(rhbaFolderPath) {
+def createOfflinerZip() {
     println "Creating offliner zip"
     def offlinerFolderName = "${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-offliner"
-    def offlinerFolderPath = "${rhbaFolderPath}/${offlinerFolderName}"
+    def offlinerFolderPath = "${RHBA_FOLDER_PATH}/${offlinerFolderName}"
 
     remoteExec("mkdir -p ${offlinerFolderPath}")
-    remoteExec("cp ${rhbaFolderPath}/offliner.txt ${offlinerFolderPath}")
+    remoteExec("cp ${RHBA_FOLDER_PATH}/offliner.txt ${offlinerFolderPath}")
     sshagent(credentials: ['rcm-publish-server']) {
         sh "scp -o StrictHostKeyChecking=no integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba@${RCM_HOST}:${offlinerFolderPath}/offline-repo-builder.sh"
     }
-    remoteExec("cd ${rhbaFolderPath}; zip -r rhba-${VERSION}-offliner.zip ${offlinerFolderName}")
+    remoteExec("cd ${RHBA_FOLDER_PATH}; zip -r rhba-${VERSION}-offliner.zip ${offlinerFolderName}")
     remoteExec("rm -rf ${offlinerFolderPath}")
 }
 
-def stageArtifact(artifact, rhbaFolderPath, targetFolderPath) {
-    def artifactPath = "${rhbaFolderPath}/rhba-${VERSION}-${artifact.originClassifier}"
-    def targetArtifactPath = "${targetFolderPath}/${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-${artifact.finalClassifier}"
+def stageArtifact(artifact) {
+    def artifactPath = "${RHBA_FOLDER_PATH}/rhba-${VERSION}-${artifact.originClassifier}"
+    def targetArtifactPath = "${TARGET_FOLDER_PATH}/${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-${artifact.finalClassifier}"
     println "${artifact.info} from ${artifactPath} to ${targetArtifactPath}"
     remoteExec("${artifact.stageCommand} ${artifactPath} ${targetArtifactPath}")
 }
 
 def getMilestoneVersion(version) {
-    return version.substring(0, version.lastIndexOf("."))
+    return version.substring(0, version.lastIndexOf('.'))
 }
 
 def remoteExec(command) {
