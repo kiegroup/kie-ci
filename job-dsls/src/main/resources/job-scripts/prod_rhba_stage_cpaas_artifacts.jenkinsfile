@@ -69,7 +69,7 @@ pipeline {
 }
 
 def createOfflinerZip() {
-    println "Creating offliner zip"
+    println 'Creating offliner zip'
     def offlinerFolderName = "${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-offliner"
     def offlinerFolderPath = "${RHBA_FOLDER_PATH}/${offlinerFolderName}"
 

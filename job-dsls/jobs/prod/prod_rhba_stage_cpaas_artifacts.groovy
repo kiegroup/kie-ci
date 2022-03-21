@@ -14,8 +14,8 @@ pipelineJob("${folderPath}/stage-cpaas-artifacts") {
     parameters {
         stringParam('PRODUCT_NAME', 'RHPAM', 'Product name')
         stringParam('VERSION', '', ' The release candidate version, i.e. 7.12.1.CR1')
-        stringParam("RCM_HOST", "rcm-guest.app.eng.bos.redhat.com", "rcm host")
-        stringParam("STAGING_BASE_PATH", "/mnt/rcm-guest/staging", "Staging base path inside the host")
+        stringParam('RCM_HOST', 'rcm-guest.app.eng.bos.redhat.com', 'rcm host')
+        stringParam('STAGING_BASE_PATH', '/mnt/rcm-guest/staging', 'Staging base path inside the host')
     }
 
     logRotator {
