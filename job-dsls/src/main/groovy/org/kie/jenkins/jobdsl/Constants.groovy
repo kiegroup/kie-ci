@@ -22,6 +22,7 @@ class Constants {
     static final String UPSTREAM_BUILD_MAVEN_VERSION = '3.8.1'
     static final String JDK_VERSION = '11'
     static final String JDK_TOOL = "kie-jdk${JDK_VERSION}"
+    static final String MAIN_BRANCH = 'main'
     static final String BRANCH = '7.67.x'
     static final String GITHUB_ORG_UNIT = 'kiegroup'
     static final String PULL_REQUEST_FOLDER = 'pullrequest'
@@ -37,6 +38,7 @@ class Constants {
     static final String SONARCLOUD_FOLDER = 'sonarcloud'
     static final String REPORT_BRANCH = '7.x'
     static final String BUILD_DATE = ''
+    static final String MAIN_BRANCH_PROD_VERSION = '7.14.0'
     static final String NEXT_PROD_VERSION = '7.13.0'
     static final String CURRENT_PROD_VERSION = '7.12.0'
     static final String OSBS_BUILD_TARGET = 'rhba-7-rhel-8-containers-candidate'
