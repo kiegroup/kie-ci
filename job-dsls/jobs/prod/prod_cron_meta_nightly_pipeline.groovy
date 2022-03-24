@@ -47,7 +47,7 @@ pipeline{
         stage('trigger RHBA nightly job ${NEXT_PRODUCT_BRANCH}') {
             steps {
                 build job: 'rhba.nightly/${NEXT_PRODUCT_BRANCH}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-${NEXT_PRODUCT_BRANCH}/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-${getNexusFromVersion(NEXT_PRODUCT_VERSION)}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${NEXT_PRODUCT_BRANCH}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${NEXT_PRODUCT_VERSION}"],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "\${env.DEFAULT_CONFIG_BRANCH}"],
@@ -60,7 +60,7 @@ pipeline{
         stage('trigger KOGITO nightly job ${KOGITO_NEXT_PRODUCT_BRANCH}') {
             steps {
                 build job: 'kogito.nightly/${KOGITO_NEXT_PRODUCT_BRANCH}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-${NEXT_PRODUCT_BRANCH}-nightly-with-upstream'],
+                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-${getNexusFromVersion(NEXT_PRODUCT_VERSION)}-nightly-with-upstream'],
                         [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '${NEXT_RHBA_VERSION_PREFIX}'],
                         [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${KOGITO_NEXT_PRODUCT_BRANCH}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${KOGITO_NEXT_PRODUCT_BRANCH}'],
