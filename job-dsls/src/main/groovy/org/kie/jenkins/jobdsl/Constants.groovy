@@ -23,7 +23,7 @@ class Constants {
     static final String JDK_VERSION = '11'
     static final String JDK_TOOL = "kie-jdk${JDK_VERSION}"
     static final String MAIN_BRANCH = 'main'
-    static final String BRANCH = '7.67.x'
+    static final String BRANCH = 'main'
     static final String GITHUB_ORG_UNIT = 'kiegroup'
     static final String PULL_REQUEST_FOLDER = 'pullrequest'
     static final String PULL_REQUEST_FOLDER_DISPLAY_NAME = 'pullrequest'
