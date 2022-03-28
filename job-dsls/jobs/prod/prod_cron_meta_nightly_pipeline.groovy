@@ -175,5 +175,5 @@ String getNexusFromVersion(def version) {
 }
 
 boolean isMainBranchVersion(String version) {
-    return Constants.MAIN_BRANCH_PROD_VERSION.equals(version)
+    return Constants.MAIN_BRANCH_PROD_VERSION.equals(version) || Constants.KOGITO_MAIN_BRANCH_PROD_VERSION.equals(version)
 }
