@@ -39,6 +39,7 @@ class Constants {
     static final String REPORT_BRANCH = '7.x'
     static final String BUILD_DATE = ''
     static final String MAIN_BRANCH_PROD_VERSION = '7.14.0'
+    static final String KOGITO_MAIN_BRANCH_PROD_VERSION = '1.20.0'
     static final String NEXT_PROD_VERSION = '7.13.0'
     static final String CURRENT_PROD_VERSION = '7.12.0'
     static final String OSBS_BUILD_TARGET = 'rhba-7-rhel-8-containers-candidate'
