@@ -28,15 +28,6 @@ pipeline{
                     "main-jdk11-prod-pipeline" : {
                         build job: '../main/daily-build-jdk11-prod/jdk11-prod-db-main', propagate: false
                     },
-                    "7.59.x-jdk11-pipeline" : {
-                        build job: "../7.59.x/daily-build-jdk11/daily-build-jdk11-pipeline-7.59.x", propagate: false
-                    },  
-                    "7.59.x-jdk8-pipeline" : {
-                        build job: "../7.59.x/daily-build-jdk8/daily-build-jdk8-pipeline-7.59.x", propagate: false
-                    }, 
-                    "7.59.x-jdk11-prod-pipeline" : {
-                        build job: '../7.59.x/daily-build-jdk11-prod/daily-build-jdk11-prod-pipeline-7.59.x', propagate: false
-                    },
                     "7.67.x-jdk11-pipeline" : {
                         build job: "../7.67.x/daily-build-jdk11/jdk11-db-7.67.x", propagate: false
                     },  
