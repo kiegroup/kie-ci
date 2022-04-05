@@ -112,7 +112,7 @@ for (reps in REPO_CONFIGS) {
                                sudo chown -R jenkins:jenkins /home/jenkins/.ssh && \\n 
                                cd /home/jenkins/.ssh && ls -al && cd /home/jenkins/jbpm-website-main && \\n 
                                sudo rake setup && rake clean build && \\n
-                               rsync -Pavqr -e "ssh -i /home/jenkins/.ssh/id_rsa -o KexAlgorithms=diffie-hellman-group1-sha1 -o PubkeyAcceptedKeyTypes=ssh-rsa" --protocol=28 --delete-after _site/* jbpm@filemgmt.jboss.org:/www_htdocs/jbpm/'
+                               rsync -Pavqr -e "ssh -p 2222 -i /home/jenkins/.ssh/id_rsa -o KexAlgorithms=diffie-hellman-group1-sha1 -o PubkeyAcceptedKeyTypes=ssh-rsa" --protocol=28 --delete-after _site/* jbpm@filemgmt-prod-sync.jboss.org:/www_htdocs/jbpm/'
                                '''
                         }
                     }
