@@ -2,12 +2,12 @@
 
 import org.kie.jenkins.jobdsl.Constants
 
-def currentKieSnapshot = "7.45.0-SNAPSHOT"
-def nextKieSnapshot = "7.46.0-SNAPSHOT"
-def currentKogitoDocsSnaphot = "0.17.0-SNAPSHOT"
-def currentKogitoDocsVersion = "0.17.0"
-def currentKogitoDocsTagName = "0.17.0-kogito"
-def nextKogitoDocsSnapshot = "0.18.0-SNAPSHOT"
+def currentKieSnapshot = "7.68.0-SNAPSHOT"
+def nextKieSnapshot = "7.69.0-SNAPSHOT"
+def currentKogitoDocsSnaphot = "0.20.0-SNAPSHOT"
+def currentKogitoDocsVersion = "0.20.0"
+def currentKogitoDocsTagName = "0.20.0-kogito"
+def nextKogitoDocsSnapshot = "0.21.0-SNAPSHOT"
 def sshKogitoDocsPath = "kogito@filemgmt.jboss.org:/docs_htdocs/kogito/release"
 def javadk=Constants.JDK_TOOL
 def mvnToolEnv=Constants.MAVEN_TOOL
@@ -136,7 +136,7 @@ pipeline {
                            'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
                            '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download and decompress attached file.)',
                      subject: 'Build #${BUILD_NUMBER} of kogito docs-upload FAILED',
-                     to: 'sterobin@redhat.com, hmanwani@redhat.com, mbiarnes@redhat.com'
+                     to: 'kaldesai@redhat.com, mbiarnes@redhat.com'
             cleanWs()                      
         }
         unstable{
@@ -145,13 +145,13 @@ pipeline {
                            '***********************************************************************************************************************************************************\\n' +
                            '${FAILED_TESTS}',
                      subject: 'Build #${BUILD_NUMBER} of kogito docs-upload branch was UNSTABLE',
-                     to: 'sterobin@redhat.com, hmanwani@redhat.com, mbiarnes@redhat.com' 
+                     to: 'kaldesai@redhat.com, mbiarnes@redhat.com' 
             cleanWs()                            
         }
         fixed {
             emailext body: '',
                  subject: 'Build #${BUILD_NUMBER} of kogito docs-upload was fixed and is SUCCESSFUL',
-                 to: 'sterobin@redhat.com, hmanwani@redhat.com, mbiarnes@redhat.com\'
+                 to: 'kaldesai@redhat.com, mbiarnes@redhat.com\'
             cleanWs()
         }
         success{
@@ -179,12 +179,18 @@ pipelineJob("${folderPath}/uploadKogitoDocs") {
 ''')
 
     parameters {
-        stringParam("currentKieSnapshot","${currentKieSnapshot}","please enter the <b>current kie snapshot version</b> in poms of <b>main-kogito</b> branch<br>look at <br> https://github.com/kiegroup/kie-docs/blob/main-kogito/pom.xml OR <br>https://github.com/kiegroup/kie-docs/blob/main-kogito/doc-content/pom.xml OR <br>https://github.com/kiegroup/kie-docs/blob/main-kogito/doc-content/kogito-docs/pom.xml#L9")
-        stringParam("nextKieSnapshot","${nextKieSnapshot}","please enter the <b>next kie snapshot version</b>")
-        stringParam("currentKogitoDocsSnaphot", "${currentKogitoDocsSnaphot}", "please enter the <b>current kogito-docs snapshot version</b>")
-        stringParam("currentKogitoDocsVersion", "${currentKogitoDocsVersion}", "please enter the <b>current kogito-docs version</b>")
-        stringParam("currentKogitoDocsTagName","${currentKogitoDocsTagName}","please enter the name of the tag for this kogito release")
-        stringParam("nextKogitoDocsSnapshot","${nextKogitoDocsSnapshot}","please enter the <b>next kogito-docs snapshot version</b>")
+        stringParam("currentKieSnapshot","${currentKieSnapshot}","""please enter the current kie snapshot version in poms of main-kogito branch. 
+Look at https://github.com/kiegroup/kie-docs/blob/main-kogito/pom.xml OR 
+https://github.com/kiegroup/kie-docs/blob/main-kogito/doc-content/pom.xml OR 
+https://github.com/kiegroup/kie-docs/blob/main-kogito/doc-content/kogito-docs/pom.xml""")
+        stringParam("nextKieSnapshot","${nextKieSnapshot}","please enter the next kie snapshot version to bump up to")
+        stringParam("currentKogitoDocsSnaphot", "${currentKogitoDocsSnaphot}", """please enter the current kogito-docs snapshot version. 
+Look at https://github.com/kiegroup/kie-docs/blob/main-kogito/doc-content/kogito-docs/pom.xml#L14""")
+        stringParam("currentKogitoDocsVersion", "${currentKogitoDocsVersion}", """please enter the <b>current kogito-docs version. 
+i.e. ${currentKogitoDocsSnaphot} without -SNAPSHOT """)
+        stringParam("currentKogitoDocsTagName","${currentKogitoDocsTagName}","""please enter the name of the tag for this kogito release. 
+i.e. ${currentKogitoDocsSnaphot} replace -SNAPSHOT with -kogito""")
+        stringParam("nextKogitoDocsSnapshot","${nextKogitoDocsSnapshot}","please enter the next kogito-docs snapshot version to bump up to")
         wHideParameterDefinition {
             name('sshKogitoDocsPath')
             defaultValue("${sshKogitoDocsPath}")
