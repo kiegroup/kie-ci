@@ -9,10 +9,12 @@ def javadk=Constants.JDK_TOOL
 
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// creation of folder where this seed job should run
+// creation of folder
 folder("KIE")
-folder("KIE/kogito")
-def folderPath="KIE/kogito"
+folder ("KIE/kogito")
+folder ("KIE/kogito/kogito-docs")
+
+def folderPath="KIE/kogito/kogito-docs"
 
 job("${folderPath}/a-seed-job-kogito-docs") {
 
@@ -48,7 +50,7 @@ job("${folderPath}/a-seed-job-kogito-docs") {
 
     steps {
         jobDsl {
-            targets("job-dsls/jobs/kie/kogito/*.groovy\n" +
+            targets("job-dsls/jobs/kie/kogito/kogito_docs_upload.groovy\n" +
                     "jobs-dsls/jobs/seed_jobs/kogito_docs_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
