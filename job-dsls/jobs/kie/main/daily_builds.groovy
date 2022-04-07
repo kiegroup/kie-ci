@@ -25,9 +25,6 @@ def final DAILY_CONFIGS = [
         'jdk11'   : [],
         'jdk8'   : [
                 JDK_VERSION  : 'kie-jdk1.8'
-        ],
-        'jdk11-prod' : [
-                ADDITIONAL_MAVEN_FLAG : '-Dproductized'
         ]
 ]
 
