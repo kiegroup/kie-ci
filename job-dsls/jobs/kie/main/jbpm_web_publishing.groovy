@@ -14,7 +14,7 @@ def folderPath="KIE/${baseBranch}/webs"
 
 def javadk=Constants.JDK_TOOL
 def mvnToolEnv=Constants.MAVEN_TOOL
-def AGENT_LABEL="kie-rhel7 && kie-mem4g"
+def AGENT_LABEL="kie-rhel8"
 
 def final DEFAULTS = [
         repository : "jbpm",
@@ -29,7 +29,7 @@ for (reps in REPO_CONFIGS) {
     Closure<Object> get = { String key -> reps.value[key] ?: DEFAULTS[key] }
 
     String repo = reps.key
-    String mailRecip = get("mailRecip")
+    String MAIL_RECIP = get("mailRecip")
 
     def awp = """pipeline {
         agent {
@@ -61,14 +61,14 @@ for (reps in REPO_CONFIGS) {
                     }
                 }
             }
-            stage('remove docker image kiegroup/${repo}-website if it exists') {
+            stage('remove podman image kiegroup/${repo}-website if it exists') {
                 steps {
                     dir("\${WORKSPACE}") {
                         sh '''#!/bin/bash -e 
-                           isImage=\$(docker images -q kiegroup/${repo}-website)
+                           isImage=\$(podman images -q kiegroup/${repo}-website)
                            echo "Image: \$isImage"
                            if [ "\$isImage" != "" ]; then
-                               docker rmi kiegroup/${repo}-website
+                               podman rmi kiegroup/${repo}-website
                            fi
                            '''
                     }
@@ -78,15 +78,16 @@ for (reps in REPO_CONFIGS) {
                 steps{
                     withCredentials([sshUserPrivateKey(credentialsId: 'filemgmt-host', keyFileVariable: 'KNOWN_HOSTS')]) {
                         dir("\${WORKSPACE}") {
-                            sh '''# create dir where key files are stored 
-                               mkdir keys
-                               cp \$KNOWN_HOSTS \$WORKSPACE/keys/known_hosts
-                               chmod 644 \$WORKSPACE/keys/known_hosts
-                               '''
+                            sh '''
+                                # create dir where key files are stored 
+                                mkdir keys
+                                ssh-keyscan -t rsa -p 2222 filemgmt-prod-sync.jboss.org >> \$WORKSPACE/keys/known_hosts
+                                chmod 644 \$WORKSPACE/keys/known_hosts
+                            '''
                         }
                     }
                 }
-            }
+            }                        
             stage('copy secrets to keys') {
                 steps {
                     withCredentials([sshUserPrivateKey(credentialsId: 'jbpm-filemgmt', keyFileVariable: 'FILEMGMT_KEY')]) {
@@ -100,19 +101,18 @@ for (reps in REPO_CONFIGS) {
                     }
                 }
             }
-            stage('build docker container') {
+            stage('build podman container') {
                 steps {
                     withCredentials([sshUserPrivateKey(credentialsId: 'jbpm-filemgmt', keyFileVariable: 'FILEMGMT_KEY')]) {
                         dir("\${WORKSPACE}" + '/jbpm-website') {
                             sh '''
-                               docker images
-                               docker build -t kiegroup/jbpm-website:latest _dockerPublisher
-                               docker run --cap-add net_raw --cap-add net_admin -i --rm --volume "\${WORKSPACE}"/keys/:/home/jenkins/.ssh/:Z --name jbpm-container kiegroup/jbpm-website:latest bash -l -c 'echo "INSIDE THE CONTAINER" && \\n
+                               podman images
+                               podman build -t kiegroup/jbpm-website:latest _dockerPublisher
+                               podman run --cap-add net_raw --cap-add net_admin -i --rm --volume "\${WORKSPACE}"/keys/:/home/jenkins/.ssh/:Z --name jbpm-container kiegroup/jbpm-website:latest bash -l -c 'echo "INSIDE THE CONTAINER" && \\n
                                echo "WHOAMI" && whoami && echo "PWD" && pwd && ls -al && echo "inside .ssh" && \\n
                                sudo chown -R jenkins:jenkins /home/jenkins/.ssh && \\n 
                                cd /home/jenkins/.ssh && ls -al && cd /home/jenkins/jbpm-website-main && \\n 
-                               sudo rake setup && rake clean build && \\n
-                               rsync -Pavqr -e "ssh -p 2222 -i /home/jenkins/.ssh/id_rsa -o KexAlgorithms=diffie-hellman-group1-sha1 -o PubkeyAcceptedKeyTypes=ssh-rsa" --protocol=28 --delete-after _site/* jbpm@filemgmt-prod-sync.jboss.org:/www_htdocs/jbpm/'
+                               sudo rake setup && rake clean build && rake publish'
                                '''
                         }
                     }
@@ -121,21 +121,27 @@ for (reps in REPO_CONFIGS) {
         }
         post {
             failure{
-                emailext body: 'Build log: \${BUILD_URL}consoleText \\n' +
+                emailext to: "\${MAIL_RECIP}",
+                subject: 'automatic publishing of jbpm-website FAILED',
+                body: 'Build log: \${BUILD_URL}consoleText \\n' +
                 '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download \\n' +
-                'and decompress attached file.)',
-                subject: 'Build #\${BUILD_NUMBER} of jbpm-web FAILED',
-                to: 'mbiarnes@redhat.com'
+                'and decompress attached file.)'
                 cleanWs()          
             }
             fixed {
-                emailext body: '',
-                subject: 'Build #\${BUILD_NUMBER} of jbpm-web is fixed and was SUCCESSFUL',
-                to: 'mbiarnes@redhat.com'
+                emailext to: "\${MAIL_RECIP}",
+                subject: 'automatic publishing of jbpm-website is fixed and was SUCCESSFUL',
+                body: ''
                 cleanWs()     
             }
             success {
-            cleanWs()
+                emailext to: "\${MAIL_RECIP}",
+                subject: 'automatic publishing of jbpm-website was SUCCESSFUL',
+                body: ''            
+                cleanWs()
+            }
+            always {
+                cleanWs()
             }                    
         }
     }
@@ -160,6 +166,11 @@ for (reps in REPO_CONFIGS) {
                 defaultValue("${javadk}")
                 description('version of jdk')
             }
+            wHideParameterDefinition {
+                name('MAIL_RECIP')
+                defaultValue("${MAIL_RECIP}")
+                description('mail sent to')
+            }
         }
 
         logRotator {
@@ -183,5 +194,4 @@ for (reps in REPO_CONFIGS) {
         }
 
     }
-
 }
