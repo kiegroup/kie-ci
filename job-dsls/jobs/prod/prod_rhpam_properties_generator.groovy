@@ -28,6 +28,7 @@ node('${Constants.LABEL_KIE_RHEL}') {
             "PRODUCT_VERSION_LONG"       : PRODUCT_VERSION_LONG,
             "PRODUCT_MILESTONE"          : PRODUCT_MILESTONE,
             "TIME_STAMP"                 : TIME_STAMP,
+            "BOM_VERSION"                : BOM_VERSION,
             "KIE_VERSION"                : KIE_VERSION,
             "ERRAI_VERSION"              : ERRAI_VERSION,
             "MVEL_VERSION"               : MVEL_VERSION,
