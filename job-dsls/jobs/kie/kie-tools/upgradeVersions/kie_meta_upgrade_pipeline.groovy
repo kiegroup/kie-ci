@@ -51,7 +51,7 @@ pipeline {
                     },  
                     "kie-benchmarks" : {
                         build job: "upgrade-kie-benchmarks", propagate: false, parameters: \n 
-                        [[$class: 'StringParameterValue', name: 'BASE_BRANCH', value: BASE_BRANCH],  \n
+                        [[$class: 'StringParameterValue', name: 'BASE_BRANCH', value: '7.x'],  \n
                         [$class: 'StringParameterValue', name: 'CURRENT_KIE_VERSION', value: CURRENT_KIE_VERSION], \n 
                         [$class: 'StringParameterValue', name: 'NEW_KIE_VERSION', value: NEW_KIE_VERSION], \n 
                         [$class: 'StringParameterValue', name: 'ORGANIZATION', value: ORGANIZATION], \n 
