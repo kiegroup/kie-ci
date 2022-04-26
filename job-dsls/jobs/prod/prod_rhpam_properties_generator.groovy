@@ -78,6 +78,7 @@ pipelineJob("${folderPath}/rhpam-properties-generator") {
         stringParam("PRODUCT_VERSION_LONG", "7.10.0.redhat-00003", "This is just for prod files")
         stringParam("PRODUCT_MILESTONE", "CR2", "this is just for prod files")
         stringParam("TIME_STAMP", "", "This is just for non-prod files")
+        stringParam("BOM_VERSION", "\${PRODUCT_VERSION_LONG}", "This is just for prod files")
         stringParam("KIE_VERSION", "7.48.0.Final-redhat-00003", "This is just for prod files")
         stringParam("ERRAI_VERSION")
         stringParam("MVEL_VERSION")
