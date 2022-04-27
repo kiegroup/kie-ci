@@ -2,16 +2,27 @@
 
 import org.kie.jenkins.jobdsl.Constants
 
-def currentKieSnapshot = "7.68.0-SNAPSHOT"
-def nextKieSnapshot = "7.69.0-SNAPSHOT"
-def currentKogitoDocsSnaphot = "0.20.0-SNAPSHOT"
-def currentKogitoDocsVersion = "0.20.0"
-def currentKogitoDocsTagName = "0.20.0-kogito"
-def nextKogitoDocsSnapshot = "0.21.0-SNAPSHOT"
-def sshKogitoDocsPath = "kogito@filemgmt.jboss.org:/docs_htdocs/kogito/release"
+def currentKieSnapshot = "7.69.0-SNAPSHOT"
+def nextKieSnapshot = "7.70.0-SNAPSHOT"
+def currentKogitoDocsSnaphot = "1.21.0-SNAPSHOT"
+def currentKogitoDocsVersion = "1.21.0"
+def currentKogitoDocsTagName = "1.21.0-kogito"
+def nextKogitoDocsSnapshot = "1.22.0-SNAPSHOT"
+def sshKogitoDocsPath = "kogito@filemgmt-prod.jboss.org"
+def rsync_KogitoDocsPath="kogito@filemgmt-prod-sync.jboss.org"
 def javadk=Constants.JDK_TOOL
 def mvnToolEnv=Constants.MAVEN_TOOL
+def BASE_BRANCH=Constants.BRANCH
+def GH_ORG_UNIT=Constants.GITHUB_ORG_UNIT
 def AGENT_LABEL="kie-rhel7 && kie-mem4g"
+def JENKINSFILE_REPO = 'kie-docs'
+def JENKINSFILE_PATH = '.ci/jenkins/Jenkinsfile.upload'
+def JENKINSFILE_URL = "https://github.com/${GH_ORG_UNIT}/${JENKINSFILE_REPO}"
+def JENKINSFILE_PWD= 'kie-ci'
+def SSH_KOGITO_DOCS_PATH="${sshKogitoDocsPath}:/docs_htdocs/kogito/release"
+def LATEST_LINKS_PATH="${rsync_KogitoDocsPath}:/docs_htdocs/kogito/release"
+def RSYNC_KOGITO_DOCS_PATH="${rsync_KogitoDocsPath}:/docs_htdocs/kogito/release/${currentKogitoDocsVersion}"
+
 
 // creation of folder
 folder("KIE")
@@ -21,162 +32,19 @@ folder ("KIE/kogito/kogito-docs")
 def folderPath="KIE/kogito/kogito-docs"
 
 
-def uploadDocs='''
-pipeline {
-    agent {
-        label "$AGENT_LABEL"      
-    }
-    tools {
-        maven "$mvnToolEnv"
-        jdk "$javadk"
-    }
-    stages {
-        stage('CleanWorkspace') {
-            steps {
-                cleanWs()
-            }
-        }
-        stage ('checkout kie-docs') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: 'main-kogito']], browser: [$class: 'GithubWeb', repoUrl: 'git@github.com:kiegroup/kie-docs.git'], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-docs']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:kiegroup/kie-docs.git']]])
-                dir("${WORKSPACE}" + '/kie-docs') {
-                    sh 'pwd \\n' +
-                       'ls -al \\n' +
-                       'git checkout -b main-kogito \\n' +
-                       'git branch \\n' +
-                       'git config --global user.email "kieciuser@gmail.com" \\n' +
-                       'git config --global user.name "kieciuser"\'                       
-                } 
-            }
-        }
-        stage('replace versions of org.kie.kogito:kogito-docs') {
-            steps {
-                dir("${WORKSPACE}" + '/kie-docs/doc-content/kogito-docs') {
-                    sh 'sed -i "s/<version>${currentKogitoDocsSnaphot}<\\\\/version>/<version>${currentKogitoDocsVersion}<\\\\/version>/" pom.xml \\n' +
-                       'git add . \\n' +
-                       'git commit -m "upgraded to ${currentKogitoDocsVersion} for tagging" \\n' +
-                       'git log -1 --pretty=oneline'                    
-                }
-            }    
-        }
-        stage('build kogito-docs') {
-            steps {
-                configFileProvider([configFile(fileId: '771ff52a-a8b4-40e6-9b22-d54c7314aa1e', targetLocation: 'jenkins-settings.xml', variable: 'SETTINGS_XML_FILE')]) {
-                    dir("${WORKSPACE}" + '/kie-docs/doc-content/kogito-docs') {     
-                        sh 'mvn clean install -Dfull -s $SETTINGS_XML_FILE -Dkie.maven.settings.custom=$SETTINGS_XML_FILE -Dmaven.test.redirectTestOutputToFile=true -Dmaven.test.failure.ignore=true \\n' +
-                           /* clean files created bythe build */
-                           'git clean -d -f'
-                    }            
-                }        
-            }
-        }
-        stage('upload of kogito-docs to filemgmt.jboss.org ') {
-            steps {
-                sshagent(credentials: ['KogitoDocsUpload']) {
-                    dir("${WORKSPACE}" + '/kie-docs/doc-content/kogito-docs') {
-                        /* create dir on filemgmt */
-                        sh 'touch upload_version \\n' +
-                            'echo "mkdir" $currentKogitoDocsVersion > upload_version \\n' +
-                            'chmod +x upload_version \\n' +
-                            'cat upload_version \\n' +
-                            /* upload upload_version to filemgmt for creating a release directory */
-                            'sftp -b upload_version $sshKogitoDocsPath \\n' +
-                            /* upload of the kogito-docs to filemgmt.jboss.org */
-                            'scp -r target/generated-docs/html_single $sshKogitoDocsPath/$currentKogitoDocsVersion \\n' +
-                            'rm upload_version \\n' +
-                            /* upload latest links */
-                            'mkdir filemgmt_link \\n' +
-                            'cd filemgmt_link \\n' +
-                            'touch $currentKogitoDocsVersion \\n' +
-                            'ln -s $currentKogitoDocsVersion latest \\n' +
-                            'rsync -a --protocol=28 latest $sshKogitoDocsPath \\n' +
-                            'echo "symbolic links uploaded" \\n' +
-                            'cd .. \\n' +
-                            'rm -rf filemgmt_link'                            
-                    }        
-                }
-            }
-        }
-        stage('create and push tag') {
-            steps {
-                sshagent(['kie-ci-user-key']) {
-                    dir("${WORKSPACE}" + '/kie-docs') {
-                        sh 'git tag -a $currentKogitoDocsTagName -m "tagged ${currentKogitoDocsTagName}" \\n' +
-                           'git push origin $currentKogitoDocsTagName'
-                    }
-                }        
-            }
-        }
-        stage('bump up KIE and kogito-docs to next SNAPSHOT') {
-            steps {
-                dir("${WORKSPACE}" + '/kie-docs') {
-                    sh 'sed -i "s/<version>${currentKieSnapshot}<\\\\/version>/<version>${nextKieSnapshot}<\\\\/version>/" pom.xml \\n' +
-                       'sed -i "s/<version>${currentKieSnapshot}<\\\\/version>/<version>${nextKieSnapshot}<\\\\/version>/" doc-content/pom.xml \\n' +
-                       'sed -i "s/<version>${currentKieSnapshot}<\\\\/version>/<version>${nextKieSnapshot}<\\\\/version>/" doc-content/kogito-docs/pom.xml \\n' +
-                       'sed -i "s/<version>${currentKogitoDocsVersion}<\\\\/version>/<version>${nextKogitoDocsSnapshot}<\\\\/version>/" doc-content/kogito-docs/pom.xml \\n' +
-                       /* uploading changed poms to kogito-main branch */
-                       'git add . \\n' +
-                       'git commit -m "upgraded kogito-docs to ${nextKogitoDocsSnapshot}" '
-                } 
-            }
-        }
-        stage('push latest commits to origin') {
-            steps {
-                sshagent(['kie-ci-user-key']) {
-                    dir("${WORKSPACE}" + '/kie-docs') {
-                        sh 'git push origin main-kogito'   
-                    }
-                }
-            }
-        }
-    }            
-    post {
-        failure{
-            emailext body: 'Build log: ${BUILD_URL}consoleText\\n' +
-                           'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
-                           '(IMPORTANT: For visiting the links you need to have access to Red Hat VPN. In case you do not have access to RedHat VPN please download and decompress attached file.)',
-                     subject: 'Build #${BUILD_NUMBER} of kogito docs-upload FAILED',
-                     to: 'kaldesai@redhat.com, mbiarnes@redhat.com'
-            cleanWs()                      
-        }
-        unstable{
-            emailext body: 'Build log: ${BUILD_URL}consoleText\\n' +
-                           'Failed tests (${TEST_COUNTS,var="fail"}): ${BUILD_URL}testReport\\n' +
-                           '***********************************************************************************************************************************************************\\n' +
-                           '${FAILED_TESTS}',
-                     subject: 'Build #${BUILD_NUMBER} of kogito docs-upload branch was UNSTABLE',
-                     to: 'kaldesai@redhat.com, mbiarnes@redhat.com' 
-            cleanWs()                            
-        }
-        fixed {
-            emailext body: '',
-                 subject: 'Build #${BUILD_NUMBER} of kogito docs-upload was fixed and is SUCCESSFUL',
-                 to: 'kaldesai@redhat.com, mbiarnes@redhat.com\'
-            cleanWs()
-        }
-        success{
-            emailext body: 'Everything worked fine',
-                 subject: 'Build #${BUILD_NUMBER} of kogito docs-upload was SUCCESSFUL',
-                 to: 'kaldesai@redhat.com, mbiarnes@redhat.com'  
-            cleanWs()                           
-        }                        
-    }  
-}
-'''
-
 pipelineJob("${folderPath}/uploadKogitoDocs") {
 
-    description('''this job <b>uploadKogitoDocs</b>: <br><br>
-1. clones kie-docs - <b>“main-kogito”</b>  branch <br>
-2. upgrades the kie-docs/doc-content/kogito-docs/pom.xml to <b>$currentKogitoDocsVersion</b> <br>
-3. executes a mvn clean install in kie-docs/doc-content/kogito-docs <br>
-4. creates a folder <b>$newKogitoDocsVersion</b> in filemgmt.jboss.org:docs_htdocs/kogito/release <br>
-5. uploads target/generated-docs/html_single to filemgmt.jboss.org:docs_htdocs/kogito/release/ <br>
-6. removes a symbolic link on filemgmt.jboss.org:docs_htdocs/kogito/release/ pointing to dir latest and upgrades the symbolic link pointing to the directory <b>$currentKogitoDocsVersion/html_single)</b> <br> 
-7. creates a tag <b>$currentKogitoDocsTagName</b> and pushes it to GitHub  <br>
-8. bumps up kogito-docs to the <b>$nextKogitoDocsSnapshot</b> <br> 
-9. pushes to GitHub the commit that bumps up kogito-docs to <b>$kogitoDocsNextSnapshot</b> and all other poms in kogito-docs to the <b>$nextKieSnapshot</b>
-''')
+    description('''this job uploads the docs for a kogito version:
+1. clones kie-docs - main-kogito  branch
+2. creates a branch for a PR
+3. upgrades the kie-docs/doc-content/kogito-docs/pom.xml to $currentKogitoDocsVersion
+4. executes a mvn clean install in kie-docs/doc-content/kogito-docs
+5. creates a folder $newKogitoDocsVersion on filemgmt-prod.jboss.org:docs_htdocs/kogito/release
+6. uploads target/generated-docs/html_single to filemgmt-prod-sync.jboss.org:docs_htdocs/kogito/release
+7. removes a symbolic link on filemgmt-prod-sync.jboss.org:docs_htdocs/kogito/release pointing to dir latest and upgrades the symbolic link pointing to the directory $currentKogitoDocsVersion/html_single) 
+8. creates a tag $currentKogitoDocsTagName and pushes it to GitHub
+9. bumps up kogito-docs to the $nextKogitoDocsSnapshot
+10. pushes a PR to GitHub with all changes''')
 
     parameters {
         stringParam("currentKieSnapshot","${currentKieSnapshot}","""please enter the current kie snapshot version in poms of main-kogito branch. 
@@ -194,7 +62,12 @@ i.e. ${currentKogitoDocsSnaphot} replace -SNAPSHOT with -kogito""")
         wHideParameterDefinition {
             name('sshKogitoDocsPath')
             defaultValue("${sshKogitoDocsPath}")
-            description('Please edit the path to filemgm.jboss.org')
+            description('Please edit the path to filemgmt-prod.jboss.org')
+        }
+        wHideParameterDefinition {
+            name('rsync_KogitoDocsPath')
+            defaultValue("${rsync_KogitoDocsPath}")
+            description('Please edit the path to filemgm-prod-sync.jboss.org')
         }
         wHideParameterDefinition {
             name('AGENT_LABEL')
@@ -211,16 +84,50 @@ i.e. ${currentKogitoDocsSnaphot} replace -SNAPSHOT with -kogito""")
             defaultValue("${javadk}")
             description('version of jdk')
         }
+        wHideParameterDefinition {
+            name('LATEST_LINKS_PATH')
+            defaultValue("${LATEST_LINKS_PATH}")
+            description('path on server for the latest links')
+        }
+        wHideParameterDefinition {
+            name('SSH_KOGITO_DOCS_PATH')
+            defaultValue("${SSH_KOGITO_DOCS_PATH}")
+            description('path on server to kogito-docs')
+        }
+        wHideParameterDefinition {
+            name('RSYNC_KOGITO_DOCS_PATH')
+            defaultValue("${RSYNC_KOGITO_DOCS_PATH}")
+            description('path on server to kogito-docs')
+        }
     }
 
     logRotator {
-        numToKeep(5)
+        numToKeep(8)
     }
 
     definition {
-        cps {
-            script("${uploadDocs}")
-            sandbox()
+        cpsScm {
+            scm {
+                gitSCM {
+                    userRemoteConfigs {
+                        userRemoteConfig {
+                            url(JENKINSFILE_URL)
+                            credentialsId(JENKINSFILE_PWD)
+                            name('')
+                            refspec('')
+                        }
+                    }
+                    branches {
+                        branchSpec {
+                            name("*/${BASE_BRANCH}")
+                        }
+                    }
+                    browser {}
+                    doGenerateSubmoduleConfigurations(false)
+                    gitTool('')
+                }
+            }
+            scriptPath(JENKINSFILE_PATH)
         }
     }
 }
