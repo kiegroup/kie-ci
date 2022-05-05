@@ -48,7 +48,7 @@ pipelineJob("${FOLDER_PATH}/kie-release") {
         stringParam("RELEASE_BRANCH", "${RELEASE_BRANCH}", "Please edit name of the releaseBranch - i.e. r7.51.0.Final ")
         stringParam("GH_ORG_UNIT", "${GH_ORG_UNIT}", "Please edit the name of organization ")
         stringParam("TOOLS_VER", "${TOOLS_VER}", "Please edit the latest stable version of droolsjbpm-tools<br>Important: needed for the jbpm-installer creation. Latest stable version is 7.46.0.Final.")
-        choiceParam("RE_BUILD",["YES", "NO"],"Please select if<br>you want to do a new build = YES<br>a new build is not required and artifacts are already uploaded to Nexus = NO ")
+        choiceParam("RUN_BUILD",["YES", "NO"],"Please select if<br>you want to do a new build = YES<br>a new build is not required and artifacts are already uploaded to Nexus = NO ")
         wHideParameterDefinition {
             name('MAVEN_OPTS')
             defaultValue("${MAVEN_OPTS}")
