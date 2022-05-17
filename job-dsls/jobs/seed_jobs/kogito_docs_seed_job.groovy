@@ -51,7 +51,7 @@ job("${folderPath}/a-seed-job-kogito-docs") {
     steps {
         jobDsl {
             targets("job-dsls/jobs/kie/kogito/kogito_docs_upload.groovy\n" +
-                    "jobs-dsls/jobs/seed_jobs/kogito_docs_seed_job.groovy")
+                    "job-dsls/jobs/seed_jobs/kogito_docs_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)
