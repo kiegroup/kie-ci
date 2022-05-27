@@ -7,6 +7,8 @@ on:
       - '*.groovy'
       - '*.jenkinsfile'
       - '*.sh'
+      - '*.yml'
+
 jobs:
   test:
     concurrency:
