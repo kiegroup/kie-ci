@@ -1,0 +1,43 @@
+pipeline {
+    agent {
+        label 'kie-rhel7 && !master'
+    }
+
+    stages {
+        stage('Clean workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Print variables') {
+            steps {
+                println "[INFO] VERSION: ${VERSION}"
+                println "[INFO] PRODUCT_VERSION: ${PRODUCT_VERSION}"
+                println "[INFO] CUTOFF_DATE: ${CUTOFF_DATE}"
+            }
+        }
+
+        stage('Clone the repository') {
+            steps {
+                sh "git clone ${INTEGRATION_PLATFORM_TOOLING_REPOSITORY} integration-platform-tooling"
+            }
+        }
+
+        stage('Move Jiras to QA') {
+            steps {
+                withCredentials([string(credentialsId: 'jira-token', variable: 'JIRA_TOKEN')]) {
+                    dir('integration-platform-tooling') {
+                        sh "python3 release-ticketor.py --headless --authtoken ${JIRA_TOKEN} ${PRODUCT_VERSION} ${CUTOFF_DATE} ${VERSION}"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
