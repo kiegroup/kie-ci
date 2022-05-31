@@ -57,7 +57,7 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
                     "job-dsls/jobs/**/kie_jenkinsScripts_PR.groovy\n" +
                     "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
                     "job-dsls/jobs/**/pr_droolsjbpm_tools.groovy\n" +
-                    "job-dsls/jobs/**/new_branches_seed_job.groovy\n" +
+                    "job-dsls/jobs/**/kie_new_branches_seed_job.groovy\n" +
                     "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
                     "job-dsls/jobs/**/srcclr_scan_pipeline.groovy\n" +
                     "job-dsls/jobs/**/srcclr_scan_job.groovy\n" +
