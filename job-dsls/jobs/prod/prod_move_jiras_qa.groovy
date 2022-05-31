@@ -4,7 +4,7 @@
 def scriptTemplate = this.getClass().getResource("job-scripts/prod_move_jiras_qa.jenkinsfile").text
 def parsedScript = scriptTemplate.replaceAll(/<%=\s*(\w+)\s*%>/) { config[it[1]] ?: '' }
 
-def folderPath = "PROD"
+def folderPath = 'PROD'
 folder(folderPath)
 
 pipelineJob("${folderPath}/move-jiras-qa") {
