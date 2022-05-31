@@ -52,12 +52,11 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
                     "job-dsls/jobs/**/downstream_pr_jobs.groovy\n" +
                     "job-dsls/jobs/**/compile_downstream_build.groovy\n" +
                     "job-dsls/jobs/**/prod_projects_downstream_production.groovy \n" +
-                    "job-dsls/jobs/**/daily_uilds.groovy\n" +
+                    "job-dsls/jobs/**/daily_builds.groovy\n" +
                     "job-dsls/jobs/**/deploy_jobs.groovy\n" +
                     "job-dsls/jobs/**/kie_jenkinsScripts_PR.groovy\n" +
                     "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
                     "job-dsls/jobs/**/pr_droolsjbpm_tools.groovy\n" +
-                    "job-dsls/jobs/**/prodTag_pipeline.groovy\n" +
                     "job-dsls/jobs/**/new_branches_seed_job.groovy\n" +
                     "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
                     "job-dsls/jobs/**/srcclr_scan_pipeline.groovy\n" +
