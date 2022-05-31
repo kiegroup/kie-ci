@@ -103,7 +103,6 @@ class KieWbTestMatrix {
 
             publishers {
                 archiveJunit("**/target/*-reports/TEST-*.xml")
-                mailer('kie-jenkins-builds@redhat.com', false, false)
                 wsCleanup()
             }
 
