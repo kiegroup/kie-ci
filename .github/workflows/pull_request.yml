@@ -3,11 +3,6 @@ name: Java CI with Gradle
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    paths: 
-      - '*.groovy'
-      - '*.jenkinsfile'
-      - '*.sh'
-      - '*.yml'
 
 jobs:
   test:

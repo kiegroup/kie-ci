@@ -1,0 +1,98 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+agentLabel = "${env.ADDITIONAL_LABEL?.trim() ? ADDITIONAL_LABEL : 'kie-rhel7-pipeline'} && !master"
+additionalTimeout = "${env.ADDITIONAL_TIMEOUT?.trim() ?: 10}"
+certFileGlobalVariableName = "${env.CERT_FILE_GLOBAL_VARIABLE_NAME?.trim() ?: 'JENKINS_CERT_FILE_PATH'}"
+githubCredentialsId = "${env.GITHUB_CREDENTIALS_ID?.trim() ?: 'kie-ci'}"
+chainStatusVersion = "${env.CHAIN_STATUS_VERSION ? "@${env.CHAIN_STATUS_VERSION?.trim()}" : ''}"
+ghPagesRepository = "${env.GH_PAGES_REPOSITORY?.trim() ?: 'kiegroup/droolsjbpm-build-bootstrap'}"
+ghPagesBranch = "${env.GH_PAGES_BRANCH?.trim() ?: 'gh-pages'}"
+ghPagesRepoFolder = 'gh_pages_repo_folder'
+
+pipeline {
+    agent {
+        label agentLabel
+    }
+    tools {
+        nodejs 'nodejs-12.16.3'
+    }
+    options {
+        timestamps ()
+        timeout(time: additionalTimeout, unit: 'MINUTES')
+    }
+    stages {
+        stage('Initialize') {
+            steps {
+                sh 'printenv'
+            }
+        }
+        stage('Clone gh-pages repo') {
+            steps {
+                script {
+                    println "Checking out https://github.com/${ghPagesRepository}:${ghPagesBranch} into ${ghPagesRepoFolder} folder"
+                    sh "git clone -b ${ghPagesBranch} --single-branch https://github.com/${ghPagesRepository} ${ghPagesRepoFolder}"
+                }
+            }
+        }
+        stage('Install chain-status tool') {
+            steps {
+                script {
+                    println "[INFO] Installing @kie/chain-status-action${chainStatusVersion}"
+
+                    try {
+                        sh "npm install -g @kie/chain-status-action${chainStatusVersion} -registry=${NPM_REGISTRY_URL}"
+                    } catch(e) {
+                        println "[WARNING] Error installing @kie/chain-status-action${chainStatusVersion}. Did you check the version is already published at https://www.npmjs.com/package/@kie/chain-status-action ? In case it is you should wait few minutes for ${NPM_REGISTRY_URL} to be synched up. Otherwise check latest 'Publish' action at https://github.com/kiegroup/chain-status/packages/action."
+                        println "[INFO] Latest @kie/chain-status-action version to be used: ${sh(returnStdout: true, script: 'npm @kie/chain-status-action -v').trim()}"
+                    }
+                }
+            }
+        }
+        stage('Generate Data Productization Jobs') {
+            steps {
+                script {
+                    dir(ghPagesRepoFolder) {
+                        sh "build-chain-status-report --jenkinsUrl ${env.JENKINS_MASTER_URL} --jobUrl /job/PROD/job/rhba.nightly /job/PROD/job/kogito.nightly -t \"Productization Jobs\" -st \"Business Automation Productization Jobs\" --certFilePath ${env[certFileGlobalVariableName]} --outputFolderPath ./data/ --skipZero -cb \"Jenkins Job\" -cu \"${env.BUILD_URL}\""
+                    }
+                }
+            }
+        }
+        stage('Generate Data Daily Jobs') {
+            steps {
+                script {
+                    dir(ghPagesRepoFolder) {
+                        sh "build-chain-status-report --jenkinsUrl ${env.JENKINS_MASTER_URL} --jobUrl job/KIE/job/main/job/daily-build-jdk11 job/KIE/job/main/job/daily-build-jdk8 -t \"Daily Builds\" -st \"RHBA Daily Builds\" --certFilePath ${env[certFileGlobalVariableName]} --outputFolderPath ./data/ --skipZero -cb \"Jenkins Job\" -cu \"${env.BUILD_URL}\" --order 1001"
+                    }
+                }
+            }
+        }
+        stage('Push changes to repository') {
+            steps {
+                script {
+                    println "Pushing changes to ${ghPagesRepository}:${ghPagesBranch}"
+                    dir(ghPagesRepoFolder) {
+                        withCredentials([usernamePassword(credentialsId: "${githubCredentialsId}", usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                            githubscm.setUserConfig("${GITHUB_USER}")
+                            sh("git config --local credential.helper \"!f() { echo username=\\$GITHUB_USER; echo password=\\$GITHUB_TOKEN; }; f\"")
+                            sh 'git add data/*'
+                            sh 'git commit -m "Generate Jenkins Data"'
+                            sh "git push origin ${ghPagesBranch}"                            
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Archiving data files...'
+            archiveArtifacts allowEmptyArchive: true, artifacts: "${ghPagesRepoFolder}/data/**", fingerprint: false, defaultExcludes: true, caseSensitive: true
+        }
+        cleanup {
+            script {
+                util.cleanNode()
+            }
+        }
+    }
+}
