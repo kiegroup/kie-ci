@@ -21,7 +21,7 @@ def JENKINSFILE_URL = "https://github.com/${GH_ORG_UNIT}/${JENKINSFILE_REPO}"
 def JENKINSFILE_PWD= 'kie-ci'
 def SSH_KOGITO_DOCS_PATH="${sshKogitoDocsPath}:/docs_htdocs/kogito/release"
 def LATEST_LINKS_PATH="${rsync_KogitoDocsPath}:/docs_htdocs/kogito/release"
-def RSYNC_KOGITO_DOCS_PATH="${rsync_KogitoDocsPath}:/docs_htdocs/kogito/release/${currentKogitoDocsVersion}"
+def RSYNC_KOGITO_DOCS_PATH="${rsync_KogitoDocsPath}:/docs_htdocs/kogito/release"
 
 
 // creation of folder
