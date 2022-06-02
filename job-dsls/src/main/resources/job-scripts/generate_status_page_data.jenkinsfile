@@ -66,6 +66,15 @@ pipeline {
                 }
             }
         }
+        stage('Generate Data Daily Jobs 7.67.x') {
+            steps {
+                script {
+                    dir(ghPagesRepoFolder) {
+                        sh "build-chain-status-report --jenkinsUrl ${env.JENKINS_MASTER_URL} --jobUrl job/KIE/job/7.67.x/job/daily-build-jdk11 job/KIE/job/7.67.x/job/daily-build-jdk8 -t \"Daily Builds 7.67.x\" -st \"RHBA Daily Builds for 7.67.x community branch\" --certFilePath ${env[certFileGlobalVariableName]} --outputFolderPath ./data/ --skipZero -cb \"Jenkins Job\" -cu \"${env.BUILD_URL}\" --order 1002"
+                    }
+                }
+            }
+        }
         stage('Push changes to repository') {
             steps {
                 script {
