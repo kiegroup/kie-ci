@@ -10,7 +10,7 @@ def final DEFAULTS = [
         ghAuthKey              : "kie-ci-user-key",
         timeoutMins            : 90,
         buildHistory           : 3,
-        label                  : "kie-rhel7 && kie-mem8g",
+        label                  : "kie-rhel7 && kie-mem8g && !master",
         mvnGoals               : "-e -fae -B -Pwildfly clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
         mvnProps: [
                 "full"                     : "true",

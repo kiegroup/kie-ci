@@ -18,7 +18,7 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
 
     description("this job creates all needed Jenkins jobs for the ${baseBranch}-branch ")
 
-    label("kie-rhel7 && kie-mem8g")
+    label("kie-rhel7 && kie-mem8g && !master")
 
     logRotator {
         numToKeep(10)

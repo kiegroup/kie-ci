@@ -7,7 +7,7 @@ def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
-        label                  : "kie-rhel7 && kie-mem16g",
+        label                  : "kie-rhel7 && kie-mem16g && !master",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-e -B -T1C -fae -Dfull -DrunTurtleTests clean install",
         javadk                 : Constants.JDK_TOOL,
