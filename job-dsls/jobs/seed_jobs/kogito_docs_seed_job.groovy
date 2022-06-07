@@ -20,7 +20,7 @@ job("${folderPath}/a-seed-job-kogito-docs") {
 
     description("this job creates needed Jenkins job for kogito-docs in kogito folder")
 
-    label("kie-rhel7 && kie-mem8g")
+    label("kie-rhel7 && kie-mem8g && !master")
 
     logRotator {
         numToKeep(10)

@@ -18,7 +18,7 @@ job("${folderPath}/a-seed-job-kie-tools") {
 
     description("this job creates all needed Jenkins jobs in kie-tools folder ")
 
-    label("kie-rhel7 && kie-mem8g")
+    label("kie-rhel7 && kie-mem8g && !master")
 
     logRotator {
         numToKeep(10)

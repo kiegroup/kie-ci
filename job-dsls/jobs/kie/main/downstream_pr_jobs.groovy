@@ -8,7 +8,7 @@ def final DEFAULTS = [
         ghOrgUnit              : Constants.GITHUB_ORG_UNIT,
         branch                 : Constants.BRANCH,
         timeoutMins            : 720,
-        label                  : "kie-rhel7 && kie-mem24g",
+        label                  : "kie-rhel7 && kie-mem24g && !master",
         executionNumber        : 10,
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
