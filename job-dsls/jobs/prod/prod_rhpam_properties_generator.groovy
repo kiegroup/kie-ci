@@ -40,13 +40,13 @@ node('${Constants.LABEL_KIE_RHEL}') {
         def folder = "rhpam/RHPAM-\${PRODUCT_VERSION}.\${PRODUCT_MILESTONE}"
 
         build job: env.PROPERTIES_GENERATOR_PATH, parameters: [
-            [\$class: 'StringParameterValue', name: 'FILE_ID', value: '6ad7aff1-2d3d-4cdc-81de-b62dae1f39e9'],
+            [\$class: 'StringParameterValue', name: 'FILE_ID', value: "\${RELEASE_STAGING_FILE_ID}"],
             [\$class: 'StringParameterValue', name: 'FILE_NAME', value: 'rhpam-deliverable-list-staging.properties'],
             [\$class: 'StringParameterValue', name: 'FOLDER_PATH', value: folder],
             [\$class: 'StringParameterValue', name: 'BINDING', value: binding]
         ]
         build job: env.PROPERTIES_GENERATOR_PATH, parameters: [
-            [\$class: 'StringParameterValue', name: 'FILE_ID', value: 'f5eb870f-53d8-426c-bcfa-04668965e3ef'],
+            [\$class: 'StringParameterValue', name: 'FILE_ID', value: "\${RELEASE_FILE_ID}"],
             [\$class: 'StringParameterValue', name: 'FILE_NAME', value: 'rhpam-deliverable-list.properties'],
             [\$class: 'StringParameterValue', name: 'FOLDER_PATH', value: folder],
             [\$class: 'StringParameterValue', name: 'BINDING', value: binding]
@@ -55,7 +55,7 @@ node('${Constants.LABEL_KIE_RHEL}') {
         def folder = "rhpam/RHPAM-\${PRODUCT_VERSION}.NIGHTLY"
 
         build job: env.PROPERTIES_GENERATOR_PATH, parameters: [
-            [\$class: 'StringParameterValue', name: 'FILE_ID', value: 'aff8076d-3a5d-4e45-b41e-413ca9b34258'],
+            [\$class: 'StringParameterValue', name: 'FILE_ID', value: "\${NIGHTLY_FILE_ID}"],
             [\$class: 'StringParameterValue', name: 'FILE_NAME', value: "rhpam-\${TIME_STAMP}.properties"],
             [\$class: 'StringParameterValue', name: 'FOLDER_PATH', value: folder],
             [\$class: 'StringParameterValue', name: 'BINDING', value: binding]
@@ -88,6 +88,9 @@ pipelineJob("${folderPath}/rhpam-properties-generator") {
         stringParam("JAVAPARSER_VERSION", "", "This is just for prod files")
         stringParam("RCM_GUEST_FOLDER", "/mnt/rcm-guest/staging")
         stringParam("RCM_HOST", "rcm-guest.app.eng.bos.redhat.com")
+        stringParam("NIGHTLY_FILE_ID", "aff8076d-3a5d-4e45-b41e-413ca9b34258")
+        stringParam("RELEASE_STAGING_FILE_ID", "6ad7aff1-2d3d-4cdc-81de-b62dae1f39e9")
+        stringParam("RELEASE_FILE_ID", "f5eb870f-53d8-426c-bcfa-04668965e3ef")
     }
 
     definition {
