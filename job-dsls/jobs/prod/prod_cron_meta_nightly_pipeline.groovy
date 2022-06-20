@@ -57,7 +57,7 @@ pipeline{
 
         // 7.67.x-blue
         ${rhbaNightlyStage('8.0.0', '7.67.x-blue', NEXT_PRODUCT_CONFIG_BRANCH)}
-        ${kogitoNightlyStage('1.13.2-blue', '1.13.2-blue', OPTAPLANNER_NEXT_PRODUCT_VERSION, NEXT_PRODUCT_VERSION, NEXT_RHBA_VERSION_PREFIX, KOGITO_NEXT_PRODUCT_CONFIG_BRANCH)}
+        ${kogitoNightlyStage('1.13.2-blue', '1.13.x-blue', OPTAPLANNER_NEXT_PRODUCT_VERSION, NEXT_PRODUCT_VERSION, NEXT_RHBA_VERSION_PREFIX, KOGITO_NEXT_PRODUCT_CONFIG_BRANCH)}
 
         // Kogito-tooling prod nightlies removed, can be found in git history
     }
