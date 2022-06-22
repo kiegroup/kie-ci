@@ -41,6 +41,7 @@ def KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH="kogito/1.13.x-blue"
 def KOGITO_BLUE_NEXT_PRODUCT_NEXUS_SUFFIX="1.13-blue"
 
 def SERVERLESS_LOGIC_NEXT_PRODUCT_VERSION='1.24.0'
+def SERVERLESS_LOGIC_DROOLS_NEXT_PRODUCT_VERSION='8.24.0'
 def SERVERLESS_LOGIC_NEXT_PRODUCT_BRANCH='1.24.x'
 def SERVERLESS_LOGIC_NEXT_PRODUCT_CONFIG_BRANCH="openshift-serverless-logic/1.24.x"
 
@@ -73,7 +74,7 @@ pipeline{
         ${kogitoNightlyStage(KOGITO_BLUE_NEXT_PRODUCT_VERSION, KOGITO_BLUE_NEXT_PRODUCT_BRANCH, OPTAPLANNER_NEXT_PRODUCT_VERSION, NEXT_PRODUCT_VERSION, NEXT_RHBA_VERSION_PREFIX, KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH, KOGITO_BLUE_NEXT_PRODUCT_NEXUS_SUFFIX)}
 
         // Openshift Serverless Logic
-        ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_NEXT_PRODUCT_BRANCH, SERVERLESS_LOGIC_NEXT_PRODUCT_CONFIG_BRANCH)}
+        ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_DROOLS_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_NEXT_PRODUCT_BRANCH, SERVERLESS_LOGIC_NEXT_PRODUCT_CONFIG_BRANCH)}
 
     }
 }
@@ -179,7 +180,7 @@ String kogitoWithSpecDroolsNightlyStage(String kogitoVersion, String kogitoBranc
     """
 }
 
-String serverlessLogicNightlyStage(String productVersion, String branch, String configBranch, String nexusSuffix = getNexusFromVersion(productVersion)) {
+String serverlessLogicNightlyStage(String productVersion, String droolsVersion, String branch, String configBranch, String nexusSuffix = getNexusFromVersion(productVersion)) {
     return """
         stage('trigger KOGITO nightly job ${productVersion}') {
             steps {
@@ -187,6 +188,7 @@ String serverlessLogicNightlyStage(String productVersion, String branch, String 
                         [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${nexusSuffix}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(productVersion)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${productVersion}'],
+                        [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${configBranch}'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
