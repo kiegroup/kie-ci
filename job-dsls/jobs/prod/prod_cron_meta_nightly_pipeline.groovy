@@ -38,7 +38,6 @@ def NEXT_BLUE_PRODUCT_CONFIG_BRANCH=NEXT_PRODUCT_CONFIG_BRANCH
 def KOGITO_BLUE_NEXT_PRODUCT_VERSION='1.13.2.blue'
 def KOGITO_BLUE_NEXT_PRODUCT_BRANCH='1.13.x-blue'
 def KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH="kogito/1.13.x-blue"
-def KOGITO_BLUE_NEXT_PRODUCT_NEXUS_SUFFIX="1.13-blue"
 
 // Should be uncommented and used with kogitoWithSpecDroolsNightlyStage once Next is set for RHPAM 7.14.0 (or main)
 // def DROOLS_NEXT_PRODUCT_VERSION='8.13.0'
@@ -66,7 +65,7 @@ pipeline{
 
         // blue
         ${rhbaNightlyStage(NEXT_BLUE_PRODUCT_VERSION, NEXT_BLUE_PRODUCT_BRANCH, NEXT_BLUE_PRODUCT_CONFIG_BRANCH)}
-        ${kogitoNightlyStage(KOGITO_BLUE_NEXT_PRODUCT_VERSION, KOGITO_BLUE_NEXT_PRODUCT_BRANCH, OPTAPLANNER_NEXT_PRODUCT_VERSION, NEXT_PRODUCT_VERSION, NEXT_RHBA_VERSION_PREFIX, KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH, KOGITO_BLUE_NEXT_PRODUCT_NEXUS_SUFFIX)}
+        ${kogitoNightlyStage(KOGITO_BLUE_NEXT_PRODUCT_VERSION, KOGITO_BLUE_NEXT_PRODUCT_BRANCH, OPTAPLANNER_NEXT_PRODUCT_VERSION, NEXT_PRODUCT_VERSION, NEXT_RHBA_VERSION_PREFIX, KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH)}
 
         // Kogito-tooling prod nightlies removed, can be found in git history
     }
@@ -132,7 +131,7 @@ String rhbaNightlyStage(String version, String branch, String configBranch) {
     """
 }
 
-String kogitoNightlyStage(String kogitoVersion, String kogitoBranch, String optaplannerVersion, String rhbaVersion, String rhbaVersionPrefix, String configBranch, String nexusSuffix = getNexusFromVersion(kogitoVersion)) {
+String kogitoNightlyStage(String kogitoVersion, String kogitoBranch, String optaplannerVersion, String rhbaVersion, String rhbaVersionPrefix, String configBranch) {
     return """
         stage('trigger KOGITO nightly job ${kogitoVersion}') {
             steps {
@@ -140,7 +139,7 @@ String kogitoNightlyStage(String kogitoVersion, String kogitoBranch, String opta
                         [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/rhba-${getNexusFromVersion(rhbaVersion)}-nightly-with-upstream'],
                         [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '${rhbaVersionPrefix}'],
                         [\$class: 'StringParameterValue', name: 'RHBA_RELEASE_VERSION', value: '${getNexusFromVersion(rhbaVersion)}'],
-                        [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${nexusSuffix}/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${getNexusFromVersion(kogitoVersion)}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(kogitoVersion)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${kogitoVersion}'],
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${optaplannerVersion}'],
@@ -178,7 +177,7 @@ String getUMBFromVersion(def version) {
         return Constants.MAIN_BRANCH
     }
     def matcher = version =~ /(\d*)\.(\d*)\.?/
-    return "${matcher[0][1]}${matcher[0][2]}"
+    return "${matcher[0][1]}${matcher[0][2]}${getBlueSuffix(version)}"
 }
 
 String getNexusFromVersion(def version) {
@@ -186,7 +185,11 @@ String getNexusFromVersion(def version) {
         return Constants.MAIN_BRANCH
     }
     def matcher = version =~ /(\d*)\.(\d*)\.?/
-    return "${matcher[0][1]}.${matcher[0][2]}"
+    return "${matcher[0][1]}.${matcher[0][2]}${getBlueSuffix(version)}"
+}
+
+String getBlueSuffix(String version) {
+    return version.endsWith('blue') ? '-blue' : ''
 }
 
 boolean isMainBranchVersion(String version) {
