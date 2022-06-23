@@ -166,7 +166,7 @@ String getUMBFromVersion(def version) {
         return Constants.MAIN_BRANCH
     }
     def matcher = version =~ /(\d*)\.(\d*)\.?/
-    return "${matcher[0][1]}${matcher[0][2]}${getBlueSuffix(version)}"
+    return "${matcher[0][1]}${matcher[0][2]}${getBlueSuffix(version, '')}"
 }
 
 String getNexusFromVersion(def version) {
@@ -174,11 +174,11 @@ String getNexusFromVersion(def version) {
         return Constants.MAIN_BRANCH
     }
     def matcher = version =~ /(\d*)\.(\d*)\.?/
-    return "${matcher[0][1]}.${matcher[0][2]}${getBlueSuffix(version)}"
+    return "${matcher[0][1]}.${matcher[0][2]}${getBlueSuffix(version, '-')}"
 }
 
-String getBlueSuffix(String version) {
-    return version.endsWith('blue') ? '-blue' : ''
+String getBlueSuffix(String version, String separator) {
+    return version.endsWith('blue') ? separator + 'blue' : ''
 }
 
 boolean isMainBranchVersion(String version) {
