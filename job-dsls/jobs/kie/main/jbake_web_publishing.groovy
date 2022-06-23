@@ -24,6 +24,9 @@ def final REPO_CONFIGS = [
         ],
         "optaplanner"   : [
                 repository : "optaplanner-website"
+        ],
+        "jbpm"   : [
+                repository : "jbpm-website"
         ]
 ]
 
