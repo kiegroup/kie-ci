@@ -59,8 +59,8 @@ pipelineJob("${folderPath}/properties-generator") {
         stringParam("FILE_NAME", "", "the file name to store the file in the host")
         stringParam("FOLDER_PATH", "", "the folder to store the file in the host")
         stringParam("BINDING", "[]", "The array as string for binding properties. Use something like groovy.json.JsonOutput.toJson( myArray ) to transform the array")
-        stringParam("RCM_GUEST_FOLDER", "/mnt/rcm-guest/staging")
-        stringParam("RCM_HOST", "rcm-guest.app.eng.bos.redhat.com")
+        stringParam("RCM_GUEST_FOLDER", "\${env.RCM_GUEST_FOLDER}")
+        stringParam("RCM_HOST", "\${env.RCM_HOST}")
     }
 
     definition {

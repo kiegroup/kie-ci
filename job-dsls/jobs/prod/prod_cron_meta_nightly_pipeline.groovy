@@ -29,6 +29,11 @@ def KOGITO_BLUE_NEXT_PRODUCT_VERSION='1.13.2.blue'
 def KOGITO_BLUE_NEXT_PRODUCT_BRANCH='1.13.x-blue'
 def KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH="kogito/1.13.x-blue"
 
+def SERVERLESS_LOGIC_NEXT_PRODUCT_VERSION='1.24.0'
+def SERVERLESS_LOGIC_DROOLS_NEXT_PRODUCT_VERSION='8.24.0'
+def SERVERLESS_LOGIC_NEXT_PRODUCT_BRANCH='1.24.x'
+def SERVERLESS_LOGIC_NEXT_PRODUCT_CONFIG_BRANCH="openshift-serverless-logic/1.24.x"
+
 // Should be uncommented and used with kogitoWithSpecDroolsNightlyStage once Next is set for RHPAM 7.14.0 (or main)
 // def DROOLS_NEXT_PRODUCT_VERSION='8.13.0'
 
@@ -56,7 +61,9 @@ pipeline{
         ${rhbaNightlyStage(NEXT_BLUE_PRODUCT_VERSION, NEXT_BLUE_PRODUCT_BRANCH, NEXT_BLUE_PRODUCT_CONFIG_BRANCH)}
         ${kogitoNightlyStage(KOGITO_BLUE_NEXT_PRODUCT_VERSION, KOGITO_BLUE_NEXT_PRODUCT_BRANCH, OPTAPLANNER_NEXT_PRODUCT_VERSION, NEXT_PRODUCT_VERSION, NEXT_RHBA_VERSION_PREFIX, KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH)}
 
-        // Kogito-tooling prod nightlies removed, can be found in git history
+        // Openshift Serverless Logic
+        ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_DROOLS_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_NEXT_PRODUCT_BRANCH, SERVERLESS_LOGIC_NEXT_PRODUCT_CONFIG_BRANCH)}
+
     }
 }
 """
@@ -153,6 +160,23 @@ String kogitoWithSpecDroolsNightlyStage(String kogitoVersion, String kogitoBranc
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${kogitoVersion}'],
                         [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${optaplannerVersion}'],
+                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${configBranch}'],
+                        [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
+                ]
+            }
+        }
+    """
+}
+
+String serverlessLogicNightlyStage(String productVersion, String droolsVersion, String branch, String configBranch, String nexusSuffix = getNexusFromVersion(productVersion)) {
+    return """
+        stage('trigger Serverless Logic nightly job ${productVersion}') {
+            steps {
+                build job: 'kogito.nightly/${branch}', propagate: false, wait: true, parameters: [
+                        [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${nexusSuffix}/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(productVersion)}-blue'],
+                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${productVersion}'],
+                        [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${configBranch}'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
