@@ -30,7 +30,7 @@ node('${Constants.LABEL_KIE_RHEL}') {
         def folder = "kogito/KOGITO-\${KOGITO_PRODUCT_VERSION}.NIGHTLY"
 
         build job: env.PROPERTIES_GENERATOR_PATH, parameters: [
-            [\$class: 'StringParameterValue', name: 'FILE_ID', value: 'kogito-nightly-properties-template'],
+            [\$class: 'StringParameterValue', name: 'FILE_ID', value: "\${FILE_ID}"],
             [\$class: 'StringParameterValue', name: 'FILE_NAME', value: "kogito-\${TIME_STAMP}.properties"],
             [\$class: 'StringParameterValue', name: 'FOLDER_PATH', value: folder],
             [\$class: 'StringParameterValue', name: 'BINDING', value: binding]
@@ -57,6 +57,7 @@ pipelineJob("${folderPath}/kogito-properties-generator") {
         stringParam("OPTAPLANNER_PRODUCT_VERSION_LONG", "8.3.0.redhat-00001", "")
         stringParam("PRODUCT_MILESTONE", "CR1", "This is just for prod files")
         stringParam("TIME_STAMP", "", "This is just for prod files")
+        stringParam("FILE_ID", "kogito-nightly-properties-template", "The template file ID")
     }
 
     definition {
