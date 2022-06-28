@@ -10,23 +10,23 @@ node {
         [
             name: "kiegroup/rhba",
             artifacts: [
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "add-ons"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "business-central-eap7-deployable"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "jar", classifier: "business-central-standalone"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "kie-server-ee8"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "kie-server-ee7"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "monitoring-ee7"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "reference-implementation"],
+                [product: "bamoe", group: "org.kie.rhba", name: "bamoe", package: "zip", classifier: "add-ons"],
+                [product: "bamoe", group: "org.kie.rhba", name: "bamoe", package: "zip", classifier: "business-central-eap7-deployable"],
+                [product: "bamoe", group: "org.kie.rhba", name: "bamoe", package: "jar", classifier: "business-central-standalone"],
+                [product: "bamoe", group: "org.kie.rhba", name: "bamoe", package: "zip", classifier: "kie-server-ee8"],
+                [product: "bamoe", group: "org.kie.rhba", name: "bamoe", package: "zip", classifier: "kie-server-ee7"],
+                [product: "bamoe", group: "org.kie.rhba", name: "bamoe", package: "zip", classifier: "monitoring-ee7"],
+                [product: "bamoe", group: "org.kie.rhba", name: "bamoe", package: "zip", classifier: "reference-implementation"],
             ]
         ], [
             name: "rhba-installers",
             artifacts: [
-                [product: "rhpam", group: "org.jboss.installer", name: "rhpam-installer", package: "jar"]
+                [product: "bamoe", group: "org.jboss.installer", name: "bamoe-installer", package: "jar"]
             ]
         ], [
             name: "jboss-integration/bxms-patch-tools",
             artifacts: [
-                [product: "rhpam", group: "org.jboss.brms-bpmsuite.patching", name: "rhpam", package: "zip", classifier: "update"]
+                [product: "bamoe", group: "org.jboss.brms-bpmsuite.patching", name: "bamoe", package: "zip", classifier: "update"]
             ]
         ]
     ]
@@ -123,7 +123,7 @@ def identifier(artifact, version) {
  * Staging management
  */
 def stagingPath(artifact) {
-    def productStagingCode = [artifact.product.toUpperCase(), MILESTONE].join("-")
+    def productStagingCode = [artifact.product, MILESTONE].join("-")
     def productStagingPath = "${STAGING_BASE_PATH}/${artifact.product}/${productStagingCode}"
     def version = MILESTONE - ~/\.[^\.]+$/
     def artifactName = [artifact.name, version, artifact.classifier].findAll({ it != null }).join("-")
@@ -132,7 +132,6 @@ def stagingPath(artifact) {
 
 def createStagingPath(path) {
     remoteExec("mkdir -m 775 -p ${path}")
-    remoteExec("chgrp jboss-prod ${path}")
 }
 
 def stageArtifact(url, path) {
@@ -141,7 +140,7 @@ def stageArtifact(url, path) {
     println "[INFO] staging ${indyAdmin} to ${path}"
     remoteExec("curl -s ${indyAdmin} -o ${path}")
     remoteExec("chmod 664 ${path}")
-    remoteExec("chgrp jboss-prod ${path}")
+    //remoteExec("chgrp jboss-prod ${path}")
 }
 
 def verifyStaged(path, md5) {
