@@ -138,6 +138,8 @@ class PrVerificationJob extends BasicJob {
                     // Use this option to allow members of whitelisted organisations to behave like admins, i.e. whitelist users and trigger pull request testing.
                     allowMembersOfWhitelistedOrgsAsAdmin(true)
 
+                    //not cron - this is important
+                    cron("")
 
                     // This field determines if webhooks are used
                     useGitHubHooks(true)
@@ -149,6 +151,10 @@ class PrVerificationJob extends BasicJob {
                     } else {
                         whiteListTargetBranches([branchName])
                     }
+
+                    // trigger phrase for re-triggering the job
+                    triggerPhrase(".*[j|J]enkins,?.*(retest|test).*")
+                    
                     extensions {
 
                         // Update commit status during build.
