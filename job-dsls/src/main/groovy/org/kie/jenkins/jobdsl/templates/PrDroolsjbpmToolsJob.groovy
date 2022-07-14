@@ -143,7 +143,7 @@ class PrDroolsjbpmToolsJob extends BasicJob {
                     // Use this option to allow members of whitelisted organisations to behave like admins, i.e. whitelist users and trigger pull request testing.
                     allowMembersOfWhitelistedOrgsAsAdmin(true)
 
-                    //not cron - thid is important
+                    //not cron - this is important
                     cron("")
 
                     // This field determines if webhooks are used
@@ -153,7 +153,7 @@ class PrDroolsjbpmToolsJob extends BasicJob {
                     // Supports regular expressions (e.g. 'main', 'feature-.*').
                     whiteListTargetBranches([branchName])
 
-                    // trigger phrase fro re-triggering the job
+                    // trigger phrase for re-triggering the job
                     triggerPhrase(".*[j|J]enkins,?.*(retest|test).*")
 
                     extensions {
