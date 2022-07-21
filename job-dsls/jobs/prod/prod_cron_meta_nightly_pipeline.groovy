@@ -175,7 +175,7 @@ String serverlessLogicNightlyStage(String productVersion, String droolsVersion, 
             steps {
                 build job: 'kogito.nightly/${branch}', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${nexusSuffix}/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(productVersion)}-blue'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(productVersion)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${productVersion}'],
                         [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${configBranch}'],
