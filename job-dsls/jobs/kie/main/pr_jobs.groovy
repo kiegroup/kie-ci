@@ -43,6 +43,14 @@ def final REPO_CONFIGS = [
                 label: 'kie-rhel7 && kie-mem4g',
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'scripts/.*']
         ],
+        "drools"                    : [
+                timeoutMins: 150,
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
+        "droolsjbpm-knowledge"      : [
+                label: "kie-rhel7 && kie-mem4g && !master",
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
         'appformer'                 : [
                 label    : 'kie-rhel7 && kie-mem16g',
                 artifactsToArchive: [
@@ -89,9 +97,6 @@ def final REPO_CONFIGS = [
         ],
         "drools-wb"                 : [
                 label: "kie-rhel7 && kie-mem16g",
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
-        ],
-        "optaplanner-wb"            : [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "jbpm-designer"             : [
