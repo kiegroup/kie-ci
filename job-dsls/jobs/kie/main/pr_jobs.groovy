@@ -43,6 +43,31 @@ def final REPO_CONFIGS = [
                 label: 'kie-rhel7 && kie-mem4g',
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'scripts/.*']
         ],
+        "drools"                    : [
+                timeoutMins: 150,
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
+        "droolsjbpm-knowledge"      : [
+                label: "kie-rhel7 && kie-mem4g && !master",
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
+        "optaplanner"               : [
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'build/.*', 'ide-configuration/.*']
+        ],
+        "optaweb-employee-rostering" : [
+                artifactsToArchive: [
+                        "**/cypress/screenshots/**",
+                        "**/cypress/videos/**"
+                ],
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'runOnOpenShift\\.sh', 'ide-configuration/.*']
+        ],
+        "optaweb-vehicle-routing" : [
+                artifactsToArchive: [
+                        "**/cypress/screenshots/**",
+                        "**/cypress/videos/**"
+                ],
+                excludedRegions: ['LICENSE.*', 'CODEOWNERS', '\\.gitignore', '\\.gitattributes', '\\.travis\\.yml', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'runOnOpenShift\\.sh', 'runLocally\\.sh', 'ide-configuration/.*']
+        ],
         'appformer'                 : [
                 label    : 'kie-rhel7 && kie-mem16g',
                 artifactsToArchive: [
