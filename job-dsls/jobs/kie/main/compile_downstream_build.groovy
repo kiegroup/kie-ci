@@ -25,6 +25,8 @@ def final REPO_CONFIGS = [
         "lienzo-tests"              : [],
         "droolsjbpm-build-bootstrap": [],
         "kie-soup"                  : [],
+        "droolsjbpm-knowledge"      : [],
+        "drools"                    : [],
         "appformer"                 : [],
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
@@ -33,7 +35,6 @@ def final REPO_CONFIGS = [
         "kie-wb-playground"         : [],
         "kie-wb-common"             : [],
         "drools-wb"                 : [],
-        "optaplanner-wb"            : [],
         "jbpm-designer"             : [],
         "jbpm-work-items"           : [],
         "jbpm-wb"                   : []
