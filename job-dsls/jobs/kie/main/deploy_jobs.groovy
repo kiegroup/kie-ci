@@ -38,7 +38,15 @@ def final REPO_CONFIGS = [
         ],
         "kie-soup"                  : [
                 label                  : "kie-rhel7 && kie-mem4g",
-                downstreamRepos        : ["appformer", "/KIE/7.x/deployedRepo/droolsjbpm-knowledge-7.x"]
+                downstreamRepos        : ["appformer", "droolsjbpm-knowledge"]
+        ],
+        "droolsjbpm-knowledge"      : [
+                timeoutMins            : 40,
+                downstreamRepos        : ["drools"]
+        ],
+        "drools"                    : [
+                downstreamRepos        : ["jbpm"],
+                artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
         "lienzo-core"                  : [
                 timeoutMins            : 20,
@@ -81,7 +89,7 @@ def final REPO_CONFIGS = [
         ],
         "drools-wb"                 : [
                 label                  : "kie-rhel7 && kie-mem16g",
-                downstreamRepos        : ["jbpm-wb", "optaplanner-wb"]
+                downstreamRepos        : ["jbpm-wb"]
         ],
         "jbpm-designer"             : [
                 mvnProps               : DEFAULTS["mvnProps"] + [
@@ -99,10 +107,6 @@ def final REPO_CONFIGS = [
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1"
                 ],
-                downstreamRepos        : ["kie-wb-distributions"]
-        ],
-        "optaplanner-wb"            : [
-                label                  : "kie-rhel7 && kie-mem16g",
                 downstreamRepos        : ["kie-wb-distributions"]
         ],
         "kie-wb-distributions"      : [
@@ -123,7 +127,6 @@ def final REPO_CONFIGS = [
         "process-migration-service"    : [:],
         "kie-docs"                  : [
                 artifactsToArchive     : [],
-                downstreamRepos        : ["/KIE/7.x/deployedRepo/optaweb-employee-rostering-7.x"],
                 mvnGoals               : "-e -B clean deploy -Dfull",
                 mvnProps               : []
         ]
