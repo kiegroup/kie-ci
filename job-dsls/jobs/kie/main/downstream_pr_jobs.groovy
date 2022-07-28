@@ -27,9 +27,14 @@ def final REPO_CONFIGS = [
                 timeoutMins     : 1080
         ],
         "kie-soup"                  : [],
+        "droolsjbpm-knowledge"      : [],
+        "drools"                    : [],
+        "optaplanner"               : [],
         "appformer"                 : [],
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
+        "optaweb-employee-rostering": [],
+        "optaweb-vehicle-routing"   : [],
         "droolsjbpm-integration"    : [
                 executionNumber : 25
         ],
