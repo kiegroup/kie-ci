@@ -38,7 +38,36 @@ def final REPO_CONFIGS = [
         ],
         "kie-soup"                  : [
                 label                  : "kie-rhel7 && kie-mem4g",
-                downstreamRepos        : ["appformer", "/KIE/7.x/deployedRepo/droolsjbpm-knowledge-7.x"]
+                downstreamRepos        : ["appformer", "droolsjbpm-knowledge"]
+        ],
+        "droolsjbpm-knowledge"      : [
+                timeoutMins            : 40,
+                downstreamRepos        : ["drools"]
+        ],
+        "drools"                    : [
+                downstreamRepos        : ["optaplanner", "jbpm"],
+                artifactsToArchive     : ["**/target/testStatusListener*"]
+        ],
+        "optaplanner"               : [
+                downstreamRepos     : ["droolsjbpm-integration", "optaweb-employee-rostering"],
+                mvnGoals: "-e -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
+                mvnProps: [
+                        "full"                     : "true",
+                        "integration-tests"        : "true",
+                        "maven.test.failure.ignore": "true"
+                ]
+        ],
+        "optaweb-employee-rostering" : [
+                artifactsToArchive   : DEFAULTS["artifactsToArchive"] + [
+                        "**/target/configurations/cargo-profile/profile-log.txt"
+                ],
+                downstreamRepos      : ["optaweb-vehicle-routing"]
+        ],
+        "optaweb-vehicle-routing"    : [
+                artifactsToArchive   : DEFAULTS["artifactsToArchive"] + [
+                        "**/target/configurations/cargo-profile/profile-log.txt"
+                ],
+                downstreamRepos      : []
         ],
         "lienzo-core"                  : [
                 timeoutMins            : 20,
@@ -123,7 +152,7 @@ def final REPO_CONFIGS = [
         "process-migration-service"    : [:],
         "kie-docs"                  : [
                 artifactsToArchive     : [],
-                downstreamRepos        : ["/KIE/7.x/deployedRepo/optaweb-employee-rostering-7.x"],
+                downstreamRepos        : ["optaweb-employee-rostering"],
                 mvnGoals               : "-e -B clean deploy -Dfull",
                 mvnProps               : []
         ]
