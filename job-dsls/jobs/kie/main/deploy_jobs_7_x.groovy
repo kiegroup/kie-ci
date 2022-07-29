@@ -129,7 +129,9 @@ for (repoConfig in REPO_CONFIGS) {
             }
             timestamps()
             colorizeOutput()
-
+            environmentVariables {
+                env('REPO_BRANCH', "${repoBranch}")
+            }
             configFiles {
                 mavenSettings("7774c60d-cab3-425a-9c3b-26653e5feba1"){
                     variable("SETTINGS_XML_FILE")
@@ -196,7 +198,7 @@ for (repoConfig in REPO_CONFIGS) {
                 contentType('default')
                 triggers {
                     failure{
-                        subject('kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
+                        subject('[$REPO_BRANCH] kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
 
                         content('\n\nThe status of deploy kiegroup/$JOB_BASE_NAME was: $BUILD_STATUS\n\nPlease go to $BUILD_URL/consoleText\n(IMPORTANT: you need have access to Red Hat VPN to access this link)')
 
@@ -205,7 +207,7 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                     }
                     unstable {
-                        subject('kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
+                        subject('[$REPO_BRANCH] kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
 
                         content('\n\nThe status of deploy kiegroup/$JOB_BASE_NAME was: $BUILD_STATUS\n\nPlease go to $BUILD_URL/consoleText\n(IMPORTANT: you need have access to Red Hat VPN to access this link)\n\n${FAILED_TESTS}')
 
@@ -214,7 +216,7 @@ for (repoConfig in REPO_CONFIGS) {
                         }
                     }
                     success{
-                        subject('kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
+                        subject('[$REPO_BRANCH] kiegroup/$JOB_BASE_NAME deploy $BUILD_STATUS')
 
                         content('\n\nThe status of deploy kiegroup/$JOB_BASE_NAME was: $BUILD_STATUS')
 
