@@ -72,7 +72,7 @@ class PrVerificationJob extends BasicJob {
         job.with {
 
             // Name of the JDK installation to use for this job.
-            jdk(Constants.JDK_VERSION)
+            jdk(Constants.JDK_TOOL)
 
             // Label which specifies which nodes this job can run on.
             label(labelName)
