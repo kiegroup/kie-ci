@@ -1,0 +1,141 @@
+import groovy.json.JsonSlurper
+import java.net.URLEncoder
+
+def projects = ["kiegroup/drools", "kiegroup/kogito-runtimes"] // Projects to find the productized version in a milestone
+def oslProductId = "155" // ID of OpenShift-Serverless-Logic product and should not change
+
+def projectsAndVersions = [:]
+def milestoneId = ""
+def milestone = ""
+
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && !master'
+    }
+    stages {
+        stage('Print variables') {
+            steps {
+                println "[INFO] PNC_API_URL: ${PNC_API_URL}"
+                println "[INFO] PROJECTS: ${projects}"
+                println "[INFO] OSL_PRODUCT_UD: ${oslProductId}"
+            }
+        }
+        stage('Fetch current milestone') {
+            steps {
+                script {
+                    if (env.MILESTONE) {
+                        println '[INFO] Milestone defined as part of the job parameters.'
+                        milestone = env.MILESTONE
+                        milestoneId = getMilestoneId(oslProductId, milestone)
+                        if (!milestoneId) {
+                            error "Could not find ${milestone} milestone. Stopping the job execution."
+                        }
+                    } else {
+                        println '[INFO] Milestone was not defined as part of the job parameters. Using the latest available milestone for the product.'
+                        milestone = getCurrentMilestone(oslProductId)
+                        milestoneId = getCurrentMilestoneId(oslProductId)
+                    }
+                    println "[INFO] MILESTONE: ${milestone}"
+                    println "[INFO] MILESTONE_ID: ${milestoneId}"
+                }
+            }
+        }
+        stage('Fetch builds versions') {
+            steps {
+                script {
+                    projectsAndVersions = getBuildsFromMilestone(milestoneId, projects)
+                }
+            }
+        }
+        stage('Send UMB Message to QE') {
+            steps {
+                script {
+                    def messageBody = getMessageBody(milestone, projectsAndVersions)
+                    triggerUMBMessageJob(messageBody, milestone)
+                }
+            }
+        }
+    }
+}
+
+def encode(text) {
+    return URLEncoder.encode(text, "UTF-8")
+}
+
+def encodeParams(params) {
+    return params.collect({ it.getKey() + "=" + encode(it.getValue()) }).join("&")
+}
+
+def queryPNC(endpoint, params, pageIndex=0) {
+    def queryURL = "${PNC_API_URL}/${endpoint}?pageIndex=${pageIndex}&pageSize=200&" + encodeParams(params)
+    def response = sh(script: "curl -s -X GET \"Accept: application/json\" \"${queryURL}\"", returnStdout: true)
+    return new JsonSlurper().parseText(response)
+}
+
+def getMilestonesForProduct(oslProductId) {
+    def endpoint = "products/${oslProductId}/versions"
+    def params = [q: ""]
+    return queryPNC(endpoint, params)
+}
+
+def getCurrentMilestoneId(oslProductId) {
+    return getMilestonesForProduct(oslProductId).content.currentProductMilestone.id[0]
+}
+
+def getCurrentMilestone(oslProductId) {
+    return getMilestonesForProduct(oslProductId).content.currentProductMilestone.version[0]
+}
+
+def getMilestoneId(oslProductId, milestone) {
+    def result = getMilestonesForProduct(oslProductId)
+    def productMilestones = result.content.productMilestones[0]
+    def foundMilestone = productMilestones.find{it.value["version"] == milestone}
+    return foundMilestone ? foundMilestone.key : null
+}
+
+def getNumberOfPages(endpoint, params) {
+    def result = queryPNC(endpoint, params)
+    return result.totalPages
+}
+
+def getBuildsFromMilestone(milestoneId, projects) {
+    def projectsAndVersions = [:]
+    def endpoint = "product-milestones/${milestoneId}/builds"
+    def params = [q: "temporaryBuild==false"]
+    def pagesNumber = getNumberOfPages(endpoint, params)
+    for (int i = 0; i < pagesNumber; i++) {
+        def result = queryPNC(endpoint, params, i)
+        for (project in projects) {
+            def projectVersions = result.content.findAll{it.project.name == project && it.status == "SUCCESS"}.attributes.BREW_BUILD_VERSION
+            projectsAndVersions[project] = projectVersions.sort().last()
+        }
+    }
+    return projectsAndVersions
+}
+
+def getMessageBody(milestone, projectsAndVersions) {
+    return """
+{
+    "maven_repository_file_url": "${env.STAGING_SERVER_URL}/openshift-serverless-logic/openshift-serverless-logic-${milestone}/openshift-serverless-logic-${milestone}-maven-repository.zip",
+    "sources_file_url": "${env.STAGING_SERVER_URL}/openshift-serverless-logic/openshift-serverless-logic-${milestone}/openshift-serverless-logic-${milestone}-src.zip",
+    "version": {"serverlesslogic-rhba":"${milestone}","serverlesslogic":"${projectsAndVersions["kiegroup/kogito-runtimes"]}","drools":"${projectsAndVersions["kiegroup/drools"]}"}
+}"""
+}
+
+def triggerUMBMessageJob(messageBody, milestone) {
+    def umbVersion = milestone.split("\\.")[0] + milestone.split("\\.")[1]
+    def topic = "VirtualTopic.qe.ci.ba.openshift-serverless-logic.${umbVersion}.cr.trigger"
+    def eventType = "openshift-serverless-logic-${umbVersion}-cr-qe-trigger"
+
+    println 'Triggering UMB message'
+    println "[INFO] TOPIC: ${topic}"
+    println "[INFO] EVENT_TYPE: ${eventType}"
+    println "[INFO] Message Body: ${messageBody}"
+
+    build job: env.SEND_UMB_MESSAGE_JOB_PATH, parameters: [
+        [$class: 'StringParameterValue', name: 'MESSAGE_BODY', value: messageBody],
+        [$class: 'StringParameterValue', name: 'TOPIC', value: topic],
+        [$class: 'StringParameterValue', name: 'EVENT_TYPE', value: eventType]
+    ]
+}
