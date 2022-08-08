@@ -11,7 +11,8 @@ pipelineJob("${folderPath}/osl-trigger-umb-message") {
     description('This job creates the OSL UMB message body and invoke prod/send_umb_message job to send the message.')
 
     parameters {
-        stringParam('MILESTONE', '', 'The release milestone, i.e. 1.24.0.CR1. This parameter is optional and in case it is not defined, the latest available milestone will be used.')
+        stringParam('PRODUCT_ID', '', 'The product ID. This parameter is optional and in case it is not defined, the default OSL product ID is used.')
+        stringParam('MILESTONE', '', 'The release milestone, i.e. 1.24.0.CR1. This parameter is optional and in case it is not defined, the latest available milestone is used.')
         stringParam("PNC_API_URL", "http://orch.psi.redhat.com/pnc-rest/v2", "PNC Rest API endpoint. See: https://docs.engineering.redhat.com/display/JP/User%27s+guide")
     }
 

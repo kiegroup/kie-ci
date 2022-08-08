@@ -2,7 +2,7 @@ import groovy.json.JsonSlurper
 import java.net.URLEncoder
 
 def projects = ["kiegroup/drools", "kiegroup/kogito-runtimes"] // Projects to find the productized version in a milestone
-def oslProductId = "155" // ID of OpenShift-Serverless-Logic product and should not change
+def productId = "${env.PRODUCT_ID.trim() ?: '155'}"  // ID of OpenShift-Serverless-Logic product
 
 def projectsAndVersions = [:]
 def milestoneId = ""
@@ -18,7 +18,7 @@ pipeline {
             steps {
                 println "[INFO] PNC_API_URL: ${PNC_API_URL}"
                 println "[INFO] PROJECTS: ${projects}"
-                println "[INFO] OSL_PRODUCT_UD: ${oslProductId}"
+                println "[INFO] PRODUCT_ID: ${productId}"
             }
         }
         stage('Fetch current milestone') {
@@ -27,14 +27,14 @@ pipeline {
                     if (env.MILESTONE) {
                         println '[INFO] Milestone defined as part of the job parameters.'
                         milestone = env.MILESTONE
-                        milestoneId = getMilestoneId(oslProductId, milestone)
+                        milestoneId = getMilestoneId(productId, milestone)
                         if (!milestoneId) {
-                            error "Could not find ${milestone} milestone. Stopping the job execution."
+                            error "[ERROR] Could not find ${milestone} milestone. Stopping the job execution."
                         }
                     } else {
                         println '[INFO] Milestone was not defined as part of the job parameters. Using the latest available milestone for the product.'
-                        milestone = getCurrentMilestone(oslProductId)
-                        milestoneId = getCurrentMilestoneId(oslProductId)
+                        milestone = getCurrentMilestone(productId)
+                        milestoneId = getCurrentMilestoneId(productId)
                     }
                     println "[INFO] MILESTONE: ${milestone}"
                     println "[INFO] MILESTONE_ID: ${milestoneId}"
@@ -45,6 +45,10 @@ pipeline {
             steps {
                 script {
                     projectsAndVersions = getBuildsFromMilestone(milestoneId, projects)
+                    println "[INFO] projects and versions ${projectsAndVersions}"
+                    if (!validateProjectsVersions(projectsAndVersions)) {
+                        error '[ERROR] Could not find a version for all the defined projects. Stopping the job execution.'
+                    }
                 }
             }
         }
@@ -73,22 +77,22 @@ def queryPNC(endpoint, params, pageIndex=0) {
     return new JsonSlurper().parseText(response)
 }
 
-def getMilestonesForProduct(oslProductId) {
-    def endpoint = "products/${oslProductId}/versions"
+def getMilestonesForProduct(productId) {
+    def endpoint = "products/${productId}/versions"
     def params = [q: ""]
     return queryPNC(endpoint, params)
 }
 
-def getCurrentMilestoneId(oslProductId) {
-    return getMilestonesForProduct(oslProductId).content.currentProductMilestone.id[0]
+def getCurrentMilestoneId(productId) {
+    return getMilestonesForProduct(productId).content.currentProductMilestone.id[0]
 }
 
-def getCurrentMilestone(oslProductId) {
-    return getMilestonesForProduct(oslProductId).content.currentProductMilestone.version[0]
+def getCurrentMilestone(productId) {
+    return getMilestonesForProduct(productId).content.currentProductMilestone.version[0]
 }
 
-def getMilestoneId(oslProductId, milestone) {
-    def result = getMilestonesForProduct(oslProductId)
+def getMilestoneId(productId, milestone) {
+    def result = getMilestonesForProduct(productId)
     def productMilestones = result.content.productMilestones[0]
     def foundMilestone = productMilestones.find{it.value["version"] == milestone}
     return foundMilestone ? foundMilestone.key : null
@@ -112,6 +116,10 @@ def getBuildsFromMilestone(milestoneId, projects) {
         }
     }
     return projectsAndVersions
+}
+
+def validateProjectsVersions(projectsAndVersions) {
+    return projectsAndVersions.isEmpty() ? false : !projectsAndVersions.find{it.value == null} as Boolean
 }
 
 def getMessageBody(milestone, projectsAndVersions) {
