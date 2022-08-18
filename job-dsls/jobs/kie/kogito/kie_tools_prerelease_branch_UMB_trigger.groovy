@@ -37,7 +37,6 @@ job(jobName) {
     }
 
     publishers {
-        cleanWs()
         ciMessageNotifier {
             providerData {
                 activeMQPublisher {
@@ -62,6 +61,7 @@ job(jobName) {
                 }
             }
         }
+        cleanWs()
     }
 
     environmentVariables{
