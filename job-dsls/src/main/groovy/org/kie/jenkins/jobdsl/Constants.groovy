@@ -20,7 +20,7 @@ class Constants {
     static final String MAVEN_VERSION = '3.8.1'
     static final String MAVEN_TOOL = "kie-maven-${MAVEN_VERSION}"
     static final String UPSTREAM_BUILD_MAVEN_VERSION = '3.8.1'
-    static final String JDK_VERSION = '11'
+    static final String JDK_VERSION = '11.0.15'
     static final String JDK_TOOL = "kie-jdk${JDK_VERSION}"
     static final String MAIN_BRANCH = 'main'
     static final String BRANCH = 'main'
