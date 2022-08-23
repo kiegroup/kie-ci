@@ -35,6 +35,7 @@ def SERVERLESS_LOGIC_CURRENT_PRODUCT_VERSION='2.0.0'
 def SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION='8.26.0'
 def SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH='main'
 def SERVERLESS_LOGIC_CURRENT_PRODUCT_CONFIG_BRANCH="master"
+def SERVERLESS_LOGIC_CURRENT_PRODUCT_UMB_VERSION='main'
 
 def SERVERLESS_LOGIC_NEXT_PRODUCT_VERSION='1.24.0'
 def SERVERLESS_LOGIC_DROOLS_NEXT_PRODUCT_VERSION='8.24.0'
@@ -70,7 +71,7 @@ pipeline{
 
         // Openshift Serverless Logic
         ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_DROOLS_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_NEXT_PRODUCT_BRANCH, SERVERLESS_LOGIC_NEXT_PRODUCT_CONFIG_BRANCH)}
-        ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH, SERVERLESS_LOGIC_CURRENT_PRODUCT_CONFIG_BRANCH)}
+        ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH, SERVERLESS_LOGIC_CURRENT_PRODUCT_CONFIG_BRANCH, SERVERLESS_LOGIC_CURRENT_PRODUCT_UMB_VERSION)}
 
     }
 }
@@ -176,13 +177,12 @@ String kogitoWithSpecDroolsNightlyStage(String kogitoVersion, String kogitoBranc
     """
 }
 
-String serverlessLogicNightlyStage(String productVersion, String droolsVersion, String branch, String configBranch, String nexusSuffix = getNexusFromVersion(productVersion)) {
+String serverlessLogicNightlyStage(String productVersion, String droolsVersion, String branch, String configBranch, String umbVersion = getUMBFromVersion(productVersion)) {
     return """
         stage('trigger Serverless Logic nightly job ${productVersion}') {
             steps {
                 build job: 'kogito.nightly/${branch}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${nexusSuffix}/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(productVersion)}'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${umbVersion}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${productVersion}'],
                         [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${configBranch}'],
