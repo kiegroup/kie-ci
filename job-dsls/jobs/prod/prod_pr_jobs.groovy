@@ -35,6 +35,15 @@ configs['bxms-patch-tools'] = [
         '''
 ]
 
+configs['rhba'] = [
+        pmeParams: '''
+         -DversionOverride=${RHPAM_VERSION}
+         -DkieVersion=${KIE_VERSION}
+         -DinstallerCommonsVersion=${INSTALLER_COMMONS_VERSION}
+         -DgroovyScripts=file:///${CONFIG_CHECKOUT_PATH}/rhba/nightly/InstallerAlignment.groovy
+        '''
+]
+
 def folderPath = "PROD/main/pullrequest"
 folder("PROD")
 folder("PROD/main")
