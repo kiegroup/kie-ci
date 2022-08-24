@@ -59,7 +59,7 @@ for (repoConfig in REPO_CONFIGS) {
     String buildMavenTool = get("buildMavenTool")
     String buildChainGroup = get("buildChainGroup")
 
-    String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
+    String gitHubJenkinsfileRepUrl = "https://github.com/kiegroup/droolsjbpm-build-bootstrap/"
 
     // Creation of folders where jobs are stored
     folder("KIE")
