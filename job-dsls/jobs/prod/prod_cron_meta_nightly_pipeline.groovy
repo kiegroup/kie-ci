@@ -30,12 +30,10 @@ def KOGITO_BLUE_NEXT_PRODUCT_VERSION='1.13.2.blue'
 def KOGITO_BLUE_NEXT_PRODUCT_BRANCH='1.13.x-blue'
 def KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH="kogito/1.13.x-blue"
 
-
 def SERVERLESS_LOGIC_CURRENT_PRODUCT_VERSION='2.0.0'
 def SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION='8.26.0'
 def SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH='main'
 def SERVERLESS_LOGIC_CURRENT_PRODUCT_CONFIG_BRANCH="master"
-def SERVERLESS_LOGIC_CURRENT_PRODUCT_UMB_VERSION='main'
 
 def SERVERLESS_LOGIC_NEXT_PRODUCT_VERSION='1.24.0'
 def SERVERLESS_LOGIC_DROOLS_NEXT_PRODUCT_VERSION='8.24.0'
@@ -71,7 +69,7 @@ pipeline{
 
         // Openshift Serverless Logic
         ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_DROOLS_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_NEXT_PRODUCT_BRANCH, SERVERLESS_LOGIC_NEXT_PRODUCT_CONFIG_BRANCH)}
-        ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH, SERVERLESS_LOGIC_CURRENT_PRODUCT_CONFIG_BRANCH, SERVERLESS_LOGIC_CURRENT_PRODUCT_UMB_VERSION)}
+        ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH, SERVERLESS_LOGIC_CURRENT_PRODUCT_CONFIG_BRANCH)}
 
     }
 }
@@ -177,12 +175,12 @@ String kogitoWithSpecDroolsNightlyStage(String kogitoVersion, String kogitoBranc
     """
 }
 
-String serverlessLogicNightlyStage(String productVersion, String droolsVersion, String branch, String configBranch, String umbVersion = getUMBFromVersion(productVersion)) {
+String serverlessLogicNightlyStage(String productVersion, String droolsVersion, String branch, String configBranch) {
     return """
         stage('trigger Serverless Logic nightly job ${productVersion}') {
             steps {
                 build job: 'kogito.nightly/${branch}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${umbVersion}'],
+                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(productVersion)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${productVersion}'],
                         [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${configBranch}'],
