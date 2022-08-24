@@ -1,6 +1,8 @@
 
 def productVersion, buildDate
 
+localNexusRepositoryId = "${env.LOCAL_NEXUS_REPOSITORY_ID?.trim() ? LOCAL_NEXUS_REPOSITORY_ID : 'rhba-7.13-nightly'}"
+
 pipeline {
     agent {
         label 'kie-rhel7 && !master'
@@ -8,7 +10,7 @@ pipeline {
 
     tools {
         maven 'kie-maven-3.8.1'
-        jdk 'kie-jdk1.8'
+        jdk 'kie-jdk11.0.15'
     }
 
     environment {
@@ -17,6 +19,7 @@ pipeline {
         MAVEN_SETTINGS_ID = 'rhba-prod-main'
         BUILD_CHECKOUT_PATH = "${WORKSPACE}/build"
         CONFIG_CHECKOUT_PATH = "${WORKSPACE}/config"
+        LOCAL_NEXUS_REPOSITORY_ID = "${localNexusRepositoryId}"
     }
 
     stages {
