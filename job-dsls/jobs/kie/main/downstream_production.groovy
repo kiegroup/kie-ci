@@ -34,7 +34,12 @@ def final REPO_CONFIGS = [
         "jbpm-designer"             : [],
         "jbpm-work-items"           : [],
         "jbpm-wb"                   : [],
-        "kie-wb-distributions"      : []
+        "kie-wb-distributions"      : [],
+        "rhba"                      : ['buildChainGroup': 'kiegroup', 'ghOrgUnit': 'jboss-integration'],
+        "izpack"                    : ['buildChainGroup': 'kiegroup', 'ghOrgUnit': 'jboss-integration'],
+        "installer-commons"         : ['buildChainGroup': 'kiegroup', 'ghOrgUnit': 'jboss-integration'],
+        "rhba-installers"           : ['buildChainGroup': 'kiegroup', 'ghOrgUnit': 'jboss-integration'],
+        "bxms-patch-tools"          : ['buildChainGroup': 'kiegroup', 'ghOrgUnit': 'jboss-integration']
 ]
 
 
@@ -52,6 +57,7 @@ for (repoConfig in REPO_CONFIGS) {
     String additionalTimeout = get("timeoutMins")
     String buildJDKTool = get("buildJDKTool")
     String buildMavenTool = get("buildMavenTool")
+    String buildChainGroup = get("buildChainGroup")
 
     String gitHubJenkinsfileRepUrl = "https://github.com/${ghOrgUnit}/droolsjbpm-build-bootstrap/"
 
@@ -90,6 +96,7 @@ for (repoConfig in REPO_CONFIGS) {
             stringParam ("PR_TYPE","Downstream Build Production","")
             stringParam ("BUILD_JDK_TOOL","${buildJDKTool}","")
             stringParam ("BUILD_MAVEN_TOOL","${buildMavenTool}","")
+            stringParam ("BUILDCHAIN_GROUP","${buildChainGroup}","")
         }
 
         definition {
