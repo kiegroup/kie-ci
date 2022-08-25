@@ -30,7 +30,6 @@ def KOGITO_BLUE_NEXT_PRODUCT_VERSION='1.13.2.blue'
 def KOGITO_BLUE_NEXT_PRODUCT_BRANCH='1.13.x-blue'
 def KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH="kogito/1.13.x-blue"
 
-
 def SERVERLESS_LOGIC_CURRENT_PRODUCT_VERSION='2.0.0'
 def SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION='8.26.0'
 def SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH='main'
@@ -176,12 +175,11 @@ String kogitoWithSpecDroolsNightlyStage(String kogitoVersion, String kogitoBranc
     """
 }
 
-String serverlessLogicNightlyStage(String productVersion, String droolsVersion, String branch, String configBranch, String nexusSuffix = getNexusFromVersion(productVersion)) {
+String serverlessLogicNightlyStage(String productVersion, String droolsVersion, String branch, String configBranch) {
     return """
         stage('trigger Serverless Logic nightly job ${productVersion}') {
             steps {
                 build job: 'kogito.nightly/${branch}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${nexusSuffix}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(productVersion)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${productVersion}'],
                         [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
