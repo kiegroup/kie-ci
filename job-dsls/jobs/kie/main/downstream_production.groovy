@@ -13,7 +13,8 @@ def final DEFAULTS = [
         ghJenkinsfilePwd       : "kie-ci",
         artifactsToArchive     : [],
         buildJDKTool           : '',
-        buildMavenTool         : ''
+        buildMavenTool         : '',
+        buildChainGroup        : ''
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
