@@ -16,7 +16,6 @@ node {
                 [product: "bamoe", group: "org.kie.rhba", name: "bamoe", package: "zip", classifier: "kie-server-ee8"],
                 [product: "bamoe", group: "org.kie.rhba", name: "bamoe", package: "zip", classifier: "kie-server-ee7"],
                 [product: "bamoe", group: "org.kie.rhba", name: "bamoe", package: "zip", classifier: "monitoring-ee7"],
-                [product: "bamoe", group: "org.kie.rhba", name: "bamoe", package: "zip", classifier: "reference-implementation"],
             ]
         ], [
             name: "rhba-installers",
