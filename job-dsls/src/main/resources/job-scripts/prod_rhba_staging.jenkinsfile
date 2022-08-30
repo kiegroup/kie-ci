@@ -16,7 +16,6 @@ node {
                 [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "kie-server-ee8"],
                 [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "kie-server-ee7"],
                 [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "monitoring-ee7"],
-                [product: "rhpam", group: "org.kie.rhba", name: "rhpam", package: "zip", classifier: "reference-implementation"],
             ]
         ], [
             name: "rhba-installers",
