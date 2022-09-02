@@ -13,7 +13,6 @@ pipelineJob("${folderPath}/move-jiras-qa") {
     parameters {
         stringParam('VERSION', '7.13.0.CR1', 'The release candidate version, i.e. 7.13.0.CR1')
         stringParam('PRODUCT_VERSION', '7.13.0.GA', 'Product target version, i.e 7.13.0.GA')
-        stringParam('CUTOFF_DATE', '2022-05-30', 'The cutoff date. Jiras resolved after this date will be ignored, i.e. 2022-05-30')
     }
 
     logRotator {
