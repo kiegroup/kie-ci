@@ -14,7 +14,6 @@ pipeline {
             steps {
                 println "[INFO] VERSION: ${VERSION}"
                 println "[INFO] PRODUCT_VERSION: ${PRODUCT_VERSION}"
-                println "[INFO] CUTOFF_DATE: ${CUTOFF_DATE}"
             }
         }
 
@@ -28,7 +27,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'jira-token', variable: 'JIRA_TOKEN')]) {
                     dir('integration-platform-tooling') {
-                        sh "python3 release-ticketor.py --headless --authtoken ${JIRA_TOKEN} ${PRODUCT_VERSION} ${CUTOFF_DATE} ${VERSION}"
+                        sh "python3 release-ticketor.py --headless --authtoken ${JIRA_TOKEN} ${PRODUCT_VERSION} ${VERSION}"
                     }
                 }
             }
