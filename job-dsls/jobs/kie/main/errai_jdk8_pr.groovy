@@ -66,7 +66,7 @@ job(jobName) {
     properties {
         ownership {
             primaryOwnerId("mbiarnes")
-            coOwnerIds("mbiarnes")
+            coOwnerIds("mnovotny")
         }
     }
 
