@@ -16,7 +16,7 @@ def repo = "errai"
 def repoBranch = Constants.BRANCH
 def ghOrgUnit = "errai"
 def ghAuthTokenId = "kie-ci-token"
-def javadk="kie-jdk11"
+def javadk="kie-jdk1.8"
 def mvnToolEnv=Constants.MAVEN_TOOL
 def mvnGoals = "-B -e -fae -Dfull -Dmaven.test.failure.ignore=true -Pintegration-test clean install -Derrai.codegen.details=true -Dapt-generators"
 def labelName = "kie-rhel7 && kie-mem16g"
@@ -31,11 +31,11 @@ folder("KIE/${repoBranch}/" + Constants.PULL_REQUEST_FOLDER){
 def folderPath = ("KIE/${repoBranch}/" + Constants.PULL_REQUEST_FOLDER)
 
 // jobs for main branch don't use the branch in the name
-String jobName = "${folderPath}/${repo}-${repoBranch}.pr"
+String jobName = "${folderPath}/${repo}-${repoBranch}-jdk8.pr"
 
 job(jobName) {
 
-    description("Runs CI build against PRs submitted to the Errai repository (github.com/errai/errai.git)")
+    description("Runs CI build against PRs submitted to the Errai repository (github.com/errai/errai.git) with jdk1.8")
 
     logRotator {
         numToKeep(10)
@@ -83,14 +83,14 @@ job(jobName) {
         githubPullRequest {
             useGitHubHooks(true)
             onlyTriggerPhrase(false)
-            triggerPhrase(".*[j|J]enkins,?.*(retest|test).*")
+            triggerPhrase(".*[j|J]enkins,?.*run jdk8.*")
             cron("")
             orgWhitelist(["errai", "kiegroup"])
             allowMembersOfWhitelistedOrgsAsAdmin(true)
             whiteListTargetBranches([repoBranch])
             extensions {
                 commitStatus {
-                    context('Linux - Pull Request')
+                    context('Linux - Pull Request - jdk8')
                     addTestResults(true)
                 }
             }
