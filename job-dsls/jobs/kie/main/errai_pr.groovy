@@ -66,7 +66,7 @@ job(jobName) {
     properties {
         ownership {
             primaryOwnerId("mbiarnes")
-            coOwnerIds("mbiarnes")
+            coOwnerIds("mnovotny")
         }
     }
 
@@ -90,7 +90,7 @@ job(jobName) {
             whiteListTargetBranches([repoBranch])
             extensions {
                 commitStatus {
-                    context('Linux - Pull Request')
+                    context('Linux - Pull Request - jdk11')
                     addTestResults(true)
                 }
             }
