@@ -35,7 +35,6 @@ def final REPO_CONFIGS = [
         "kie-wb-playground"         : [],
         "kie-wb-common"             : [],
         "drools-wb"                 : [],
-        "jbpm-designer"             : [],
         "jbpm-work-items"           : [],
         "jbpm-wb"                   : []
         //"kie-wb-distributions"      : [] // kie-wb-distributions is the last repo in the chain

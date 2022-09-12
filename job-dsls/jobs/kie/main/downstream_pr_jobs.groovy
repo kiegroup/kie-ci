@@ -42,7 +42,6 @@ def final REPO_CONFIGS = [
                 executionNumber : 25
         ],
         "drools-wb"                 : [],
-        "jbpm-designer"             : [],
         "jbpm-work-items"           : [],
         "jbpm-wb"                   : [],
         "kie-wb-distributions"      : []

@@ -31,7 +31,6 @@ def final REPO_CONFIGS = [
         "kie-wb-common"             : [],
         "drools-wb"                 : [],
         "optaplanner-wb"            : [],
-        "jbpm-designer"             : [],
         "jbpm-work-items"           : [],
         "jbpm-wb"                   : [],
         "kie-wb-distributions"      : []
