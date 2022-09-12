@@ -94,10 +94,6 @@ def final REPO_CONFIGS = [
         "optaplanner-wb"            : [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
-        "jbpm-designer"             : [
-                label: "kie-rhel7 && kie-mem16g && !master",
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
-        ],
         "jbpm-work-items"           : [
                 label      : "kie-rhel7 && kie-mem4g && !master",
                 timeoutMins: 120,
