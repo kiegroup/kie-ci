@@ -99,10 +99,13 @@ def final REPO_CONFIGS = [
                 label: "kie-rhel7 && kie-mem16g",
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
+<<<<<<< HEAD
         "jbpm-designer"             : [
                 label: "kie-rhel7 && kie-mem16g",
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
+=======
+>>>>>>> b7fa184 (jbpm-designer repo cleanup)
         "jbpm-work-items"           : [
                 label      : "kie-rhel7 && kie-mem4g",
                 timeoutMins: 120,
