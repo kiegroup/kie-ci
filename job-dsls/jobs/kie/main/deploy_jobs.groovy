@@ -106,17 +106,11 @@ def final REPO_CONFIGS = [
         "kie-wb-common"             : [
                 timeoutMins            : 180,
                 label                  : "kie-rhel7 && kie-mem16g",
-                downstreamRepos        : ["drools-wb","jbpm-designer"]
+                downstreamRepos        : ["drools-wb"]
         ],
         "drools-wb"                 : [
                 label                  : "kie-rhel7 && kie-mem16g",
                 downstreamRepos        : ["jbpm-wb", "optaplanner-wb"]
-        ],
-        "jbpm-designer"             : [
-                mvnProps               : DEFAULTS["mvnProps"] + [
-                        "gwt.compiler.localWorkers": "1"
-                ],
-                downstreamRepos        : ["jbpm-work-items"]
         ],
         "jbpm-work-items"           : [
                 label      : "kie-rhel7 && kie-mem4g",
