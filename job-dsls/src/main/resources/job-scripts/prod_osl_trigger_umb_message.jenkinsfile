@@ -84,18 +84,25 @@ def getMilestonesForProduct(productId) {
 }
 
 def getCurrentMilestoneId(productId) {
-    return getMilestonesForProduct(productId).content.currentProductMilestone.id[0]
+    def result = getMilestonesForProduct(productId)
+    return result.content.currentProductMilestone.id[result.totalHits - 1]
 }
 
 def getCurrentMilestone(productId) {
-    return getMilestonesForProduct(productId).content.currentProductMilestone.version[0]
+    def result = getMilestonesForProduct(productId)
+    return result.content.currentProductMilestone.version[result.totalHits - 1]
 }
 
 def getMilestoneId(productId, milestone) {
     def result = getMilestonesForProduct(productId)
-    def productMilestones = result.content.productMilestones[0]
-    def foundMilestone = productMilestones.find{it.value["version"] == milestone}
-    return foundMilestone ? foundMilestone.key : null
+    for (int i = 0; i < result.totalHits; i++) {
+        def productMilestones = result.content.productMilestones[i]
+        def foundMilestone = productMilestones.find{it.value["version"] == milestone}
+        if (foundMilestone) {
+            return foundMilestone.key
+        }
+    }
+    return null
 }
 
 def getNumberOfPages(endpoint, params) {
