@@ -125,8 +125,8 @@ def validateProjectsVersions(projectsAndVersions) {
 def getMessageBody(milestone, projectsAndVersions) {
     return """
 {
-    "maven_repository_file_url": "${env.STAGING_SERVER_URL}/openshift-serverless-logic/openshift-serverless-logic-${milestone}/openshift-serverless-logic-${milestone}-maven-repository.zip",
-    "sources_file_url": "${env.STAGING_SERVER_URL}/openshift-serverless-logic/openshift-serverless-logic-${milestone}/openshift-serverless-logic-${milestone}-src.zip",
+    "maven_repository_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-maven-repository.zip",
+    "sources_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-src.zip",
     "version": {"serverlesslogic-rhba":"${milestone}","serverlesslogic":"${projectsAndVersions["kiegroup/kogito-runtimes"]}","drools":"${projectsAndVersions["kiegroup/drools"]}"}
 }"""
 }
