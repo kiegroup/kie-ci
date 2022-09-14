@@ -17,6 +17,7 @@ pipeline {
         stage('Print variables') {
             steps {
                 println "[INFO] PNC_API_URL: ${PNC_API_URL}"
+                println "[INFO] QUARKUS_VERSION: ${QUARKUS_VERSION}"
                 println "[INFO] PROJECTS: ${projects}"
                 println "[INFO] PRODUCT_ID: ${productId}"
             }
@@ -134,7 +135,7 @@ def getMessageBody(milestone, projectsAndVersions) {
 {
     "maven_repository_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-maven-repository.zip",
     "sources_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-src.zip",
-    "version": {"serverlesslogic-rhba":"${milestone}","serverlesslogic":"${projectsAndVersions["kiegroup/kogito-runtimes"]}","drools":"${projectsAndVersions["kiegroup/drools"]}"}
+    "version": {"serverlesslogic-rhba":"${milestone}","serverlesslogic":"${projectsAndVersions["kiegroup/kogito-runtimes"]}","drools":"${projectsAndVersions["kiegroup/drools"]}","platform.quarkus.bom":"${QUARKUS_VERSION}"}
 }"""
 }
 

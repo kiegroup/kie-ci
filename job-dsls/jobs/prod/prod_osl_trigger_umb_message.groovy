@@ -13,6 +13,7 @@ pipelineJob("${folderPath}/osl-trigger-umb-message") {
     parameters {
         stringParam('PRODUCT_ID', '', 'The product ID. This parameter is optional and in case it is not defined, the default OSL product ID is used.')
         stringParam('MILESTONE', '', 'The release milestone, i.e. 1.24.0.CR1. This parameter is optional and in case it is not defined, the latest available milestone is used.')
+        stringParam('QUARKUS_VERSION', '2.7.6.Final-redhat-00006', 'The productized version of Quarkus used for building Openshift Serverless Logic currect milestone.')
         stringParam("PNC_API_URL", "http://orch.psi.redhat.com/pnc-rest/v2", "PNC Rest API endpoint. See: https://docs.engineering.redhat.com/display/JP/User%27s+guide")
     }
 
