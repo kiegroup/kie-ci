@@ -59,6 +59,14 @@ pipeline {
                 }
             }
         }
+
+        stage('Generate maven repository text') {
+            steps {
+                script {
+                    generateMavenRepositoryText()
+                }
+            }
+        }
     }
 
     post {
@@ -87,6 +95,12 @@ def stageArtifact(artifact) {
     def targetArtifactPath = "${TARGET_FOLDER_PATH}/${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-${artifact.finalClassifier}"
     println "${artifact.info} from ${artifactPath} to ${targetArtifactPath}"
     remoteExec("${artifact.stageCommand} ${artifactPath} ${targetArtifactPath}")
+}
+
+def generateMavenRepositoryText() {
+    println 'Generating maven repository text file'
+    def mavenRepoFileName = "${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-maven-repository"
+    remoteExec("cd ${TARGET_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")
 }
 
 def getMilestoneVersion(version) {

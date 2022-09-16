@@ -59,6 +59,14 @@ pipeline {
                 }
             }
         }
+
+        stage('Generate maven repository text') {
+            steps {
+                script {
+                    generateMavenRepositoryText()
+                }
+            }
+        }
     }
 
     post {
@@ -88,6 +96,12 @@ def renameArtifact(artifact) {
     def targetArtifactPath = "${KOGITO_FOLDER_PATH}/rhpam-${RHPAM_VERSION}-${artifact.finalClassifier}"
     println "${artifact.info} ${artifactPath} to ${targetArtifactPath}"
     remoteExec("mv ${artifactPath} ${targetArtifactPath}")
+}
+
+def generateMavenRepositoryText() {
+    println 'Generating maven repository text file'
+    def mavenRepoFileName = "rhpam-${RHPAM_VERSION}-kogito-maven-repository"
+    remoteExec("cd ${KOGITO_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")
 }
 
 def getMilestoneVersion(version) {
