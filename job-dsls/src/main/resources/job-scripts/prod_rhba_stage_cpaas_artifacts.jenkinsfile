@@ -63,7 +63,7 @@ pipeline {
         stage('Generate maven repository text') {
             steps {
                 script {
-                    stageMavenRepositoryText()
+                    generateMavenRepositoryText()
                 }
             }
         }
@@ -97,7 +97,7 @@ def stageArtifact(artifact) {
     remoteExec("${artifact.stageCommand} ${artifactPath} ${targetArtifactPath}")
 }
 
-def stageMavenRepositoryText() {
+def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-maven-repository"
     remoteExec("cd ${TARGET_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")

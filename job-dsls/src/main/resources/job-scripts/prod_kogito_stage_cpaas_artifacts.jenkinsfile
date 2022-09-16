@@ -63,7 +63,7 @@ pipeline {
         stage('Generate maven repository text') {
             steps {
                 script {
-                    stageMavenRepositoryText()
+                    generateMavenRepositoryText()
                 }
             }
         }
@@ -98,7 +98,7 @@ def renameArtifact(artifact) {
     remoteExec("mv ${artifactPath} ${targetArtifactPath}")
 }
 
-def stageMavenRepositoryText() {
+def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "rhpam-${RHPAM_VERSION}-kogito-maven-repository"
     remoteExec("cd ${KOGITO_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")
