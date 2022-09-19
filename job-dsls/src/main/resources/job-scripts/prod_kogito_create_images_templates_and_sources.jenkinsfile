@@ -30,7 +30,7 @@ pipeline {
                 script {
                     dir('bxms-tooling/release_scripts') {
                         def OPTIONAL_PARAMS = GITHUB_REFERENCE != "" ? "--cref ${GITHUB_REFERENCE}" : ''
-                        sh "python3 GenerateOpenshiftSrc.py --product rhpam --builds ${BUILDS} --version ${VERSION} --of ${OVERRIDING_FILES} ${OPTIONAL_PARAMS}"
+                        sh "python3 GenerateOpenshiftSrc.py --product kogito --builds ${BUILDS} --version ${VERSION} --of ${OVERRIDING_FILES} ${OPTIONAL_PARAMS}"
                     }
                 }
             }
