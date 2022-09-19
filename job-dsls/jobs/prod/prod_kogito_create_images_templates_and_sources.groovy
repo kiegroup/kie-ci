@@ -7,7 +7,7 @@ def parsedScript = scriptTemplate.replaceAll(/<%=\s*(\w+)\s*%>/) { config[it[1]]
 def folderPath = "PROD"
 folder(folderPath)
 
-pipelineJob("${folderPath}/kogito-create-images-templates-and-sources") {
+pipelineJob("${folderPath}/kogito-create-container-sources") {
     description('This job creates the Openshift sources for Kogito.')
 
     parameters {
