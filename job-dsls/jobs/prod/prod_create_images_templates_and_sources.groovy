@@ -13,7 +13,7 @@ pipelineJob("${folderPath}/create-images-templates-and-sources") {
     parameters {
         stringParam('VERSION', '', ' The milestone version, i.e. 7.12.1')
         stringParam('BUILDS', '', 'List of Brew builds separated by comma')
-        stringParam('OVERRIDING_FILES', 'branch-overrides.yaml', 'The overriding files that will be fetched from the images repositories')
+        stringParam('OVERRIDING_FILES', 'branch-overrides.yaml', 'Comma separated list of the overriding files that will be fetched from the images repositories')
         stringParam('GITHUB_REFERENCE', '', 'Override the GitHub reference for all cloned repositories')
     }
 
