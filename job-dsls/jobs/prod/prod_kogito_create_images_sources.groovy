@@ -1,7 +1,7 @@
 /**
 * Create the OpenShift images sources
 */
-def scriptTemplate = this.getClass().getResource("job-scripts/prod_kogito_create_images_templates_and_sources.jenkinsfile").text
+def scriptTemplate = this.getClass().getResource("job-scripts/prod_kogito_create_images_sources.jenkinsfile").text
 def parsedScript = scriptTemplate.replaceAll(/<%=\s*(\w+)\s*%>/) { config[it[1]] ?: '' }
 
 def folderPath = "PROD"
