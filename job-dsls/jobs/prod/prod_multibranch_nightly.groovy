@@ -27,13 +27,13 @@ def final REPO_CONFIGS = [
             repUrl : 'https://github.com/kiegroup/kogito-pipelines',
             scrPath : '.ci/jenkins/Jenkinsfile.prod.nightly',
             jobId : '00242'
-        //],
-        //"kogito-tooling.nightly" : [
-        //    prodJobName : 'kogito-tooling.nightly',
-        //    scrPath : '.ci/jenkins/Jenkinsfile.nightly',
-        //    repo : 'kogito-tooling',
-        //    repUrl : 'https://github.com/kiegroup/kogito-tooling',
-        //    jobId : '00363'
+        ],
+        "rhbop.nightly" : [
+           prodJobName : 'rhbop.nightly',
+           scrPath : '.ci/jenkins/Jenkinsfile.prod.nightly',
+           repo : 'optaplanner',
+           repUrl : 'https://github.com/kiegroup/optaplanner',
+           jobId : '00484'
         ],
 ]
 
