@@ -2,12 +2,12 @@
 
 import org.kie.jenkins.jobdsl.Constants
 
-def currentKieSnapshot = "7.69.0-SNAPSHOT"
-def nextKieSnapshot = "7.70.0-SNAPSHOT"
-def currentKogitoDocsSnaphot = "1.21.0-SNAPSHOT"
-def currentKogitoDocsVersion = "1.21.0"
-def currentKogitoDocsTagName = "1.21.0-kogito"
-def nextKogitoDocsSnapshot = "1.22.0-SNAPSHOT"
+def currentKieSnapshot = " "
+def nextKieSnapshot = " "
+def currentKogitoDocsSnaphot="major.minor.micro-SNAPSHOT"
+def currentKogitoDocsVersion = "major.minor.micro"
+def currentKogitoDocsTagName = "major.minor.micro-kogito"
+def nextKogitoDocsSnapshot = "major.minor+1.micro-SNAPSHOT"
 def sshKogitoDocsPath = "kogito@filemgmt-prod.jboss.org"
 def rsync_KogitoDocsPath="kogito@filemgmt-prod-sync.jboss.org"
 def javadk=Constants.JDK_TOOL
@@ -51,7 +51,9 @@ pipelineJob("${folderPath}/uploadKogitoDocs") {
 Look at https://github.com/kiegroup/kie-docs/blob/main-kogito/pom.xml OR 
 https://github.com/kiegroup/kie-docs/blob/main-kogito/doc-content/pom.xml OR 
 https://github.com/kiegroup/kie-docs/blob/main-kogito/doc-content/kogito-docs/pom.xml""")
-        stringParam("nextKieSnapshot","${nextKieSnapshot}","please enter the next kie snapshot version to bump up to")
+        stringParam("nextKieSnapshot","${nextKieSnapshot}","""please enter the next kie snapshot version to bump up to.
+IMPORTANT: the currentKieSnapshot and nextKieSnapshot can have the same version since the kie version is not upgraded anymore
+in a 3 weeks period. Look at https://github.com/kiegroup/kie-docs/blob/main/pom.xml#L23. This determines the nextKieSnapshot.""")
         stringParam("currentKogitoDocsSnaphot", "${currentKogitoDocsSnaphot}", """please enter the current kogito-docs snapshot version. 
 Look at https://github.com/kiegroup/kie-docs/blob/main-kogito/doc-content/kogito-docs/pom.xml#L14""")
         stringParam("currentKogitoDocsVersion", "${currentKogitoDocsVersion}", """please enter the <b>current kogito-docs version. 
