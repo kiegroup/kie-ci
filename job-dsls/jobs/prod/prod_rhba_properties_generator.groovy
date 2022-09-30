@@ -10,7 +10,7 @@
  */
 
 def propGen ='''
-node('kie-rhel7&&!master') {
+node('kie-rhel7 && !built-in') {
     sh 'env\'
     def REPO_URL_FOLDER_VERSION = 'main'.equals(BRANCH_NAME) ? 'main' : (PRODUCT_VERSION =~ /\\d+\\.\\d+/)[0]
     println "Folder [${REPO_URL_FOLDER_VERSION}] based on BRANCH_NAME [${BRANCH_NAME}] and PRODUCT_VERSION [${PRODUCT_VERSION}]"

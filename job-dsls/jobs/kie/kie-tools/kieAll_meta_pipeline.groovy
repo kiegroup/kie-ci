@@ -5,7 +5,7 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def javadk=Constants.JDK_TOOL
-def AGENT_LABEL="kie-rhel7"
+def AGENT_LABEL="kie-rhel7 && !built-in"
 
 def metaJob="""
 pipeline{
