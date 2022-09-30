@@ -11,7 +11,7 @@ def nextKogitoDocsSnapshot = "0.18.0-SNAPSHOT"
 def sshKogitoDocsPath = "kogito@filemgmt.jboss.org:/docs_htdocs/kogito/release"
 def javadk=Constants.JDK_TOOL
 def mvnToolEnv=Constants.MAVEN_TOOL
-def AGENT_LABEL="kie-rhel7 && kie-mem4g"
+def AGENT_LABEL="kie-rhel7 && kie-mem4g && !built-in"
 
 // creation of folder
 folder("KIE")

@@ -3,7 +3,7 @@ def replaceShared = '''
 
 pipeline {
     agent {
-        label 'kie-rhel7 && !master'
+        label 'kie-rhel7 && !built-in'
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')

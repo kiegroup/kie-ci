@@ -18,7 +18,7 @@ import org.kie.jenkins.jobdsl.templates.PrVerificationJob
 
 // Job parameters values
 projectName = "kie-docs"
-labelName = "kie-rhel7&&kie-mem4g"
+labelName = "kie-rhel7&&kie-mem4g && !built-in"
 timeoutValue = 60
 mavenGoals = "-B clean install"
 branchName = Constants.BRANCH
