@@ -9,7 +9,7 @@ def final DEFAULTS = [
         timeoutMins            : 120,
         ghAuthTokenId          : 'kie-ci-token',
         ghJenkinsfilePwd       : 'kie-ci',
-        label                  : 'kie-rhel7 && kie-mem8g && !master',
+        label                  : 'kie-rhel7 && kie-mem8g && !built-in',
         executionNumber        : 10,
         artifactsToArchive     : '',
         excludedArtifacts      : '',
@@ -25,26 +25,26 @@ def final DEFAULTS = [
 def final REPO_CONFIGS = [
         'lienzo-core'               : [
                 timeoutMins: 30,
-                label: 'kie-rhel7 && kie-mem4g && !master',
+                label: 'kie-rhel7 && kie-mem4g && !built-in',
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         'lienzo-tests'              : [
                 timeoutMins: 30,
-                label: 'kie-rhel7 && kie-mem4g && !master',
+                label: 'kie-rhel7 && kie-mem4g && !built-in',
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         'droolsjbpm-build-bootstrap': [
                 timeoutMins: 30,
-                label      : 'kie-rhel7 && kie-mem4g && !master',
+                label      : 'kie-rhel7 && kie-mem4g && !built-in',
                 executionNumber : 25,
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'docs/.*', 'ide-configuration/.*', 'script/.*']
         ],
         'kie-soup'                  : [
-                label: 'kie-rhel7 && kie-mem4g && !master',
+                label: 'kie-rhel7 && kie-mem4g && !built-in',
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'scripts/.*']
         ],
         'appformer'                 : [
-                label    : 'kie-rhel7 && kie-mem16g && !master',
+                label    : 'kie-rhel7 && kie-mem16g && !built-in',
                 artifactsToArchive: [
                         '**/dashbuilder-runtime.war'
                 ],
@@ -55,12 +55,12 @@ def final REPO_CONFIGS = [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'docsimg/.*']
         ],
         "kie-jpmml-integration"     : [
-                label: "kie-rhel7 && kie-mem4g && !master",
+                label: "kie-rhel7 && kie-mem4g && !built-in",
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "droolsjbpm-integration"    : [
                 timeoutMins: 300,
-                label: "kie-rhel7 && kie-mem24g && !master",
+                label: "kie-rhel7 && kie-mem24g && !built-in",
                 artifactsToArchive: [
                         "**/gclog" // this is a temporary file used to do some analysis: Once https://github.com/kiegroup/kie-jenkins-scripts/pull/652 is reverted this will disappear
                 ],
@@ -71,16 +71,16 @@ def final REPO_CONFIGS = [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'docs/.*']
         ],
         "kie-uberfire-extensions"   : [
-                label: "kie-rhel7 && kie-mem4g && !master",
+                label: "kie-rhel7 && kie-mem4g && !built-in",
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "kie-wb-playground"         : [
-                label: "kie-rhel7 && kie-mem4g && !master",
+                label: "kie-rhel7 && kie-mem4g && !built-in",
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "kie-wb-common"             : [
                 timeoutMins: 300,
-                label: "kie-rhel7 && kie-mem16g && gui-testing && !master",
+                label: "kie-rhel7 && kie-mem16g && gui-testing && !built-in",
                 executionNumber : 25,
                 artifactsToArchive: [
                         "**/target/screenshots/**"
@@ -88,19 +88,19 @@ def final REPO_CONFIGS = [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "drools-wb"                 : [
-                label: "kie-rhel7 && kie-mem16g && !master",
+                label: "kie-rhel7 && kie-mem16g && !built-in",
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "optaplanner-wb"            : [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "jbpm-work-items"           : [
-                label      : "kie-rhel7 && kie-mem4g && !master",
+                label      : "kie-rhel7 && kie-mem4g && !built-in",
                 timeoutMins: 120,
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', '\\.idea/.*']
         ],
         "jbpm-wb"                   : [
-                label: "kie-rhel7 && kie-mem16g && !master",
+                label: "kie-rhel7 && kie-mem16g && !built-in",
                 artifactsToArchive: [
                         "**/target/jbpm-wb-case-mgmt-showcase*.war",
                         "**/target/jbpm-wb-showcase.war"
@@ -108,7 +108,7 @@ def final REPO_CONFIGS = [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "kie-wb-distributions"      : [
-                label             : "kie-rhel7 && kie-mem24g && gui-testing && !master",
+                label             : "kie-rhel7 && kie-mem24g && gui-testing && !built-in",
                 timeoutMins       : 200,
                 artifactsToArchive: [
                         "**/target/screenshots/**",
@@ -120,13 +120,13 @@ def final REPO_CONFIGS = [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "kogito-rhba"             : [
-                label: 'kie-rhel7 && kie-mem16g && !master',
+                label: 'kie-rhel7 && kie-mem16g && !built-in',
                 ghOrgUnit : 'jboss-integration',
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt'],
                 gitHubJenkinsfileRepository : 'kogito-rhba'
         ],
         "process-migration-service" : [
-                label : 'kie-rhel7 && kie-mem16g && !master',
+                label : 'kie-rhel7 && kie-mem16g && !built-in',
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt'],
                 buildJDKTool: 'kie-jdk11'
         ]

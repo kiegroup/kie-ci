@@ -16,7 +16,7 @@ job("${folderPath}/a-seed-job-OSBS") {
 
     description("this job creates all needed Jenkins jobs in OSBS folder ")
 
-    label("kie-rhel7 && kie-mem8g && !master")
+    label("kie-rhel7 && kie-mem8g && !built-in")
 
     logRotator {
         numToKeep(10)
