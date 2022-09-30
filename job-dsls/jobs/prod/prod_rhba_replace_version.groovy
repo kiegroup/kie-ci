@@ -3,7 +3,7 @@ def prodVersion = '''
 
 pipeline {
     agent {
-        label 'kie-rhel7 && !master'
+        label 'kie-rhel7 && !built-in'
     }
     tools {
         maven 'kie-maven-3.8.1'
