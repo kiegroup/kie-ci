@@ -18,7 +18,7 @@ import org.kie.jenkins.jobdsl.templates.PrDroolsjbpmToolsJob
 
 // Job parameters values
  projectName = "droolsjbpm-tools"
- labelName = "kie-rhel7&&kie-mem8g"
+ labelName = "kie-rhel7 && kie-mem8g && !built-in"
  timeoutValue = 60
  mavenGoals = "-B clean install -Dfull"
  branchName = Constants.BRANCH

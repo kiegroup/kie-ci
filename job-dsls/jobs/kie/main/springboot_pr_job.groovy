@@ -9,7 +9,7 @@ def final CONFIG = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 120,
         ghAuthTokenId          : "kie-ci-token",
-        label                  : "kie-rhel7 && kie-mem8g",
+        label                  : "kie-rhel7 && kie-mem8g && !built-in",
         upstreamMvnArgs        : "-B -e -T1C -s \$SETTINGS_XML_FILE -Dkie.maven.settings.custom=\$SETTINGS_XML_FILE -DskipTests -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-B -e -nsu -fae clean install -Pspringboot",
         ITTestsParent          : "kie-server-parent/kie-server-tests",

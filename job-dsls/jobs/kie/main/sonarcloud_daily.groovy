@@ -9,7 +9,7 @@ def final DEFAULTS = [
         branch                 : Constants.BRANCH,
         timeoutMins            : 90,
         ghAuthTokenId          : "kie-ci-user-key",
-        label                  : "kie-rhel7 && kie-mem8g",
+        label                  : "kie-rhel7 && kie-mem8g && !built-in",
         upstreamMvnArgs        : "-B -e -T1C -DskipTests -Dgwt.compiler.skip=true -Dgwt.skipCompilation=true -Denforcer.skip=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Drevapi.skip=true clean install",
         mvnGoals               : "-B -e -nsu -fae -Pwildfly -Prun-code-coverage clean install",
         mvnProps               : [

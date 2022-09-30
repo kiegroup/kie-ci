@@ -14,7 +14,7 @@ def cutOffDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM
 def commitMsg="Upgraded version to "
 def javadk=Constants.JDK_TOOL
 def mvnToolEnv=Constants.MAVEN_TOOL
-def AGENT_LABEL="kie-rhel7-pipeline&&kie-mem24g"
+def AGENT_LABEL="kie-rhel7-pipeline && kie-mem24g && !built-in"
 
 
 // Creation of folders where jobs are stored
