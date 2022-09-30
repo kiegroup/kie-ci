@@ -8,7 +8,7 @@ def final DEFAULTS = [
         branch                 : "7.x",
         ghAuthKey              : "kie-ci-user-key",
         timeoutMins            : 90,
-        label                  : "kie-rhel7 && kie-mem8g && !master",
+        label                  : "kie-rhel7 && kie-mem8g && !built-in",
         javadk                 : Constants.JDK_TOOL,
         mvnGoals               : "-e -fae -B -Pwildfly clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
         mvnProps: [

@@ -9,7 +9,7 @@ def final DEFAULTS = [
         timeoutMins            : 120,
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
-        label                  : "kie-rhel7 && kie-mem8g && !master",
+        label                  : "kie-rhel7 && kie-mem8g && !built-in",
         executionNumber        : 10,
         artifactsToArchive     : '',
         excludedArtifacts      : '',
@@ -30,7 +30,7 @@ def final REPO_CONFIGS = [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "droolsjbpm-knowledge"      : [
-                label: "kie-rhel7 && kie-mem4g && !master",
+                label: "kie-rhel7 && kie-mem4g && !built-in",
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
         "optaplanner"               : [
