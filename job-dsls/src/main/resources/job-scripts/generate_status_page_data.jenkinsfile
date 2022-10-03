@@ -52,7 +52,7 @@ pipeline {
             steps {
                 script {
                     dir(ghPagesRepoFolder) {
-                        sh "build-chain-status-report --jenkinsUrl ${env.JENKINS_MASTER_URL} --jobUrl /job/PROD/job/rhba.nightly /job/PROD/job/kogito.nightly /job/PROD/job/rhbop.nightly -t \"Productization Jobs\" -st \"Business Automation Productization Jobs\" --certFilePath ${env[certFileGlobalVariableName]} --outputFolderPath ./data/ --skipZero -cb \"Jenkins Job\" -cu \"${env.BUILD_URL}\" -jf '^((?main|7\\.59\\.x|1\\.11\\.x).)*\$'"
+                        sh "build-chain-status-report --jenkinsUrl ${env.JENKINS_MASTER_URL} --jobUrl /job/PROD/job/rhba.nightly /job/PROD/job/kogito.nightly /job/PROD/job/rhbop.nightly -t \"Productization Jobs\" -st \"Business Automation Productization Jobs\" --certFilePath ${env[certFileGlobalVariableName]} --outputFolderPath ./data/ --skipZero -cb \"Jenkins Job\" -cu \"${env.BUILD_URL}\" -jf '^((?!main|7\\.59\\.x|1\\.11\\.x).)*\$'"
                     }
                 }
             }
