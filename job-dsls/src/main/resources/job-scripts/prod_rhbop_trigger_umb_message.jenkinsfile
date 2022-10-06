@@ -1,0 +1,169 @@
+import groovy.json.JsonSlurper
+import java.net.URLEncoder
+
+// Projects to find the productized version in a milestone
+def projects = ["kiegroup/drools", "kiegroup/optaplanner"]
+// ID of Red Hat build of OptaPlanner product.
+// TODO change this to the one on PNC
+def productId = "${env.PRODUCT_ID.trim() ?: 'TODO'}"
+
+def projectsAndVersions = [:]
+def milestoneId = ""
+def milestone = ""
+
+pipeline {
+    agent{
+        label 'kie-rhel7 && !master'
+    }
+    stages{
+        stage('Print variables') {
+            steps {
+                println "[INFO] PNC_API_URL: ${PNC_API_URL}"
+                println "[INFO] INDY_URL: ${INDY_URL}"
+                println "[INFO] QUARKUS_VERSION: ${QUARKUS_VERSION}"
+                println "[INFO] PROJECTS: ${projects}"
+                println "[INFO] PRODUCT_ID: ${productId}"
+            }
+        }
+        stage('Fetch current milestone') {
+            steps{
+                script {
+                    if (env.MILESTONE) {
+                        println '[INFO] Milestone defined as part of the job parameters.'
+                        milestone = env.MILESTONE
+                        milestoneId = getMilestoneId(productId, milestone)
+                        if (!milestoneId) {
+                            error "[ERROR] Could not find ${milestone} milestone. Stopping the job execution."
+                        }
+                    } else {
+                        println '[INFO] Milestone was not defined as part of the job parameters. Using the latest available milestone for the product.'
+                        milestone = getCurrentMilestone(productId)
+                        milestoneId = getCurrentMilestoneId(productId)
+                    }
+                    println "[INFO] MILESTONE: ${milestone}"
+                    println "[INFO] MILESTONE_ID: ${milestoneId}"
+                }
+            }
+        }
+        stage('Fetch builds versions') {
+            steps {
+                script {
+                    projectsAndVersions = getBuildsFromMilestone(milestoneId, projects)
+                    println "[INFO] projects and versions ${projectsAndVersions}"
+                    if (!validateProjectsVersions(projectsAndVersions)) {
+                        error '[ERROR] Could not find a version for all the defined projects. Stopping the job execution.'
+                    }
+                }
+            }
+        }
+        stage('Send UMB Message to QE') {
+            steps {
+                script {
+                    def messageBody = getMessageBody(milestone, projectsAndVersions)
+                    triggerUMBMessageJob(messageBody, milestone)
+                }
+            }
+        }
+    }
+}
+
+// Utility
+
+def encode(text) {
+    return URLEncoder.encode(text, "UTF-8")
+}
+
+def encodeParams(params) {
+    return params.collect({ it.getKey() + "=" + encode(it.getValue()) }).join("&")
+}
+
+def validateProjectsVersions(projectsAndVersions) {
+    return projectsAndVersions.isEmpty() ? false : !projectsAndVersions.find{it.value == null} as Boolean
+}
+
+def queryPNC(endpoint, params, pageIndex=0) {
+    def queryURL = "${PNC_API_URL}/${endpoint}?pageIndex=${pageIndex}&pageSize=200&" + encodeParams(params)
+    def response = sh(script: "curl -s -X GET \"Accept: application/json\" \"${queryURL}\"", returnStdout: true)
+    return new JsonSlurper().parseText(response)
+}
+
+// get all milestones of a product
+def getMilestonesForProduct(productId) {
+    def endpoint = "products/${productId}/versions"
+    def params = [q: ""]
+    return queryPNC(endpoint, params)
+}
+
+// get the id of a specific milestone
+def getMilestoneId(productId, milestone) {
+    def result = getMilestonesForProduct(productId)
+    for (int i = 0; i < result.totalHits; i++) {
+        def productMilestones = result.content.productMilestones[i]
+        def foundMilestone = productMilestones.find{it.value["version"] == milestone}
+        if (foundMilestone) {
+            return foundMilestone.key
+        }
+    }
+    return null
+}
+
+// get latest milestone
+def getCurrentMilestoneId(productId) {
+    def result = getMilestonesForProduct(productId)
+    return result.content.currentProductMilestone.id[result.totalHits - 1]
+}
+
+def getCurrentMilestone(productId) {
+    def result = getMilestonesForProduct(productId)
+    return result.content.currentProductMilestone.version[result.totalHits - 1]
+}
+
+// get all builds of a specific milestone
+def getBuildsFromMilestone(milestoneId, projects) {
+    def projectsAndVersions = [:]
+    def endpoint = "product-milestones/${milestoneId}/builds"
+    def params = [q: "temporaryBuild==false"]
+    def pagesNumber = getNumberOfPages(endpoint, params)
+    for (int i = 0; i < pagesNumber; i++) {
+        def result = queryPNC(endpoint, params, i)
+        for (project in projects) {
+            def projectVersions = result.content.findAll{it.project.name == project && it.status == "SUCCESS"}.attributes.BREW_BUILD_VERSION
+            projectsAndVersions[project] = projectVersions.sort().last()
+        }
+    }
+    return projectsAndVersions
+}
+
+// generate UMB message body
+def getMessageBody(milestone, projectsAndVersions) {
+    // TODO: retrieve built projects from projectsAndVersions keys
+    return """
+{
+    "built_projects": ["drools","optaplanner","optaplanner-quickstarts","optaweb-vehicle-routing","jboss-integration/rhbop-optaplanner"],
+    "maven_repository_file_url": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${milestone}-maven-repository.zip",
+    "archives": "${INDY_URL}",
+    "sources": {
+        "optaplanner": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${milestone}-optaplanner-sources.zip",
+        "optaplanner-quickstarts": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${milestone}-optaplanner-quickstarts-sources.zip"
+    },
+    "version": {"rhbop":"${milestone}","optaplanner":"${projectsAndVersions["kiegroup/optaplanner"]}","drools":"${projectsAndVersions["kiegroup/drools"]}","platform.quarkus.bom":"${QUARKUS_VERSION}"}
+}"""
+}
+
+// send UMB message for a specific milestone
+def triggerUMBMessageJob(messageBody, milestone) {
+    def umbVersion = milestone.split("\\.")[0] + milestone.split("\\.")[1]
+    def topic = "VirtualTopic.qe.ci.ba.rhbop.${umbVersion}.cr.trigger"
+    def eventType = "rhbop-${umbVersion}-cr-qe-trigger"
+
+    println 'Triggering UMB message'
+    println "[INFO] TOPIC: ${topic}"
+    println "[INFO] EVENT_TYPE: ${eventType}"
+    println "[INFO] Message Body: ${messageBody}"
+
+    build job: env.SEND_UMB_MESSAGE_JOB_PATH, parameters: [
+        [$class: 'StringParameterValue', name: 'MESSAGE_BODY', value: messageBody],
+        [$class: 'StringParameterValue', name: 'TOPIC', value: topic],
+        [$class: 'StringParameterValue', name: 'EVENT_TYPE', value: eventType]
+    ]
+}
