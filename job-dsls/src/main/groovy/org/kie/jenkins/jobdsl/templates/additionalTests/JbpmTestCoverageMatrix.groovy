@@ -50,10 +50,10 @@ class JbpmTestCoverageMatrix {
                 stringParam("settingsXml","${settingsXml}","settings.xml for this job depending of daily builds or release")
             }
 
-            label('kie-rhel7&&!master')
+            label('kie-rhel7 && !built-in')
 
             axes {
-                labelExpression("label-exp", "kie-rhel7")
+                labelExpression("label-exp", "kie-rhel7 && !built-in")
                 jdk("${jdkVersion}")
             }
 

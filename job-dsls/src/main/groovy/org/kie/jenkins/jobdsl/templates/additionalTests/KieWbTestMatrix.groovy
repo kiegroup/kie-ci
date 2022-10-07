@@ -57,10 +57,10 @@ class KieWbTestMatrix {
                 stringParam("settingsXml","${settingsXml}","settings.xml for this job depending of daily builds or release")
             }
 
-            label('kie-rhel7&&!master')
+            label('kie-rhel7 && !built-in')
 
             axes {
-                labelExpression("label_exp", "kie-rhel7&&gui-testing")
+                labelExpression("label_exp", "kie-rhel7 && gui-testing && !built-in")
                 text("container", "wildfly")
                 text("war", "business-central")
                 jdk("${jdkVersion}")
