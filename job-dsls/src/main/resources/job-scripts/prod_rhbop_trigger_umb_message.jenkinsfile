@@ -31,14 +31,14 @@ pipeline {
                     if (env.MILESTONE) {
                         println '[INFO] Milestone defined as part of the job parameters.'
                         milestone = env.MILESTONE
-                        milestoneId = getMilestoneId(productId, milestone)
+                        milestoneId = pnc.getMilestoneId(productId, milestone)
                         if (!milestoneId) {
                             error "[ERROR] Could not find ${milestone} milestone. Stopping the job execution."
                         }
                     } else {
                         println '[INFO] Milestone was not defined as part of the job parameters. Using the latest available milestone for the product.'
-                        milestone = getCurrentMilestone(productId)
-                        milestoneId = getCurrentMilestoneId(productId)
+                        milestone = pnc.getCurrentMilestoneForProduct(productId).version
+                        milestoneId = pnc.getCurrentMilestoneId(productId)
                     }
                     println "[INFO] MILESTONE: ${milestone}"
                     println "[INFO] MILESTONE_ID: ${milestoneId}"
@@ -48,7 +48,7 @@ pipeline {
         stage('Fetch builds versions') {
             steps {
                 script {
-                    projectsAndVersions = getBuildsFromMilestone(milestoneId, projects)
+                    projectsAndVersions = pnc.getBuildsFromMilestoneId(milestoneId, projects)
                     println "[INFO] projects and versions ${projectsAndVersions}"
                     if (!validateProjectsVersions(projectsAndVersions)) {
                         error '[ERROR] Could not find a version for all the defined projects. Stopping the job execution.'
@@ -67,71 +67,9 @@ pipeline {
     }
 }
 
-// Utility
-
-def encode(text) {
-    return URLEncoder.encode(text, "UTF-8")
-}
-
-def encodeParams(params) {
-    return params.collect({ it.getKey() + "=" + encode(it.getValue()) }).join("&")
-}
-
+// check if the project-versions map is valid or not
 def validateProjectsVersions(projectsAndVersions) {
     return projectsAndVersions.isEmpty() ? false : !projectsAndVersions.find{it.value == null} as Boolean
-}
-
-def queryPNC(endpoint, params, pageIndex=0) {
-    def queryURL = "${PNC_API_URL}/${endpoint}?pageIndex=${pageIndex}&pageSize=200&" + encodeParams(params)
-    def response = sh(script: "curl -s -X GET \"Accept: application/json\" \"${queryURL}\"", returnStdout: true)
-    return new JsonSlurper().parseText(response)
-}
-
-// get all milestones of a product
-def getMilestonesForProduct(productId) {
-    def endpoint = "products/${productId}/versions"
-    def params = [q: ""]
-    return queryPNC(endpoint, params)
-}
-
-// get the id of a specific milestone
-def getMilestoneId(productId, milestone) {
-    def result = getMilestonesForProduct(productId)
-    for (int i = 0; i < result.totalHits; i++) {
-        def productMilestones = result.content.productMilestones[i]
-        def foundMilestone = productMilestones.find{it.value["version"] == milestone}
-        if (foundMilestone) {
-            return foundMilestone.key
-        }
-    }
-    return null
-}
-
-// get latest milestone
-def getCurrentMilestoneId(productId) {
-    def result = getMilestonesForProduct(productId)
-    return result.content.currentProductMilestone.id[result.totalHits - 1]
-}
-
-def getCurrentMilestone(productId) {
-    def result = getMilestonesForProduct(productId)
-    return result.content.currentProductMilestone.version[result.totalHits - 1]
-}
-
-// get all builds of a specific milestone
-def getBuildsFromMilestone(milestoneId, projects) {
-    def projectsAndVersions = [:]
-    def endpoint = "product-milestones/${milestoneId}/builds"
-    def params = [q: "temporaryBuild==false"]
-    def pagesNumber = getNumberOfPages(endpoint, params)
-    for (int i = 0; i < pagesNumber; i++) {
-        def result = queryPNC(endpoint, params, i)
-        for (project in projects) {
-            def projectVersions = result.content.findAll{it.project.name == project && it.status == "SUCCESS"}.attributes.BREW_BUILD_VERSION
-            projectsAndVersions[project] = projectVersions.sort().last()
-        }
-    }
-    return projectsAndVersions
 }
 
 // generate UMB message body
