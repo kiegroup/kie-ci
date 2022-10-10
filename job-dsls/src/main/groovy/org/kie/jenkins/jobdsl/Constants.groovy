@@ -60,7 +60,7 @@ class Constants {
     static final String CHECKSTYLE_FILE = '**/checkstyle.log'
     static final String RHBA_VERSION_PREFIX = "${KIE_PREFIX}.redhat-"
     static final String EAP7_DOWNLOAD_URL = 'http://download.devel.redhat.com/released/JBoss-middleware/eap7/7.4.0/jboss-eap-7.4.0.zip'
-    static final String LABEL_KIE_RHEL = 'kie-rhel||rhos-01-kie-rhel&&!master'
+    static final String LABEL_KIE_RHEL = 'kie-rhel||rhos-01-kie-rhel&&!built-in'
     static final String CREDENTIALS_ID = 'kie-ci'
     static final String CREDENTIALS_ID_TOKEN = 'kie-ci'
     /**
