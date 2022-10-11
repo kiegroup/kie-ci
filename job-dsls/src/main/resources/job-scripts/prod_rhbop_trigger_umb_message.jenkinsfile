@@ -3,8 +3,7 @@ import java.net.URLEncoder
 
 // Projects to find the productized version in a milestone
 def projects = ["kiegroup/drools", "kiegroup/optaplanner"]
-// ID of Red Hat build of OptaPlanner product.
-// TODO change this to the one on PNC
+// ID of Red Hat build of OptaPlanner product in PNC.
 def productId = "${env.PRODUCT_ID.trim() ?: 'TODO'}"
 
 def projectsAndVersions = [:]
