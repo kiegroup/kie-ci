@@ -5,6 +5,7 @@ def projects = ["kiegroup/drools", "kiegroup/kogito-runtimes"] // Projects to fi
 def productId = "${env.PRODUCT_ID.trim() ?: '155'}"  // ID of OpenShift-Serverless-Logic product
 
 def projectsAndVersions = [:]
+def imagesTags = [:]
 def milestoneId = ""
 def milestone = ""
 
@@ -20,6 +21,7 @@ pipeline {
                 println "[INFO] QUARKUS_VERSION: ${QUARKUS_VERSION}"
                 println "[INFO] PROJECTS: ${projects}"
                 println "[INFO] PRODUCT_ID: ${productId}"
+                println "[INFO] DATA_INDEX_EPHEMERAL_BREW: ${DATA_INDEX_EPHEMERAL_BREW}"
             }
         }
         stage('Fetch current milestone') {
@@ -53,10 +55,20 @@ pipeline {
                 }
             }
         }
+        stage('Fetch images tags') {
+            steps {
+                script {
+                    imagesTags["data-index-ephemeral"] = sh (
+                        script: "brew buildinfo ${env.DATA_INDEX_EPHEMERAL_BREW} | awk -F'Extra: ' '{print \$2}' | tr \\\' \\\" | sed 's|False|\"false\"|g' | sed 's|None|\"\"|g' | jq -e '.image.index.pull[0]'",
+                        returnStdout: true
+                    )
+                }
+            }
+        }
         stage('Send UMB Message to QE') {
             steps {
                 script {
-                    def messageBody = getMessageBody(milestone, projectsAndVersions)
+                    def messageBody = getMessageBody(milestone, projectsAndVersions, imagesTags)
                     triggerUMBMessageJob(messageBody, milestone)
                 }
             }
@@ -130,12 +142,13 @@ def validateProjectsVersions(projectsAndVersions) {
     return projectsAndVersions.isEmpty() ? false : !projectsAndVersions.find{it.value == null} as Boolean
 }
 
-def getMessageBody(milestone, projectsAndVersions) {
+def getMessageBody(milestone, projectsAndVersions, imagesTags) {
     return """
 {
     "maven_repository_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-maven-repository.zip",
     "sources_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-src.zip",
-    "version": {"serverlesslogic-rhba":"${milestone}","serverlesslogic":"${projectsAndVersions["kiegroup/kogito-runtimes"]}","drools":"${projectsAndVersions["kiegroup/drools"]}","platform.quarkus.bom":"${QUARKUS_VERSION}"}
+    "version": {"serverlesslogic-rhba":"${milestone}","serverlesslogic":"${projectsAndVersions["kiegroup/kogito-runtimes"]}","drools":"${projectsAndVersions["kiegroup/drools"]}","platform.quarkus.bom":"${QUARKUS_VERSION}"},
+    "image": {"data-index-ephemeral": ${imagesTags["data-index-ephemeral"]}}
 }"""
 }
 
