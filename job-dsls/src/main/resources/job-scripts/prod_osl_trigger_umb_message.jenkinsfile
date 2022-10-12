@@ -58,10 +58,17 @@ pipeline {
         stage('Fetch images tags') {
             steps {
                 script {
-                    imagesTags["data-index-ephemeral"] = sh (
-                        script: "brew buildinfo ${env.DATA_INDEX_EPHEMERAL_BREW} | awk -F'Extra: ' '{print \$2}' | tr \\\' \\\" | sed 's|False|\"false\"|g' | sed 's|None|\"\"|g' | jq -e '.image.index.pull[0]'",
-                        returnStdout: true
-                    )
+                    def brewBuild
+                    if (env.DATA_INDEX_EPHEMERAL_BREW) {
+                        println '[INFO] Data-index-ephemeral brew build id defined as part of the job parameters'
+                        brewBuild = env.DATA_INDEX_EPHEMERAL_BREW.trim()
+                    } else {
+                        println '[INFO] Data-index-ephemeral brew build not provided. Getting the latest one from brew.'
+                        brewBuild = getLatestImageBuild("openshift-serverless-${getMinorProductVersion(milestone)}-rhel-8-container-candidate", "openshift-serverless-1-logic-data-index-ephemeral-rhel8-container").trim()
+                    }
+
+                    println "[INFO] BREW BUILD: ${brewBuild}"
+                    imagesTags["data-index-ephemeral"] = getImageTag(brewBuild)
                 }
             }
         }
@@ -140,6 +147,26 @@ def getBuildsFromMilestone(milestoneId, projects) {
 
 def validateProjectsVersions(projectsAndVersions) {
     return projectsAndVersions.isEmpty() ? false : !projectsAndVersions.find{it.value == null} as Boolean
+}
+
+def getLatestImageBuild(tag, pkg) {
+    return sh (
+        script: "brew latest-build ${tag} ${pkg} | tail -n1 | cut -d \" \" -f1",
+        returnStdout: true
+    )
+}
+
+def getImageTag(brewBuild) {
+    return sh (
+        script: "brew buildinfo \"${brewBuild}\" | awk -F'Extra: ' '{print \$2}' | tr \\\' \\\" | sed 's|False|\"false\"|g' | sed 's|True|\"true\"|g' | sed 's|None|\"\"|g' | jq -e '.image.index.pull[0]'",
+        returnStdout: true
+    )
+}
+
+// Example: 1.25.1.CR1 --> 1.25
+def getMinorProductVersion(milestone) {
+    def splits = milestone.split("\\.");
+    return "${splits[0]}.${splits[1]}"
 }
 
 def getMessageBody(milestone, projectsAndVersions, imagesTags) {
