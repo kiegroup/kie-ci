@@ -83,7 +83,8 @@ def getMessageBody(milestone, projectsAndVersions) {
         "optaplanner": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${milestone}-optaplanner-sources.zip",
         "optaplanner-quickstarts": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${milestone}-optaplanner-quickstarts-sources.zip"
     },
-    "version": {"rhbop":"${milestone}","optaplanner":"${projectsAndVersions["kiegroup/optaplanner"]}","drools":"${projectsAndVersions["kiegroup/drools"]}","platform.quarkus.bom":"${QUARKUS_VERSION}"}
+    "version": {"rhbop":"${milestone}","optaplanner":"${projectsAndVersions["kiegroup/optaplanner"]}","drools":"${projectsAndVersions["kiegroup/drools"]}","platform.quarkus.bom":"${QUARKUS_VERSION}"},
+    "offliner": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${milestone}-offliner.zip"
 }"""
 }
 
