@@ -59,7 +59,7 @@ pipeline {
 
 def createOfflinerZip() {
     println 'Creating offliner zip'
-    def offlinerFolderName = "${PRODUCT_NAME}-${VERSION}-offliner"
+    def offlinerFolderName = "${PRODUCT_NAME}-${getMilestoneVersion(VERSION)}-offliner"
     def offlinerFolderPath = "${RHBOP_FOLDER_PATH}/${offlinerFolderName}"
     def offlinerFile = "${RHBOP_FOLDER_PATH}/offliner.txt"
 
@@ -76,6 +76,10 @@ def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "${PRODUCT_NAME}-${VERSION}-maven-repository"
     remoteExec("cd ${RHBOP_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")
+}
+
+def getMilestoneVersion(version) {
+    return version.substring(0, version.lastIndexOf('.'))
 }
 
 def remoteExec(command) {
