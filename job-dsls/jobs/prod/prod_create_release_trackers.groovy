@@ -12,7 +12,7 @@ pipelineJob("${folderPath}/create-release-trackers") {
 
     parameters {
         stringParam('VERSION', '', ' The release candidate version, i.e. 7.12.1.CR1')
-        choiceParam('TEMPLATE', ['rhba', 'rhba_kogito'], 'The template file that describes the tickets that will be created')
+        choiceParam('TEMPLATE', ['rhba', 'rhba_kogito', 'rhbop'], 'The template file that describes the tickets that will be created')
     }
 
     logRotator {
