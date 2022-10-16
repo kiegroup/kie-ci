@@ -11,8 +11,9 @@ pipelineJob("${folderPath}/move-jiras-qa") {
     description('This job moves Jiras wih status "Resolved" to "Ready for QA" for a specific target release.')
 
     parameters {
-        stringParam('VERSION', '7.13.0.CR1', 'The release candidate version, i.e. 7.13.0.CR1')
-        stringParam('PRODUCT_VERSION', '7.13.0.GA', 'Product target version, i.e 7.13.0.GA')
+        stringParam('PRODUCT', 'rhpam,rhdm', 'Comma separated list of product, i.e rhpam,rhdm')
+        stringParam('VERSION', '7.13.2.CR1', 'The release candidate version, i.e. 7.13.2.CR1 or IBM BAMOE 8.0.2.CR1')
+        stringParam('PRODUCT_VERSION', '7.13.2.GA', 'Product target version, i.e 7.13.2.GA or IBM BAMOE 8.0.2.GA')
     }
 
     logRotator {
