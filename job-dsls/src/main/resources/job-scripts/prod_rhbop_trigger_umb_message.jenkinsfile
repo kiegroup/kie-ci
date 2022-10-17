@@ -73,16 +73,17 @@ def validateProjectsVersions(projectsAndVersions) {
 
 // generate UMB message body
 def getMessageBody(milestone, projectsAndVersions) {
+    def productVersion = milestone.substring(0, milestone.lastIndexOf("."))
     return """
 {
     "built_projects": ["drools","optaplanner","optaplanner-quickstarts","optaweb-vehicle-routing","jboss-integration/rhbop-optaplanner"],
     "version": {"rhbop":"${milestone}","optaplanner":"${projectsAndVersions["kiegroup/optaplanner"]}","drools":"${projectsAndVersions["kiegroup/drools"]}","platform.quarkus.bom":"${QUARKUS_VERSION}"},
-    "maven_repository_file_url": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${milestone}-optaplanner-maven-repository.zip",
-    "offliner_file_url": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${milestone}-optaplanner-offliner.zip",
+    "maven_repository_file_url": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${productVersion}-optaplanner-maven-repository.zip",
+    "offliner_file_url": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${productVersion}-optaplanner-offliner.zip",
     "archives": "${INDY_URL}",
     "sources": {
-        "optaplanner": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${milestone}-optaplanner-sources.zip",
-        "optaplanner-quickstarts": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${milestone}-optaplanner-quickstarts-sources.zip"
+        "optaplanner": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${productVersion}-optaplanner-sources.zip",
+        "optaplanner-quickstarts": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${productVersion}-optaplanner-quickstarts-sources.zip"
     }
 }"""
 }
