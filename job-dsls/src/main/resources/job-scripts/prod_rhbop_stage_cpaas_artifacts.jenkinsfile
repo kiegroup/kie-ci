@@ -99,7 +99,7 @@ def createOfflinerZip() {
 
 def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
-    def mavenRepoFileName = "${PRODUCT_NAME}-${VERSION}-maven-repository"
+    def mavenRepoFileName = "${PRODUCT_NAME}-${getMilestoneVersion(VERSION)}-optaplanner-maven-repository"
     remoteExec("cd ${RHBOP_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")
 }
 
