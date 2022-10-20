@@ -1,10 +1,12 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
 import groovy.json.JsonSlurper
 import java.net.URLEncoder
 
 // Projects to find the productized version in a milestone
 def projects = ["kiegroup/drools", "kiegroup/optaplanner"]
 // ID of Red Hat build of OptaPlanner product in PNC.
-def productId = "${env.PRODUCT_ID.trim() ?: 'TODO'}"
+def productId = "${env.PRODUCT_ID.trim() ?: '161'}"
 
 def projectsAndVersions = [:]
 def milestoneId = ""
@@ -78,12 +80,12 @@ def getMessageBody(milestone, projectsAndVersions) {
 {
     "built_projects": ["drools","optaplanner","optaplanner-quickstarts","optaweb-vehicle-routing","jboss-integration/rhbop-optaplanner"],
     "version": {"rhbop":"${milestone}","optaplanner":"${projectsAndVersions["kiegroup/optaplanner"]}","drools":"${projectsAndVersions["kiegroup/drools"]}","platform.quarkus.bom":"${QUARKUS_VERSION}"},
-    "maven_repository_file_url": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${productVersion}-optaplanner-maven-repository.zip",
-    "offliner_file_url": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${productVersion}-optaplanner-offliner.zip",
+    "maven_repository_file_url": "${env.STAGING_SERVER_URL}rhbop/rhbop-${milestone}/rhbop-${productVersion}-optaplanner-maven-repository.zip",
+    "offliner_file_url": "${env.STAGING_SERVER_URL}rhbop/rhbop-${milestone}/rhbop-${productVersion}-optaplanner-offliner.zip",
     "archives": "${INDY_URL}",
     "sources": {
-        "optaplanner": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${productVersion}-optaplanner-sources.zip",
-        "optaplanner-quickstarts": "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${milestone}/rhbop-${productVersion}-optaplanner-quickstarts-sources.zip"
+        "optaplanner": "${env.STAGING_SERVER_URL}rhbop/rhbop-${milestone}/rhbop-${productVersion}-optaplanner-sources.zip",
+        "optaplanner-quickstarts": "${env.STAGING_SERVER_URL}rhbop/rhbop-${milestone}/rhbop-${productVersion}-optaplanner-quickstarts-sources.zip"
     }
 }"""
 }
