@@ -22,9 +22,6 @@ def final REPO_CONFIGS = [
         "kiegroup"  : [
                 repository   : "kiegroup-website"
         ],
-        "optaplanner"   : [
-                repository : "optaplanner-website"
-        ],
         "jbpm"   : [
                 repository : "jbpm-website"
         ]
