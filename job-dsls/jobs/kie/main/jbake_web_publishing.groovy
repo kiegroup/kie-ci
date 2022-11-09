@@ -13,15 +13,12 @@ def folderPath="KIE/${baseBranch}/webs"
 
 
 def final DEFAULTS = [
-        repository : "drools-website",
+        repository : "kiegroup-website",
         jenkinsFilePath : ".ci/jenkins/Jenkinsfile.publish"
 ]
 
 def final REPO_CONFIGS = [
-        "drools"      : [],
-        "kiegroup"  : [
-                repository   : "kiegroup-website"
-        ],
+        "kiegroup"  : [],
         "jbpm"   : [
                 repository : "jbpm-website"
         ]
