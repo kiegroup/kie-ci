@@ -55,7 +55,7 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
             ignoreMissingFiles(false)
             failOnMissingPlugin(true)
             unstableOnDeprecation(true)
-            removedJobAction('IGNORE')
+            removedJobAction('DELETE')
             removedViewAction('IGNORE')
             removedConfigFilesAction('IGNORE')
             lookupStrategy('JENKINS_ROOT')
