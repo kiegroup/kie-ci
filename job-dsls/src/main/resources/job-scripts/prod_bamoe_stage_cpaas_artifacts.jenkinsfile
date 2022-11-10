@@ -1,0 +1,113 @@
+def artifacts = [
+    [originClassifier: 'maven-repository.zip', finalClassifier: 'maven-repository.zip', info: 'Renaming maven repository zip'],
+    [originClassifier: 'license.zip', finalClassifier: 'licenses.zip', info: 'Renaming licenses zip'],
+    [originClassifier: 'src.zip', finalClassifier: 'sources.zip', info: 'Renaming sources zip']
+]
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && !built-in'
+    }
+
+    environment {
+        PRODUCT_NAME = PRODUCT_NAME.trim()
+        VERSION = VERSION.trim()
+        RCM_HOST = RCM_HOST.trim()
+        STAGING_BASE_PATH = STAGING_BASE_PATH.trim()
+        BAMOE_FOLDER_PATH = "${STAGING_BASE_PATH}/${PRODUCT_NAME}/${PRODUCT_NAME}-${VERSION}"
+    }
+
+    stages {
+        stage('Clean workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Print variables') {
+            steps {
+                println "[INFO] PRODUCT_NAME: ${PRODUCT_NAME}"
+                println "[INFO] VERSION: ${VERSION}"
+                println "[INFO] RCM_HOST: ${RCM_HOST}"
+                println "[INFO] STAGING_BASE_PATH: ${STAGING_BASE_PATH}"
+            }
+        }
+
+        stage('Clone integration-platform-tooling repository') {
+            steps {
+                sh "git clone ${INTEGRATION_PLATFORM_TOOLING_REPOSITORY} integration-platform-tooling"
+            }
+        }
+
+        stage('Create offliner zip') {
+            steps {
+                script {
+                    createOfflinerZip()
+                }
+            }
+        }
+
+        stage('Rename artifacts produced by CPaaS') {
+            steps {
+                script {
+                    for (artifact in artifacts) {
+                        renameArtifact(artifact)
+                    }
+                }
+            }
+        }
+
+        stage('Generate maven repository text') {
+            steps {
+                script {
+                    generateMavenRepositoryText()
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+
+def createOfflinerZip() {
+    println 'Creating offliner zip'
+    def milestoneVersion = getMilestoneVersion(VERSION)
+    def offlinerFolderName = "${PRODUCT_NAME}-${milestoneVersion}-offliner"
+    def offlinerFolderPath = "${BAMOE_FOLDER_PATH}/${offlinerFolderName}"
+    def offlinerFile = "${BAMOE_FOLDER_PATH}/offliner.txt"
+
+    remoteExec("mkdir -p ${offlinerFolderPath}")
+    remoteExec("cp ${offlinerFile} ${offlinerFolderPath}")
+    sshagent(credentials: ['rcm-publish-server']) {
+        sh "scp -o StrictHostKeyChecking=no integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba@${RCM_HOST}:${offlinerFolderPath}/offline-repo-builder.sh"
+    }
+    remoteExec("cd ${BAMOE_FOLDER_PATH}; zip -r ${PRODUCT_NAME}-${milestoneVersion}-offliner.zip ${offlinerFolderName}")
+    remoteExec("rm -rf ${offlinerFolderPath} ${offlinerFile}")
+}
+
+def renameArtifact(artifact) {
+    def artifactPath = "${BAMOE_FOLDER_PATH}/${PRODUCT_NAME}-${VERSION}-${artifact.originClassifier}"
+    def targetArtifactPath = "${BAMOE_FOLDER_PATH}/${PRODUCT_NAME}-${getMilestoneVersion(VERSION)}-${artifact.finalClassifier}"
+    println "${artifact.info} from ${artifactPath} to ${targetArtifactPath}"
+    remoteExec("mv ${artifactPath} ${targetArtifactPath}")
+}
+
+def generateMavenRepositoryText() {
+    println 'Generating maven repository text file'
+    def mavenRepoFileName = "${PRODUCT_NAME}-${getMilestoneVersion(VERSION)}-maven-repository"
+    remoteExec("cd ${BAMOE_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")
+}
+
+def getMilestoneVersion(version) {
+    return version.substring(0, version.lastIndexOf('.'))
+}
+
+def remoteExec(command) {
+    sshagent(['rcm-publish-server']) {
+        return sh(script: "ssh -o StrictHostKeyChecking=no rhba@${RCM_HOST} '${command}'", returnStdout: true)
+    }
+}
