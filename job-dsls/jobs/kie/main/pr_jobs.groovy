@@ -129,6 +129,12 @@ def final REPO_CONFIGS = [
                 label : 'kie-rhel7 && kie-mem16g && !built-in',
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt'],
                 buildJDKTool: 'kie-jdk11'
+        ],
+        "rhbop-optaplanner"             : [
+                label: 'kie-rhel7 && kie-mem16g && !built-in',
+                ghOrgUnit : 'jboss-integration',
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt'],
+                gitHubJenkinsfileRepository : 'rhbop-optaplanner'
         ]
 ]
 
