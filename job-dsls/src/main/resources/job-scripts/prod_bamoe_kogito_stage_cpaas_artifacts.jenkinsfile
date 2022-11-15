@@ -1,0 +1,117 @@
+def artifacts = [
+    [originClassifier: 'kogito-quickstarts.zip', finalClassifier: 'kogito-quickstarts.zip', info: 'Moving quickstarts zip'],
+    [originClassifier: 'maven-repository.zip', finalClassifier: 'kogito-maven-repository.zip', info: 'Moving maven repository zip'],
+    [originClassifier: 'license.zip', finalClassifier: 'kogito-licenses.zip', info: 'Moving licenses zip'],
+    [originClassifier: 'src.zip', finalClassifier: 'kogito-sources.zip', info: 'Moving sources zip'],
+    [originClassifier: 'offliner.zip', finalClassifier: 'kogito-offliner.zip', stageCommand: 'mv', info: 'Moving offliner zip']
+]
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && !built-in'
+    }
+
+    environment {
+        PRODUCT_NAME = PRODUCT_NAME.trim()
+        VERSION = VERSION.trim()
+        BAMOE_VERSION = BAMOE_VERSION.trim()
+        RCM_HOST = RCM_HOST.trim()
+        STAGING_BASE_PATH = STAGING_BASE_PATH.trim()
+        BAMOE_KOGITO_FOLDER_PATH = "${STAGING_BASE_PATH}/bamoe/${PRODUCT_NAME}-${VERSION}"
+        BAMOE_FOLDER_PATH = "${STAGING_BASE_PATH}/bamoe/bamoe-${BAMOE_VERSION}"
+    }
+
+    stages {
+        stage('Clean workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Print variables') {
+            steps {
+                println "[INFO] PRODUCT_NAME: ${PRODUCT_NAME}"
+                println "[INFO] VERSION: ${VERSION}"
+                println "[INFO] BAMOE_VERSION: ${BAMOE_VERSION}"
+                println "[INFO] RCM_HOST: ${RCM_HOST}"
+                println "[INFO] STAGING_BASE_PATH: ${STAGING_BASE_PATH}"
+            }
+        }
+
+        stage('Clone integration-platform-tooling repository') {
+            steps {
+                sh "git clone ${INTEGRATION_PLATFORM_TOOLING_REPOSITORY} integration-platform-tooling"
+            }
+        }
+
+        stage('Create offliner zip') {
+            steps {
+                script {
+                    createOfflinerZip()
+                }
+            }
+        }
+
+        stage('Stage artifacts produced by CPaaS') {
+            steps {
+                script {
+                    for (artifact in artifacts) {
+                        stageArtifact(artifact)
+                    }
+                }
+            }
+        }
+
+        stage('Generate maven repository text') {
+            steps {
+                script {
+                    generateMavenRepositoryText()
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+
+def createOfflinerZip() {
+    println 'Creating offliner zip'
+    def offlinerFolderName = "${PRODUCT_NAME}-${getMilestoneVersion(BAMOE_VERSION)}-offliner"
+    def offlinerFolderPath = "${BAMOE_KOGITO_FOLDER_PATH}/${offlinerFolderName}"
+    def offlinerFile = "${BAMOE_KOGITO_FOLDER_PATH}/offliner.txt"
+
+    remoteExec("mkdir -p ${offlinerFolderPath}")
+    remoteExec("cp ${offlinerFile} ${offlinerFolderPath}")
+    sshagent(credentials: ['rcm-publish-server']) {
+        sh "scp -o StrictHostKeyChecking=no integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba@${RCM_HOST}:${offlinerFolderPath}/offline-repo-builder.sh"
+    }
+    remoteExec("cd ${BAMOE_KOGITO_FOLDER_PATH}; zip -r ${PRODUCT_NAME}-${VERSION}-offliner.zip ${offlinerFolderName}")
+    remoteExec("rm -rf ${offlinerFolderPath} ${offlinerFile}")
+}
+
+def stageArtifact(artifact) {
+    def artifactPath = "${BAMOE_KOGITO_FOLDER_PATH}/${PRODUCT_NAME}-${VERSION}-${artifact.originClassifier}"
+    def targetArtifactPath = "${BAMOE_FOLDER_PATH}/bamoe-${getMilestoneVersion(BAMOE_VERSION)}-${artifact.finalClassifier}"
+    println "${artifact.info} from ${artifactPath} to ${targetArtifactPath}"
+    remoteExec("mv ${artifactPath} ${targetArtifactPath}")
+}
+
+def generateMavenRepositoryText() {
+    println 'Generating maven repository text file'
+    def mavenRepoFileName = "bamoe-${getMilestoneVersion(BAMOE_VERSION)}-kogito-maven-repository"
+    remoteExec("cd ${BAMOE_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")
+}
+
+def getMilestoneVersion(version) {
+    return version.substring(0, version.lastIndexOf('.'))
+}
+
+def remoteExec(command) {
+    sshagent(['rcm-publish-server']) {
+        return sh(script: "ssh -o StrictHostKeyChecking=no rhba@${RCM_HOST} '${command}'", returnStdout: true)
+    }
+}
