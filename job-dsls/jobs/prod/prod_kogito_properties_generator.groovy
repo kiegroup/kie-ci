@@ -46,7 +46,7 @@ node('${Constants.LABEL_KIE_RHEL}') {
         def folder = "kogito/KOGITO-\${KOGITO_PRODUCT_VERSION}.NIGHTLY"
 
         build job: env.PROPERTIES_GENERATOR_PATH, parameters: [
-            [\$class: 'StringParameterValue', name: 'NIGHTLY_FILE_ID', value: "\${NIGHTLY_FILE_ID}"],
+            [\$class: 'StringParameterValue', name: 'FILE_ID', value: "\${NIGHTLY_FILE_ID}"],
             [\$class: 'StringParameterValue', name: 'FILE_NAME', value: "kogito-\${TIME_STAMP}.properties"],
             [\$class: 'StringParameterValue', name: 'FOLDER_PATH', value: folder],
             [\$class: 'StringParameterValue', name: 'BINDING', value: binding]
