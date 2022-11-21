@@ -70,7 +70,7 @@ pipeline {
                     }
 
                     println "[INFO] BREW BUILD: ${brewBuild}"
-                    imagesTags["data-index-ephemeral"] = getImageTag(brewBuild)
+                    imagesTags["data-index-ephemeral"] = getImageTag(brewBuild).trim()
                 }
             }
         }
