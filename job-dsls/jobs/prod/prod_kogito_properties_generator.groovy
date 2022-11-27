@@ -1,5 +1,12 @@
 /**
- * Generate properties files for kogito builds.
+ * Generate properties files for nightly and productized builds.
+ *
+ * Generated files for nightly:
+ * - kogito-{timestamp}.properties - properties file pointing to nightly binaries in the staging area
+ *
+ * Generated files for productized builds:
+ * - kogito-deliverable-list-staging.properties - properties file pointing binaries in the staging area
+ * - kogito-deliverable-list.properties - properties file pointing binaries in the candidates area
  */
 import org.kie.jenkins.jobdsl.Constants
 
