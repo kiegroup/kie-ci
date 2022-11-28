@@ -24,6 +24,7 @@ node('${Constants.LABEL_KIE_RHEL}') {
     def binding = JsonOutput.toJson([
             "REPO_URL"                   : REPO_URL_FINAL,
             "DELIVERABLE_REPO_URL"       : DELIVERABLE_REPO_URL,
+            "TAG_HASH"                   : TAG_HASH,
             "PRODUCT_VERSION"            : PRODUCT_VERSION,
             "PRODUCT_VERSION_LONG"       : PRODUCT_VERSION_LONG,
             "PRODUCT_MILESTONE"          : PRODUCT_MILESTONE,
@@ -72,6 +73,7 @@ pipelineJob("${folderPath}/rhpam-properties-generator") {
     parameters {
         booleanParam("IS_RELEASE", true, "it defines if the properties file is for prod or not")
         stringParam("BRANCH_NAME", "main", "the branch the nightly was triggered for")
+        stringParam("TAG_HASH", "", "The hash of the nightly tag in productization repository. This is just for nightly")
         stringParam("REPO_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/rhba-main-nightly", "Prod possibility is http://download.devel.redhat.com/rcm-guest/staging/")
         stringParam("DELIVERABLE_REPO_URL", "http://download.devel.redhat.com/devel/candidates")
         stringParam("PRODUCT_VERSION", "7.10.0")
