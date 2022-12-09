@@ -2,7 +2,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 // definition of parameters
 
-def javaToolEnv="KIE_JDK1_8"
+def javaToolEnv=Constants.JDK_TOOL
 def baseBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_TOOL
@@ -13,12 +13,11 @@ def javadk=Constants.JDK_TOOL
 folder("KIE")
 folder("KIE/${baseBranch}")
 def folderPath = "KIE/${baseBranch}"
-
 job("${folderPath}/a-seed-job-${baseBranch}") {
 
     description("this job creates all needed Jenkins jobs for the ${baseBranch}-branch ")
 
-    label("kie-rhel7 && kie-mem8g")
+    label("kie-rhel7&&kie-mem8g")
 
     logRotator {
         numToKeep(10)
@@ -48,21 +47,8 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
 
     steps {
         jobDsl {
-            targets("job-dsls/jobs/**/pr_jobs.groovy\n" +
-                    "job-dsls/jobs/**/downstream_pr_jobs.groovy\n" +
-                    "job-dsls/jobs/**/compile_downstream_build.groovy\n" +
-                    "job-dsls/jobs/**/prod_projects_downstream_production.groovy \n" +
-                    "job-dsls/jobs/**/daily_uilds.groovy\n" +
-                    "job-dsls/jobs/**/deploy_jobs.groovy\n" +
-                    "job-dsls/jobs/**/kie_jenkinsScripts_PR.groovy\n" +
-                    "job-dsls/jobs/**/kie_docs_pr.groovy\n" +
-                    "job-dsls/jobs/**/pr_droolsjbpm_tools.groovy\n" +
-                    "job-dsls/jobs/**/prodTag_pipeline.groovy\n" +
-                    "job-dsls/jobs/**/new_branches_seed_job.groovy\n" +
-                    "job-dsls/jobs/**/springboot_pr_job.groovy\n" +
-                    "job-dsls/jobs/**/srcclr_scan_pipeline.groovy\n" +
-                    "job-dsls/jobs/**/srcclr_scan_job.groovy\n" +
-                    "job-dsls/jobs/**/jenkins_shared_libs.groovy")
+            targets("job-dsls/jobs/kie/branch/*.groovy\n" +
+                    "job-dsls/jobs/seed_jobs/kie_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
             ignoreExisting(false)
