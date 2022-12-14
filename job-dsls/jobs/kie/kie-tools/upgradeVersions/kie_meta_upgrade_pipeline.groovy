@@ -3,7 +3,7 @@
  * community kiegroup/repositories
  * kie-benchmarks
  * kie-cloud-tests
- * KIE_PREFIX change in kie-jenkins-scripts Constants
+ * KIE_PREFIX change in kie-ci Constants
  */
 
 import org.kie.jenkins.jobdsl.Constants

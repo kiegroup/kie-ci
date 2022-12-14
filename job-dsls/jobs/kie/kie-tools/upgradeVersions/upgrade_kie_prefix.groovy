@@ -1,4 +1,4 @@
-// pipeline DSL job to bump up the kie-prefix (KIE_PREFIX) in Constants of kie-jenkins-scripts
+// pipeline DSL job to bump up the kie-prefix (KIE_PREFIX) in Constants of kie-ci
 
 import org.kie.jenkins.jobdsl.Constants
 def AGENT_LABEL="rhos-01 && kie-rhel7 && kie-mem8g"
@@ -33,18 +33,18 @@ pipeline {
                 sh "git config --global user.name kie-ci"
             }
         }
-        stage('clone kie-jenkins-scripts') {
+        stage('clone kie-ci') {
             steps {
                 checkout([$class: 'GitSCM', \n
                 branches: [[name: '$BASE_BRANCH']], \n
                 browser: [$class: 'GithubWeb', \n
-                repoUrl: 'git@github.com:$ORGANIZATION/kie-jenkins-scripts.git'], \n
+                repoUrl: 'git@github.com:$ORGANIZATION/kie-ci.git'], \n
                 doGenerateSubmoduleConfigurations: false, \n
-                extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-jenkins-scripts']], \n
+                extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kie-ci']], \n
                 submoduleCfg: [], \n
-                userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$ORGANIZATION/kie-jenkins-scripts.git']]\n
+                userRemoteConfigs: [[credentialsId: 'kie-ci-user-key', url: 'git@github.com:$ORGANIZATION/kie-ci.git']]\n
                 ])
-                dir("${WORKSPACE}" + '/kie-jenkins-scripts') {
+                dir("${WORKSPACE}" + '/kie-ci') {
                     sh 'pwd \\n' +
                     'git branch \\n' +
                     'git checkout -b $BASE_BRANCH \\n' +
@@ -54,7 +54,7 @@ pipeline {
         }
         stage('change version via sed'){
             steps{
-                dir("${WORKSPACE}" + '/kie-jenkins-scripts') {
+                dir("${WORKSPACE}" + '/kie-ci') {
                     sh 'sed -i "s/KIE_PREFIX = .*/KIE_PREFIX = \\'${KIE_PREFIX}\\'/g" job-dsls/src/main/groovy/org/kie/jenkins/jobdsl/Constants.groovy'
             
                 }    
@@ -62,12 +62,12 @@ pipeline {
         }
         stage('view changes'){
             steps{
-                sh 'cat kie-jenkins-scripts/job-dsls/src/main/groovy/org/kie/jenkins/jobdsl/Constants.groovy'
+                sh 'cat kie-ci/job-dsls/src/main/groovy/org/kie/jenkins/jobdsl/Constants.groovy'
             }
         }
         stage ('add and commit version upgrades') {
             steps {
-                dir("${WORKSPACE}" + '/kie-jenkins-scripts'){
+                dir("${WORKSPACE}" + '/kie-ci'){
                     sh 'git add .'
                     sh 'git commit -m "${COMMIT_MSG} ${KIE_PREFIX}"'
                 }
@@ -76,7 +76,7 @@ pipeline {
         stage('push BASE_BRANCH to origin') {
             steps {
                 sshagent(['kie-ci-user-key']) {
-                    dir("${WORKSPACE}" + '/kie-jenkins-scripts') {
+                    dir("${WORKSPACE}" + '/kie-ci') {
                         sh 'git push --set-upstream origin $BASE_BRANCH'
                     }
                 }
@@ -99,7 +99,7 @@ def folderPath="KIE/kie-tools/upgradeVersions"
 
 pipelineJob("${folderPath}/upgrade-kie-prefix") {
 
-    description('Pipeline job for upgrading the kie-prefix in Constants of kie-jenkins-scripts')
+    description('Pipeline job for upgrading the kie-prefix in Constants of kie-ci')
 
     parameters {
         stringParam("BASE_BRANCH", "${BASE_BRANCH}", "Branch to clone and update")
