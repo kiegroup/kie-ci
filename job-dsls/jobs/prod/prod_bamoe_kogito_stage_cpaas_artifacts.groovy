@@ -1,5 +1,5 @@
 /**
-* Stage BAMOE Kogito artifacts produced by CPaaS into host rcm-guest.app.eng.bos.redhat.com.
+* Stage BAMOE Kogito artifacts produced by CPaaS into host rcm-guest.
 */
 def scriptTemplate = this.getClass().getResource("job-scripts/prod_bamoe_kogito_stage_cpaas_artifacts.jenkinsfile").text
 def parsedScript = scriptTemplate.replaceAll(/<%=\s*(\w+)\s*%>/) { config[it[1]] ?: '' }
@@ -8,7 +8,7 @@ def folderPath = "PROD"
 folder(folderPath)
 
 pipelineJob("${folderPath}/bamoe-kogito-stage-cpaas-artifacts") {
-    description("This job stages BAMOE Kogito artifacts produced by CPaaS into host rcm-guest.app.eng.bos.redhat.com. \n" +
+    description("This job stages BAMOE Kogito artifacts produced by CPaaS into host rcm-guest. \n" +
             "The staging is performed directly into the host through SSH and it adjust artifacts for the given BAMOE Kogito milestone release.")
 
     parameters {

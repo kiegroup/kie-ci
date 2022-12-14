@@ -4,6 +4,7 @@ import java.net.URLEncoder
 PNC_API_URL = PNC_API_URL.trim()
 STAGING_BASE_PATH = STAGING_BASE_PATH.trim()
 MILESTONE = MILESTONE.trim()
+RCM_HOST = RCM_HOST.trim()
 
 node {
     def projects = [
@@ -34,6 +35,7 @@ node {
         println "[INFO] PNC_API_URL: ${PNC_API_URL}"
         println "[INFO] STAGING_BASE_PATH: ${STAGING_BASE_PATH}"
         println "[INFO] MILESTONE: ${MILESTONE}"
+        println "[INFO] RCM_HOST: ${RCM_HOST}"
     }
 
     stage("Staging") {
@@ -154,6 +156,6 @@ def verifyStaged(path, md5) {
 
 def remoteExec(command) {
     sshagent(['rcm-publish-server']) {
-        return sh(script: "ssh -o StrictHostKeyChecking=no rhba@rcm-guest.app.eng.bos.redhat.com '${command}'", returnStdout: true)
+        return sh(script: "ssh -o StrictHostKeyChecking=no rhba@${RCM_HOST} '${command}'", returnStdout: true)
     }
 }
