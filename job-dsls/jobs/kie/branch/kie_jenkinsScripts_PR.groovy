@@ -7,13 +7,13 @@ def jdkToolEnv=Constants.JDK_TOOL
 def repoBranch=Constants.BRANCH
 def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_TOOL
-def repo="kie-jenkins-scripts"
+def repo="kie-ci"
 def ghAuthTokenId="kie-ci-token"
 def labelName="kie-rhel7 && kie-mem4g && !built-in"
 
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// create CI PR for kie-jenkins-scripts
+// create CI PR for kie-ci
 
 def kieJenkins_PR='''#!/bin/bash -e
 cd job-dsls
@@ -46,7 +46,7 @@ job(jobName) {
                     |
                     |Every configuration change needs to be done directly in the DSL files. See the below listed 'Seed job' for more info.
                     |
-                    |This job creates a PR for kie-jenkins-scripts
+                    |This job creates a PR for kie-ci
                     |
                     |""".stripMargin())
 

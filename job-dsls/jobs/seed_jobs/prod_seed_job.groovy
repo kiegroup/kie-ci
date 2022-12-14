@@ -27,7 +27,7 @@ job("${folderPath}/a-seed-job-prod") {
     scm {
         git {
             remote {
-                github("${organization}/kie-jenkins-scripts")
+                github("${organization}/kie-ci")
             }
             branch ("${baseBranch}")
         }
