@@ -123,48 +123,40 @@ for (dailyConfig in DAILY_CONFIGS) {
             }
         }
     }
-    if ( "${BUILD_NAME}" != 'jdk11-prod') {
-        if ( "${BUILD_NAME}" == "jdk11" ) {
-            JDK_VERSION = "kie-jdk11"
-        } else {
-            JDK_VERSION = "kie-jdk1.8"
-        }
+    // Creates jbpmTestCoverageMatrix job
+    def jobDefinition1 = matrixJob("${FOLDER_PATH}/jbpmTestCoverageMatrix")
+    JbpmTestCoverageMatrix.addDeployConfiguration(jobDefinition1,
+            kieVersion = KIE_VERSION,
+            jdkVersion = JDK_VERSION,
+            mvnTool =  MVN_TOOL,
+            nexusUrl = NEXUS_URL,
+            settingsXml = SETTINGS_XML)
 
-        // Creates jbpmTestCoverageMatrix job
-        def jobDefinition1 = matrixJob("${FOLDER_PATH}/jbpmTestCoverageMatrix")
-        JbpmTestCoverageMatrix.addDeployConfiguration(jobDefinition1,
-                kieVersion = KIE_VERSION,
-                jdkVersion = JDK_VERSION,
-                mvnTool =  MVN_TOOL,
-                nexusUrl = NEXUS_URL,
-                settingsXml = SETTINGS_XML)
+    // Creates jbpmContainerTestMatrix job
+    def jobDefinition2 = matrixJob("${FOLDER_PATH}/jbpmContainerTestMatrix")
+    JbpmContainerTestMatrix.addDeployConfiguration(jobDefinition2,
+            kieVersion = KIE_VERSION,
+            jdkVersion = JDK_VERSION,
+            mvnTool =  MVN_TOOL,
+            nexusUrl = NEXUS_URL,
+            settingsXml = SETTINGS_XML)
 
-        // Creates jbpmContainerTestMatrix job
-        def jobDefinition2 = matrixJob("${FOLDER_PATH}/jbpmContainerTestMatrix")
-        JbpmContainerTestMatrix.addDeployConfiguration(jobDefinition2,
-                kieVersion = KIE_VERSION,
-                jdkVersion = JDK_VERSION,
-                mvnTool =  MVN_TOOL,
-                nexusUrl = NEXUS_URL,
-                settingsXml = SETTINGS_XML)
+    // Creates kieWbTestMatrix job
+    def jobDefinition3 = matrixJob("${FOLDER_PATH}/kieWbTestMatrix")
+    KieWbTestMatrix.addDeployConfiguration(jobDefinition3,
+            kieVersion = KIE_VERSION,
+            jdkVersion = JDK_VERSION,
+            mvnTool =  MVN_TOOL,
+            nexusUrl = NEXUS_URL,
+            settingsXml = SETTINGS_XML)
 
-        // Creates kieWbTestMatrix job
-        def jobDefinition3 = matrixJob("${FOLDER_PATH}/kieWbTestMatrix")
-        KieWbTestMatrix.addDeployConfiguration(jobDefinition3,
-                kieVersion = KIE_VERSION,
-                jdkVersion = JDK_VERSION,
-                mvnTool =  MVN_TOOL,
-                nexusUrl = NEXUS_URL,
-                settingsXml = SETTINGS_XML)
-
-        // Creates kieWbTestMatrix job
-        def jobDefinition4 = matrixJob("${FOLDER_PATH}/kieServerMatrix")
-        KieServerMatrix.addDeployConfiguration(jobDefinition4,
-                kieVersion = KIE_VERSION,
-                jdkVersion = JDK_VERSION,
-                mvnTool =  MVN_TOOL,
-                downloadUrl = EAP7_DOWNLOAD_URL,
-                nexusUrl = NEXUS_URL,
-                settingsXml = SETTINGS_XML)
-    }
+    // Creates kieWbTestMatrix job
+    def jobDefinition4 = matrixJob("${FOLDER_PATH}/kieServerMatrix")
+    KieServerMatrix.addDeployConfiguration(jobDefinition4,
+            kieVersion = KIE_VERSION,
+            jdkVersion = JDK_VERSION,
+            mvnTool =  MVN_TOOL,
+            downloadUrl = EAP7_DOWNLOAD_URL,
+            nexusUrl = NEXUS_URL,
+            settingsXml = SETTINGS_XML)
 }
