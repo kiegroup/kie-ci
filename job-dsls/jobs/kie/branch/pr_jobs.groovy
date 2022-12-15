@@ -62,7 +62,7 @@ def final REPO_CONFIGS = [
                 timeoutMins: 300,
                 label: "kie-rhel7 && kie-mem24g && !built-in",
                 artifactsToArchive: [
-                        "**/gclog" // this is a temporary file used to do some analysis: Once https://github.com/kiegroup/kie-jenkins-scripts/pull/652 is reverted this will disappear
+                        "**/gclog" // this is a temporary file used to do some analysis: Once https://github.com/kiegroup/kie-ci/pull/652 is reverted this will disappear
                 ],
                 executionNumber : 25,
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
