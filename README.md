@@ -1,4 +1,4 @@
-# KIE CI
+# KIE-CI (former kie-jenkins-scripts)
 
 This repository is used to store [KIE](https://www.kie.org/) either provisioned machines ansible configuration and job DSLs for jenkins.
 
