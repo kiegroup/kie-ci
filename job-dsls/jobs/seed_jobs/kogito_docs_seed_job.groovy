@@ -29,7 +29,7 @@ job("${folderPath}/a-seed-job-kogito-docs") {
     scm {
         git {
             remote {
-                github("${organization}/kie-jenkins-scripts")
+                github("${organization}/kie-ci")
             }
             branch ("${baseBranch}")
         }
