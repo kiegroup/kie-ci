@@ -3,7 +3,7 @@ import org.kie.jenkins.jobdsl.Constants
 folder("OSBS")
 def folderPath = "OSBS"
 // Job Description
-String jobDescription = "Job responsible for seed jobs to building rhpm/rhdm openshift image"
+String jobDescription = "Job responsible for seed jobs to building rhpam/bamoe openshift image"
 
 //Define Variables
 def prodComponent = ['rhpam-businesscentral','rhpam-businesscentral-monitoring','rhpam-controller','rhpam-kieserver','rhpam-smartrouter','rhpam-process-migration']
