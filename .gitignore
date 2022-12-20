@@ -5,6 +5,7 @@ out/
 target/
 local/
 bin/
+lib/
 
 # IDE files/dirs
 *.iml

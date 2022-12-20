@@ -6,52 +6,54 @@ def folderPath = "OSBS"
 String jobDescription = "Job responsible for seed jobs to building rhpam openshift image"
 
 //Define Variables
-def prodComponent = ['rhpam-businesscentral','rhpam-businesscentral-monitoring','rhpam-controller','rhpam-kieserver','rhpam-smartrouter','rhpam-process-migration']
+def prodComponent = [
+        'rhpam-businesscentral', 'rhpam-businesscentral-monitoring',
+        'rhpam-controller', 'rhpam-kieserver', 'rhpam-smartrouter',
+        'rhpam-process-migration']
 
-def buildDate=Constants.BUILD_DATE
-def prodVersion=Constants.NEXT_PROD_VERSION
-def osbsBuildTarget=Constants.OSBS_BUILD_TARGET
-def cekitBuildOptions=Constants.CEKIT_BUILD_OPTIONS
-def kerberosPrincipal=Constants.KERBEROS_PRINCIPAL
-def osbsBuildUser=Constants.OSBS_BUILD_USER
-def kerberosKeytab=Constants.KERBEROS_KEYTAB
-def kerberosCred=Constants.KERBEROS_CRED
-def imageRepo=Constants.IMAGE_REPO
-def imageBranch=Constants.IMAGE_BRANCH
-def imageSubdir=Constants.IMAGE_SUBDIR
-def gitUser=Constants.GIT_USER
-def gitEmail=Constants.GIT_EMAIL
-def cekitCacheLocal=Constants.CEKIT_CACHE_LOCAL
-def verbose=Constants.VERBOSE
-
+def buildDate = Constants.BUILD_DATE
+def prodVersion = Constants.NEXT_PROD_VERSION
+def osbsBuildTarget = Constants.OSBS_BUILD_TARGET
+def cekitBuildOptions = Constants.CEKIT_BUILD_OPTIONS
+def osbsBuildUser = Constants.OSBS_BUILD_USER
+def kerberosPrincipal = Constants.KERBEROS_PRINCIPAL
+def kerberosKeytab = Constants.KERBEROS_KEYTAB
+def kerberosCred = Constants.KERBEROS_CRED
+def imageRepo = Constants.IMAGE_REPO
+def imageBranch = Constants.IMAGE_BRANCH
+def imageSubdir = Constants.IMAGE_SUBDIR
+def gitUser = Constants.GIT_USER
+def gitEmail = Constants.GIT_EMAIL
+def cekitCacheLocal = Constants.CEKIT_CACHE_LOCAL
+def verbose = Constants.VERBOSE
 
 prodComponent.each { Component ->
 
-   pipelineJob("${folderPath}/${Component}")  {
+    pipelineJob("${folderPath}/${Component}") {
 
-    parameters {
-        stringParam("BUILD_DATE", "${buildDate}")
-        stringParam("PROD_VERSION", "${prodVersion}")
-        stringParam("PROD_COMPONENT", "${Component}")
-        stringParam("OSBS_BUILD_TARGET", "${osbsBuildTarget}")
-        stringParam("CEKIT_BUILD_OPTIONS", "${cekitBuildOptions}")
-        stringParam("KERBEROS_PRINCIPAL", "${kerberosPrincipal}")
-        stringParam("OSBS_BUILD_USER", "${osbsBuildUser}")
-        stringParam("KERBEROS_KEYTAB", "${kerberosKeytab}")
-        stringParam("KERBEROS_CRED", "${kerberosCred}")
-        stringParam("IMAGE_REPO", "${imageRepo}")
-        stringParam("IMAGE_BRANCH", "${imageBranch}")
-        stringParam("IMAGE_SUBDIR", "${imageSubdir}")
-        stringParam("GIT_USER", "${gitUser}")
-        stringParam("GIT_EMAIL", "${gitEmail}")
-        stringParam("CEKIT_CACHE_LOCAL", "${cekitCacheLocal}")
-        stringParam("VERBOSE", "${verbose}")
-    }
+        parameters {
+            stringParam("BUILD_DATE", "${buildDate}")
+            stringParam("PROD_VERSION", "${prodVersion}")
+            stringParam("PROD_COMPONENT", "${Component}")
+            stringParam("OSBS_BUILD_TARGET", "${osbsBuildTarget}")
+            stringParam("CEKIT_BUILD_OPTIONS", "${cekitBuildOptions}")
+            stringParam("KERBEROS_PRINCIPAL", "${kerberosPrincipal}")
+            stringParam("OSBS_BUILD_USER", "${osbsBuildUser}")
+            stringParam("KERBEROS_KEYTAB", "${kerberosKeytab}")
+            stringParam("KERBEROS_CRED", "${kerberosCred}")
+            stringParam("IMAGE_REPO", "${imageRepo}")
+            stringParam("IMAGE_BRANCH", "${imageBranch}")
+            stringParam("IMAGE_SUBDIR", "${imageSubdir}")
+            stringParam("GIT_USER", "${gitUser}")
+            stringParam("GIT_EMAIL", "${gitEmail}")
+            stringParam("CEKIT_CACHE_LOCAL", "${cekitCacheLocal}")
+            stringParam("VERBOSE", "${verbose}")
+        }
 
-  definition {
-    cps {
+        definition {
+            cps {
 
-        script('''
+                script('''
 
                       private void validateParameters(required, optionals){
                           // Check if all required params are supplied
@@ -101,24 +103,21 @@ prodComponent.each { Component ->
                           ]
 
                           // The download script is in the image, but build.sh and build-overrides.sh which it calls will be downloaded
-                          String DOWNLOAD_SCRIPT = "/opt/rhba/download.sh"
-                          def download_command = "$DOWNLOAD_SCRIPT"
-
-                          String BUILD_SCRIPT = "build-osbs.sh"
-                          def build_command = "$BUILD_SCRIPT"
+                          def download_command = "/opt/rhba/download.sh"
+                          def build_command = "build-osbs.sh"
 
                           // Create the download command to set up the build directory
                           validateParameters(REQUIRED_DOWNLOAD_PARAMETERS, OPTIONAL_DOWNLOAD_PARAMETERS)
                           for(param in REQUIRED_DOWNLOAD_PARAMETERS){
-                          def arg = param.value[0]
-                          def flag = param.value[1]
-                          download_command += " ${flag} ${arg}"
+                              def arg = param.value[0]
+                              def flag = param.value[1]
+                              download_command += " ${flag} ${arg}"
                           }
 
                           for(param in OPTIONAL_DOWNLOAD_PARAMETERS){
-                          def arg = param.value[0]
-                          def flag = param.value[1]
-                          if(arg) download_command+= " ${flag} ${arg}"
+                              def arg = param.value[0]
+                              def flag = param.value[1]
+                              if(arg) download_command+= " ${flag} ${arg}"
                           }
 
                           download_command += " -w ${WORKSPACE}"
@@ -127,21 +126,21 @@ prodComponent.each { Component ->
                           validateParameters(REQUIRED_BUILD_PARAMETERS, OPTIONAL_BUILD_PARAMETERS)
 
                           for(param in REQUIRED_BUILD_PARAMETERS){
-                          def arg = param.value[0]
-                          def flag = param.value[1]
-                          build_command += " ${flag} ${arg}"
+                              def arg = param.value[0]
+                              def flag = param.value[1]
+                              build_command += " ${flag} ${arg}"
                           }
 
                           for(param in OPTIONAL_BUILD_PARAMETERS){
-                          def arg = param.value[0]
-                          def flag = param.value[1]
-                          if(arg) build_command+= " ${flag} ${arg}"
+                              def arg = param.value[0]
+                              def flag = param.value[1]
+                              if(arg) build_command+= " ${flag} ${arg}"
                           }
 
                           for(param in OPTIONAL_BUILD_SWITCHES){
-                          def arg = param.value[0]
-                          def flag = param.value[1]
-                          if(arg == "true") build_command+= " ${flag}"
+                              def arg = param.value[0]
+                              def flag = param.value[1]
+                              if(arg == "true") build_command+= " ${flag}"
                           }
 
                           build_command +=" -w ${WORKSPACE}"
@@ -163,32 +162,37 @@ prodComponent.each { Component ->
                       }
 
                       node("osbs-builder"){
-
-                      stage("building ${PROD_COMPONENT}") {
-
-                          ws {
-                              // Add the working directory to the current path so any scripts dropped there are on the path
-                              withEnv(["PATH+W=$WORKSPACE"]) {
-                                  sh 'rm -rf ${WORKSPACE}/{*,.*} || true'
-                                  if (env.KERBEROS_CRED) {
-                                  withCredentials([usernamePassword(credentialsId: env.KERBEROS_CRED, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                                          mainProcess(USERNAME, PASSWORD, "")
+                          stage("building ${PROD_COMPONENT}") {
+                              ws {
+                                  // Add the working directory to the current path so any scripts dropped there are on the path
+                                  withEnv(["PATH+W=$WORKSPACE"]) {
+                                      sh 'rm -rf ${WORKSPACE}/{*,.*} || true'
+                                      if (env.KERBEROS_CRED) {
+                                          withCredentials([usernamePassword(credentialsId: env.KERBEROS_CRED, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                                              mainProcess(USERNAME, PASSWORD, "")
+                                          }
+                                      } else if (env.KERBEROS_KEYTAB) {
+                                          withCredentials([file(credentialsId: env.KERBEROS_KEYTAB, variable: 'FILE')]) {
+                                              if (!env.KERBEROS_PRINCIPAL) {
+                                                    echo "Reading the Kerberos Principal from provided Keytab..."
+                                                    def get_principal_from_file = sh(returnStdout: true, script: \'\'\'
+                                                        #!/bin/bash
+                                                        klist -kt $FILE |grep REDHAT.COM | awk -F" " \'NR==1{print $4}\'
+                                                    \'\'\')
+                                                    env.KERBEROS_PRINCIPAL = get_principal_from_file.trim()
+                                              }  
+                                              mainProcess(env.KERBEROS_PRINCIPAL, "", FILE)
+                                          }
+                                      } else {
+                                          error "Either KERBEROS_PRINCIPAL and KERBEROS_KEYTAB must be specified, or user/password with KERBEROS_CRED"
                                       }
-                                  } else if (env.KERBEROS_KEYTAB && env.KERBEROS_PRINCIPAL) {
-                                      withCredentials([file(credentialsId: env.KERBEROS_KEYTAB, variable: 'FILE')]) {
-                                          mainProcess(env.KERBEROS_PRINCIPAL, "", FILE)
-                                      }
-                                  } else {
-                                      error "Either KERBEROS_PRINCIPAL and KERBEROS_KEYTAB must be specified, or user/password with KERBEROS_CRED"
                                   }
                               }
-                            }
                           }
-                      }
-
-        '''.stripIndent())
-        sandbox()
+                      }     
+                '''.stripIndent())
+                sandbox()
+            }
+        }
     }
-    }
-  }
 }
