@@ -27,7 +27,6 @@ runs:
         filtered_labels="$(echo ${{ inputs.labels }} | jq -c 'map(select(.name | startswith("${{ inputs.label-prefix }}")))')"
         echo "filtered_labels = ${filtered_labels}"
         echo "FILTERED_LABELS=${filtered_labels}" >> $GITHUB_ENV
-
     - name: Extract targets
       id: extract-targets
       shell: bash
