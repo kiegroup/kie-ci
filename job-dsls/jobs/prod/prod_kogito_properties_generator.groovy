@@ -72,8 +72,8 @@ pipelineJob("${folderPath}/kogito-properties-generator") {
     parameters {
         booleanParam("IS_RELEASE", true, "it defines if the properties file is for prod or not")
         stringParam("BRANCH_NAME", "main", "the branch the nightly was triggered for")
-        stringParam("REPO_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/repositories/kogito-main-nightly", "Prod possibility is http://download.devel.redhat.com/rcm-guest/staging")
-        stringParam("DELIVERABLE_REPO_URL", "http://download.devel.redhat.com/devel/candidates")
+        stringParam("REPO_URL", "\${BXMS_QE_NEXUS}/content/repositories/kogito-main-nightly", "Prod possibility is \${STAGING_SERVER_URL}")
+        stringParam("DELIVERABLE_REPO_URL", "\${DOWNLOAD_CANDIDATES}")
         stringParam("KOGITO_PRODUCT_VERSION", "1.13.0")
         stringParam("RHPAM_PRODUCT_VERSION", "7.13.0")
         stringParam("PRODUCT_MILESTONE", "CR1", "This is just for prod files")

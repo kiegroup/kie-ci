@@ -16,13 +16,11 @@ def AGENT_LABEL='kie-releases'
 // directory where the zip with all binaries is stored
 def ZIP_DIR="community-deploy-dir"
 // download URL of jboss-eap for the additional tests
-def EAP7_DOWNLOAD_URL=Constants.EAP7_DOWNLOAD_URL
 def GH_ORG_UNIT = Constants.GITHUB_ORG_UNIT
 def JENKINSFILE_REPO = 'droolsjbpm-build-bootstrap'
 def JENKINSFILE_PWD= 'kie-ci'
 def JENKINSFILE_URL = "https://github.com/${GH_ORG_UNIT}/${JENKINSFILE_REPO}"
 def JENKINSFILE_PATH = '.ci/jenkins/Jenkinsfile.release'
-def NEXUS_URL = "https://repository.jboss.org/nexus/content/groups/kie-group"
 def SETTINGS_XML = '3f317dd7-4d08-4ee4-b9bb-969c309e782c'
 
 
@@ -91,7 +89,7 @@ pipelineJob("${FOLDER_PATH}/kie-release") {
         }
         wHideParameterDefinition {
             name('NEXUS_URL')
-            defaultValue("${NEXUS_URL}")
+            defaultValue("\${env.KIE_GROUP_REPO_URL}")
             description('URL of Nexus server')
         }
         wHideParameterDefinition {
@@ -137,7 +135,7 @@ JbpmTestCoverageMatrix.addDeployConfiguration(jobDefinition1,
         kieVersion = KIE_VERSION,
         jdkVersion = JAVADK,
         mvnTool =  MVN_TOOL,
-        nexusUrl = NEXUS_URL,
+        nexusUrl = "\${env.KIE_GROUP_REPO_URL}",
         settingsXml = SETTINGS_XML)
 
 // Creates kieWbTestMatrix job
@@ -146,7 +144,7 @@ KieWbTestMatrix.addDeployConfiguration(jobDefinition3,
         kieVersion = KIE_VERSION,
         jdkVersion = JAVADK,
         mvnTool =  MVN_TOOL,
-        nexusUrl = NEXUS_URL,
+        nexusUrl = "\${env.KIE_GROUP_REPO_URL}",
         settingsXml = SETTINGS_XML)
 
 // Creates kieWbTestServer job
@@ -155,6 +153,6 @@ KieServerMatrix.addDeployConfiguration(jobDefinition4,
         kieVersion = KIE_VERSION,
         jdkVersion = JAVADK,
         mvnTool =  MVN_TOOL,
-        downloadUrl = EAP7_DOWNLOAD_URL,
-        nexusUrl = NEXUS_URL,
+        downloadUrl = "\${env.EAP_DOWNLOAD_URL}7/7.4.0/jboss-eap-7.4.0.zip",
+        nexusUrl = "\${env.KIE_GROUP_REPO_URL}",
         settingsXml = SETTINGS_XML)

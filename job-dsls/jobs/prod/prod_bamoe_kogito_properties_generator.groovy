@@ -46,8 +46,8 @@ pipelineJob("${folderPath}/bamoe-kogito-properties-generator") {
     description("Generate properties files for BAMOE Kogito productized builds")
 
     parameters {
-        stringParam("REPO_URL", "http://download.devel.redhat.com/rcm-guest/staging")
-        stringParam("DELIVERABLE_REPO_URL", "http://download.devel.redhat.com/devel/candidates/middleware")
+        stringParam("REPO_URL", "\${STAGING_SERVER_URL}")
+        stringParam("DELIVERABLE_REPO_URL", "\${DOWNLOAD_CANDIDATES}/middleware")
         stringParam("BAMOE_PRODUCT_VERSION", "8.0.0")
         stringParam("PRODUCT_MILESTONE", "CR1")
         stringParam("KOGITO_VERSION", "1.13.2.redhat-00001")

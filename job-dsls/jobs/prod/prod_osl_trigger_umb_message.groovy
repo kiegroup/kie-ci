@@ -15,7 +15,7 @@ pipelineJob("${folderPath}/osl-trigger-umb-message") {
         stringParam('MILESTONE', '', 'The release milestone, i.e. 1.27.0.CR1. This parameter is optional and in case it is not defined, the latest available milestone is used.')
         stringParam('QUARKUS_PLATFORM_VERSION', '2.13.5.Final-redhat-00002', 'The productized version of Quarkus Platform used for building Openshift Serverless Logic currect milestone.')
         stringParam('QUARKUS_VERSION', '2.13.5.Final-redhat-00003', 'The productized version of Quarkus used for building Openshift Serverless Logic currect milestone.')
-        stringParam('PNC_API_URL', 'http://orch.psi.redhat.com/pnc-rest/v2', 'PNC Rest API endpoint. See: https://docs.engineering.redhat.com/display/JP/User%27s+guide')
+        stringParam('PNC_API_URL', "\${ORCH_PSI_URL}/pnc-rest/v2", "PNC Rest API endpoint. See: \${DOCS_ENGINEERING_URL}/display/JP/User%27s+guide")
         stringParam('DATA_INDEX_EPHEMERAL_BREW', '', 'The openshift-serverless-1-logic-data-index-ephemeral-rhel8-container brew build id, i.e. 2195547. This parameter is optional and in case it is not defined, the latest built image is used.')
     }
 

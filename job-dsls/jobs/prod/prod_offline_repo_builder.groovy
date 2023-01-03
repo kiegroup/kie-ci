@@ -18,7 +18,7 @@ job("${folderPath}/offline-repo-builder") {
 
     parameters {
         stringParam("MANIFEST_URL", "", "Offliner manifest URL")
-        stringParam("RELEASE_REPO_GROUP_URL", "http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/groups/offline-repo-group-7-11/", "Scratch repositories group for the release")
+        stringParam("RELEASE_REPO_GROUP_URL", "\${BXMS_QE_NEXUS}/content/groups/offline-repo-group-7-11/", "Scratch repositories group for the release")
     }
 
     scm {

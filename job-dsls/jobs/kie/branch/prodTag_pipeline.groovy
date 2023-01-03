@@ -175,7 +175,7 @@ pipeline {
         }                  
         stage ('Send mail') {
             steps {
-                emailext body: 'The tags ' + "${tagName}" + ' are available on Gerrit (https://code.engineering.redhat.com/gerrit/) \\n' +
+                emailext body: 'The tags ' + "\${tagName} are available on Gerrit (\${env.PRODUCTIZATION_REPOSITORY_BASE_URL})" \\n' +
                 'For more information please look at handover report: https://github.com/jboss-integration/kie-release-reports/blob/' + "${reportBranch}" + '/reports/tags/' + "${tagName}" + '/' + "${tagName}" + '.txt \\n' +
                 '\\n' +
                 'Component versions: \\n' +

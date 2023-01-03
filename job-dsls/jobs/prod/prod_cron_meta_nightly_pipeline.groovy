@@ -138,7 +138,7 @@ String rhbaNightlyStage(String version, String branch, String configBranch) {
         stage('trigger RHBA nightly job ${branch}') {
             steps {
                 build job: 'rhba.nightly/${branch}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhba-${getNexusFromVersion(version)}/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/service/local/repositories/scratch-release-rhba-${getNexusFromVersion(version)}/content-compressed"],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(version)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${version}"],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "${configBranch}"],
@@ -154,10 +154,10 @@ String kogitoNightlyStage(String kogitoVersion, String kogitoBranch, String opta
         stage('trigger KOGITO nightly job ${kogitoVersion}') {
             steps {
                 build job: 'kogito.nightly/${kogitoBranch}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/rhba-${getNexusFromVersion(rhbaVersion)}-nightly-with-upstream'],
+                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/content/repositories/rhba-${getNexusFromVersion(rhbaVersion)}-nightly-with-upstream"],
                         [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '${rhbaVersionPrefix}'],
                         [\$class: 'StringParameterValue', name: 'RHBA_RELEASE_VERSION', value: '${getNexusFromVersion(rhbaVersion)}'],
-                        [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-kogito-${getNexusFromVersion(kogitoVersion)}/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/service/local/repositories/scratch-release-kogito-${getNexusFromVersion(kogitoVersion)}/content-compressed"],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(kogitoVersion)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${kogitoVersion}'],${optaplannerVersion ? """
                         [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${optaplannerVersion}'],""" : ''}

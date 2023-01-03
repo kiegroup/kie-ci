@@ -50,8 +50,8 @@ pipelineJob("${folderPath}/bamoe-properties-generator") {
     description("Generate properties files for BAMOE productized builds")
 
     parameters {
-        stringParam("REPO_URL", "http://download.devel.redhat.com/rcm-guest/staging")
-        stringParam("DELIVERABLE_REPO_URL", "http://download.devel.redhat.com/devel/candidates/middleware")
+        stringParam("REPO_URL", "\${STAGING_SERVER_URL}")
+        stringParam("DELIVERABLE_REPO_URL", "\${DOWNLOAD_CANDIDATES}/middleware")
         stringParam("PRODUCT_VERSION", "8.0.0")
         stringParam("PRODUCT_VERSION_LONG", "8.0.0.redhat-00001")
         stringParam("PRODUCT_MILESTONE", "CR1")
