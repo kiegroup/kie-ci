@@ -14,8 +14,8 @@ pipeline {
     }
 
     environment {
-        NEXUS_NIGHTLY_REPO = 'http://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8081/nexus/content/groups/rhba-prod-nightly-metainformation'
-        NIGHTLY_STAGING_PATH = 'http://download.eng.bos.redhat.com/rcm-guest/staging'
+        NEXUS_NIGHTLY_REPO = "\${env.BXMS_QE_NEXUS}/content/groups/rhba-prod-nightly-metainformation"
+        NIGHTLY_STAGING_PATH = "\${env.STAGING_SERVER_URL}"
         MAVEN_SETTINGS_ID = 'rhba-prod-main'
         BUILD_CHECKOUT_PATH = "${WORKSPACE}/build"
         CONFIG_CHECKOUT_PATH = "${WORKSPACE}/config"
