@@ -82,7 +82,7 @@ for (dailyConfig in DAILY_CONFIGS) {
             }
             wHideParameterDefinition {
                 name('NEXUS_URL')
-                defaultValue("\${env.BXMS_QE_NEXUS}${URL_EXTENDED_PATH}")
+                defaultValue("\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}")
                 description('URL of Nexus server')
             }
             wHideParameterDefinition {
@@ -135,7 +135,7 @@ for (dailyConfig in DAILY_CONFIGS) {
                 kieVersion = KIE_VERSION,
                 jdkVersion = JDK_VERSION,
                 mvnTool =  MVN_TOOL,
-                nexusUrl = "\${env.BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
+                nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
                 settingsXml = SETTINGS_XML)
 
         // Creates jbpmContainerTestMatrix job
@@ -144,7 +144,7 @@ for (dailyConfig in DAILY_CONFIGS) {
                 kieVersion = KIE_VERSION,
                 jdkVersion = JDK_VERSION,
                 mvnTool =  MVN_TOOL,
-                nexusUrl = "\${env.BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
+                nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
                 settingsXml = SETTINGS_XML)
 
         // Creates kieWbTestMatrix job
@@ -153,7 +153,7 @@ for (dailyConfig in DAILY_CONFIGS) {
                 kieVersion = KIE_VERSION,
                 jdkVersion = JDK_VERSION,
                 mvnTool =  MVN_TOOL,
-                nexusUrl = "\${env.BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
+                nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
                 settingsXml = SETTINGS_XML)
 
         // Creates kieWbTestMatrix job
@@ -162,8 +162,8 @@ for (dailyConfig in DAILY_CONFIGS) {
                 kieVersion = KIE_VERSION,
                 jdkVersion = JDK_VERSION,
                 mvnTool =  MVN_TOOL,
-                downloadUrl = "\${env.EAP_DOWNLOAD_URL}7/7.4.0/jboss-eap-7.4.0.zip",
-                nexusUrl = "\${env.BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
+                downloadUrl = "\${EAP_DOWNLOAD_URL}7/7.4.8/jboss-eap-7.4.8.zip",
+                nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
                 settingsXml = SETTINGS_XML)
     }
 }
