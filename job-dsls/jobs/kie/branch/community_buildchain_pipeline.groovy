@@ -89,7 +89,7 @@ pipelineJob("${FOLDER_PATH}/kie-release") {
         }
         wHideParameterDefinition {
             name('NEXUS_URL')
-            defaultValue("\${env.KIE_GROUP_REPO_URL}")
+            defaultValue("\${KIE_GROUP_REPO_URL}")
             description('URL of Nexus server')
         }
         wHideParameterDefinition {
@@ -135,7 +135,7 @@ JbpmTestCoverageMatrix.addDeployConfiguration(jobDefinition1,
         kieVersion = KIE_VERSION,
         jdkVersion = JAVADK,
         mvnTool =  MVN_TOOL,
-        nexusUrl = "\${env.KIE_GROUP_REPO_URL}",
+        nexusUrl = "\${KIE_GROUP_REPO_URL}",
         settingsXml = SETTINGS_XML)
 
 // Creates kieWbTestMatrix job
@@ -144,7 +144,7 @@ KieWbTestMatrix.addDeployConfiguration(jobDefinition3,
         kieVersion = KIE_VERSION,
         jdkVersion = JAVADK,
         mvnTool =  MVN_TOOL,
-        nexusUrl = "\${env.KIE_GROUP_REPO_URL}",
+        nexusUrl = "\${KIE_GROUP_REPO_URL}",
         settingsXml = SETTINGS_XML)
 
 // Creates kieWbTestServer job
@@ -153,6 +153,6 @@ KieServerMatrix.addDeployConfiguration(jobDefinition4,
         kieVersion = KIE_VERSION,
         jdkVersion = JAVADK,
         mvnTool =  MVN_TOOL,
-        downloadUrl = "\${env.EAP_DOWNLOAD_URL}7/7.4.0/jboss-eap-7.4.0.zip",
-        nexusUrl = "\${env.KIE_GROUP_REPO_URL}",
+        downloadUrl = "\${EAP_DOWNLOAD_URL}7/7.4.8/jboss-eap-7.4.8.zip",
+        nexusUrl = "\${KIE_GROUP_REPO_URL}",
         settingsXml = SETTINGS_XML)
