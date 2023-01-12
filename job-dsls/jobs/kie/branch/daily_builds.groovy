@@ -124,7 +124,7 @@ for (dailyConfig in DAILY_CONFIGS) {
     }
     if ( "${BUILD_NAME}" != 'jdk11-prod') {
         if ( "${BUILD_NAME}" == "jdk11" ) {
-            JDK_VERSION = "kie-jdk11"
+            JDK_VERSION = "kie-jdk11.0.15"
         } else {
             JDK_VERSION = "kie-jdk1.8"
         }
