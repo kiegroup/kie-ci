@@ -15,6 +15,7 @@
 
 package org.kie.jenkins.jobdsl.templates.additionalTests
 
+import org.kie.jenkins.jobdsl.Constants
 import javaposse.jobdsl.dsl.jobs.MatrixJob
 
 class JbpmTestCoverageMatrix {
@@ -56,6 +57,8 @@ class JbpmTestCoverageMatrix {
                 labelExpression("label-exp", "kie-rhel7 && !built-in")
                 jdk("${jdkVersion}")
             }
+
+            childCustomWorkspace(Constants.MATRIX_SHORT_CHILD_WORKSPACE)
 
             logRotator {
                 numToKeep(5)
