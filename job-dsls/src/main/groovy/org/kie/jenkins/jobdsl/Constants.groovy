@@ -51,6 +51,7 @@ class Constants {
     static final String KERBEROS_CRED = ''
     static final String IMAGE_REPO = ''
     static final String IMAGE_BRANCH = ''
+    static final String BAMOE_IMAGE_BRANCH = '7.13.x-blue'
     static final String IMAGE_SUBDIR = ''
     static final String GIT_USER = ''
     static final String GIT_EMAIL = ''
