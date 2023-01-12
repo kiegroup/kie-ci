@@ -15,6 +15,7 @@
 
 package org.kie.jenkins.jobdsl.templates.additionalTests
 
+import org.kie.jenkins.jobdsl.Constants
 import javaposse.jobdsl.dsl.jobs.MatrixJob
 
 class JbpmContainerTestMatrix {
@@ -58,7 +59,7 @@ class JbpmContainerTestMatrix {
                 text("container", "tomcat9", "wildfly")
             }
 
-            childCustomWorkspace("\${SHORT_COMBINATION}")
+            childCustomWorkspace(Constants.MATRIX_SHORT_CHILD_WORKSPACE)
 
             logRotator {
                 numToKeep(5)

@@ -15,6 +15,7 @@
 
 package org.kie.jenkins.jobdsl.templates.additionalTests
 
+import org.kie.jenkins.jobdsl.Constants
 import javaposse.jobdsl.dsl.jobs.MatrixJob
 
 class KieWbTestMatrix {
@@ -66,6 +67,8 @@ class KieWbTestMatrix {
                 jdk("${jdkVersion}")
                 text("browser", "firefox")
             }
+
+            childCustomWorkspace(Constants.MATRIX_SHORT_CHILD_WORKSPACE)
 
             logRotator {
                 numToKeep(5)
