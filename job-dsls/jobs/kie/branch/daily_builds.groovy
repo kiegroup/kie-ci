@@ -24,6 +24,9 @@ def final DAILY_CONFIGS = [
         'jdk11'   : [],
         'jdk8'   : [
                 JDK_VERSION  : 'kie-jdk1.8'
+        ],
+        'jdk11-prod' : [
+                ADDITIONAL_MAVEN_FLAG : '-Dproductized'
         ]
 ]
 
@@ -124,7 +127,7 @@ for (dailyConfig in DAILY_CONFIGS) {
     }
     if ( "${BUILD_NAME}" != 'jdk11-prod') {
         if ( "${BUILD_NAME}" == "jdk11" ) {
-            JDK_VERSION = "kie-jdk11"
+            JDK_VERSION = "kie-jdk11.0.15"
         } else {
             JDK_VERSION = "kie-jdk1.8"
         }
