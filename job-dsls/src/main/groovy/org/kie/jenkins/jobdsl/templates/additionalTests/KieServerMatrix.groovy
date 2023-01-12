@@ -15,6 +15,7 @@
 
 package org.kie.jenkins.jobdsl.templates.additionalTests
 
+import org.kie.jenkins.jobdsl.Constants
 import javaposse.jobdsl.dsl.jobs.MatrixJob
 
 class KieServerMatrix {
@@ -59,6 +60,8 @@ class KieServerMatrix {
                 jdk("${jdkVersion}")
                 text("container", "wildfly", "eap7", "tomcat9")
             }
+
+            childCustomWorkspace(Constants.MATRIX_SHORT_CHILD_WORKSPACE)
 
             logRotator {
                 numToKeep(5)
