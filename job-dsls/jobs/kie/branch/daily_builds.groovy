@@ -6,18 +6,17 @@ def KIE_VERSION=Constants.KIE_PREFIX
 def BASE_BRANCH=Constants.BRANCH
 def GH_ORG_UNIT=Constants.GITHUB_ORG_UNIT
 def AGENT_LABEL="rhos-01 && kie-rhel7-pipeline && kie-mem24g && !built-in"
-def EAP7_DOWNLOAD_URL=Constants.EAP7_DOWNLOAD_URL
 def JENKINSFILE_REPO = 'droolsjbpm-build-bootstrap'
 def JENKINSFILE_PWD= 'kie-ci'
 def JENKINSFILE_PATH = '.ci/jenkins/Jenkinsfile.daily'
 def JENKINSFILE_URL = "https://github.com/${GH_ORG_UNIT}/${JENKINSFILE_REPO}"
 def M2DIR = Constants.LOCAL_MVN_REP
-def NEXUS_URL = "https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/kieAllBuild-${BASE_BRANCH}"
+def URL_EXTENDED_PATH = "/content/repositories/kieAllBuild-${BASE_BRANCH}"
 def SETTINGS_XML='771ff52a-a8b4-40e6-9b22-d54c7314aa1e'
 
 
 def final DEFAULTS = [
-        JDK_VERSION : 'kie-jdk11',
+        JDK_VERSION : 'kie-jdk11.0.15',
         ADDITIONAL_MAVEN_FLAG : ''
 ]
 
@@ -86,7 +85,7 @@ for (dailyConfig in DAILY_CONFIGS) {
             }
             wHideParameterDefinition {
                 name('NEXUS_URL')
-                defaultValue(NEXUS_URL)
+                defaultValue("\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}")
                 description('URL of Nexus server')
             }
             wHideParameterDefinition {
@@ -128,7 +127,7 @@ for (dailyConfig in DAILY_CONFIGS) {
     }
     if ( "${BUILD_NAME}" != 'jdk11-prod') {
         if ( "${BUILD_NAME}" == "jdk11" ) {
-            JDK_VERSION = "kie-jdk11"
+            JDK_VERSION = "kie-jdk11.0.15"
         } else {
             JDK_VERSION = "kie-jdk1.8"
         }
@@ -139,7 +138,7 @@ for (dailyConfig in DAILY_CONFIGS) {
                 kieVersion = KIE_VERSION,
                 jdkVersion = JDK_VERSION,
                 mvnTool =  MVN_TOOL,
-                nexusUrl = NEXUS_URL,
+                nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
                 settingsXml = SETTINGS_XML)
 
         // Creates jbpmContainerTestMatrix job
@@ -148,7 +147,7 @@ for (dailyConfig in DAILY_CONFIGS) {
                 kieVersion = KIE_VERSION,
                 jdkVersion = JDK_VERSION,
                 mvnTool =  MVN_TOOL,
-                nexusUrl = NEXUS_URL,
+                nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
                 settingsXml = SETTINGS_XML)
 
         // Creates kieWbTestMatrix job
@@ -157,17 +156,17 @@ for (dailyConfig in DAILY_CONFIGS) {
                 kieVersion = KIE_VERSION,
                 jdkVersion = JDK_VERSION,
                 mvnTool =  MVN_TOOL,
-                nexusUrl = NEXUS_URL,
+                nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
                 settingsXml = SETTINGS_XML)
 
-        // Creates kieWbTestMatrix job
+        // Creates kieServerMatrix job
         def jobDefinition4 = matrixJob("${FOLDER_PATH}/kieServerMatrix")
         KieServerMatrix.addDeployConfiguration(jobDefinition4,
                 kieVersion = KIE_VERSION,
                 jdkVersion = JDK_VERSION,
                 mvnTool =  MVN_TOOL,
-                downloadUrl = EAP7_DOWNLOAD_URL,
-                nexusUrl = NEXUS_URL,
+                downloadUrl = "\${EAP_DOWNLOAD_URL}7/7.4.8/jboss-eap-7.4.8.zip",
+                nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
                 settingsXml = SETTINGS_XML)
     }
 }
