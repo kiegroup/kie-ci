@@ -16,12 +16,12 @@ def SETTINGS_XML='771ff52a-a8b4-40e6-9b22-d54c7314aa1e'
 
 
 def final DEFAULTS = [
-        JDK_VERSION : 'kie-jdk11.0.15',
+        JDK_VERSION : 'kie-jdk11.0.15'
 ]
 
 def final DAILY_CONFIGS = [
         'jdk11'   : [],
-        'jdk8'   : [JDK_VERSION  : 'kie-jdk1.8']
+        'jdk8'   : [ JDK_VERSION  : 'kie-jdk1.8' ]
 ]
 
 for (dailyConfig in DAILY_CONFIGS) {
