@@ -17,17 +17,11 @@ def SETTINGS_XML='771ff52a-a8b4-40e6-9b22-d54c7314aa1e'
 
 def final DEFAULTS = [
         JDK_VERSION : 'kie-jdk11.0.15',
-        ADDITIONAL_MAVEN_FLAG : ''
 ]
 
 def final DAILY_CONFIGS = [
         'jdk11'   : [],
-        'jdk8'   : [
-                JDK_VERSION  : 'kie-jdk1.8'
-        ],
-        'jdk11-prod' : [
-                ADDITIONAL_MAVEN_FLAG : '-Dproductized'
-        ]
+        'jdk8'   : [JDK_VERSION  : 'kie-jdk1.8']
 ]
 
 for (dailyConfig in DAILY_CONFIGS) {
@@ -125,48 +119,46 @@ for (dailyConfig in DAILY_CONFIGS) {
             }
         }
     }
-    if ( "${BUILD_NAME}" != 'jdk11-prod') {
-        if ( "${BUILD_NAME}" == "jdk11" ) {
-            JDK_VERSION = "kie-jdk11.0.15"
-        } else {
-            JDK_VERSION = "kie-jdk1.8"
-        }
-
-        // Creates jbpmTestCoverageMatrix job
-        def jobDefinition1 = matrixJob("${FOLDER_PATH}/jbpmTestCoverageMatrix")
-        JbpmTestCoverageMatrix.addDeployConfiguration(jobDefinition1,
-                kieVersion = KIE_VERSION,
-                jdkVersion = JDK_VERSION,
-                mvnTool =  MVN_TOOL,
-                nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
-                settingsXml = SETTINGS_XML)
-
-        // Creates jbpmContainerTestMatrix job
-        def jobDefinition2 = matrixJob("${FOLDER_PATH}/jbpmContainerTestMatrix")
-        JbpmContainerTestMatrix.addDeployConfiguration(jobDefinition2,
-                kieVersion = KIE_VERSION,
-                jdkVersion = JDK_VERSION,
-                mvnTool =  MVN_TOOL,
-                nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
-                settingsXml = SETTINGS_XML)
-
-        // Creates kieWbTestMatrix job
-        def jobDefinition3 = matrixJob("${FOLDER_PATH}/kieWbTestMatrix")
-        KieWbTestMatrix.addDeployConfiguration(jobDefinition3,
-                kieVersion = KIE_VERSION,
-                jdkVersion = JDK_VERSION,
-                mvnTool =  MVN_TOOL,
-                nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
-                settingsXml = SETTINGS_XML)
-
-        // Creates kieServerMatrix job
-        def jobDefinition4 = matrixJob("${FOLDER_PATH}/kieServerMatrix")
-        KieServerMatrix.addDeployConfiguration(jobDefinition4,
-                kieVersion = KIE_VERSION,
-                jdkVersion = JDK_VERSION,
-                mvnTool =  MVN_TOOL,
-                downloadUrl = "\${EAP_DOWNLOAD_URL}7/7.4.8/jboss-eap-7.4.8.zip",
-                nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
-                settingsXml = SETTINGS_XML)
+    if ( "${BUILD_NAME}" == "jdk11" ) {
+        JDK_VERSION = "kie-jdk11.0.15"
+    } else {
+        JDK_VERSION = "kie-jdk1.8"
     }
+
+    // Creates jbpmTestCoverageMatrix job
+    def jobDefinition1 = matrixJob("${FOLDER_PATH}/jbpmTestCoverageMatrix")
+    JbpmTestCoverageMatrix.addDeployConfiguration(jobDefinition1,
+            kieVersion = KIE_VERSION,
+            jdkVersion = JDK_VERSION,
+            mvnTool =  MVN_TOOL,
+            nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
+            settingsXml = SETTINGS_XML)
+
+    // Creates jbpmContainerTestMatrix job
+    def jobDefinition2 = matrixJob("${FOLDER_PATH}/jbpmContainerTestMatrix")
+    JbpmContainerTestMatrix.addDeployConfiguration(jobDefinition2,
+            kieVersion = KIE_VERSION,
+            jdkVersion = JDK_VERSION,
+            mvnTool =  MVN_TOOL,
+            nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
+            settingsXml = SETTINGS_XML)
+
+    // Creates kieWbTestMatrix job
+    def jobDefinition3 = matrixJob("${FOLDER_PATH}/kieWbTestMatrix")
+    KieWbTestMatrix.addDeployConfiguration(jobDefinition3,
+            kieVersion = KIE_VERSION,
+            jdkVersion = JDK_VERSION,
+            mvnTool =  MVN_TOOL,
+            nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
+            settingsXml = SETTINGS_XML)
+
+    // Creates kieServerMatrix job
+    def jobDefinition4 = matrixJob("${FOLDER_PATH}/kieServerMatrix")
+    KieServerMatrix.addDeployConfiguration(jobDefinition4,
+            kieVersion = KIE_VERSION,
+            jdkVersion = JDK_VERSION,
+            mvnTool =  MVN_TOOL,
+            downloadUrl = "\${EAP_DOWNLOAD_URL}7/7.4.8/jboss-eap-7.4.8.zip",
+            nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
+            settingsXml = SETTINGS_XML)
 }
