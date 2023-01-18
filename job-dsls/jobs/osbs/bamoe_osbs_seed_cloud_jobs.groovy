@@ -32,22 +32,22 @@ prodComponent.each { Component ->
     pipelineJob("${folderPath}/${Component}") {
 
         parameters {
-            stringParam("BUILD_DATE", "${buildDate}")
-            stringParam("PROD_VERSION", "${prodVersion}")
-            stringParam("PROD_COMPONENT", "${Component}")
-            stringParam("OSBS_BUILD_TARGET", "${osbsBuildTarget}")
-            stringParam("CEKIT_BUILD_OPTIONS", "${cekitBuildOptions}")
-            stringParam("KERBEROS_PRINCIPAL", "${kerberosPrincipal}")
-            stringParam("OSBS_BUILD_USER", "${osbsBuildUser}")
-            stringParam("KERBEROS_KEYTAB", "${kerberosKeytab}")
-            stringParam("KERBEROS_CRED", "${kerberosCred}")
-            stringParam("IMAGE_REPO", "${imageRepo}")
-            stringParam("IMAGE_BRANCH", "${imageBranch}")
-            stringParam("IMAGE_SUBDIR", "${imageSubdir}")
-            stringParam("GIT_USER", "${gitUser}")
-            stringParam("GIT_EMAIL", "${gitEmail}")
-            stringParam("CEKIT_CACHE_LOCAL", "${cekitCacheLocal}")
-            stringParam("VERBOSE", "${verbose}")
+            stringParam('BUILD_DATE', "${buildDate}")
+            stringParam('PROD_VERSION', "${prodVersion}")
+            stringParam('PROD_COMPONENT', "${Component}")
+            stringParam('OSBS_BUILD_TARGET', "${osbsBuildTarget}")
+            stringParam('CEKIT_BUILD_OPTIONS', "${cekitBuildOptions}")
+            stringParam('KERBEROS_PRINCIPAL', "${kerberosPrincipal}")
+            stringParam('OSBS_BUILD_USER', "${osbsBuildUser}")
+            stringParam('KERBEROS_KEYTAB', "${kerberosKeytab}")
+            stringParam('KERBEROS_CRED', "${kerberosCred}")
+            stringParam('IMAGE_REPO', "${imageRepo}")
+            stringParam('IMAGE_BRANCH', "${imageBranch}")
+            stringParam('IMAGE_SUBDIR', "${imageSubdir}")
+            stringParam('GIT_USER', "${gitUser}")
+            stringParam('GIT_EMAIL', "${gitEmail}")
+            stringParam('CEKIT_CACHE_LOCAL', "${cekitCacheLocal}")
+            stringParam('VERBOSE', "${verbose}")
         }
 
         definition {
