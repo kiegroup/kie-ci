@@ -61,7 +61,7 @@ pipeline {
             steps {
                 script {
                     dir(ghPagesRepoFolder) {
-                        sh "build-chain-status-report --jenkinsUrl ${env.JENKINS_MASTER_URL} --jobUrl job/KIE/job/main/job/daily-build-jdk11 job/KIE/job/main/job/daily-build-jdk8 -t \"Daily Builds\" -st \"RHBA Daily Builds\" --certFilePath ${env[certFileGlobalVariableName]} --outputFolderPath ./data/ --skipZero -cb \"Jenkins Job\" -cu \"${env.BUILD_URL}\" --order 1001"
+                        sh "build-chain-status-report --jenkinsUrl ${env.JENKINS_MASTER_URL} --jobUrl job/KIE/job/main/job/daily-build-jdk11 job/KIE/job/main/job/daily-build-jdk11-prod job/KIE/job/main/job/daily-build-jdk8 -t \"Daily Builds\" -st \"RHBA Daily Builds\" --certFilePath ${env[certFileGlobalVariableName]} --outputFolderPath ./data/ --skipZero -cb \"Jenkins Job\" -cu \"${env.BUILD_URL}\" --order 1001"
                     }
                 }
             }
