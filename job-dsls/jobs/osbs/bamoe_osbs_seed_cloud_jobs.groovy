@@ -70,36 +70,36 @@ prodComponent.each { Component ->
 
                           """ Parameters available for the build. """
                           def REQUIRED_BUILD_PARAMETERS = [
-                                  "PROD_VERSION": [PROD_VERSION, '-v'],
-                                  "PROD_COMPONENT": [PROD_COMPONENT, '-c'],
-                                  "OSBS_BUILD_TARGET": [OSBS_BUILD_TARGET, '-t'],
+                                  'PROD_VERSION': [PROD_VERSION, '-v'],
+                                  'PROD_COMPONENT': [PROD_COMPONENT, '-c'],
+                                  'OSBS_BUILD_TARGET': [OSBS_BUILD_TARGET, '-t'],
                           ]
 
                           def OPTIONAL_BUILD_PARAMETERS = [
-                                  "KERBEROS_PASSWORD": [password, '-s'],
-                                  "KERBEROS_PRINCIPAL": [user, '-p'],
-                                  "KERBEROS_KEYTAB": [keytab, '-k'],
-                                  "OSBS_BUILD_USER": [OSBS_BUILD_USER, '-i'],
-                                  "BUILD_DATE": [BUILD_DATE, '-b'],
-                                  "GIT_USER": [GIT_USER, '-u'],
-                                  "GIT_EMAIL": [GIT_EMAIL, '-e'],
-                                  "CEKIT_BUILD_OPTIONS": [CEKIT_BUILD_OPTIONS, '-o'],
-                                  "CEKIT_CACHE_LOCAL": [CEKIT_CACHE_LOCAL, '-l'],
+                                  'KERBEROS_PASSWORD': [password, '-s'],
+                                  'KERBEROS_PRINCIPAL': [user, '-p'],
+                                  'KERBEROS_KEYTAB': [keytab, '-k'],
+                                  'OSBS_BUILD_USER': [OSBS_BUILD_USER, '-i'],
+                                  'BUILD_DATE': [BUILD_DATE, '-b'],
+                                  'GIT_USER': [GIT_USER, '-u'],
+                                  'GIT_EMAIL': [GIT_EMAIL, '-e'],
+                                  'CEKIT_BUILD_OPTIONS': [CEKIT_BUILD_OPTIONS, '-o'],
+                                  'CEKIT_CACHE_LOCAL': [CEKIT_CACHE_LOCAL, '-l'],
                           ]
 
                           def OPTIONAL_BUILD_SWITCHES = [
-                                  "VERBOSE": [VERBOSE, '-g'],
+                                  'VERBOSE': [VERBOSE, '-g'],
                           ]
 
                           def REQUIRED_DOWNLOAD_PARAMETERS = [
-                                  "PROD_VERSION": [PROD_VERSION, '-v'],
-                                  "PROD_COMPONENT": [PROD_COMPONENT, '-c'],
+                                  'PROD_VERSION': [PROD_VERSION, '-v'],
+                                  'PROD_COMPONENT': [PROD_COMPONENT, '-c'],
                           ]
 
                           def OPTIONAL_DOWNLOAD_PARAMETERS = [
-                                  "IMAGE_REPO": [IMAGE_REPO, '-r'],
-                                  "IMAGE_BRANCH": [IMAGE_BRANCH, '-n'],
-                                  "IMAGE_SUBDIR": [IMAGE_SUBDIR, '-d'],
+                                  'IMAGE_REPO': [IMAGE_REPO, '-r'],
+                                  'IMAGE_BRANCH': [IMAGE_BRANCH, '-n'],
+                                  'IMAGE_SUBDIR': [IMAGE_SUBDIR, '-d'],
                           ]
 
                           // The download script is in the image, but build.sh and build-overrides.sh which it calls will be downloaded
