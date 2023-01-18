@@ -68,7 +68,7 @@ prodComponent.each { Component ->
 
                       private void mainProcess(user, password, keytab){
 
-                          """ Parameters available for the build. """
+                          /// Parameters available for the build
                           def REQUIRED_BUILD_PARAMETERS = [
                                   'PROD_VERSION': [PROD_VERSION, '-v'],
                                   'PROD_COMPONENT': [PROD_COMPONENT, '-c'],
