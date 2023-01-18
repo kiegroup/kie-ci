@@ -184,7 +184,7 @@ prodComponent.each { Component ->
                                               mainProcess(env.KERBEROS_PRINCIPAL, '', FILE)
                                           }
                                       } else {
-                                          error "Either KERBEROS_PRINCIPAL and KERBEROS_KEYTAB must be specified, or user/password with KERBEROS_CRED"
+                                          error 'Either KERBEROS_PRINCIPAL and KERBEROS_KEYTAB must be specified, or user/password with KERBEROS_CRED'
                                       }
                                   }
                               }
