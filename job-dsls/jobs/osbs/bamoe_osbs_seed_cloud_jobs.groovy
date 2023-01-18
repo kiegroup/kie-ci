@@ -181,7 +181,7 @@ prodComponent.each { Component ->
                                                     \'\'\')
                                                     env.KERBEROS_PRINCIPAL = get_principal_from_file.trim()
                                               }  
-                                              mainProcess(env.KERBEROS_PRINCIPAL, "", FILE)
+                                              mainProcess(env.KERBEROS_PRINCIPAL, '', FILE)
                                           }
                                       } else {
                                           error "Either KERBEROS_PRINCIPAL and KERBEROS_KEYTAB must be specified, or user/password with KERBEROS_CRED"
