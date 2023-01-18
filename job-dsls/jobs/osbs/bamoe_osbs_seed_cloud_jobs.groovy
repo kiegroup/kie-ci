@@ -169,7 +169,7 @@ prodComponent.each { Component ->
                                       sh 'rm -rf ${WORKSPACE}/{*,.*} || true'
                                       if (env.KERBEROS_CRED) {
                                           withCredentials([usernamePassword(credentialsId: env.KERBEROS_CRED, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                                              mainProcess(USERNAME, PASSWORD, "")
+                                              mainProcess(USERNAME, PASSWORD, '')
                                           }
                                       } else if (env.KERBEROS_KEYTAB) {
                                           withCredentials([file(credentialsId: env.KERBEROS_KEYTAB, variable: 'FILE')]) {
