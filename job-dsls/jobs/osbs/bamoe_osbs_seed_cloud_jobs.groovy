@@ -61,7 +61,7 @@ prodComponent.each { Component ->
                               def arg = param.value[0]
                               def flag = param.value[1]
                               if(!arg){
-                              error "$param.key parameter is required but was not specified."
+                                  error "$param.key parameter is required but was not specified."
                               }
                           }
                       }
