@@ -42,10 +42,8 @@ def SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION='8.32.0'
 def SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH='1.32.x'
 def SERVERLESS_LOGIC_CURRENT_PRODUCT_CONFIG_BRANCH="openshift-serverless-logic/1.32.x"
 
-// def RHBOP_NEXT_PRODUCT_VERSION='8.30.0'
 def RHBOP_NEXT_PRODUCT_BRANCH='main'
 def RHBOP_NEXT_PRODUCT_CONFIG_BRANCH='master'
-// def RHBOP_NEXT_DROOLS_VERSION='8.30.0'
 
 def RHBOP_CURRENT_PRODUCT_VERSION='8.29.0'
 def RHBOP_CURRENT_PRODUCT_BRANCH='8.29.x'
@@ -84,8 +82,8 @@ pipeline{
         ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_KOGITO_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_DROOLS_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_NEXT_PRODUCT_BRANCH, SERVERLESS_LOGIC_NEXT_PRODUCT_CONFIG_BRANCH)}
     
         // RHBOP
-        ${rhbopMainNightlyStage(RHBOP_NEXT_PRODUCT_BRANCH, RHBOP_NEXT_PRODUCT_CONFIG_BRANCH)}
-        ${rhbopNightlyStage(RHBOP_CURRENT_PRODUCT_VERSION, RHBOP_CURRENT_DROOLS_VERSION, RHBOP_CURRENT_PRODUCT_BRANCH, RHBOP_CURRENT_PRODUCT_CONFIG_BRANCH)}
+        ${rhbopNightlyStage(RHBOP_NEXT_PRODUCT_BRANCH, RHBOP_NEXT_PRODUCT_CONFIG_BRANCH)}
+        ${rhbopNightlyStage(RHBOP_CURRENT_PRODUCT_BRANCH, RHBOP_CURRENT_PRODUCT_CONFIG_BRANCH, RHBOP_CURRENT_PRODUCT_VERSION, RHBOP_CURRENT_DROOLS_VERSION)}
     }
 }
 """
@@ -206,7 +204,8 @@ String serverlessLogicNightlyStage(String productVersion, String kogitoVersion, 
     """
 }
 
-String rhbopNightlyStage(String version, String droolsVersion, String branch, String configBranch) {
+String rhbopNightlyStage(String branch, String configBranch, String version = '', String droolsVersion = '') {
+    // when version or droolsVersion are empty, the Jenkins job will get them from the main branch pom
     return """
         stage('trigger RHBOP nightly job ${branch}') {
             steps {
@@ -223,26 +222,9 @@ String rhbopNightlyStage(String version, String droolsVersion, String branch, St
     """
 }
 
-// Setting PRODUCT_VERSION or DROOLS_PRODUCT_VERSION to empty string will let job get the latest one from pom.xml
-String rhbopMainNightlyStage(String branch, String configBranch) {
-    return """
-        stage('trigger RHBOP nightly job ${branch}') {
-            steps {
-                build job: 'rhbop.nightly/${branch}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rhbop-main/content-compressed'],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: 'main'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: ''],
-                        [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: ''],
-                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "${configBranch}"],
-                        [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
-                ]
-            }
-        }
-    """
-}
-
 String getUMBFromVersion(def version) {
-    if (isMainBranchVersion(version)) {
+    // if empty return main branch too
+    if (isMainBranchVersion(version) || version == '') {
         return Constants.MAIN_BRANCH
     }
     def matcher = version =~ /(\d*)\.(\d*)\.?/
@@ -250,7 +232,8 @@ String getUMBFromVersion(def version) {
 }
 
 String getNexusFromVersion(def version) {
-    if (isMainBranchVersion(version)) {
+    // if empty return main branch too
+    if (isMainBranchVersion(version) || version == '') {
         return Constants.MAIN_BRANCH
     }
     def matcher = version =~ /(\d*)\.(\d*)\.?/
