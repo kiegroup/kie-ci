@@ -59,6 +59,10 @@ pipelineJob("${folderPath}/kogito-properties-generator") {
         stringParam("TIME_STAMP", "", "This is just for prod files")
     }
 
+    logRotator {
+        numToKeep(10)
+    }
+
     definition {
         cps {
             script(kogitoProps)
