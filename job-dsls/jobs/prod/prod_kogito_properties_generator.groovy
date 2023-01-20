@@ -90,6 +90,10 @@ pipelineJob("${folderPath}/kogito-properties-generator") {
         stringParam("RELEASE_FILE_ID", "kogito-prod-deliverable-properties-template")
     }
 
+    logRotator {
+        numToKeep(10)
+    }
+
     definition {
         cps {
             script(kogitoProps)

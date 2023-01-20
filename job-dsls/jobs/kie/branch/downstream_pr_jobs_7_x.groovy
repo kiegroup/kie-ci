@@ -10,6 +10,7 @@ def final DEFAULTS = [
         timeoutMins            : 720,
         label                  : "kie-rhel7 && kie-mem24g && !built-in",
         executionNumber        : 10,
+        numDaysKeep            : 20,
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
         artifactsToArchive     : [],
@@ -38,6 +39,7 @@ for (repoConfig in REPO_CONFIGS) {
     String ghJenkinsfilePwd = get("ghJenkinsfilePwd")
     String additionalLabel = get("label")
     def exeNum = get("executionNumber")
+    int buildsDaysToKeep = get('numDaysKeep')
     String additionalArtifacts = get("artifactsToArchive")
     additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
     String additionalExcludedArtifacts = ""
@@ -70,6 +72,7 @@ for (repoConfig in REPO_CONFIGS) {
 
         logRotator {
             numToKeep(exeNum)
+            daysToKeep(buildsDaysToKeep)
         }
 
         properties {

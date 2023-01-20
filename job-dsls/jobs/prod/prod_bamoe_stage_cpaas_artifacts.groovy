@@ -19,7 +19,7 @@ pipelineJob("${folderPath}/bamoe-stage-cpaas-artifacts") {
     }
 
     logRotator {
-        numToKeep(32)
+        numToKeep(20)
     }
 
     definition {

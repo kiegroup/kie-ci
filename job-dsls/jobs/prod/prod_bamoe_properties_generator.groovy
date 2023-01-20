@@ -67,6 +67,10 @@ pipelineJob("${folderPath}/bamoe-properties-generator") {
         stringParam("RELEASE_FILE_ID", "bamoe-prod-deliverable-properties-template")
     }
 
+    logRotator {
+        numToKeep(10)
+    }
+
     definition {
         cps {
             script(propGen)

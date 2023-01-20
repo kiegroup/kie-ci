@@ -50,6 +50,10 @@ prodComponent.each { Component ->
             stringParam('VERBOSE', "${verbose}")
         }
 
+        logRotator {
+            numToKeep(5)
+        }
+
         definition {
             cps {
 

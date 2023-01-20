@@ -20,7 +20,7 @@ pipelineJob("${folderPath}/kogito-stage-cpaas-artifacts") {
     }
 
     logRotator {
-        numToKeep(32)
+        numToKeep(20)
     }
 
     definition {

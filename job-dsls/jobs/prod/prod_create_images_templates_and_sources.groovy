@@ -18,7 +18,7 @@ pipelineJob("${folderPath}/create-images-templates-and-sources") {
     }
 
     logRotator {
-        numToKeep(32)
+        numToKeep(20)
     }
 
     definition {
