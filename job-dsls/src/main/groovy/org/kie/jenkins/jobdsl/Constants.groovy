@@ -44,7 +44,7 @@ class Constants {
     static final String NEXT_PROD_VERSION = '7.13.3'
     static final String CURRENT_PROD_VERSION = '7.12.2'
     static final String OSBS_BUILD_TARGET = 'rhba-7-rhel-8-containers-candidate'
-    static final String KERBEROS_KEYTAB = 'jenkins-keytab'
+    static final String KERBEROS_KEYTAB = 'rhba-osbs-builder-keytab'
     static final String CEKIT_BUILD_OPTIONS = ''
     static final String KERBEROS_PRINCIPAL = ''
     static final String OSBS_BUILD_USER = ''
