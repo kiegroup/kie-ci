@@ -39,6 +39,7 @@ job(jobName) {
 
     logRotator {
         numToKeep(10)
+        daysToKeep(10)
     }
 
     parameters {

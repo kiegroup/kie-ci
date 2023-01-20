@@ -63,6 +63,10 @@ pipelineJob("${folderPath}/properties-generator") {
         stringParam("RCM_HOST", "\${RCM_HOST}")
     }
 
+    logRotator {
+        numToKeep(20)
+    }
+
     definition {
         cps {
             script(propGen)

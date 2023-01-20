@@ -18,7 +18,7 @@ pipelineJob("${folderPath}/kogito-create-images-sources") {
     }
 
     logRotator {
-        numToKeep(32)
+        numToKeep(20)
     }
 
     definition {

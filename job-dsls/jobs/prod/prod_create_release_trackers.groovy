@@ -16,7 +16,7 @@ pipelineJob("${folderPath}/create-release-trackers") {
     }
 
     logRotator {
-        numToKeep(32)
+        numToKeep(20)
     }
 
     definition {

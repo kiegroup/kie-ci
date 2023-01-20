@@ -18,6 +18,7 @@ def final DEFAULTS = [
         buildJDKTool           : '',
         buildMavenTool         : '',
         numBuildsKeep          : 10,
+        numDaysKeep            : 20,
         buildChainGroup        : 'kiegroup'
 ]
 // override default config for specific repos (if needed)
@@ -46,6 +47,7 @@ for (repoConfig in REPO_CONFIGS) {
     String buildJDKTool = get("buildJDKTool")
     String buildMavenTool = get("buildMavenTool")
     int buildsNumToKeep = get('numBuildsKeep')
+    int buildsDaysToKeep = get('numDaysKeep')
     String buildChainGroup = get('buildChainGroup')
 
     // Creation of folders where jobs are stored
@@ -68,6 +70,7 @@ for (repoConfig in REPO_CONFIGS) {
 
         logRotator {
             numToKeep(buildsNumToKeep)
+            daysToKeep(buildsDaysToKeep)
         }
 
         properties {

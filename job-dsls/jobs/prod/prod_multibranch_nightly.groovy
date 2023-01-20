@@ -120,7 +120,7 @@ for (repoConfig in REPO_CONFIGS) {
 
         orphanedItemStrategy {
             discardOldItems {
-                daysToKeep(30)
+                daysToKeep(20)
                 numToKeep(7)
             }
         }

@@ -17,7 +17,8 @@ def final DEFAULTS = [
         checkstyleFile         : Constants.CHECKSTYLE_FILE,
         buildJDKTool           : '',
         buildMavenTool         : '',
-        numBuildsKeep          : 10
+        numBuildsKeep          : 10,
+        numDaysKeep            : 20
 ]
 // override default config for specific repos (if needed)
 def final REPO_CONFIGS = [
@@ -58,6 +59,7 @@ for (repoConfig in REPO_CONFIGS) {
     String buildJDKTool = get("buildJDKTool")
     String buildMavenTool = get("buildMavenTool")
     int buildsNumToKeep = get('numBuildsKeep')
+    int buildsDaysToKeep = get('numDaysKeep')
 
     // Creation of folders where jobs are stored
     folder("KIE")
@@ -79,6 +81,7 @@ for (repoConfig in REPO_CONFIGS) {
 
         logRotator {
             numToKeep(buildsNumToKeep)
+            daysToKeep(buildsDaysToKeep)
         }
 
         properties {

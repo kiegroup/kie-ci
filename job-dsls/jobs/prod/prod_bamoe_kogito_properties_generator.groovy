@@ -58,6 +58,10 @@ pipelineJob("${folderPath}/bamoe-kogito-properties-generator") {
         stringParam("RELEASE_FILE_ID", "kogito-blue-prod-deliverable-properties-template")
     }
 
+    logRotator {
+        numToKeep(10)
+    }
+
     definition {
         cps {
             script(kogitoProps)

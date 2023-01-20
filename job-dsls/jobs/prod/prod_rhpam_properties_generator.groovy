@@ -93,6 +93,10 @@ pipelineJob("${folderPath}/rhpam-properties-generator") {
         stringParam("RELEASE_FILE_ID", "f5eb870f-53d8-426c-bcfa-04668965e3ef")
     }
 
+    logRotator {
+        numToKeep(10)
+    }
+
     definition {
         cps {
             script(propGen)
