@@ -67,6 +67,10 @@ pipelineJob("${folderPath}/srcclrpipeline") {
         stringParam('DROOLSJBPM_BUILD_BOOTSTRAP_BRANCH','main','')
     }
 
+    logRotator {
+        numToKeep(10)
+    }
+
     definition {
         cps {
             script("${pipelineScript}")

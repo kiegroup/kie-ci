@@ -48,6 +48,11 @@ for (repo in repoList) {
 
         label("kie-rhel7 && !built-in")
 
+        logRotator {
+            numToKeep(20)
+            daysToKeep(20)
+        }
+
         wrappers {
             credentialsBinding {
                 string("SRCCLR_API_TOKEN", "SRCCLR_API_TOKEN")

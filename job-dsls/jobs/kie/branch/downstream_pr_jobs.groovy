@@ -10,6 +10,7 @@ def final DEFAULTS = [
         timeoutMins            : 720,
         label                  : "kie-rhel7 && kie-mem24g && !built-in",
         executionNumber        : 10,
+        numDaysKeep            : 20,
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci",
         artifactsToArchive     : [],
@@ -23,7 +24,7 @@ def final REPO_CONFIGS = [
         "lienzo-core"               : [],
         "lienzo-tests"              : [],
         "droolsjbpm-build-bootstrap": [
-                executionNumber : 25,
+                executionNumber : 20,
                 timeoutMins     : 1080
         ],
         "kie-soup"                  : [],
@@ -33,13 +34,13 @@ def final REPO_CONFIGS = [
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [
-                executionNumber : 25
+                executionNumber : 20
         ],
         "openshift-drools-hacep"    : [],
         "kie-wb-playground"         : [],
         "kie-uberfire-extensions"   : [],
         "kie-wb-common"             : [
-                executionNumber : 25
+                executionNumber : 20
         ],
         "drools-wb"                 : [],
         "jbpm-work-items"           : [],
@@ -58,6 +59,7 @@ for (repoConfig in REPO_CONFIGS) {
     String ghJenkinsfilePwd = get("ghJenkinsfilePwd")
     String additionalLabel = get("label")
     def exeNum = get("executionNumber")
+    int buildsDaysToKeep = get('numDaysKeep')
     String additionalArtifacts = get("artifactsToArchive")
     additionalArtifacts = additionalArtifacts.replaceAll("[\\[\\]]", "")
     String additionalExcludedArtifacts = ""
@@ -88,6 +90,7 @@ for (repoConfig in REPO_CONFIGS) {
 
         logRotator {
             numToKeep(exeNum)
+            daysToKeep(buildsDaysToKeep)
         }
 
         properties {
