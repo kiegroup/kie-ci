@@ -11,6 +11,7 @@ def final DEFAULTS = [
         ghJenkinsfilePwd       : 'kie-ci',
         label                  : 'kie-rhel7 && kie-mem8g && !built-in',
         executionNumber        : 10,
+        numDaysKeep            : 20,
         artifactsToArchive     : '',
         excludedArtifacts      : '',
         checkstyleFile         : Constants.CHECKSTYLE_FILE,
@@ -167,6 +168,7 @@ for (repoConfig in REPO_CONFIGS) {
     String ghJenkinsfilePwd = get('ghJenkinsfilePwd')
     String additionalLabel = get('label')
     def exeNum = get('executionNumber')
+    int buildsDaysToKeep = get('numDaysKeep')
     String additionalArtifacts = get('artifactsToArchive')
     additionalArtifacts = additionalArtifacts.replaceAll('[\\[\\]]', '')
     String addtionalExcludeArtifacts = get('excludedArtifacts')
@@ -200,6 +202,7 @@ for (repoConfig in REPO_CONFIGS) {
 
         logRotator {
             numToKeep(exeNum)
+            daysToKeep(buildsDaysToKeep)
         }
 
         properties {

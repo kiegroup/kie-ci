@@ -75,6 +75,7 @@ for (repoConfig in REPO_CONFIGS) {
 
         logRotator {
             numToKeep(10)
+            daysToKeep(10)
         }
 
         properties {
