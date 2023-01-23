@@ -82,6 +82,10 @@ class PrVerificationJob extends BasicJob {
                 stringParam("sha1")
             }
 
+            logRotator {
+                numToKeep(20)
+            }
+
             // Allows Jenkins to schedule and execute multiple builds concurrently.
             concurrentBuild()
 
