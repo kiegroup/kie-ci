@@ -30,9 +30,6 @@ def KOGITO_BLUE_NEXT_PRODUCT_VERSION='1.13.2.blue'
 def KOGITO_BLUE_NEXT_PRODUCT_BRANCH='1.13.x-blue'
 def KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH="kogito/1.13.x-blue"
 
-def SERVERLESS_LOGIC_NEXT_PRODUCT_VERSION='2.0.0'
-def SERVERLESS_LOGIC_KOGITO_NEXT_PRODUCT_VERSION='2.0.0'
-def SERVERLESS_LOGIC_DROOLS_NEXT_PRODUCT_VERSION='8.33.0'
 def SERVERLESS_LOGIC_NEXT_PRODUCT_BRANCH='main-integration-quarkus-2.13'
 def SERVERLESS_LOGIC_NEXT_PRODUCT_CONFIG_BRANCH="master"
 
@@ -78,8 +75,8 @@ pipeline{
         ${kogitoNightlyStage(KOGITO_BLUE_NEXT_PRODUCT_VERSION, KOGITO_BLUE_NEXT_PRODUCT_BRANCH, null, NEXT_BLUE_PRODUCT_VERSION, NEXT_BLUE_RHBA_VERSION_PREFIX, KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH)}
 
         // Openshift Serverless Logic
-        ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_KOGITO_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH, SERVERLESS_LOGIC_CURRENT_PRODUCT_CONFIG_BRANCH)}
-        ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_KOGITO_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_DROOLS_NEXT_PRODUCT_VERSION, SERVERLESS_LOGIC_NEXT_PRODUCT_BRANCH, SERVERLESS_LOGIC_NEXT_PRODUCT_CONFIG_BRANCH)}
+        ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH, SERVERLESS_LOGIC_CURRENT_PRODUCT_CONFIG_BRANCH, SERVERLESS_LOGIC_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_KOGITO_CURRENT_PRODUCT_VERSION, SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION)}
+        ${serverlessLogicNightlyStage(SERVERLESS_LOGIC_NEXT_PRODUCT_BRANCH, SERVERLESS_LOGIC_NEXT_PRODUCT_CONFIG_BRANCH)}
     
         // RHBOP
         ${rhbopNightlyStage(RHBOP_NEXT_PRODUCT_BRANCH, RHBOP_NEXT_PRODUCT_CONFIG_BRANCH)}
@@ -188,9 +185,10 @@ String kogitoWithSpecDroolsNightlyStage(String kogitoVersion, String kogitoBranc
     """
 }
 
-String serverlessLogicNightlyStage(String productVersion, String kogitoVersion, String droolsVersion, String branch, String configBranch) {
+String serverlessLogicNightlyStage(String branch, String configBranch, String productVersion = '', String kogitoVersion = '', String droolsVersion = '') {
+    // when kogitoVersion or droolsVersion are empty, the Jenkins job will get them from the current branch pom (mostly main)
     return """
-        stage('trigger Serverless Logic nightly job ${productVersion}') {
+        stage('trigger Serverless Logic nightly job ${branch}') {
             steps {
                 build job: 'kogito.nightly/${branch}', propagate: false, wait: true, parameters: [
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(productVersion)}'],
