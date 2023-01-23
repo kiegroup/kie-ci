@@ -27,7 +27,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'jira-token', variable: 'JIRA_TOKEN')]) {
                     dir('integration-platform-tooling') {
-                        sh "python3 release-generator.py --headless --authtoken ${JIRA_TOKEN} ${VERSION} ${TEMPLATE}.yaml"
+                        sh "source ~/virtenvs/rhba-prod/bin/activate && python3 release-generator.py --headless --authtoken ${JIRA_TOKEN} ${VERSION} ${TEMPLATE}.yaml"
                     }
                 }
             }
