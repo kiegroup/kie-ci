@@ -9,7 +9,7 @@ String jobDescription = "Job responsible for seed jobs to building rhpam openshi
 def prodComponent = [
         'rhpam-businesscentral', 'rhpam-businesscentral-monitoring',
         'rhpam-controller', 'rhpam-kieserver', 'rhpam-smartrouter',
-        'rhpam-process-migration']
+        'rhpam-process-migration', 'rhpam-dashbuilder']
 
 def buildDate = Constants.BUILD_DATE
 def prodVersion = Constants.NEXT_PROD_VERSION

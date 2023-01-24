@@ -9,7 +9,7 @@ String jobDescription = 'Job responsible for seed jobs to building bamoe openshi
 def prodComponent = [
         'bamoe-businesscentral', 'bamoe-businesscentral-monitoring',
         'bamoe-controller', 'bamoe-kieserver', 'bamoe-smartrouter',
-        'bamoe-process-migration']
+        'bamoe-process-migration', 'bamoe-dashbuilder']
 
 def buildDate = Constants.BUILD_DATE
 def prodVersion = Constants.NEXT_PROD_VERSION
@@ -108,7 +108,7 @@ prodComponent.each { Component ->
 
                           // The download script is in the image, but build.sh and build-overrides.sh which it calls will be downloaded
                           def download_command = "/opt/rhba/download.sh"
-                          def buildCommand = 'build-osbs.sh'
+                          def build_command = 'build-osbs.sh'
 
                           // Create the download command to set up the build directory
                           validateParameters(REQUIRED_DOWNLOAD_PARAMETERS, OPTIONAL_DOWNLOAD_PARAMETERS)
