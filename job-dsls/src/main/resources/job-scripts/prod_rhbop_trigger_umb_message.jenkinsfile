@@ -22,6 +22,7 @@ pipeline {
                 println "[INFO] PNC_API_URL: ${PNC_API_URL}"
                 println "[INFO] INDY_URL: ${INDY_URL}"
                 println "[INFO] QUARKUS_VERSION: ${QUARKUS_VERSION}"
+                println "[INFO] QUARKUS_PLATFORM_VERSION: ${QUARKUS_PLATFORM_VERSION}"
                 println "[INFO] PROJECTS: ${projects}"
                 println "[INFO] PRODUCT_ID: ${productId}"
             }
@@ -79,7 +80,7 @@ def getMessageBody(milestone, projectsAndVersions) {
     return """
 {
     "built_projects": ["drools","optaplanner","optaplanner-quickstarts","optaweb-vehicle-routing","jboss-integration/rhbop-optaplanner"],
-    "version": {"rhbop":"${milestone}","optaplanner":"${projectsAndVersions["kiegroup/optaplanner"]}","drools":"${projectsAndVersions["kiegroup/drools"]}","platform.quarkus.bom":"${QUARKUS_VERSION}"},
+    "version": {"rhbop":"${milestone}","optaplanner":"${projectsAndVersions["kiegroup/optaplanner"]}","drools":"${projectsAndVersions["kiegroup/drools"]}","quarkus.bom":"${QUARKUS_VERSION}","platform.quarkus.bom":"${QUARKUS_PLATFORM_VERSION}"},
     "maven_repository_file_url": "${env.STAGING_SERVER_URL}rhbop/rhbop-${milestone}/rhbop-${productVersion}-optaplanner-maven-repository.zip",
     "offliner_file_url": "${env.STAGING_SERVER_URL}rhbop/rhbop-${milestone}/rhbop-${productVersion}-optaplanner-offliner.zip",
     "archives": "${INDY_URL}",
