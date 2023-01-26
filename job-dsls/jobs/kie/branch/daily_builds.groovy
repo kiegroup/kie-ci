@@ -16,7 +16,8 @@ def SETTINGS_XML='771ff52a-a8b4-40e6-9b22-d54c7314aa1e'
 
 
 def final DEFAULTS = [
-        JDK_VERSION : 'kie-jdk11.0.15'
+        JDK_VERSION : 'kie-jdk11.0.15',
+        ADDITIONAL_MAVEN_FLAG : ''
 ]
 
 def final DAILY_CONFIGS = [
