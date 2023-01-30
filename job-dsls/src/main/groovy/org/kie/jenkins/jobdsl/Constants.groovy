@@ -67,6 +67,7 @@ class Constants {
     static final String LABEL_KIE_RHEL = 'kie-rhel||rhos-01-kie-rhel&&!built-in'
     static final String CREDENTIALS_ID = 'kie-ci'
     static final String CREDENTIALS_ID_TOKEN = 'kie-ci'
+    static final String RHPAM_KOGITO_OPERTOR_BRANCH = '1.13.x'
     static final String BAMOE_BA_OPERTOR_BRANCH = 'release-v7.13.x-blue'
     static final String BAMOE_KOGITO_OPERTOR_BRANCH = '1.13.x-blue'
 

@@ -28,6 +28,7 @@ def gitEmail = Constants.GIT_EMAIL
 def cekitCacheLocal = Constants.CEKIT_CACHE_LOCAL
 def verbose = Constants.VERBOSE
 def githubOrgUnit = Constants.GITHUB_ORG_UNIT
+def rhpamKogitoOperatorBranch = Constants.RHPAM_KOGITO_OPERTOR_BRANCH
 def bamoeBAOperatorBranch = Constants.BAMOE_BA_OPERTOR_BRANCH
 def bamoeKogitoOperatorBranch = Constants.BAMOE_KOGITO_OPERTOR_BRANCH
 
@@ -54,6 +55,7 @@ prodComponent.each { Component ->
             stringParam("CEKIT_CACHE_LOCAL", "${cekitCacheLocal}")
             stringParam("VERBOSE", "${verbose}")
             stringParam("GITHUB_ORG_UNIT", "${githubOrgUnit}")
+            stringParam("RHPAM_KOGITO_OPERTOR_BRANCH", "${rhpamKogitoOperatorBranch}")
             stringParam("BAMOE_BA_OPERTOR_BRANCH", "${bamoeBAOperatorBranch}")
             stringParam("BAMOE_KOGITO_OPERTOR_BRANCH", "${bamoeKogitoOperatorBranch}")
         }
@@ -91,8 +93,10 @@ prodComponent.each { Component ->
                       // Function to retrieve from the PROD_COMPONENT name the related repo branch
                       private String getOperatorBranch(prodComponent){
                           switch(prodComponent){
-                            case { it.startsWith('rhpam') }:
+                            case { it.startsWith('rhpam-ba') }:
                                 return 'main'
+                            case { it.startsWith('rhpam-kogito') }:
+                                return RHPAM_KOGITO_OPERTOR_BRANCH
                             case { it.startsWith('bamoe-ba') }:
                                 return BAMOE_BA_OPERTOR_BRANCH
                             case { it.startsWith('bamoe-kogito') }:
