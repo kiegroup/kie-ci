@@ -2,7 +2,7 @@ package osbs
 
 import org.kie.jenkins.jobdsl.Constants
 
-def folderPath = 'OSBS'
+def folderPath = 'OSBS/operators'
 folder(folderPath)
 // Job Description
 String jobDescription = 'Job responsible for seed jobs to building rhpam and bamoe ba and kogito operator images'
