@@ -12,7 +12,7 @@ def prodComponent = [
         'bamoe-process-migration', 'bamoe-dashbuilder']
 
 def buildDate = Constants.BUILD_DATE
-def prodVersion = Constants.NEXT_PROD_VERSION
+def prodVersion = Constants.BAMOE_NEXT_PROD_VERSION
 def osbsBuildTarget = Constants.OSBS_BUILD_TARGET
 def cekitBuildOptions = Constants.CEKIT_BUILD_OPTIONS
 def osbsBuildUser = Constants.OSBS_BUILD_USER
