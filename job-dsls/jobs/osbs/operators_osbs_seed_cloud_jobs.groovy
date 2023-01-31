@@ -135,8 +135,6 @@ prodComponent.each { Component ->
                           validateParameters(REQUIRED_BUILD_PARAMETERS, OPTIONAL_BUILD_PARAMETERS)
 
                           for(param in REQUIRED_BUILD_PARAMETERS){
-                              def arg = param.value[0]
-                              def flag = param.value[1]
                               build_command += " ${param.value[1]} ${param.value[0]}"
                           }
 
