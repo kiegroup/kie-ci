@@ -43,6 +43,8 @@ class Constants {
     static final String RHBOP_MAIN_BRANCH_PROD_VERSION = '8.30.0'
     static final String NEXT_PROD_VERSION = '7.13.3'
     static final String CURRENT_PROD_VERSION = '7.12.2'
+    static final String BAMOE_NEXT_PROD_VERSION = '8.0.3'
+    static final String BAMOE_CURRENT_PROD_VERSION = '8.0.2'
     static final String OSBS_BUILD_TARGET = 'rhba-7-rhel-8-containers-candidate'
     static final String KERBEROS_KEYTAB = 'rhba-osbs-builder-keytab'
     static final String CEKIT_BUILD_OPTIONS = ''
