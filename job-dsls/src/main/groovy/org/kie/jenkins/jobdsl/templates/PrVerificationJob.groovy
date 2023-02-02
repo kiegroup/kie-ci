@@ -83,7 +83,8 @@ class PrVerificationJob extends BasicJob {
             }
 
             logRotator {
-                numToKeep(20)
+                numToKeep(10)
+                daysToKeep(20)
             }
 
             // Allows Jenkins to schedule and execute multiple builds concurrently.
