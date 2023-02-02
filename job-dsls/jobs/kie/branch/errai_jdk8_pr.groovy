@@ -64,13 +64,6 @@ job(jobName) {
     }
     concurrentBuild()
 
-    properties {
-        ownership {
-            primaryOwnerId("mbiarnes")
-            coOwnerIds("mnovotny")
-        }
-    }
-
     jdk(javadk)
 
     label(labelName)

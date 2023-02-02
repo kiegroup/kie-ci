@@ -70,13 +70,6 @@ for (repoConfig in REPO_CONFIGS) {
             }
         }
 
-        properties {
-            ownership {
-                primaryOwnerId("mbiarnes")
-                coOwnerIds("almorale", "anstephe")
-            }
-        }
-
         jdk(get("javadk"))
 
         label(get("label"))
