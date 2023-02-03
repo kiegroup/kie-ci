@@ -45,7 +45,7 @@ def RHBOP_NEXT_PRODUCT_CONFIG_BRANCH='master'
 def RHBOP_CURRENT_PRODUCT_VERSION='8.33.0'
 def RHBOP_CURRENT_PRODUCT_BRANCH='8.33.x'
 def RHBOP_CURRENT_PRODUCT_CONFIG_BRANCH='rhbop/8.33.x'
-def RHBOP_CURRENT_DROOLS_VERSION='8.33.0'
+def RHBOP_CURRENT_DROOLS_VERSION='8.29.0'
 
 // Should be uncommented and used with kogitoWithSpecDroolsNightlyStage once Next is set for RHPAM 7.14.0 (or main)
 // def DROOLS_NEXT_PRODUCT_VERSION='8.13.0'
