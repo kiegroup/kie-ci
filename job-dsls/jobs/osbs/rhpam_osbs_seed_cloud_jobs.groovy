@@ -1,7 +1,8 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def folderPath = 'OSBS/rhpam-images'
-folder(folderPath)
+folder('OSBS')
+folder('OSBS/rhpam-images')
 // Job Description
 String jobDescription = "Job responsible for seed jobs to building rhpam openshift image"
 
