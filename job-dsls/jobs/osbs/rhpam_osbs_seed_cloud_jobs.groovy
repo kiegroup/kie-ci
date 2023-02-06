@@ -1,6 +1,4 @@
 import org.kie.jenkins.jobdsl.Constants
-import hudson.EnvVars
-import hudson.model.Environment
 
 folder("OSBS")
 def folderPath = "OSBS"
@@ -176,7 +174,7 @@ prodComponent.each { Component ->
                                   # if no issue happens, the result should be the built image
                                   echo ${RESULT}
                                   \'\'\')
-                                  env.BUILT_IMAGE: get_image_name.trim()
+                                  env.BUILT_IMAGE = "${get_image_name.trim()}"
                               }
                           }
                           // TODO create UMB notification
