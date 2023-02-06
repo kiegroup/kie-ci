@@ -60,20 +60,6 @@ class BasicJob {
                 artifactNumToKeep(2)
             }
 
-            // Adds custom properties to the job.
-            properties {
-
-                // Allows to configure job ownership.
-                ownership {
-
-                    // Sets the name of the primary owner of the job.
-                    primaryOwnerId("mbiarnes")
-
-                    // Adds additional users, who have ownership privileges.
-                    coOwnerIds("anstephe", "mnovotny", "almorale")
-                }
-            }
-
             // Adds post-build actions to the job.
             publishers {
 

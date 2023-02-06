@@ -91,13 +91,6 @@ job(jobName) {
     }
     concurrentBuild()
 
-    properties {
-        ownership {
-            primaryOwnerId("mbiarnes")
-            coOwnerIds("mbiarnes")
-        }
-    }
-
     jdk("kie-jdk1.8")
 
     label(get("label"))
