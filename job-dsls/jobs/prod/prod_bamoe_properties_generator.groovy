@@ -74,7 +74,7 @@ pipelineJob("${folderPath}/bamoe-properties-generator") {
         booleanParam("IS_RELEASE", true, "it defines if the properties file is for prod or not")
         stringParam("BRANCH_NAME", "main", "the branch the nightly was triggered for")
         stringParam("TAG_HASH", "", "The hash of the nightly tag in productization repository. This is just for nightly")
-        stringParam("REPO_URL", "\${BXMS_QE_NEXUS}/content/repositories/rhba-main-nightly", "Prod possibility is \${STAGING_SERVER_URL}"
+        stringParam("REPO_URL", "\${BXMS_QE_NEXUS}/content/repositories/rhba-main-nightly", "Prod possibility is \${STAGING_SERVER_URL}")
         stringParam("DELIVERABLE_REPO_URL", "\${DOWNLOAD_CANDIDATES}/middleware")
         stringParam("PRODUCT_VERSION", "8.0.0")
         stringParam("PRODUCT_VERSION_LONG", "8.0.0.redhat-00001", "This is just for prod files")
