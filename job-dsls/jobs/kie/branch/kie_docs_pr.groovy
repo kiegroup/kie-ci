@@ -14,7 +14,7 @@
  */
 
 import org.kie.jenkins.jobdsl.Constants
-import org.kie.jenkins.jobdsl.templates.PrVerificationJob
+import org.kie.jenkins.jobdsl.templates.PrKieDocsJob
 
 // Job parameters values
 projectName = "kie-docs"
@@ -24,18 +24,18 @@ mavenGoals = "-B clean install"
 branchName = Constants.BRANCH
 
 // Adds required folders
-PrVerificationJob.addFolders(this)
+PrKieDocsJob.addFolders(this)
 
 // Creates or updates a free style job.
 def jobDefinition = job("KIE/${branchName}/" + Constants.PULL_REQUEST_FOLDER + "/${projectName}-${branchName}.pr")
 
-PrVerificationJob.addPrConfiguration(job = jobDefinition,
+PrKieDocsJob.addPrConfiguration(job = jobDefinition,
         projectName = projectName,
         githubGroup = Constants.GITHUB_ORG_UNIT,
-        githubCredentialsId = "kie-ci-user-key",
-        branchName = Constants.BRANCH,
+        githubCredentialsId = 'kie-ci-user-key',
+        branchName = branchName,
         labelName = labelName,
         timeoutValue = timeoutValue,
         mavenGoals = mavenGoals,
-        archiveArtifactsPattern = "**/target/generated-docs/html_single/**/*"
+        archiveArtifactsPattern = 'kie-docs.zip'
 )
