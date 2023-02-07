@@ -160,10 +160,26 @@ prodComponent.each { Component ->
 
                           // Run the build script
                           dir(component_path) {
-                              sh "source ~/virtenvs/cekit/bin/activate && $build_command"
+                              sh "source ~/virtenvs/cekit/bin/activate && $build_command | tee output.txt"
                           }
 
                           // post processing
+                          // query the built image from osbs using brew cli
+                          dir(component_path) {
+                              def get_image_name = sh(returnStdout: true, script: \'\'\'
+                                  RESULT=$(/usr/bin/brew call --json-output getTaskResult $( cat output.txt| grep -oP 'Task \\d{8}' | cut -d" " -f2) | jq -nre "input.repositories[0]")
+                                  if [ $? != 0 ]; then
+                                      echo "Unable to find build image - $RESULT"
+                                      exit 1
+                                  fi
+                                  # if no issue happens, the result should be the built image
+                                  echo ${RESULT}
+                              \'\'\')
+                                
+                              env.BUILT_IMAGE = "${get_image_name.trim()}"
+                          }
+                          
+                          // TODO create UMB notification
                       }
 
                       node("osbs-builder&&rhel8"){
