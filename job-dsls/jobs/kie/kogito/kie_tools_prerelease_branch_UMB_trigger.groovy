@@ -42,7 +42,7 @@ job(jobName) {
                 activeMQPublisher {
                     name('Red Hat Umb')
                     overrides {
-                        topic("VirtualTopic.qe.ci.ba.kie-tools.\${KIE_TOOLS_UMB_VERSION}.CR.trigger")
+                        topic("VirtualTopic.qe.ci.ba.kie-tools.CR.trigger")
                     }
                     // Type of CI message to be sent.
                     messageType('Custom')
