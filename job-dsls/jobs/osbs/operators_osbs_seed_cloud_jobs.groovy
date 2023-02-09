@@ -156,9 +156,6 @@ prodComponent.each { Component ->
                           
                           operator_branch = getOperatorBranch(PROD_COMPONENT)
                           
-                          // Checking out from git the Operator repo
-                          sh 'git config --global user.email $GIT_EMAIL'
-                          sh 'git config --global user.name $GIT_AUTHOR'
                           checkout(githubscm.resolveRepository(operator_repo_name, GITHUB_ORG_UNIT, operator_branch, false))
                           // Run the build script that should be into the operator hack folder
                           dir('hack') {
