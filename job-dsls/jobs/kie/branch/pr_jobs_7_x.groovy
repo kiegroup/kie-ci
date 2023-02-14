@@ -36,22 +36,7 @@ def final REPO_CONFIGS = [
         ],
         "optaplanner"               : [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'build/.*', 'ide-configuration/.*']
-        ],
-        "optaweb-employee-rostering" : [
-                artifactsToArchive: [
-                        "**/cypress/screenshots/**",
-                        "**/cypress/videos/**"
-                ],
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'runOnOpenShift\\.sh', 'ide-configuration/.*']
-        ],
-        "optaweb-vehicle-routing" : [
-                artifactsToArchive: [
-                        "**/cypress/screenshots/**",
-                        "**/cypress/videos/**"
-                ],
-                excludedRegions: ['LICENSE.*', 'CODEOWNERS', '\\.gitignore', '\\.gitattributes', '\\.travis\\.yml', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'runOnOpenShift\\.sh', 'runLocally\\.sh', 'ide-configuration/.*']
         ]
-
 ]
 
 for (repoConfig in REPO_CONFIGS) {
