@@ -79,6 +79,7 @@ prodComponent.each { Component ->
                       }
                       
                       // Function to retrieve from the PROD_COMPONENT name the related repo name into the kiegroup org
+                      @NonCPS
                       private String getOperatorRepoName(prodComponent){
                           switch(prodComponent){
                             case { it.endsWith('ba-operator') }:
@@ -91,6 +92,7 @@ prodComponent.each { Component ->
                       }
                       
                       // Function to retrieve from the PROD_COMPONENT name the related repo branch
+                      @NonCPS
                       private String getOperatorBranch(prodComponent){
                           switch(prodComponent){
                             case { it.startsWith('rhpam-ba') }:
