@@ -1,19 +1,19 @@
+package osbs
+
 import org.kie.jenkins.jobdsl.Constants
 
-def folderPath = 'OSBS/bamoe-images'
+def folderPath = 'OSBS/operators'
 folder('OSBS')
-folder('OSBS/bamoe-images')
+folder('OSBS/operators')
 // Job Description
-String jobDescription = 'Job responsible for seed jobs to building bamoe openshift image'
+String jobDescription = 'Job responsible for seed jobs to building bamoe ba and kogito operator images'
 
 //Define Variables
 def prodComponent = [
-        'bamoe-businesscentral', 'bamoe-businesscentral-monitoring',
-        'bamoe-controller', 'bamoe-kieserver', 'bamoe-smartrouter',
-        'bamoe-process-migration', 'bamoe-dashbuilder']
+        'bamoe-ba-operator', 'bamoe-kogito-operator']
 
 def buildDate = Constants.BUILD_DATE
-def prodVersion = Constants.BAMOE_NEXT_PROD_VERSION
+def prodVersion = Constants.NEXT_PROD_VERSION
 def osbsBuildTarget = Constants.BAMOE_OSBS_BUILD_TARGET
 def cekitBuildOptions = Constants.CEKIT_BUILD_OPTIONS
 def osbsBuildUser = Constants.OSBS_BUILD_USER
@@ -21,12 +21,17 @@ def kerberosPrincipal = Constants.KERBEROS_PRINCIPAL
 def kerberosKeytab = Constants.KERBEROS_KEYTAB
 def kerberosCred = Constants.KERBEROS_CRED
 def imageRepo = Constants.IMAGE_REPO
-def imageBranch = Constants.BAMOE_IMAGE_BRANCH
+def imageBranch = Constants.IMAGE_BRANCH
 def imageSubdir = Constants.IMAGE_SUBDIR
 def gitUser = Constants.GIT_USER
 def gitEmail = Constants.GIT_EMAIL
 def cekitCacheLocal = Constants.CEKIT_CACHE_LOCAL
 def verbose = Constants.VERBOSE
+def githubOrgUnit = Constants.GITHUB_ORG_UNIT
+def rhpamKogitoOperatorBranch = Constants.RHPAM_KOGITO_OPERTOR_BRANCH
+def bamoeBAOperatorBranch = Constants.BAMOE_BA_OPERTOR_BRANCH
+def bamoeKogitoOperatorBranch = Constants.BAMOE_KOGITO_OPERTOR_BRANCH
+
 
 prodComponent.each { Component ->
 
@@ -49,10 +54,10 @@ prodComponent.each { Component ->
             stringParam('GIT_EMAIL', "${gitEmail}")
             stringParam('CEKIT_CACHE_LOCAL', "${cekitCacheLocal}")
             stringParam('VERBOSE', "${verbose}")
-        }
-
-        logRotator {
-            numToKeep(5)
+            stringParam('GITHUB_ORG_UNIT', "${githubOrgUnit}")
+            stringParam('RHPAM_KOGITO_OPERTOR_BRANCH', "${rhpamKogitoOperatorBranch}")
+            stringParam('BAMOE_BA_OPERTOR_BRANCH', "${bamoeBAOperatorBranch}")
+            stringParam('BAMOE_KOGITO_OPERTOR_BRANCH', "${bamoeKogitoOperatorBranch}")
         }
 
         definition {
@@ -60,26 +65,52 @@ prodComponent.each { Component ->
 
                 script('''
 
+                      library 'jenkins-pipeline-shared-libraries'
+                      
                       private void validateParameters(required, optionals){
                           // Check if all required params are supplied
                           for ( param in required ) {
                               def arg = param.value[0]
                               def flag = param.value[1]
-                              if(!arg){
-                                  error "$param.key parameter is required but was not specified."
+                              if(!param.value[0]){
+                                  error "${param.key} parameter is required but was not specified."
                               }
+                          }
+                      }
+                      
+                      // Function to retrieve from the PROD_COMPONENT name the related repo name into the kiegroup org
+                      @NonCPS
+                      private String getOperatorRepoName(prodComponent){
+                          switch(prodComponent){
+                            case { it.endsWith('ba-operator') }:
+                                return 'kie-cloud-operator'
+                            case { it.endsWith('kogito-operator') }:
+                                return 'kogito-operator'
+                            default:
+                               error "${prodComponent} not supported."
+                          }
+                      }
+                      
+                      // Function to retrieve from the PROD_COMPONENT name the related repo branch
+                      @NonCPS
+                      private String getOperatorBranch(prodComponent){
+                          switch(prodComponent){
+                            case { it.startsWith('bamoe-ba') }:
+                                return BAMOE_BA_OPERTOR_BRANCH
+                            case { it.startsWith('bamoe-kogito') }:
+                                return BAMOE_KOGITO_OPERTOR_BRANCH
+                            default:
+                               error "${prodComponent} not supported."
                           }
                       }
 
                       private void mainProcess(user, password, keytab){
-
-                          /// Parameters available for the build
+                          // Parameters available for the build.
                           def REQUIRED_BUILD_PARAMETERS = [
                                   'PROD_VERSION': [PROD_VERSION, '-v'],
                                   'PROD_COMPONENT': [PROD_COMPONENT, '-c'],
                                   'OSBS_BUILD_TARGET': [OSBS_BUILD_TARGET, '-t'],
                           ]
-
                           def OPTIONAL_BUILD_PARAMETERS = [
                                   'KERBEROS_PASSWORD': [password, '-s'],
                                   'KERBEROS_PRINCIPAL': [user, '-p'],
@@ -91,103 +122,52 @@ prodComponent.each { Component ->
                                   'CEKIT_BUILD_OPTIONS': [CEKIT_BUILD_OPTIONS, '-o'],
                                   'CEKIT_CACHE_LOCAL': [CEKIT_CACHE_LOCAL, '-l'],
                           ]
-
                           def OPTIONAL_BUILD_SWITCHES = [
                                   'VERBOSE': [VERBOSE, '-g'],
                           ]
-
-                          def REQUIRED_DOWNLOAD_PARAMETERS = [
-                                  'PROD_VERSION': [PROD_VERSION, '-v'],
-                                  'PROD_COMPONENT': [PROD_COMPONENT, '-c'],
-                          ]
-
-                          def OPTIONAL_DOWNLOAD_PARAMETERS = [
-                                  'IMAGE_REPO': [IMAGE_REPO, '-r'],
-                                  'IMAGE_BRANCH': [IMAGE_BRANCH, '-n'],
-                                  'IMAGE_SUBDIR': [IMAGE_SUBDIR, '-d'],
-                          ]
-
-                          // The download script is in the image, but build.sh and build-overrides.sh which it calls will be downloaded
-                          def download_command = "/opt/rhba/download.sh"
+       
+                          // The build script is in the image, but build.sh and build-overrides.sh which it calls will be downloaded
                           def build_command = 'build-osbs.sh'
-
-                          // Create the download command to set up the build directory
-                          validateParameters(REQUIRED_DOWNLOAD_PARAMETERS, OPTIONAL_DOWNLOAD_PARAMETERS)
-                          for(param in REQUIRED_DOWNLOAD_PARAMETERS){
-                              def arg = param.value[0]
-                              def flag = param.value[1]
-                              download_command += " ${flag} ${arg}"
-                          }
-
-                          for(param in OPTIONAL_DOWNLOAD_PARAMETERS){
-                              def arg = param.value[0]
-                              def flag = param.value[1]
-                              if(arg) download_command+= " ${flag} ${arg}"
-                          }
-
-                          download_command += " -w ${WORKSPACE}"
-
+                         
                           // Create the build command
                           validateParameters(REQUIRED_BUILD_PARAMETERS, OPTIONAL_BUILD_PARAMETERS)
 
                           for(param in REQUIRED_BUILD_PARAMETERS){
-                              def arg = param.value[0]
-                              def flag = param.value[1]
-                              build_command += " ${flag} ${arg}"
+                              build_command += " ${param.value[1]} ${param.value[0]}"
                           }
 
                           for(param in OPTIONAL_BUILD_PARAMETERS){
                               def arg = param.value[0]
                               def flag = param.value[1]
-                              if(arg) build_command+= " ${flag} ${arg}"
+                              build_command+= arg ? " ${flag} ${arg}" : ''
                           }
 
                           for(param in OPTIONAL_BUILD_SWITCHES){
                               def arg = param.value[0]
                               def flag = param.value[1]
-                              if(arg == "true") build_command+= " ${flag}"
+                              build_command+= arg == 'true' ? " ${flag}" : ''
                           }
 
                           build_command +=" -w ${WORKSPACE}"
-
-                          // Run the download script to set up the build. This will select the right branch
-                          // and return the component directory path where the build needs to take path
-                          def component_path = sh(script: "$download_command 2>&1", returnStdout: true)
-                          println component_path
-
-                          // This gets the last token of output from the script, which is the path to build in
-                          component_path = component_path.tokenize().last()
-
-                          // Run the build script
-                          dir(component_path) {
-                              sh "source ~/virtenvs/cekit/bin/activate && $build_command | tee output.txt"
-                          }
-
-                          // post processing
-                          // query the built image from osbs using brew cli
-                          dir(component_path) {
-                              def get_image_name = sh(returnStdout: true, script: \'\'\'
-                                  RESULT=$(/usr/bin/brew call --json-output getTaskResult $( cat output.txt| grep -oP 'Task \\d{8}' | cut -d" " -f2) | jq -nre "input.repositories[0]")
-                                  if [ $? != 0 ]; then
-                                      echo "Unable to find build image - $RESULT"
-                                      exit 1
-                                  fi
-                                  # if no issue happens, the result should be the built image
-                                  echo ${RESULT}
-                              \'\'\')
-                                
-                              env.BUILT_IMAGE = "${get_image_name.trim()}"
-                          }
                           
-                          // TODO create UMB notification
+                          operator_repo_name = getOperatorRepoName(PROD_COMPONENT)
+                          
+                          operator_branch = getOperatorBranch(PROD_COMPONENT)
+                          
+                          checkout(githubscm.resolveRepository(operator_repo_name, GITHUB_ORG_UNIT, operator_branch, false))
+                          // Run the build script that should be into the operator hack folder
+                          dir('hack') {
+                            sh "source ~/virtenvs/cekit/bin/activate && ./${build_command}"
+                          }
+                          // post processing
                       }
 
-                      node("osbs-builder&&rhel8"){
+                      node('osbs-builder'){
                           stage("building ${PROD_COMPONENT}") {
                               ws {
                                   // Add the working directory to the current path so any scripts dropped there are on the path
-                                  withEnv(["PATH+W=$WORKSPACE"]) {
-                                      sh 'rm -rf ${WORKSPACE}/{*,.*} || true'
+                                  withEnv(['PATH+W=$WORKSPACE']) {
+                                      sh "rm -rf ${WORKSPACE}/{*,.*} || true"
                                       if (env.KERBEROS_CRED) {
                                           withCredentials([usernamePassword(credentialsId: env.KERBEROS_CRED, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                                               mainProcess(USERNAME, PASSWORD, '')
@@ -195,7 +175,7 @@ prodComponent.each { Component ->
                                       } else if (env.KERBEROS_KEYTAB) {
                                           withCredentials([file(credentialsId: env.KERBEROS_KEYTAB, variable: 'FILE')]) {
                                               if (!env.KERBEROS_PRINCIPAL) {
-                                                    echo "Reading the Kerberos Principal from provided Keytab..."
+                                                    echo 'Reading the Kerberos Principal from provided Keytab...'
                                                     def get_principal_from_file = sh(returnStdout: true, script: \'\'\'
                                                         #!/bin/bash
                                                         klist -kt $FILE |grep REDHAT.COM | awk -F" " \'NR==1{print $4}\'
