@@ -165,6 +165,7 @@ prodComponent.each { Component ->
                           
                           // Run the build script that should be into the operator hack folder
                           dir('hack') {
+                            sh "chmod +x ./build-osbs.sh"
                             sh "source ~/virtenvs/cekit/bin/activate && ${build_command}"
                           }
                           // post processing
