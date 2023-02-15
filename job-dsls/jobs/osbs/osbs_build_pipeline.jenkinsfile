@@ -1,0 +1,246 @@
+@Library('jenkins-pipeline-shared-libraries')_
+@Library('qe-library')_
+
+Map<String, String> buildResults = [:]
+
+Map<String, String> imageBuildParams = [:]
+Map<String, String> operatorBuildParams = [:]
+
+String propertyFileUrl = "${CI_MESSAGE}"
+
+TIMEOUT = 4
+
+pipeline {
+    options {
+        timeout(time: TIMEOUT, unit: 'HOURS')
+    }
+
+    agent {
+        label 'kie-rhel7 && !built-in'
+    }
+
+    environment {
+        PRODUCT_NAME = PRODUCT_NAME.trim()
+        VERSION = VERSION.trim()
+        RCM_HOST = RCM_HOST.trim()
+        STAGING_BASE_PATH = STAGING_BASE_PATH.trim()
+        BAMOE_FOLDER_PATH = "${STAGING_BASE_PATH}/${PRODUCT_NAME}/${PRODUCT_NAME}-${VERSION}"
+    }
+
+    stages {
+        stage('Clean workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Ready CI MESSAGE') {
+            steps {
+                script {
+                    if ( CI_MESSAGE == null || CI_MESSAGE = "" ) {
+                        logConsole.info("CI_MESSAGE is null or empty. Taking property file url from job parameter. ")
+                        propertyFileUrl="${PROPERTY_FILE_URL}"
+                    } else {
+                        logConsole.info("CI_MESSAGE is not null nor empty. Taking property file url from CI-message.")
+                        propertyFileUrl="${CI_MESSAGE}"
+                    }
+
+                }
+                echo "URL of property file: $propertyFileUrl"
+                wget -O $DOWNLOADED_PROPERTIES_FILE $propertyFileUrl
+
+                // insert newline to avoid failure when there's none
+                echo "" >> ${DOWNLOADED_PROPERTIES_FILE}
+                
+            }
+            sh 'printenv'
+
+        }
+
+        stage('Build nightly images') {
+            List<String> buildJobs = utils.sortByLength(dynamicStageUtils.getAllJobsNamesFromFolders(utils.toAbsolutePath("${PRODUCT.toLowerCase()}-images")))
+            //buildJobs.removeAll { it.containes("operator") } // we should probably not include operator build here
+            Map<String, Closure> sequences = getParallelStages(buildJobs, propertyFileUrl, buildResults)
+            parallel sequences
+
+            /* example...
+            // all jobs from toAbsolutePath("bamoe-images")
+            // all jobs from toAbsolutePath("rhpam-images")
+            parallel {
+                stage('Biuld BC') {
+                }
+                stage('Build KS') {
+                }
+                //...
+            }
+            */
+        }
+
+        stage('Build operator') {
+            // some jobs from toAbsolutePath("operators")
+            // jobs name looks lika "${PRODUCT.toLowerCase()}-ba-operator"
+            List<String> buildJobs = utils.sortByLength(dynamicStageUtils.getAllJobsNamesFromFolders(utils.toAbsolutePath("${PRODUCT.toLowerCase()}-images")))
+            buildJobs.removeAll { !it.containes("operator") } // we want only build operator in this stage
+            Map<String, Closure> sequences = getParallelStages(buildJobs, propertyFileUrl, buildResults)
+            parallel sequences
+
+        }
+
+        stage('Build operator bundle') {
+            //optional?
+
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+
+/**
+ * Dynamically generates pipeline stages based on the build jobs obtained in the previous step
+ * @param buildJobs List containing all image building jobs
+ * @param propertyFileUrl String url to properties file that can be download in builder job
+ * @param buildResults Map to save build results to
+ * @return Map that can be handed over to a <a href="https://www.jenkins.io/doc/book/pipeline/syntax/#parallel">'parallel'<a> pipeline section.
+ */
+Map<String, Closure> getParallelStages(List<String> buildJobs, String propertyFileUrl, Map<String, String> buildResults) {
+    buildJobs.collectEntries {
+        [(testingUtils.getShortJobName(it)): getSingleStagesSequence(it, propertyFileUrl, buildResults)]
+    }
+}
+
+/**
+ * Generate single sequence (branch of pipeline parallel section) of jobs
+ * @param jobName Name of the build job
+ * @param propertyFileUrl String url to properties file that can be download in builder job
+ * @param buildResults Map to save build results to
+ * @return Closure defining stages sequence to run within a pipeline
+ */
+Closure getSingleStagesSequence(String jobName, String propertyFileUrl, Map<String, String> buildResults) {
+    return {
+        stage(testingUtils.getShortJobName(jobName)) {
+            logConsole.info("Running ${jobName} job")
+
+            String buildResultString
+            try {
+                def jobRun = build job: "$jobName", parameters: [string(name: 'PROPERTY_FILE_URL', value: propertyFileUrl)], propagate: false, wait: true
+                buildResultString = jobRun.getResult()
+            } catch (Throwable e) {
+                logConsole.error("${e.getMessage()}")
+                buildResultString = 'FAILURE'
+            }
+            buildResults.put(jobName, buildResultString)
+
+            // we want stage to have same color as the actual baseline, but we don't want to fail whole pipeline (yet)
+            catchError(buildResult: 'UNSTABLE', stageResult: buildResultString) {
+                // so we need to do this little hack for all results worse than SUCCESS, other approaches
+                // would either affect also pipeline result or would not change the stage color
+                if (buildResultString != "SUCCESS") {
+                    error("Job result was $buildResultString. Setting stage result to $buildResultString.")
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+/***
+
+*/
+
+
+// examples from this repository...
+
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem24g && !built-in'
+    }
+    tools {
+        maven 'kie-maven-3.8.7'
+        jdk 'kie-jdk11'
+    }
+    parameters {
+        booleanParam(description: 'Skip Tests? True as default', name: 'SKIP_TESTS', defaultValue: true)
+        string(description: 'The UMB message version', name: 'UMB_VERSION', defaultValue: 'main')
+        string(description: 'The product version, if not provided the kogito-runtimes main branch one will be use', name: 'PRODUCT_VERSION')
+        string(description: 'The drools product version, if not provided the drools main branch one will be used', name: 'DROOLS_PRODUCT_VERSION')
+        string(description: 'The config repository branch', name: 'CONFIG_BRANCH', defaultValue: 'master')
+    }
+
+    stages {
+
+        stage ('Send UMB Message to QE.') {
+            steps {
+                script {
+                    if(env.ALREADY_BUILT_PROJECTS?.trim()) {
+                        echo '[INFO] Sending OPENSHIFT SERVERLESS LOGIC UMB message to QE.'
+                        def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
+
+                        def mavenRepositoryFileUrl = "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${PRODUCT_VERSION}.nightly/maven-repository-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
+                        def topic = "VirtualTopic.qe.ci.ba.openshift-serverless-logic.${env.UMB_VERSION}.nightly.trigger"
+                        def eventType = "openshift-serverless-logic-${env.UMB_VERSION}-nightly-qe-trigger"
+                        def messageBody = getMessageBody(
+                            mavenRepositoryFileUrl, 
+                            env.ALREADY_BUILT_PROJECTS,
+                            ['serverlesslogic': PME_BUILD_VARIABLES['kogitoProductVersion'], 'serverlesslogic-rhba': PME_BUILD_VARIABLES['kogitoProductVersion'], 'drools': PME_BUILD_VARIABLES['droolsProductVersion'], 'platform.quarkus.bom': PME_BUILD_VARIABLES['quarkusPlatformVersion'].replaceAll("\\{\\{.*\\}\\}", PME_BUILD_VARIABLES['quarkusVersionCommunity']), 'quarkus.bom': PME_BUILD_VARIABLES['quarkusVersion'].replaceAll("\\{\\{.*\\}\\}", PME_BUILD_VARIABLES['quarkusVersionCommunity'])],
+                            gitHashesToCollection(env.GIT_INFORMATION_HASHES)
+                        )
+                        echo "[INFO] Message Body: ${messageBody}"
+                        echo "[INFO] Topic: ${topic}"
+                        echo "[INFO] Event Type: ${eventType}"
+                        build job: env.SEND_UMB_MESSAGE_JOB_PATH, parameters: [
+                                [$class: 'StringParameterValue', name: 'MESSAGE_BODY', value: messageBody],
+                                [$class: 'StringParameterValue', name: 'TOPIC', value: topic],
+                                [$class: 'StringParameterValue', name: 'EVENT_TYPE', value: eventType]
+                        ]
+                        echo '[SUCCESS] Message was successfully sent.'
+                    } else {
+                        println "[WARNING] No artifacts to upload. None project has been built."
+                    }
+                }
+            }
+        }
+    }
+    post {
+        failure {
+            emailext body: 'OPENSHIFT SERVERLESS LOGIC ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                    'Please look here: ${BUILD_URL} \n' +
+                    ' \n' +
+                    '${BUILD_LOG, maxLines=750}', subject: 'OPENSHIFT SERVERLESS LOGIC ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
+        }
+        unstable {
+            emailext body: 'OPENSHIFT SERVERLESS LOGIC ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                    'Please look here: ${BUILD_URL} \n' +
+                    ' \n' +
+                    'Failed tests: ${BUILD_URL}/testReport \n' +
+                    ' \n' +
+                    '${BUILD_LOG, maxLines=750}', subject: 'OPENSHIFT SERVERLESS LOGIC ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
+        }
+        fixed {
+            emailext body: 'OPENSHIFT SERVERLESS LOGIC ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                    'Please look here: ${BUILD_URL}', subject: 'OPENSHIFT SERVERLESS LOGIC ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
+        }
+        always {
+            archiveArtifacts artifacts: '**/*.maven.log', fingerprint: false, defaultExcludes: true, caseSensitive: true, allowEmptyArchive: true
+
+            echo 'Generating JUnit report...'
+            junit allowEmptyResults: true, healthScaleFactor: 1.0, testResults: '**/target/*-reports/TEST-*.xml'
+
+            echo 'Archiving logs...'
+            archiveArtifacts excludes: '**/target/checkstyle.log', artifacts: '**/*.maven.log,**/target/*.log', fingerprint: false, defaultExcludes: true, caseSensitive: true, allowEmptyArchive: true
+        }
+        cleanup {
+            cleanWs()
+        }
+    }
+}
+
+
