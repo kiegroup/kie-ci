@@ -88,7 +88,7 @@ prodComponent.each { component ->
                                     activeMQSubscriber {
                                         name('Red Hat UMB')
                                         overrides {
-                                            topic("Consumer.ba-qe-jenkins.${UUID.randomUUID()}.VirtualTopic.qe.ci.ba.${component}-images.${prodVersion.get(component)}.${stream}.trigger")
+                                            topic("Consumer.ba-qe-jenkins.${UUID.randomUUID()}.VirtualTopic.qe.ci.ba.${component}.${prodVersion.get(component)}.${stream}.trigger")
                                         }
 
                                         selector("CI_TYPE='custom' and label='rhba-ci'")
