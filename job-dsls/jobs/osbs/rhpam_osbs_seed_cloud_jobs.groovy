@@ -182,7 +182,7 @@ prodComponent.each { Component ->
                           // TODO create UMB notification
                       }
 
-                      node("osbs-builder&&rhel8"){
+                      node("osbs-builder && docker && rhel8"){
                           stage("building ${PROD_COMPONENT}") {
                               ws {
                                   // Add the working directory to the current path so any scripts dropped there are on the path
