@@ -3,14 +3,14 @@ package osbs
 import org.kie.jenkins.jobdsl.Constants
 
 def folderPath = 'OSBS/operators'
-folder(folderPath)
+folder('OSBS')
+folder('OSBS/operators')
 // Job Description
-String jobDescription = 'Job responsible for seed jobs to building rhpam and bamoe ba and kogito operator images'
+String jobDescription = 'Job responsible for seed jobs to building rhpam and kogito operator images'
 
 //Define Variables
 def prodComponent = [
-        'rhpam-ba-operator', 'rhpam-kogito-operator',
-        'bamoe-ba-operator', 'bamoe-kogito-operator']
+        'rhpam-ba-operator', 'rhpam-kogito-operator']
 
 def buildDate = Constants.BUILD_DATE
 def prodVersion = Constants.NEXT_PROD_VERSION
@@ -79,6 +79,7 @@ prodComponent.each { Component ->
                       }
                       
                       // Function to retrieve from the PROD_COMPONENT name the related repo name into the kiegroup org
+                      @NonCPS
                       private String getOperatorRepoName(prodComponent){
                           switch(prodComponent){
                             case { it.endsWith('ba-operator') }:
@@ -91,16 +92,13 @@ prodComponent.each { Component ->
                       }
                       
                       // Function to retrieve from the PROD_COMPONENT name the related repo branch
+                      @NonCPS
                       private String getOperatorBranch(prodComponent){
                           switch(prodComponent){
                             case { it.startsWith('rhpam-ba') }:
                                 return 'main'
                             case { it.startsWith('rhpam-kogito') }:
                                 return RHPAM_KOGITO_OPERTOR_BRANCH
-                            case { it.startsWith('bamoe-ba') }:
-                                return BAMOE_BA_OPERTOR_BRANCH
-                            case { it.startsWith('bamoe-kogito') }:
-                                return BAMOE_KOGITO_OPERTOR_BRANCH
                             default:
                                error "${prodComponent} not supported."
                           }
@@ -159,7 +157,7 @@ prodComponent.each { Component ->
                           checkout(githubscm.resolveRepository(operator_repo_name, GITHUB_ORG_UNIT, operator_branch, false))
                           // Run the build script that should be into the operator hack folder
                           dir('hack') {
-                            sh "source ~/virtenvs/cekit/bin/activate && ${build_command}"
+                            sh "source ~/virtenvs/cekit/bin/activate && ./${build_command}"
                           }
                           // post processing
                       }
