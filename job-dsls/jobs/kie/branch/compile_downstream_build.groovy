@@ -32,8 +32,6 @@ def final REPO_CONFIGS = [
         "appformer"                 : [],
         "jbpm"                      : [],
         "kie-jpmml-integration"     : [],
-        "optaweb-employee-rostering": [],
-        "optaweb-vehicle-routing"   : [],
         "droolsjbpm-integration"    : [],
         "kie-uberfire-extensions"   : [],
         "kie-wb-playground"         : [],

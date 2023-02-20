@@ -49,25 +49,13 @@ def final REPO_CONFIGS = [
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
         "optaplanner"               : [
-                downstreamRepos     : ["droolsjbpm-integration", "optaweb-employee-rostering"],
+                downstreamRepos     : ["droolsjbpm-integration"],
                 mvnGoals: "-e -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
                 mvnProps: [
                         "full"                     : "true",
                         "integration-tests"        : "true",
                         "maven.test.failure.ignore": "true"
                 ]
-        ],
-        "optaweb-employee-rostering" : [
-                artifactsToArchive   : DEFAULTS["artifactsToArchive"] + [
-                        "**/target/configurations/cargo-profile/profile-log.txt"
-                ],
-                downstreamRepos      : ["optaweb-vehicle-routing"]
-        ],
-        "optaweb-vehicle-routing"    : [
-                artifactsToArchive   : DEFAULTS["artifactsToArchive"] + [
-                        "**/target/configurations/cargo-profile/profile-log.txt"
-                ],
-                downstreamRepos      : []
         ],
         "lienzo-core"                  : [
                 timeoutMins            : 20,
@@ -146,7 +134,6 @@ def final REPO_CONFIGS = [
         "process-migration-service"    : [:],
         "kie-docs"                  : [
                 artifactsToArchive     : [],
-                downstreamRepos        : ["optaweb-employee-rostering"],
                 mvnGoals               : "-e -B clean deploy -Dfull",
                 mvnProps               : []
         ]
