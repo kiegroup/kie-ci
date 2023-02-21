@@ -93,13 +93,6 @@ for (repoConfig in REPO_CONFIGS) {
         }
         concurrentBuild()
 
-        properties {
-            ownership {
-                primaryOwnerId("mbiarnes")
-                coOwnerIds("mbiarnes")
-            }
-        }
-
         jdk("kie-jdk11")
 
         label(get("label"))
