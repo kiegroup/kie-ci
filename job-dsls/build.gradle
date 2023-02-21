@@ -63,7 +63,6 @@ dependencies {
     // should be 1.5.16 but 1.5.16 is missing in the repo
     // testPlugins 'com.redhat.jenkins.plugins:redhat-ci-plugin:1.5.10'
     testPlugins 'com.sonyericsson.hudson.plugins.rebuild:rebuild:1.34'
-    testPlugins 'com.synopsys.jenkinsci:ownership:0.13.0'
     testPlugins 'io.jenkins.plugins:warnings-ng:9.0.1'
     testPlugins 'org.jenkins-ci.main:maven-plugin:3.19'
     testPlugins 'org.jenkins-ci.plugins:cloudbees-folder:6.16'
