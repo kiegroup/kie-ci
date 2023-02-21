@@ -82,13 +82,6 @@ job(jobName) {
 
     concurrentBuild()
 
-    properties {
-        ownership {
-            primaryOwnerId("mbiarnes")
-            coOwnerIds("mbiarnes")
-        }
-    }
-
     triggers {
         githubPullRequest {
             useGitHubHooks()
