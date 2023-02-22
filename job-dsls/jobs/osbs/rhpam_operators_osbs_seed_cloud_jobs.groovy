@@ -162,7 +162,7 @@ prodComponent.each { Component ->
                           // post processing
                       }
 
-                      node('osbs-builder'){
+                      node('osbs-builder && podman && rhel8'){
                           stage("building ${PROD_COMPONENT}") {
                               ws {
                                   // Add the working directory to the current path so any scripts dropped there are on the path
