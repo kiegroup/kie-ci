@@ -1,5 +1,7 @@
 @Library('jenkins-pipeline-shared-libraries')_
-@Library('qe-library')_
+@Library('qe-library')
+
+import com.cloudbees.hudson.plugins.folder.Folder
 
 Map<String, String> buildResults = [:]
 
@@ -20,11 +22,8 @@ pipeline {
     }
 
     environment {
-        PRODUCT_NAME = PRODUCT_NAME.trim()
-        VERSION = VERSION.trim()
-        RCM_HOST = RCM_HOST.trim()
-        STAGING_BASE_PATH = STAGING_BASE_PATH.trim()
-        BAMOE_FOLDER_PATH = "${STAGING_BASE_PATH}/${PRODUCT_NAME}/${PRODUCT_NAME}-${VERSION}"
+        PRODUCT_NAME = PROD_COMPONENT.trim()
+        VERSION = PROD_VERSION.trim()
     }
 
     stages {
@@ -45,30 +44,32 @@ pipeline {
                         propertyFileUrl="${CI_MESSAGE}"
                     }
 
-                }
-
-                catchError(buildResult: 'ABORTED', stageResult: "FAILURE") {
-                    if (propertyFileUrl.isEmpty || propertyFileUrl == "") {
+                    if ( propertyFileUrl.isEmpty() || propertyFileUrl == "" ) {
                         error("No property files with artifacts provided. Setting stage result to \"FAILURE\"")
                     }
+
+                    echo "URL of property file: $propertyFileUrl"
+
+                    // TODO - maybe not needed as we will hnad over propertyFileUrl to jobs :)
+                    def downloadedPropertiesFile = sh returnStdout: true, script: "wget -O- $propertyFileUrl"
+                    // insert newline to avoid failure when there's none
+                    downloadedPropertiesFile += "\n"
+
+                    echo "Downloaded properties:\n$downloadedPropertiesFile"
+
+                    testingUtils.loadEnvFromPropertiesFile("$propertyFileUrl")
+                    
                 }
-                
-
-                echo "URL of property file: $propertyFileUrl"
-                wget -O $DOWNLOADED_PROPERTIES_FILE $propertyFileUrl
-
-                // insert newline to avoid failure when there's none
-                echo "" >> ${DOWNLOADED_PROPERTIES_FILE}
-                
+                sh 'printenv'
             }
-            sh 'printenv'
 
         }
 
         stage('Build nightly images') {
             steps {
                 script {
-                    List<String> buildJobs = utils.sortByLength(dynamicStageUtils.getAllJobsNamesFromFolders(utils.toAbsolutePath("${PRODUCT_NAME.toLowerCase()}-images")))
+                    //List<String> buildJobs = utils.sortByLength(dynamicStageUtils.getAllJobsNamesFromFolders(utils.toAbsolutePath("${PRODUCT_NAME.toLowerCase()}-images")))
+                    List<String> buildJobs = utils.sortByLength(getAllJobsNamesFromFolders("OSBS/${PRODUCT_NAME.toLowerCase()}-images"))
                     //buildJobs.removeAll { it.containes("operator") } // we should probably not include operator build here
                     Map<String, Closure> sequences = getParallelStages(buildJobs, propertyFileUrl, buildResults)
                     parallel sequences
@@ -91,12 +92,16 @@ pipeline {
         stage('Build operator') {
             steps {
                 script {
+                    println "NOTHING TO DO YET"
+
                     // some jobs from toAbsolutePath("operators")
                     // jobs name looks lika "${PRODUCT_NAME.toLowerCase()}-ba-operator"
+                    /*
                     List<String> buildJobs = utils.sortByLength(dynamicStageUtils.getAllJobsNamesFromFolders(utils.toAbsolutePath("operators")))
                     buildJobs.removeAll { !it.containes("${PRODUCT_NAME.toLowerCase()}-ba-operator") } // we want only build operator in this stage
                     Map<String, Closure> sequences = getParallelStages(buildJobs, propertyFileUrl, buildResults)
                     parallel sequences
+                    */
                 }
             }
 
@@ -104,6 +109,11 @@ pipeline {
 
         stage('Build operator bundle') {
             //optional?
+            steps {
+                scripts {
+                    println "NOTHING TO DO YET"
+                }
+            }
 
         }
 
@@ -117,7 +127,9 @@ pipeline {
 
         stage('Collect image references') {
             when {
-                buildResults.every{ it.value.equals("SUCCESS") }
+                expression {
+                    return buildResults.every{ it.value.equals("SUCCESS") }
+                }
             }
             steps {
                 scripts {
@@ -128,7 +140,9 @@ pipeline {
 
         stage ('Send UMB Message to QE.') {
             when {
-                buildResults.every{ it.value.equals("SUCCESS") }
+                expression {
+                    return buildResults.every{ it.value.equals("SUCCESS") }
+                }
             }
             steps {
                 script {
@@ -211,8 +225,12 @@ Closure getSingleStagesSequence(String jobName, String propertyFileUrl, Map<Stri
 
             String buildResultString
             try {
+                println "tmp log output instead of job run - simulation of ${jobName} build job"
+                /* TODO tmp skip for now
                 def jobRun = build job: "$jobName", parameters: [string(name: 'PROPERTY_FILE_URL', value: propertyFileUrl)], propagate: false, wait: true
                 buildResultString = jobRun.getResult()
+                */
+                buildResultString = "temporary SKIPED for now"
             } catch (Throwable e) {
                 logConsole.error("${e.getMessage()}")
                 buildResultString = 'FAILURE'
@@ -229,6 +247,37 @@ Closure getSingleStagesSequence(String jobName, String propertyFileUrl, Map<Stri
             }
         }
     }
+}
+
+
+// tmp added to avoid NonCPS from the dynamincStageUtils
+
+List<String> getAllJobsNamesFromFolders(String... folderPaths) {
+    if (folderPaths == null || (folderPaths.size() == 0)) {
+        logConsole.error("folderPaths parameter cannot be empty.")
+        return null
+    }
+
+    List<String> jobs = new ArrayList<String>()
+    for (String folderPath : folderPaths) {
+        if (utils.isNullOrEmpty(folderPath)) {
+            logConsole.error("folderPath is null or empty")
+            continue
+        }
+        def folder = Hudson.instance.getItemByFullName(folderPath, Folder.class)
+        if (folder != null) {
+            folder.getItems().each {
+                if (it instanceof Folder) {
+                    jobs.addAll(getAllJobsNamesFromFolders(it.getFullName()))
+                } else {
+                    jobs.add(it.getFullName())
+                }
+            }
+        } else {
+            println("\u001b[33m[WARN] '${folderPath}' item does not exist. Skipping\u001b[0m")
+        }
+    }
+    return jobs
 }
 
 
