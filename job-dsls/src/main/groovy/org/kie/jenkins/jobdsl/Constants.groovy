@@ -73,6 +73,8 @@ class Constants {
     static final String RHPAM_KOGITO_OPERTOR_BRANCH = '1.13.x'
     static final String BAMOE_BA_OPERTOR_BRANCH = 'release-v7.13.x-blue'
     static final String BAMOE_KOGITO_OPERTOR_BRANCH = '1.13.x-blue'
+    static final String RHPAM_BA_OPERTOR_CEKIT_OSBS_SUBDIR = '/home/jenkins/.cekit/osbs/containers/rhpam-7-operator'
+    static final String BAMOE_BA_OPERTOR_CEKIT_OSBS_SUBDIR = '/home/jenkins/.cekit/osbs/containers/ibm-bamoe-operator'
 
     /**
      * The value of Use custom child workspace field for matrix jobs - the SHORT_COMBINATION environment variable

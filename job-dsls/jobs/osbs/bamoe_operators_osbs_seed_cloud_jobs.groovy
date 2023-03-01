@@ -28,9 +28,9 @@ def gitEmail = Constants.GIT_EMAIL
 def cekitCacheLocal = Constants.CEKIT_CACHE_LOCAL
 def verbose = Constants.VERBOSE
 def githubOrgUnit = Constants.GITHUB_ORG_UNIT
-def rhpamKogitoOperatorBranch = Constants.RHPAM_KOGITO_OPERTOR_BRANCH
 def bamoeBAOperatorBranch = Constants.BAMOE_BA_OPERTOR_BRANCH
 def bamoeKogitoOperatorBranch = Constants.BAMOE_KOGITO_OPERTOR_BRANCH
+def bamoeBAOperatorCekitOSBSSubdir = Constants.BAMOE_BA_OPERTOR_CEKIT_OSBS_SUBDIR
 
 
 prodComponent.each { Component ->
@@ -55,9 +55,9 @@ prodComponent.each { Component ->
             stringParam('CEKIT_CACHE_LOCAL', "${cekitCacheLocal}")
             stringParam('VERBOSE', "${verbose}")
             stringParam('GITHUB_ORG_UNIT', "${githubOrgUnit}")
-            stringParam('RHPAM_KOGITO_OPERTOR_BRANCH', "${rhpamKogitoOperatorBranch}")
             stringParam('BAMOE_BA_OPERTOR_BRANCH', "${bamoeBAOperatorBranch}")
             stringParam('BAMOE_KOGITO_OPERTOR_BRANCH', "${bamoeKogitoOperatorBranch}")
+            stringParam('CEKIT_OSBS_SUBDIR', "${bamoeBAOperatorCekitOSBSSubdir}")
         }
 
         definition {
@@ -110,6 +110,7 @@ prodComponent.each { Component ->
                                   'PROD_VERSION': [PROD_VERSION, '-v'],
                                   'PROD_COMPONENT': [PROD_COMPONENT, '-c'],
                                   'OSBS_BUILD_TARGET': [OSBS_BUILD_TARGET, '-t'],
+                                  'CEKIT_OSBS_SUBDIR': [CEKIT_OSBS_SUBDIR, '-d'],
                           ]
                           def OPTIONAL_BUILD_PARAMETERS = [
                                   'KERBEROS_PASSWORD': [password, '-s'],
