@@ -2,7 +2,6 @@ import org.kie.jenkins.jobdsl.Constants
 
 def folderPath = 'OSBS'
 folder('OSBS')
-//folder('OSBS/bamoe-images')
 // Job Description
 String jobDescription = 'Job responsible for seed jobs to building nightly openshift image build pipelines'
 
