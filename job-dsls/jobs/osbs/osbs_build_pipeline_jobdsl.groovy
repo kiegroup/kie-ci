@@ -15,21 +15,6 @@ Map<String, String> prodVersion = [
     bamoe : Constants.BAMOE_NEXT_PROD_VERSION,
     rhpam : Constants.NEXT_PROD_VERSION
 ]
-def osbsBuildTarget = Constants.OSBS_BUILD_TARGET
-def cekitBuildOptions = Constants.CEKIT_BUILD_OPTIONS
-def osbsBuildUser = Constants.OSBS_BUILD_USER
-def kerberosPrincipal = Constants.KERBEROS_PRINCIPAL
-def kerberosKeytab = Constants.KERBEROS_KEYTAB
-def kerberosCred = Constants.KERBEROS_CRED
-def imageRepo = Constants.IMAGE_REPO
-Map<String, String> imageBranch = [
-    bamoe : Constants.BAMOE_IMAGE_BRANCH,
-    rhpam : Constants.IMAGE_BRANCH
-]
-def imageSubdir = Constants.IMAGE_SUBDIR
-def gitUser = Constants.GIT_USER
-def gitEmail = Constants.GIT_EMAIL
-def cekitCacheLocal = Constants.CEKIT_CACHE_LOCAL
 def verbose = Constants.VERBOSE
 
 prodComponent.each { component ->
@@ -37,21 +22,8 @@ prodComponent.each { component ->
     pipelineJob("${folderPath}/${component}-nightly-build-pipeline") {
 
         parameters {
-            // stringParam('BUILD_DATE', "${buildDate}") // this shouldn't be needed as jobs should recieved url properties form the CI_MESSAGE
             stringParam('PROD_VERSION', "${prodVersion.get(component)}")
             stringParam('PROD_COMPONENT', "${component}")
-            stringParam('OSBS_BUILD_TARGET', "${osbsBuildTarget}")
-            stringParam('CEKIT_BUILD_OPTIONS', "${cekitBuildOptions}")
-            stringParam('KERBEROS_PRINCIPAL', "${kerberosPrincipal}")
-            stringParam('OSBS_BUILD_USER', "${osbsBuildUser}")
-            stringParam('KERBEROS_KEYTAB', "${kerberosKeytab}")
-            stringParam('KERBEROS_CRED', "${kerberosCred}")
-            stringParam('IMAGE_REPO', "${imageRepo}")
-            stringParam('IMAGE_BRANCH', "${imageBranch.get(component)}")
-            stringParam('IMAGE_SUBDIR', "${imageSubdir}")
-            stringParam('GIT_USER', "${gitUser}")
-            stringParam('GIT_EMAIL', "${gitEmail}")
-            stringParam('CEKIT_CACHE_LOCAL', "${cekitCacheLocal}")
             stringParam('VERBOSE', "${verbose}")
             stringParam("PROPERTY_FILE_URL", "") // in case we would like this job manually (not triggered by UMB message)
         }
@@ -87,7 +59,7 @@ prodComponent.each { component ->
                                     activeMQSubscriber {
                                         name('Red Hat UMB')
                                         overrides {
-                                            topic("Consumer.ba-qe-jenkins.${UUID.randomUUID()}.VirtualTopic.qe.ci.ba.${component}.${prodVersion.get(component)}.${stream}.trigger")
+                                            topic("Consumer.ba-eng-jenkins.${UUID.randomUUID()}.VirtualTopic.qe.ci.ba.${component}.${prodVersion.get(component)}.nightly.trigger")
                                         }
 
                                         selector("CI_TYPE='custom' and label='rhba-ci'")
