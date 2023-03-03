@@ -242,6 +242,7 @@ String rulebookNightlyStage(String branch, String configBranch, String version =
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${version}"],
                         [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "${configBranch}"],
+                        [\$class: 'StringParameterValue', name: 'DEFINITION_FILE_OWNER', value: 'kiegroup'],
                         [\$class: 'StringParameterValue', name: 'DEFINITION_FILE_BRANCH', value: "${definitionFileBranch}"],
                 ]
             }
