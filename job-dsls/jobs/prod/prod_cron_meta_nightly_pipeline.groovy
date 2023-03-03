@@ -53,6 +53,14 @@ def RHBOP_CURRENT_DROOLS_VERSION='8.29.0'
 // Should be uncommented and used with kogitoWithSpecDroolsNightlyStage once Current is set for RHPAM 7.14.0
 // def DROOLS_CURRENT_PRODUCT_VERSION= OPTAPLANNER_CURRENT_PRODUCT_VERSION
 
+// Drools Ansible Rulebook Integration
+def RULEBOOK_NEXT_PRODUCT_BRANCH='main'
+def RULEBOOK_NEXT_PRODUCT_CONFIG_BRANCH='master'
+
+def RULEBOOK_CURRENT_PRODUCT_VERSION='1.0.0'
+def RULEBOOK_CURRENT_PRODUCT_BRANCH='1.0.x'
+def RULEBOOK_CURRENT_PRODUCT_CONFIG_BRANCH='rulebook/1.0.x'
+def RULEBOOK_CURRENT_DROOLS_VERSION='8.35.0'
 
 def metaJob="""
 pipeline{
@@ -81,6 +89,10 @@ pipeline{
         // RHBOP
         ${rhbopNightlyStage(RHBOP_NEXT_PRODUCT_BRANCH, RHBOP_NEXT_PRODUCT_CONFIG_BRANCH)}
         ${rhbopNightlyStage(RHBOP_CURRENT_PRODUCT_BRANCH, RHBOP_CURRENT_PRODUCT_CONFIG_BRANCH, RHBOP_CURRENT_PRODUCT_VERSION, RHBOP_CURRENT_DROOLS_VERSION)}
+
+        // Drools Ansible Rulebook
+        ${rulebookNightlyStage(RULEBOOK_NEXT_PRODUCT_BRANCH, RULEBOOK_NEXT_PRODUCT_CONFIG_BRANCH)}
+        ${rulebookNightlyStage(RULEBOOK_CURRENT_PRODUCT_BRANCH, RULEBOOK_CURRENT_PRODUCT_CONFIG_BRANCH, RULEBOOK_CURRENT_PRODUCT_VERSION, RULEBOOK_CURRENT_DROOLS_VERSION)}
     }
 }
 """
@@ -214,6 +226,23 @@ String rhbopNightlyStage(String branch, String configBranch, String version = ''
                         [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "${configBranch}"],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
+                ]
+            }
+        }
+    """
+}
+
+String rulebookNightlyStage(String branch, String configBranch, String version = '', String droolsVersion = '', String definitionFileBranch = 'main') {
+    // when version or droolsVersion are empty, the Jenkins job will get them from the main branch pom
+    return """
+        stage('trigger Drools Ansible Rulebook nightly job ${branch}') {
+            steps {
+                build job: 'rulebook.nightly/${branch}', propagate: false, wait: true, parameters: [
+                        [\$class: 'StringParameterValue', name: 'RULEBOOK_GROUP_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-rulebook-${getNexusFromVersion(version)}/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${version}"],
+                        [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
+                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "${configBranch}"],
+                        [\$class: 'StringParameterValue', name: 'DEFINITION_FILE_BRANCH', value: "${definitionFileBranch}"],
                 ]
             }
         }
