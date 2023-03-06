@@ -53,7 +53,7 @@ def RHBOP_CURRENT_DROOLS_VERSION='8.29.0'
 // Should be uncommented and used with kogitoWithSpecDroolsNightlyStage once Current is set for RHPAM 7.14.0
 // def DROOLS_CURRENT_PRODUCT_VERSION= OPTAPLANNER_CURRENT_PRODUCT_VERSION
 
-// Drools Ansible Integration Integration
+// Drools Ansible Integration
 def DAI_NEXT_PRODUCT_BRANCH='main'
 def DAI_NEXT_PRODUCT_CONFIG_BRANCH='master'
 
