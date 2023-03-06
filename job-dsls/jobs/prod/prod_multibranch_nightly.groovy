@@ -35,8 +35,8 @@ def final REPO_CONFIGS = [
            repUrl : 'https://github.com/kiegroup/optaplanner',
            jobId : '00484'
         ],
-        "rulebook.nightly" : [
-           prodJobName : 'rulebook.nightly',
+        "drools-ansible-integration.nightly" : [
+           prodJobName : 'drools-ansible-integration.nightly',
            scrPath : '.ci/jenkins/Jenkinsfile.prod.nightly',
            repo : 'drools-ansible-rulebook-integration',
            repUrl : 'https://github.com/kiegroup/drools-ansible-rulebook-integration',
