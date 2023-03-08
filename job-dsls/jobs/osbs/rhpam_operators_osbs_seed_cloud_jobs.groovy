@@ -31,12 +31,9 @@ def githubOrgUnit = Constants.GITHUB_ORG_UNIT
 def rhpamKogitoOperatorBranch = Constants.RHPAM_KOGITO_OPERTOR_BRANCH
 def rhpamBAOperatorCekitOSBSSubdir = Constants.RHPAM_BA_OPERTOR_CEKIT_OSBS_SUBDIR
 
-
-
 prodComponent.each { Component ->
 
     pipelineJob("${folderPath}/${Component}") {
-
         parameters {
             stringParam('BUILD_DATE', "${buildDate}")
             stringParam('PROD_VERSION', "${prodVersion}")
@@ -61,7 +58,6 @@ prodComponent.each { Component ->
 
         definition {
             cps {
-
                 script('''
 
                       library 'jenkins-pipeline-shared-libraries'
