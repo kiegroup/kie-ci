@@ -48,6 +48,7 @@ prodComponent.each { Component ->
             stringParam("GIT_USER", "${gitUser}")
             stringParam("GIT_EMAIL", "${gitEmail}")
             stringParam("CEKIT_CACHE_LOCAL", "${cekitCacheLocal}")
+            stringParam('PROPERTY_FILE_URL', '', 'the properties file url for the given build. It is expected that the property file url points to the nightly builds and contains the build date within it.')
             stringParam("VERBOSE", "${verbose}")
         }
 
@@ -81,6 +82,7 @@ prodComponent.each { Component ->
                           ]
 
                           def OPTIONAL_BUILD_PARAMETERS = [
+                                  "PROPERTY_FILE_URL": [PROPERTY_FILE_URL, '-f'],
                                   "KERBEROS_PASSWORD": [password, '-s'],
                                   "KERBEROS_PRINCIPAL": [user, '-p'],
                                   "KERBEROS_KEYTAB": [keytab, '-k'],
