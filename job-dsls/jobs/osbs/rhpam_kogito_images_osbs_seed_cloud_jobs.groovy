@@ -4,7 +4,7 @@ import org.kie.jenkins.jobdsl.Constants
 
 def folderPath = 'OSBS/operators'
 folder('OSBS')
-folder('OSBS/operators')
+folder('OSBS/rhpam-kogito')
 // Job Description
 String jobDescription = 'Job responsible for seed jobs to building rhpam and kogito operator images'
 
