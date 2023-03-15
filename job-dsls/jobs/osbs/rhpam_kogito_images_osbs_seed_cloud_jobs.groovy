@@ -120,7 +120,7 @@ prodComponent.each { Component ->
 
                           build_command +=" -w ${WORKSPACE}"
                           // checkout the kogito-images repository in the target branch.                  
-                          checkout(githubscm.resolveRepository('kogito-images', GITHUB_ORG_UNIT, RHPAM_KOGITO_IMAGE_BRANCH, false)
+                          checkout(githubscm.resolveRepository('kogito-images', GITHUB_ORG_UNIT, RHPAM_KOGITO_IMAGE_BRANCH, false))
                          
                           // Run the build script that should be into the operator hack folder
                           dir('scripts') {
