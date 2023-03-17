@@ -2,11 +2,11 @@ package osbs
 
 import org.kie.jenkins.jobdsl.Constants
 
-def folderPath = 'OSBS/bamoe-images'
+def folderPath = 'OSBS/bamoe-kogito-images'
 folder('OSBS')
-folder('OSBS/bamoe-images')
+folder('OSBS/bamoe-kogito-images')
 // Job Description
-String jobDescription = 'Job responsible for seed jobs to building bamoe kogito operator images'
+String jobDescription = 'Job responsible for seed jobs to building bamoe kogito images'
 
 //Define Variables
 def prodComponent = [
