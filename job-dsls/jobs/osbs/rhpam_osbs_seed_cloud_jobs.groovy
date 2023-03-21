@@ -58,161 +58,198 @@ prodComponent.each { Component ->
 
         definition {
             cps {
-
                 script('''
 
-                      private void validateParameters(required, optionals){
-                          // Check if all required params are supplied
-                          for ( param in required ) {
-                              def arg = param.value[0]
-                              def flag = param.value[1]
-                              if(!arg){
-                              error "$param.key parameter is required but was not specified."
-                              }
-                          }
-                      }
+                    library 'jenkins-pipeline-shared-libraries'
+                    
+                    TIMEOUT = 1
 
-                      private void mainProcess(user, password, keytab){
+                    pipeline {
+                        options {
+                            timeout(time: TIMEOUT, unit: 'HOURS')
+                        }
+                    
+                        agent {
+                            label 'osbs-builder && docker && rhel8'
+                        }
 
-                          """ Parameters available for the build. """
-                          def REQUIRED_BUILD_PARAMETERS = [
-                                  "PROD_VERSION": [PROD_VERSION, '-v'],
-                                  "PROD_COMPONENT": [PROD_COMPONENT, '-c'],
-                                  "OSBS_BUILD_TARGET": [OSBS_BUILD_TARGET, '-t'],
-                          ]
+                        environment {
+                            PRODUCT_NAME = PROD_COMPONENT.trim()
+                            VERSION = PROD_VERSION.trim()
+                        }
+                    
+                        stages {
+                            stage('Clean workspace') {
+                                steps {
+                                    cleanWs()
+                                }
+                            }
 
-                          def OPTIONAL_BUILD_PARAMETERS = [
-                                  "PROPERTY_FILE_URL": [PROPERTY_FILE_URL, '-f'],
-                                  "KERBEROS_PASSWORD": [password, '-s'],
-                                  "KERBEROS_PRINCIPAL": [user, '-p'],
-                                  "KERBEROS_KEYTAB": [keytab, '-k'],
-                                  "OSBS_BUILD_USER": [OSBS_BUILD_USER, '-i'],
-                                  "BUILD_DATE": [BUILD_DATE, '-b'],
-                                  "GIT_USER": [GIT_USER, '-u'],
-                                  "GIT_EMAIL": [GIT_EMAIL, '-e'],
-                                  "CEKIT_BUILD_OPTIONS": [CEKIT_BUILD_OPTIONS, '-o'],
-                                  "CEKIT_CACHE_LOCAL": [CEKIT_CACHE_LOCAL, '-l'],
-                          ]
+                            stage('Building Image') {
+                                steps {
+                                    // Add the working directory to the current path so any scripts dropped there are on the path
+                                    withEnv(["PATH+W=$WORKSPACE"]) {
+                                        sh 'rm -rf ${WORKSPACE}/{*,.*} || true'
+                                        script {
+                                            if (env.KERBEROS_CRED) {
+                                                withCredentials([usernamePassword(credentialsId: env.KERBEROS_CRED, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                                                    mainProcess(USERNAME, PASSWORD, "")
+                                                }
+                                            } else if (env.KERBEROS_KEYTAB) {
+                                                withCredentials([file(credentialsId: env.KERBEROS_KEYTAB, variable: 'FILE')]) {
+                                                    if (!env.KERBEROS_PRINCIPAL) {
+                                                          echo "Reading the Kerberos Principal from provided Keytab..."
+                                                          def get_principal_from_file = sh(returnStdout: true, script: \'\'\'
+                                                              #!/bin/bash
+                                                              klist -kt $FILE |grep REDHAT.COM | awk -F" " 'NR==1{print $4}'
+                                                          \'\'\')
+                                                          env.KERBEROS_PRINCIPAL = get_principal_from_file.trim()
+                                                    }  
+                                                    mainProcess(env.KERBEROS_PRINCIPAL, "", FILE)
+                                                }
+                                            } else {
+                                                error "Either KERBEROS_PRINCIPAL and KERBEROS_KEYTAB must be specified, or user/password with KERBEROS_CRED"
+                                            }
+                                        }    
+                                    }
+                                }
+                            }        
+                      
+                            stage('persist image name into a txt file') {
+                                steps {
+                                    echo "Persisting the ${env.BUILT_IMAGE} to a file..."
+                                    writeFile file: "${PROD_COMPONENT}-image-location.txt", text: "${env.BUILT_IMAGE}"
+                                }    
+                            } 
+                        }
+                        post {
+                            always {
+                                archiveArtifacts artifacts: "${PROD_COMPONENT}-image-location.txt", onlyIfSuccessful: true
+                            }
+                            cleanup {
+                                cleanWs()
+                            }
+                        }      
+                    }
+                    
+                    // Auxiliary Functions  
+                    private void validateParameters(required, optionals){
+                        // Check if all required params are supplied
+                        for ( param in required ) {
+                            def arg = param.value[0]
+                            def flag = param.value[1]
+                            if(!arg){
+                                error "$param.key parameter is required but was not specified."
+                            }
+                        }
+                    }
 
-                          def OPTIONAL_BUILD_SWITCHES = [
-                                  "VERBOSE": [VERBOSE, '-g'],
-                          ]
+                    private void mainProcess(user, password, keytab){
+                        // Parameters available for the build.
+                        def REQUIRED_BUILD_PARAMETERS = [
+                            "PROD_VERSION": [PROD_VERSION, '-v'],
+                            "PROD_COMPONENT": [PROD_COMPONENT, '-c'],
+                            "OSBS_BUILD_TARGET": [OSBS_BUILD_TARGET, '-t'],
+                        ]
 
-                          def REQUIRED_DOWNLOAD_PARAMETERS = [
-                                  "PROD_VERSION": [PROD_VERSION, '-v'],
-                                  "PROD_COMPONENT": [PROD_COMPONENT, '-c'],
-                          ]
+                        def OPTIONAL_BUILD_PARAMETERS = [
+                            "PROPERTY_FILE_URL": [PROPERTY_FILE_URL, '-f'],
+                            "KERBEROS_PASSWORD": [password, '-s'],
+                            "KERBEROS_PRINCIPAL": [user, '-p'],
+                            "KERBEROS_KEYTAB": [keytab, '-k'],
+                            "OSBS_BUILD_USER": [OSBS_BUILD_USER, '-i'],
+                            "BUILD_DATE": [BUILD_DATE, '-b'],
+                            "GIT_USER": [GIT_USER, '-u'],
+                            "CEKIT_BUILD_OPTIONS": [CEKIT_BUILD_OPTIONS, '-o'],
+                            "CEKIT_CACHE_LOCAL": [CEKIT_CACHE_LOCAL, '-l'],
+                        ]
 
-                          def OPTIONAL_DOWNLOAD_PARAMETERS = [
-                                  "IMAGE_REPO": [IMAGE_REPO, '-r'],
-                                  "IMAGE_BRANCH": [IMAGE_BRANCH, '-n'],
-                                  "IMAGE_SUBDIR": [IMAGE_SUBDIR, '-d'],
-                          ]
+                        def OPTIONAL_BUILD_SWITCHES = [
+                            "VERBOSE": [VERBOSE, '-g'],
+                        ]
 
-                          // The download script is in the image, but build.sh and build-overrides.sh which it calls will be downloaded
-                          def download_command = "/opt/rhba/download.sh"
-                          def build_command = "build-osbs.sh"
+                        def REQUIRED_DOWNLOAD_PARAMETERS = [
+                            "PROD_VERSION": [PROD_VERSION, '-v'],
+                            "PROD_COMPONENT": [PROD_COMPONENT, '-c'],
+                        ]
 
-                          // Create the download command to set up the build directory
-                          validateParameters(REQUIRED_DOWNLOAD_PARAMETERS, OPTIONAL_DOWNLOAD_PARAMETERS)
-                          for(param in REQUIRED_DOWNLOAD_PARAMETERS){
-                              def arg = param.value[0]
-                              def flag = param.value[1]
-                              download_command += " ${flag} ${arg}"
-                          }
+                        def OPTIONAL_DOWNLOAD_PARAMETERS = [
+                            "IMAGE_REPO": [IMAGE_REPO, '-r'],
+                            "IMAGE_BRANCH": [IMAGE_BRANCH, '-n'],
+                            "IMAGE_SUBDIR": [IMAGE_SUBDIR, '-d'],
+                        ]
 
-                          for(param in OPTIONAL_DOWNLOAD_PARAMETERS){
-                              def arg = param.value[0]
-                              def flag = param.value[1]
-                              if(arg) download_command+= " ${flag} ${arg}"
-                          }
+                        // The download script is in the image, but build.sh and build-overrides.sh which it calls will be downloaded
+                        def download_command = "/opt/rhba/download.sh"
+                        def build_command = "build-osbs.sh"
 
-                          download_command += " -w ${WORKSPACE}"
+                        // Create the download command to set up the build directory
+                        validateParameters(REQUIRED_DOWNLOAD_PARAMETERS, OPTIONAL_DOWNLOAD_PARAMETERS)
+                        for(param in REQUIRED_DOWNLOAD_PARAMETERS){
+                            def arg = param.value[0]
+                            def flag = param.value[1]
+                            download_command += " ${flag} ${arg}"
+                        }
 
-                          // Create the build command
-                          validateParameters(REQUIRED_BUILD_PARAMETERS, OPTIONAL_BUILD_PARAMETERS)
+                        for(param in OPTIONAL_DOWNLOAD_PARAMETERS){
+                            def arg = param.value[0]
+                            def flag = param.value[1]
+                            if(arg) download_command+= " ${flag} ${arg}"
+                        }
 
-                          for(param in REQUIRED_BUILD_PARAMETERS){
-                              def arg = param.value[0]
-                              def flag = param.value[1]
-                              build_command += " ${flag} ${arg}"
-                          }
+                        download_command += " -w ${WORKSPACE}"
 
-                          for(param in OPTIONAL_BUILD_PARAMETERS){
-                              def arg = param.value[0]
-                              def flag = param.value[1]
-                              if(arg) build_command+= " ${flag} ${arg}"
-                          }
+                        // Create the build command
+                        validateParameters(REQUIRED_BUILD_PARAMETERS, OPTIONAL_BUILD_PARAMETERS)
 
-                          for(param in OPTIONAL_BUILD_SWITCHES){
-                              def arg = param.value[0]
-                              def flag = param.value[1]
-                              if(arg == "true") build_command+= " ${flag}"
-                          }
+                        for(param in REQUIRED_BUILD_PARAMETERS){
+                            def arg = param.value[0]
+                            def flag = param.value[1]
+                            build_command += " ${flag} ${arg}"
+                        }
 
-                          build_command +=" -w ${WORKSPACE}"
+                        for(param in OPTIONAL_BUILD_PARAMETERS){
+                            def arg = param.value[0]
+                            def flag = param.value[1]
+                            if(arg) build_command+= " ${flag} ${arg}"
+                        }
 
-                          // Run the download script to set up the build. This will select the right branch
-                          // and return the component directory path where the build needs to take path
-                          def component_path = sh(script: "$download_command 2>&1", returnStdout: true)
-                          println component_path
+                        for(param in OPTIONAL_BUILD_SWITCHES){
+                            def arg = param.value[0]
+                            def flag = param.value[1]
+                            if(arg == "true") build_command+= " ${flag}"
+                        }
 
-                          // This gets the last token of output from the script, which is the path to build in
-                          component_path = component_path.tokenize().last()
+                        build_command +=" -w ${WORKSPACE}"
 
-                          // Run the build script
-                          dir(component_path) {
-                              sh "source ~/virtenvs/cekit/bin/activate && $build_command | tee output.txt"
-                          }
+                        // Run the download script to set up the build. This will select the right branch
+                        // and return the component directory path where the build needs to take path
+                        def component_path = sh(script: "$download_command 2>&1", returnStdout: true)
+                        println component_path
 
-                          // post processing
-                          // query the built image from osbs using brew cli
-                          dir(component_path) {
-                              def get_image_name = sh(returnStdout: true, script: \'\'\'
-                                  RESULT=$(/usr/bin/brew call --json-output getTaskResult $( cat output.txt| grep -oP 'Task \\\\d{8}' | cut -d" " -f2) | jq -nre "input.repositories[0]")
-                                  if [ $? != 0 ]; then
-                                      echo "Unable to find build image - $RESULT"
-                                      exit 1
-                                  fi
-                                  # if no issue happens, the result should be the built image
-                                  echo ${RESULT}
-                              \'\'\')
-                                
-                              env.BUILT_IMAGE = "${get_image_name.trim()}"
-                          }
-                          
-                          // TODO create UMB notification
-                      }
+                        // This gets the last token of output from the script, which is the path to build in
+                        component_path = component_path.tokenize().last()
 
-                      node("osbs-builder && docker && rhel8"){
-                          stage("building ${PROD_COMPONENT}") {
-                              ws {
-                                  // Add the working directory to the current path so any scripts dropped there are on the path
-                                  withEnv(["PATH+W=$WORKSPACE"]) {
-                                      sh 'rm -rf ${WORKSPACE}/{*,.*} || true'
-                                      if (env.KERBEROS_CRED) {
-                                          withCredentials([usernamePassword(credentialsId: env.KERBEROS_CRED, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                                              mainProcess(USERNAME, PASSWORD, "")
-                                          }
-                                      } else if (env.KERBEROS_KEYTAB) {
-                                          withCredentials([file(credentialsId: env.KERBEROS_KEYTAB, variable: 'FILE')]) {
-                                              if (!env.KERBEROS_PRINCIPAL) {
-                                                    echo "Reading the Kerberos Principal from provided Keytab..."
-                                                    def get_principal_from_file = sh(returnStdout: true, script: \'\'\'
-                                                        #!/bin/bash
-                                                        klist -kt $FILE |grep REDHAT.COM | awk -F" " \'NR==1{print $4}\'
-                                                    \'\'\')
-                                                    env.KERBEROS_PRINCIPAL = get_principal_from_file.trim()
-                                              }  
-                                              mainProcess(env.KERBEROS_PRINCIPAL, "", FILE)
-                                          }
-                                      } else {
-                                          error "Either KERBEROS_PRINCIPAL and KERBEROS_KEYTAB must be specified, or user/password with KERBEROS_CRED"
-                                      }
-                                  }
-                              }
-                          }
-                      }     
+                        // Run the build script
+                        dir(component_path) {
+                            sh "source ~/virtenvs/cekit/bin/activate && $build_command | tee output.txt"
+                        }
+
+                        // post processing
+                        // query the built image from osbs using brew cli
+                        dir(component_path) {
+                            def get_image_name = sh(returnStdout: true, script: \'\'\'
+                                RESULT=$(/usr/bin/brew call --json-output getTaskResult $( cat output.txt| grep -oP 'Task \\\\d{8}' | cut -d" " -f2) | jq -nre "input.repositories[0]")
+                                    if [ $? != 0 ]; then
+                                        echo "Unable to find build image - $RESULT"
+                                        exit 1
+                                    fi
+                                # if no issue happens, the result should be the built image
+                                echo ${RESULT}
+                            \'\'\')    
+                            env.BUILT_IMAGE = "${get_image_name.trim()}"
+                        }
+                    }
                 '''.stripIndent())
                 sandbox()
             }
