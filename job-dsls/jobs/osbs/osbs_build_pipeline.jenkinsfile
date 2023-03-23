@@ -177,9 +177,9 @@ Map<String, String> getImageBuildReferences(Map<String, String> buildResults) {
                 error("Job result of $shortKey was ${buildResults.get(key)}. Setting stage result to UNSTABLE.")
             }
             sh "wget \"${JENKINS_URL}job/${key.replaceAll('/', '/job/')}/lastSuccessfulBuild/artifact/${shortKey}-image-location.txt\""
-            String imageRef = readFile('image-location.txt')
+            String imageRef = readFile("${shortKey}-image-location.txt")
             imageBuildReferences.put(shortKey, imageRef)
-            sh "rm image-location.txt"
+            sh "rm ${shortKey}-image-location.txt"
         }
     }
     return imageBuildReferences
