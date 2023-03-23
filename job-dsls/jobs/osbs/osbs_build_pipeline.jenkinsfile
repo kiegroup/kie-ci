@@ -3,7 +3,6 @@
 Map<String, String> buildResults = [:]
 
 Map<String, String> imageBuildReferences = [:]
-Map<String, String> operatorBuildReferences = [:]
 
 String propertyFileUrl = "${CI_MESSAGE}"
 
@@ -44,19 +43,9 @@ pipeline {
                     if ( propertyFileUrl.isEmpty() || propertyFileUrl == "" ) {
                         error("No property files with artifacts provided. Setting stage result to \"FAILURE\"")
                     }
-
                     echo "URL of property file: $propertyFileUrl"
 
-                    // TODO - maybe not needed as we will hnad over propertyFileUrl to jobs :)
-                    def downloadedPropertiesFile = sh returnStdout: true, script: "wget -O- $propertyFileUrl"
-                    // insert newline to avoid failure when there's none
-                    downloadedPropertiesFile += "\n"
-
-                    echo "Downloaded properties:\n$downloadedPropertiesFile"
-
                     testingUtils.loadEnvFromPropertiesFile("$propertyFileUrl")
-                    
-                    sh 'env'
                 }
             }
 
@@ -100,8 +89,7 @@ pipeline {
             }
             steps {
                 script {
-                    println "NOTHING TO DO YET"
-                    // TODO after https://issues.redhat.com/browse/KIECLOUD-694
+                    imageBuildReferences = getImageBuildReferences(buildResults)
                 }
             }
         }
@@ -119,8 +107,7 @@ pipeline {
                     def topic = "VirtualTopic.qe.ci.ba.${PRODUCT_NAME.toLowerCase()}-images.${VERSION}.nightly.trigger"
                     def eventType = "${PRODUCT_NAME.toLowerCase()}-images-${VERSION}-nightly-qe-trigger"
                     def messageBody = getMessageBody(
-                        imageBuildReferences, 
-                        operatorBuildReferences
+                        imageBuildReferences
                     )
                     echo "[INFO] Message Body: ${messageBody}"
                     echo "[INFO] Topic: ${topic}"
@@ -166,15 +153,35 @@ pipeline {
 /**
  * Genereate UMB message body
  * @param imageBuildReferences Map containing all build image references
- * @param operatorBuildReferences Map containing all build operator image reference
+ * @return Message Body for UMB send job
  */
-def getMessageBody(Map<String, String> imageBuildReferences, Map<String, String> operatorBuildReferences) {
-    // TODO after https://issues.redhat.com/browse/KIECLOUD-694
-    return """
-{
-    "image_build_references": "${imageBuildReferences}"
-    "operator_build_references": "${operatorBuildReferences}"
-}"""
+def getMessageBody(Map<String, String> imageBuildReferences) {
+    String toReturn
+    imageBuildReferences.each() { key, value ->
+        toReturn += "$key: $value\n"
+    }
+    return toReturn
+}
+
+/**
+ * Get all image references from last successful build jobs
+ * @param buildResults Map with saved build results
+ * @return Map with short job name and image reference
+ */
+Map<String, String> getImageBuildReferences(Map<String, String> buildResults) {
+    Map<String, String> imageBuildReferences = [:]
+    for (key in buildResults.keySet().collect()) {
+        catchError(stageResult: 'UNSTABLE') {
+            if (buildResults.get(key) != 'SUCCESS') {
+                error("Job result of $key was ${buildResults.get(key)}. Setting stage result to UNSTABLE.")
+            }
+            sh "wget \"${JENKINS_URL}job/${key.replaceAll('/', '/job/')}/lastSuccessfulBuild/artifact/image-location.txt\""
+            String imageRef = readFile('image-location.txt')
+            imageBuildReferences.put(testingUtils.getShortJobName(key), imageRef)
+            sh "rm image-location.txt"
+        }
+    }
+    return imageBuildReferences
 }
 
 /**
