@@ -171,13 +171,14 @@ def getMessageBody(Map<String, String> imageBuildReferences) {
 Map<String, String> getImageBuildReferences(Map<String, String> buildResults) {
     Map<String, String> imageBuildReferences = [:]
     for (key in buildResults.keySet().collect()) {
+        String shortKey = testingUtils.getShortJobName(key)
         catchError(stageResult: 'UNSTABLE') {
             if (buildResults.get(key) != 'SUCCESS') {
-                error("Job result of $key was ${buildResults.get(key)}. Setting stage result to UNSTABLE.")
+                error("Job result of $shortKey was ${buildResults.get(key)}. Setting stage result to UNSTABLE.")
             }
-            sh "wget \"${JENKINS_URL}job/${key.replaceAll('/', '/job/')}/lastSuccessfulBuild/artifact/image-location.txt\""
+            sh "wget \"${JENKINS_URL}job/${key.replaceAll('/', '/job/')}/lastSuccessfulBuild/artifact/${shortKey}-image-location.txt\""
             String imageRef = readFile('image-location.txt')
-            imageBuildReferences.put(testingUtils.getShortJobName(key), imageRef)
+            imageBuildReferences.put(shortKey, imageRef)
             sh "rm image-location.txt"
         }
     }
