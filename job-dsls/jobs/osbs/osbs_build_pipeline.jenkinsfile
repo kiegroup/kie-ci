@@ -1,0 +1,234 @@
+@Library(['jenkins-pipeline-shared-libraries','qe-library']) _
+
+Map<String, String> buildResults = [:]
+
+Map<String, String> imageBuildReferences = [:]
+
+String propertyFileUrl = "${CI_MESSAGE}"
+
+TIMEOUT = 4
+
+pipeline {
+    options {
+        timeout(time: TIMEOUT, unit: 'HOURS')
+    }
+
+    agent {
+        label 'kie-rhel7 && !built-in'
+    }
+
+    environment {
+        PRODUCT_NAME = PROD_COMPONENT.trim()
+        VERSION = PROD_VERSION.trim()
+    }
+
+    stages {
+        stage('Clean workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Ready CI MESSAGE') {
+            steps {
+                script {
+                    if ( CI_MESSAGE == null || CI_MESSAGE == "" ) {
+                        logConsole.info("CI_MESSAGE is null or empty. Taking property file url from job parameter. ")
+                        propertyFileUrl="${PROPERTY_FILE_URL}"
+                    } else {
+                        logConsole.info("CI_MESSAGE is not null nor empty. Taking property file url from CI-message.")
+                        propertyFileUrl="${CI_MESSAGE}"
+                    }
+
+                    if ( propertyFileUrl.isEmpty() || propertyFileUrl == "" ) {
+                        error("No property files with artifacts provided. Setting stage result to \"FAILURE\"")
+                    }
+                    echo "URL of property file: $propertyFileUrl"
+
+                    testingUtils.loadEnvFromPropertiesFile("$propertyFileUrl")
+                }
+            }
+
+        }
+
+        stage('Build nightly images') {
+            steps {
+                script {
+                    List<String> buildJobs = utils.sortByLength(dynamicStageUtils.getAllJobsNamesFromFolders(utils.toAbsolutePath("${PRODUCT_NAME.toLowerCase()}-images")))
+                    Map<String, Closure> sequences = getParallelStages(buildJobs, propertyFileUrl, buildResults)
+                    parallel sequences
+                }
+            }
+        }
+
+        stage('Build operator') {
+            steps {
+                script {
+                    List<String> buildJobs = utils.sortByLength(dynamicStageUtils.getAllJobsNamesFromFolders(utils.toAbsolutePath("${PRODUCT_NAME.toLowerCase()}-operators")))
+                    buildJobs.removeAll { !it.contains("${PRODUCT_NAME.toLowerCase()}-ba-operator") }
+                    Map<String, Closure> sequences = getParallelStages(buildJobs, propertyFileUrl, buildResults)
+                    parallel sequences
+                }
+            }
+
+        }
+
+        stage('Print build results') {
+            steps {
+                script {
+                    testingUtils.printResults("OSBS ${PRODUCT_NAME} IMAGE BUILD results", buildResults)
+                }
+            }
+        }
+
+        stage('Collect image references') {
+            when {
+                expression {
+                    return buildResults.every{ it.value.equals("SUCCESS") }
+                }
+            }
+            steps {
+                script {
+                    imageBuildReferences = getImageBuildReferences(buildResults)
+                }
+            }
+        }
+
+        stage ('Send UMB Message to QE.') {
+            when {
+                expression {
+                    return buildResults.every{ it.value.equals("SUCCESS") }
+                }
+            }
+            steps {
+                script {
+                    echo "Sending OCP ${PRODUCT_NAME} IMAGE BUILD UMB message to QE."
+
+                    def topic = "VirtualTopic.qe.ci.ba.${PRODUCT_NAME.toLowerCase()}-images.${VERSION}.nightly.trigger"
+                    def eventType = "${PRODUCT_NAME.toLowerCase()}-images-${VERSION}-nightly-qe-trigger"
+                    def messageBody = getMessageBody(
+                        imageBuildReferences
+                    )
+                    echo "[INFO] Message Body: ${messageBody}"
+                    echo "[INFO] Topic: ${topic}"
+                    echo "[INFO] Event Type: ${eventType}"
+                    /* TODO send umb message skip for now
+                    build job: env.SEND_UMB_MESSAGE_JOB_PATH, parameters: [
+                            [$class: 'StringParameterValue', name: 'MESSAGE_BODY', value: messageBody],
+                            [$class: 'StringParameterValue', name: 'TOPIC', value: topic],
+                            [$class: 'StringParameterValue', name: 'EVENT_TYPE', value: eventType]
+                    ]
+                    */
+                    echo '[SUCCESS] Message was successfully sent.'
+
+
+                }
+            }
+        }
+    }
+
+    post {
+        /* post send emails steps are skipped for now
+        failure {
+            emailext body: 'OSBS ${PRODUCT_NAME} IMAGE BUILD ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                    'Please look here: ${BUILD_URL} \n',
+                    subject: 'OSBS ${PRODUCT_NAME} IMAGE BUILD:nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig-cloud+ci@redhat.com'
+        }
+        unstable {
+            emailext body: 'OSBS ${PRODUCT_NAME} IMAGE BUILD ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                    'Please look here: ${BUILD_URL} \n',
+                    subject: 'OSBS ${PRODUCT_NAME} IMAGE BUILD:nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig-cloud+ci@redhat.com'
+        }
+        fixed {
+            emailext body: 'OSBS ${PRODUCT_NAME} IMAGE BUILD ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                    'Please look here: ${BUILD_URL} \n',
+                    subject: 'OSBS ${PRODUCT_NAME} IMAGE BUILD:nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'bsig-cloud+ci@redhat.com'
+        }*/
+        cleanup {
+            cleanWs()
+        }
+    }
+}
+
+/**
+ * Genereate UMB message body
+ * @param imageBuildReferences Map containing all build image references
+ * @return Message Body for UMB send job
+ */
+def getMessageBody(Map<String, String> imageBuildReferences) {
+    String toReturn
+    imageBuildReferences.each() { key, value ->
+        toReturn += "$key: $value\n"
+    }
+    return toReturn
+}
+
+/**
+ * Get all image references from last successful build jobs
+ * @param buildResults Map with saved build results
+ * @return Map with short job name and image reference
+ */
+Map<String, String> getImageBuildReferences(Map<String, String> buildResults) {
+    Map<String, String> imageBuildReferences = [:]
+    for (key in buildResults.keySet().collect()) {
+        String shortKey = testingUtils.getShortJobName(key)
+        catchError(stageResult: 'UNSTABLE') {
+            if (buildResults.get(key) != 'SUCCESS') {
+                error("Job result of $shortKey was ${buildResults.get(key)}. Setting stage result to UNSTABLE.")
+            }
+            sh "wget \"${JENKINS_URL}job/${key.replaceAll('/', '/job/')}/lastSuccessfulBuild/artifact/${shortKey}-image-location.txt\""
+            String imageRef = readFile("${shortKey}-image-location.txt")
+            imageBuildReferences.put(shortKey, imageRef)
+            sh "rm ${shortKey}-image-location.txt"
+        }
+    }
+    return imageBuildReferences
+}
+
+/**
+ * Dynamically generates pipeline stages based on the build jobs obtained in the previous step
+ * @param buildJobs List containing all image building jobs
+ * @param propertyFileUrl String url to properties file that can be download in builder job
+ * @param buildResults Map to save build results to
+ * @return Map that can be handed over to a <a href="https://www.jenkins.io/doc/book/pipeline/syntax/#parallel">'parallel'<a> pipeline section.
+ */
+Map<String, Closure> getParallelStages(List<String> buildJobs, String propertyFileUrl, Map<String, String> buildResults) {
+    buildJobs.collectEntries {
+        [(testingUtils.getShortJobName(it)): getSingleStagesSequence(it, propertyFileUrl, buildResults)]
+    }
+}
+
+/**
+ * Generate single sequence (branch of pipeline parallel section) of jobs
+ * @param jobName Name of the build job
+ * @param propertyFileUrl String url to properties file that can be download in builder job
+ * @param buildResults Map to save build results to
+ * @return Closure defining stages sequence to run within a pipeline
+ */
+Closure getSingleStagesSequence(String jobName, String propertyFileUrl, Map<String, String> buildResults) {
+    return {
+        stage(testingUtils.getShortJobName(jobName)) {
+            logConsole.info("Running ${jobName} job")
+
+            String buildResultString
+            try {
+                println "Executiog build job: ${jobName}"
+                def jobRun = build job: "$jobName", parameters: [string(name: 'PROPERTY_FILE_URL', value: propertyFileUrl)], propagate: false, wait: true
+                buildResultString = jobRun.getResult()
+            } catch (Throwable e) {
+                logConsole.error("${e.getMessage()}")
+                buildResultString = 'FAILURE'
+            }
+            buildResults.put(jobName, buildResultString)
+
+            // we want stage to have same color as the actual baseline, but we don't want to fail whole pipeline (yet)
+            catchError(buildResult: 'UNSTABLE', stageResult: buildResultString) {
+                // so we need to do this little hack for all results worse than SUCCESS, other approaches
+                // would either affect also pipeline result or would not change the stage color
+                if (buildResultString != "SUCCESS") {
+                    error("Job result was $buildResultString. Setting stage result to $buildResultString.")
+                }
+            }
+        }
+    }
+}
