@@ -64,7 +64,7 @@ pipeline {
         stage('Build operator') {
             steps {
                 script {
-                    List<String> buildJobs = utils.sortByLength(dynamicStageUtils.getAllJobsNamesFromFolders(utils.toAbsolutePath("operators")))
+                    List<String> buildJobs = utils.sortByLength(dynamicStageUtils.getAllJobsNamesFromFolders(utils.toAbsolutePath("${PRODUCT_NAME.toLowerCase()}-operators")))
                     buildJobs.removeAll { !it.contains("${PRODUCT_NAME.toLowerCase()}-ba-operator") }
                     Map<String, Closure> sequences = getParallelStages(buildJobs, propertyFileUrl, buildResults)
                     parallel sequences
