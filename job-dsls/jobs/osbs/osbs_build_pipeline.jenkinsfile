@@ -29,7 +29,7 @@ pipeline {
             }
         }
 
-        stage('Ready CI MESSAGE') {
+        stage('Read CI MESSAGE') {
             steps {
                 script {
                     if ( CI_MESSAGE == null || CI_MESSAGE == "" ) {
