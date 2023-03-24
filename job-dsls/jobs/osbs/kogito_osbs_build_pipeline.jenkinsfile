@@ -29,7 +29,7 @@ pipeline {
             }
         }
 
-        stage('Ready CI MESSAGE') {
+        stage('Read CI MESSAGE') {
             steps {
                 script {
                     if ( CI_MESSAGE == null || CI_MESSAGE == "" ) {
@@ -54,7 +54,7 @@ pipeline {
         stage('Build nightly images') {
             steps {
                 script {
-                    List<String> buildJobs = utils.sortByLength(dynamicStageUtils.getAllJobsNamesFromFolders(utils.toAbsolutePath("${PRODUCT_NAME.toLowerCase()}-kogtio-images")))
+                    List<String> buildJobs = utils.sortByLength(dynamicStageUtils.getAllJobsNamesFromFolders(utils.toAbsolutePath("${PRODUCT_NAME.toLowerCase()}-kogito-images")))
                     Map<String, Closure> sequences = getParallelStages(buildJobs, propertyFileUrl, buildResults)
                     parallel sequences
                 }
@@ -65,7 +65,7 @@ pipeline {
             steps {
                 script {
                     List<String> buildJobs = utils.sortByLength(dynamicStageUtils.getAllJobsNamesFromFolders(utils.toAbsolutePath("${PRODUCT_NAME.toLowerCase()}-operators")))
-                    buildJobs.removeAll { !it.contains("${PRODUCT_NAME.toLowerCase()}-kogtio-operator") }
+                    buildJobs.removeAll { !it.contains("${PRODUCT_NAME.toLowerCase()}-kogito-operator") }
                     Map<String, Closure> sequences = getParallelStages(buildJobs, propertyFileUrl, buildResults)
                     parallel sequences
                 }
