@@ -225,7 +225,6 @@ String rhbopNightlyStage(String branch, String configBranch, String version = ''
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${version}"],
                         [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "${configBranch}"],
-                        [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
         }
