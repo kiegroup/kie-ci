@@ -88,7 +88,7 @@ pipeline{
     
         // RHBOP
         ${rhbopNightlyStage(RHBOP_NEXT_PRODUCT_BRANCH, RHBOP_NEXT_PRODUCT_CONFIG_BRANCH)}
-        ${rhbopNightlyStage(RHBOP_CURRENT_PRODUCT_BRANCH, RHBOP_CURRENT_PRODUCT_CONFIG_BRANCH, RHBOP_CURRENT_PRODUCT_VERSION, RHBOP_CURRENT_DROOLS_VERSION, RHBOP_CURRENT_PRODUCT_BRANCH)}
+        ${rhbopNightlyStage(RHBOP_CURRENT_PRODUCT_BRANCH, RHBOP_CURRENT_PRODUCT_CONFIG_BRANCH, RHBOP_CURRENT_PRODUCT_VERSION, RHBOP_CURRENT_DROOLS_VERSION)}
 
         // Drools Ansible Integration
         ${droolsAnsibleIntegrationNightlyStage(DAI_NEXT_PRODUCT_BRANCH, DAI_NEXT_PRODUCT_CONFIG_BRANCH)}
@@ -214,7 +214,7 @@ String serverlessLogicNightlyStage(String branch, String configBranch, String pr
     """
 }
 
-String rhbopNightlyStage(String branch, String configBranch, String version = '', String droolsVersion = '', String definitionFileBranch = 'main') {
+String rhbopNightlyStage(String branch, String configBranch, String version = '', String droolsVersion = '') {
     // when version or droolsVersion are empty, the Jenkins job will get them from the main branch pom
     return """
         stage('trigger RHBOP nightly job ${branch}') {
@@ -225,8 +225,6 @@ String rhbopNightlyStage(String branch, String configBranch, String version = ''
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${version}"],
                         [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "${configBranch}"],
-                        [\$class: 'StringParameterValue', name: 'DEFINITION_FILE_OWNER', value: 'kiegroup'],
-                        [\$class: 'StringParameterValue', name: 'DEFINITION_FILE_BRANCH', value: "${definitionFileBranch}"],
                 ]
             }
         }
