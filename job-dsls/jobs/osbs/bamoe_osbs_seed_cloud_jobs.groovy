@@ -122,6 +122,26 @@ prodComponent.each { Component ->
                                     writeFile file: "${PROD_COMPONENT}-image-location.txt", text: "${env.BUILT_IMAGE}"
                                 }    
                             } 
+                            
+                            stage('execute behave tests') {
+                                steps {
+                                    script {
+                                        // pull from brew registry
+                                        echo "Pulling the ${env.BUILT_IMAGE} image..."
+                                        sh "docker pull ${env.BUILT_IMAGE}"
+                                        
+                                        // tag to the expected image name
+                                        def tagTo = "ibm-bamoe/${env.PROD_COMPONENT}-rhel8:${env.PROD_VERSION}"
+                                        sh "docker tag ${env.BUILT_IMAGE} ${tagTo}"
+                                        
+                                        def get_dir = sh(returnStdout: true, script: \'\'\'
+                                            #!/bin/bash
+                                            echo ${PROD_COMPONENT} | cut -d- -f2-
+                                        \'\'\')
+                                        sh "source ~/virtenvs/cekit/bin/activate && cd rhba-repo/${get_dir.trim()} && cekit --verbose --redhat test --overrides-file branch-overrides.yaml behave"
+                                    }    
+                                }    
+                            } 
                         }
                         post {
                             always {

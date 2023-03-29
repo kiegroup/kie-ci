@@ -13,7 +13,7 @@ def prodComponent = [
         'bamoe-kogito-builder-rhel8', 'bamoe-kogito-runtime-jvm-rhel8', 'bamoe-kogito-runtime-native-rhel8']
 
 def buildDate = Constants.BUILD_DATE
-def prodVersion = Constants.NEXT_PROD_VERSION
+def prodVersion = Constants.BAMOE_NEXT_PROD_VERSION
 def osbsBuildTarget = Constants.OSBS_BUILD_TARGET
 def cekitBuildOptions = Constants.CEKIT_BUILD_OPTIONS
 def osbsBuildUser = Constants.OSBS_BUILD_USER
@@ -120,7 +120,23 @@ prodComponent.each { Component ->
                                     echo "Persisting the ${env.BUILT_IMAGE} to a file..."
                                     writeFile file: "${PROD_COMPONENT}-image-location.txt", text: "${env.BUILT_IMAGE}"
                                 }    
-                            }  
+                            }
+                            
+                            stage('execute behave tests') {
+                                steps {
+                                    script {
+                                        // pull from brew registry
+                                        echo "Pulling the ${env.BUILT_IMAGE} image..."
+                                        sh "docker pull ${env.BUILT_IMAGE}"
+                                        
+                                        // tag to the expected image name
+                                        def tagTo = "ibm-bamoe/${env.PROD_COMPONENT}:${env.PROD_VERSION}"
+                                        sh "docker tag ${env.BUILT_IMAGE} ${tagTo}"
+                                        
+                                        sh "source ~/virtenvs/cekit/bin/activate && make build-image image_name=${env.PROD_COMPONENT} ignore_build=true ignore_test=false"
+                                    }    
+                                }    
+                            }    
                         }
                             
                         post {
