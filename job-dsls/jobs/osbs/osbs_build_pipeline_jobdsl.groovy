@@ -37,7 +37,7 @@ prodComponent.each { component ->
                 scm {
                     git {
                         remote {
-                            url("git@github.com:kiegroup/kie-ci.git")
+                            url("https://github.com/kiegroup/kie-ci.git")
                         }
                         branch("main")
 
@@ -59,7 +59,7 @@ prodComponent.each { component ->
                                     activeMQSubscriber {
                                         name('Red Hat UMB')
                                         overrides {
-                                            topic("Consumer.ba-eng-jenkins.${UUID.randomUUID()}.VirtualTopic.qe.ci.ba.${component}.${prodVersion.get(component)}.nightly.trigger")
+                                            topic("Consumer.ba-eng-jenkins.${UUID.randomUUID()}.VirtualTopic.qe.ci.ba.${component}.${getUMBFromVersion(prodVersion.get(component))}.nightly.trigger")
                                         }
 
                                         selector("CI_TYPE='custom' and label='rhba-ci'")
@@ -75,4 +75,21 @@ prodComponent.each { component ->
         }
 
     }
+}
+
+String getUMBFromVersion(def version) {
+    // if empty return main branch too
+    if (isMainBranchVersion(version) || version == '') {
+        return Constants.MAIN_BRANCH
+    }
+    def matcher = version =~ /(\d*)\.(\d*)\.?/
+    return "${matcher[0][1]}${matcher[0][2]}${getBlueSuffix(version, '')}"
+}
+
+String getBlueSuffix(String version, String separator) {
+    return version.endsWith('blue') ? separator + 'blue' : ''
+}
+
+boolean isMainBranchVersion(String version) {
+    return [Constants.MAIN_BRANCH_PROD_VERSION, Constants.KOGITO_MAIN_BRANCH_PROD_VERSION, Constants.RHBOP_MAIN_BRANCH_PROD_VERSION].contains(version)
 }
