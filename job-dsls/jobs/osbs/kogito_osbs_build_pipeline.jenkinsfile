@@ -4,7 +4,7 @@ Map<String, String> buildResults = [:]
 
 Map<String, String> imageBuildReferences = [:]
 
-String propertyFileUrl = "${CI_MESSAGE}"
+String propertyFileUrl = ""
 
 TIMEOUT = 4
 
@@ -32,7 +32,7 @@ pipeline {
         stage('Read CI MESSAGE') {
             steps {
                 script {
-                    if ( CI_MESSAGE == null || CI_MESSAGE == "" ) {
+                    if ( env.CI_MESSAGE == null || env.CI_MESSAGE == "" ) {
                         logConsole.info("CI_MESSAGE is null or empty. Taking property file url from job parameter. ")
                         propertyFileUrl="${PROPERTY_FILE_URL}"
                     } else {
