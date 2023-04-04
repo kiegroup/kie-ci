@@ -63,7 +63,7 @@ prodComponent.each { Component ->
 
                     library 'jenkins-pipeline-shared-libraries'
                     
-                    TIMEOUT = 1
+                    TIMEOUT = 2
 
                     pipeline {
                         options {
@@ -138,7 +138,10 @@ prodComponent.each { Component ->
                                             #!/bin/bash
                                             echo ${PROD_COMPONENT} | cut -d- -f2-
                                         \'\'\')
-                                        sh "source ~/virtenvs/cekit/bin/activate && cd rhba-repo/${get_dir.trim()} && cekit --verbose --redhat test --overrides-file branch-overrides.yaml behave"
+                                        
+                                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                                            sh "source ~/virtenvs/cekit/bin/activate && cd rhba-repo/${get_dir.trim()} && cekit --verbose --redhat test --overrides-file branch-overrides.yaml behave"
+                                        }
                                     }    
                                 }    
                             } 

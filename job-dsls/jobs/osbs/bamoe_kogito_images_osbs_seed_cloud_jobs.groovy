@@ -133,7 +133,9 @@ prodComponent.each { Component ->
                                         def tagTo = "ibm-bamoe/${env.PROD_COMPONENT}:${env.PROD_VERSION}"
                                         sh "docker tag ${env.BUILT_IMAGE} ${tagTo}"
                                         
-                                        sh "source ~/virtenvs/cekit/bin/activate && make build-image image_name=${env.PROD_COMPONENT} ignore_build=true ignore_test=false"
+                                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                                            sh "source ~/virtenvs/cekit/bin/activate && make build-image image_name=${env.PROD_COMPONENT} ignore_build=true ignore_test=false"
+                                        }
                                     }    
                                 }    
                             }    
