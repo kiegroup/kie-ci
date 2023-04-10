@@ -67,7 +67,7 @@ prodComponent.each { Component ->
 
                     library 'jenkins-pipeline-shared-libraries'
 
-                    TIMEOUT = 1
+                    TIMEOUT = 2
 
                     pipeline {
                         options {
