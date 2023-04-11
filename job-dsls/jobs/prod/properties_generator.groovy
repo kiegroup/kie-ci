@@ -12,6 +12,8 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def propGen ="""
+@Library('jenkins-pipeline-shared-libraries')_
+
 import groovy.json.JsonSlurperClassic
 
 node('${Constants.LABEL_KIE_RHEL}') {
@@ -21,7 +23,7 @@ node('${Constants.LABEL_KIE_RHEL}') {
     def binding = new JsonSlurperClassic().parseText(BINDING)
     println "Parsed binding: \${binding}"
 
-    publishFile("\${FILE_ID}", "\${FILE_NAME}", binding, "\${RCM_GUEST_FOLDER}/\${FOLDER_PATH}")
+    publishFile("\${FILE_ID}", "\${FILE_NAME}", binding, "\${FOLDER_PATH}")
 }
 
 def replaceTemplate(String fileId, Map<String, String> binding) {
@@ -39,11 +41,12 @@ def replaceTemplate(String fileId, Map<String, String> binding) {
 def publishFile(String fileId, String fileName, Map<String, String> binding, String folder) {
     println "Publishing [\${fileId}], name [\${fileName}] into folder [\${folder}] ..."
     def content = replaceTemplate(fileId, binding)
+    def absolutePath = "\${RCM_GUEST_FOLDER}/\${folder}"
     println content
     writeFile file: "\${fileName}", text: content
-    sshagent(credentials: ['rcm-publish-server']) {
-        sh "ssh 'rhba@\${RCM_HOST}' 'mkdir -p \${folder}'"
-        sh "scp -o StrictHostKeyChecking=no \${fileName} rhba@\${RCM_HOST}:\${folder}"
+    util.withKerberos('rhba-prod-keytab') {
+        sh "ssh 'rhba-prod@\${RCM_HOST}' 'mkdir -p \${absolutePath}'"
+        sh "rsync -rlp --info=progress2 \${fileName} rhba-prod@\${RCM_HOST}:staging/\${folder}"
     }
 }
 """

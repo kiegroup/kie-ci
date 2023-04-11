@@ -1,3 +1,5 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
 def artifacts = [
     [originClassifier: 'maven-repository.zip', finalClassifier: 'maven-repository.zip', stageCommand: 'cp', info: 'Copying maven repository zip'],
     [originClassifier: 'license.zip', finalClassifier: 'licenses.zip', stageCommand: 'cp', info: 'Copying licenses zip'],
@@ -17,6 +19,7 @@ pipeline {
         STAGING_BASE_PATH = STAGING_BASE_PATH.trim()
         PRODUCT_NAME_LOWER_CASE = PRODUCT_NAME.toLowerCase()
         RHBA_FOLDER_PATH = "${STAGING_BASE_PATH}/rhba/rhba-${VERSION}"
+        RHBA_FOLDER_PATH_RELATIVE = "staging/rhba/rhba-${VERSION}"
         TARGET_FOLDER_PATH = "${STAGING_BASE_PATH}/${PRODUCT_NAME_LOWER_CASE}/${PRODUCT_NAME}-${VERSION}"
     }
 
@@ -83,8 +86,9 @@ def createOfflinerZip() {
 
     remoteExec("mkdir -p ${offlinerFolderPath}")
     remoteExec("cp ${RHBA_FOLDER_PATH}/offliner.txt ${offlinerFolderPath}")
-    sshagent(credentials: ['rcm-publish-server']) {
-        sh "scp -o StrictHostKeyChecking=no integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba@${RCM_HOST}:${offlinerFolderPath}/offline-repo-builder.sh"
+    util.withKerberos('rhba-prod-keytab') {
+        def relativeOfflinerFolderPath = "${RHBA_FOLDER_PATH_RELATIVE}/${offlinerFolderName}"
+        sh "rsync -rlp --info=progress2 integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba-prod@${RCM_HOST}:${relativeOfflinerFolderPath}/offline-repo-builder.sh"
     }
     remoteExec("cd ${RHBA_FOLDER_PATH}; zip -r rhba-${VERSION}-offliner.zip ${offlinerFolderName}")
     remoteExec("rm -rf ${offlinerFolderPath}")
@@ -108,7 +112,7 @@ def getMilestoneVersion(version) {
 }
 
 def remoteExec(command) {
-    sshagent(['rcm-publish-server']) {
-        return sh(script: "ssh -o StrictHostKeyChecking=no rhba@${RCM_HOST} '${command}'", returnStdout: true)
+    util.withKerberos('rhba-prod-keytab') {
+        return sh(script: "ssh rhba-prod@${RCM_HOST} '${command}'", returnStdout: true)
     }
 }

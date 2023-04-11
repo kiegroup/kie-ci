@@ -155,7 +155,7 @@ def verifyStaged(path, md5) {
 }
 
 def remoteExec(command) {
-    sshagent(['rcm-publish-server']) {
-        return sh(script: "ssh -o StrictHostKeyChecking=no rhba@${RCM_HOST} '${command}'", returnStdout: true)
+    util.withKerberos('rhba-prod-keytab') {
+        return sh(script: "ssh rhba-prod@${RCM_HOST} '${command}'", returnStdout: true)
     }
 }
