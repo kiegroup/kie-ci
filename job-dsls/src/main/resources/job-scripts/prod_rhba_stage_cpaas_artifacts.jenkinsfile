@@ -1,3 +1,5 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
 def artifacts = [
     [originClassifier: 'maven-repository.zip', finalClassifier: 'maven-repository.zip', stageCommand: 'cp', info: 'Copying maven repository zip'],
     [originClassifier: 'license.zip', finalClassifier: 'licenses.zip', stageCommand: 'cp', info: 'Copying licenses zip'],
@@ -14,9 +16,10 @@ pipeline {
         PRODUCT_NAME = PRODUCT_NAME.trim()
         VERSION = VERSION.trim()
         RCM_HOST = RCM_HOST.trim()
-        STAGING_BASE_PATH = STAGING_BASE_PATH.trim()
+        STAGING_BASE_PATH = "${RCM_GUEST_FOLDER}"
         PRODUCT_NAME_LOWER_CASE = PRODUCT_NAME.toLowerCase()
         RHBA_FOLDER_PATH = "${STAGING_BASE_PATH}/rhba/rhba-${VERSION}"
+        RHBA_FOLDER_PATH_RELATIVE = "staging/rhba/rhba-${VERSION}"
         TARGET_FOLDER_PATH = "${STAGING_BASE_PATH}/${PRODUCT_NAME_LOWER_CASE}/${PRODUCT_NAME}-${VERSION}"
     }
 
@@ -83,10 +86,11 @@ def createOfflinerZip() {
 
     remoteExec("mkdir -p ${offlinerFolderPath}")
     remoteExec("cp ${RHBA_FOLDER_PATH}/offliner.txt ${offlinerFolderPath}")
-    sshagent(credentials: ['rcm-publish-server']) {
-        sh "scp -o StrictHostKeyChecking=no integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba@${RCM_HOST}:${offlinerFolderPath}/offline-repo-builder.sh"
+    util.withKerberos('rhba-prod-keytab') {
+        def relativeOfflinerFolderPath = "${RHBA_FOLDER_PATH_RELATIVE}/${offlinerFolderName}"
+        sh "rsync -rlp --info=progress2 integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba-prod@${RCM_HOST}:${relativeOfflinerFolderPath}/offline-repo-builder.sh"
     }
-    remoteExec("cd ${RHBA_FOLDER_PATH}; zip -r rhba-${VERSION}-offliner.zip ${offlinerFolderName}")
+    remoteExec("zip -r ${RHBA_FOLDER_PATH}/rhba-${VERSION}-offliner.zip ${RHBA_FOLDER_PATH}/${offlinerFolderName}")
     remoteExec("rm -rf ${offlinerFolderPath}")
 }
 
@@ -100,7 +104,7 @@ def stageArtifact(artifact) {
 def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-maven-repository"
-    remoteExec("cd ${TARGET_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")
+    remoteExec("unzip -t ${TARGET_FOLDER_PATH}/${mavenRepoFileName}.zip > ${TARGET_FOLDER_PATH}/${mavenRepoFileName}.text")
 }
 
 def getMilestoneVersion(version) {
@@ -108,7 +112,7 @@ def getMilestoneVersion(version) {
 }
 
 def remoteExec(command) {
-    sshagent(['rcm-publish-server']) {
-        return sh(script: "ssh -o StrictHostKeyChecking=no rhba@${RCM_HOST} '${command}'", returnStdout: true)
+    util.withKerberos('rhba-prod-keytab') {
+        return sh(script: "ssh rhba-prod@${RCM_HOST} '${command}'", returnStdout: true)
     }
 }

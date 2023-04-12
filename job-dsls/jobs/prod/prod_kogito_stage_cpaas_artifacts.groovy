@@ -16,7 +16,6 @@ pipelineJob("${folderPath}/kogito-stage-cpaas-artifacts") {
         stringParam('VERSION', '', ' The release candidate version, i.e. 1.13.1.CR1')
         stringParam('RHPAM_VERSION', '', ' The RHPAM version related to the Kogito release, i.e. 7.13.1')
         stringParam('RCM_HOST', "\${RCM_HOST}", 'rcm host')
-        stringParam('STAGING_BASE_PATH', "\${RCM_GUEST_FOLDER}", 'Staging base path inside the host')
     }
 
     logRotator {

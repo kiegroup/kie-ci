@@ -15,7 +15,6 @@ pipelineJob("${folderPath}/bamoe-stage-cpaas-artifacts") {
         stringParam('PRODUCT_NAME', 'bamoe', 'Product name')
         stringParam('VERSION', '', ' The release candidate version, i.e. 8.0.1.CR1')
         stringParam('RCM_HOST', "\${RCM_HOST}", 'rcm host')
-        stringParam('STAGING_BASE_PATH', "\${RCM_GUEST_FOLDER}", 'Staging base path inside the host')
     }
 
     logRotator {

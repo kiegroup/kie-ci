@@ -1,3 +1,5 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
 def artifacts = [
     [originClassifier: 'kogito-quickstarts.zip', finalClassifier: 'kogito-quickstarts.zip', info: 'Moving quickstarts zip'],
     [originClassifier: 'maven-repository.zip', finalClassifier: 'kogito-maven-repository.zip', info: 'Moving maven repository zip'],
@@ -16,8 +18,9 @@ pipeline {
         VERSION = VERSION.trim()
         BAMOE_VERSION = BAMOE_VERSION.trim()
         RCM_HOST = RCM_HOST.trim()
-        STAGING_BASE_PATH = STAGING_BASE_PATH.trim()
+        STAGING_BASE_PATH = "${RCM_GUEST_FOLDER}"
         BAMOE_KOGITO_FOLDER_PATH = "${STAGING_BASE_PATH}/bamoe/${PRODUCT_NAME}-${VERSION}"
+        BAMOE_KOGITO_FOLDER_PATH_RELATIVE = "staging/bamoe/${PRODUCT_NAME}-${VERSION}"
         BAMOE_FOLDER_PATH = "${STAGING_BASE_PATH}/bamoe/bamoe-${BAMOE_VERSION}"
     }
 
@@ -86,10 +89,11 @@ def createOfflinerZip() {
 
     remoteExec("mkdir -p ${offlinerFolderPath}")
     remoteExec("cp ${offlinerFile} ${offlinerFolderPath}")
-    sshagent(credentials: ['rcm-publish-server']) {
-        sh "scp -o StrictHostKeyChecking=no integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba@${RCM_HOST}:${offlinerFolderPath}/offline-repo-builder.sh"
+    util.withKerberos('rhba-prod-keytab') {
+        def relativeOfflinerFolderPath = "${BAMOE_KOGITO_FOLDER_PATH_RELATIVE}/${offlinerFolderName}"
+        sh "rsync -rlp --info=progress2 integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba-prod@${RCM_HOST}:${relativeOfflinerFolderPath}/offline-repo-builder.sh"
     }
-    remoteExec("cd ${BAMOE_KOGITO_FOLDER_PATH}; zip -r ${PRODUCT_NAME}-${VERSION}-offliner.zip ${offlinerFolderName}")
+    remoteExec("zip -r ${BAMOE_KOGITO_FOLDER_PATH}/${PRODUCT_NAME}-${VERSION}-offliner.zip ${BAMOE_KOGITO_FOLDER_PATH}/${offlinerFolderName}")
     remoteExec("rm -rf ${offlinerFolderPath} ${offlinerFile}")
 }
 
@@ -103,7 +107,7 @@ def stageArtifact(artifact) {
 def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "bamoe-${getMilestoneVersion(BAMOE_VERSION)}-kogito-maven-repository"
-    remoteExec("cd ${BAMOE_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")
+    remoteExec("unzip -t ${BAMOE_FOLDER_PATH}/${mavenRepoFileName}.zip > ${BAMOE_FOLDER_PATH}/${mavenRepoFileName}.text")
 }
 
 def getMilestoneVersion(version) {
@@ -111,7 +115,7 @@ def getMilestoneVersion(version) {
 }
 
 def remoteExec(command) {
-    sshagent(['rcm-publish-server']) {
-        return sh(script: "ssh -o StrictHostKeyChecking=no rhba@${RCM_HOST} '${command}'", returnStdout: true)
+    util.withKerberos('rhba-prod-keytab') {
+        return sh(script: "ssh rhba-prod@${RCM_HOST} '${command}'", returnStdout: true)
     }
 }

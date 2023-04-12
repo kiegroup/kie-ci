@@ -16,7 +16,6 @@ pipelineJob("${folderPath}/bamoe-kogito-stage-cpaas-artifacts") {
         stringParam('VERSION', '', ' The release candidate version, i.e. 1.13.2.CR1')
         stringParam('BAMOE_VERSION', '', ' The BAMOE release candidate version related to the BAMOE Kogito release, i.e. 8.0.0.CR1')
         stringParam('RCM_HOST', "\${RCM_HOST}", 'rcm host')
-        stringParam('STAGING_BASE_PATH', "\${RCM_GUEST_FOLDER}", 'Staging base path inside the host')
     }
 
     logRotator {

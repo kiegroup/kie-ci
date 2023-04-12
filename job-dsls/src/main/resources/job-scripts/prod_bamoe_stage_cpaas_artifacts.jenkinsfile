@@ -1,3 +1,5 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
 def artifacts = [
     [originClassifier: 'maven-repository.zip', finalClassifier: 'maven-repository.zip', info: 'Renaming maven repository zip'],
     [originClassifier: 'license.zip', finalClassifier: 'licenses.zip', info: 'Renaming licenses zip'],
@@ -13,8 +15,9 @@ pipeline {
         PRODUCT_NAME = PRODUCT_NAME.trim()
         VERSION = VERSION.trim()
         RCM_HOST = RCM_HOST.trim()
-        STAGING_BASE_PATH = STAGING_BASE_PATH.trim()
+        STAGING_BASE_PATH = "${RCM_GUEST_FOLDER}"
         BAMOE_FOLDER_PATH = "${STAGING_BASE_PATH}/${PRODUCT_NAME}/${PRODUCT_NAME}-${VERSION}"
+        BAMOE_FOLDER_PATH_RELATIVE = "staging/${PRODUCT_NAME}/${PRODUCT_NAME}-${VERSION}"
     }
 
     stages {
@@ -82,10 +85,11 @@ def createOfflinerZip() {
 
     remoteExec("mkdir -p ${offlinerFolderPath}")
     remoteExec("cp ${offlinerFile} ${offlinerFolderPath}")
-    sshagent(credentials: ['rcm-publish-server']) {
-        sh "scp -o StrictHostKeyChecking=no integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba@${RCM_HOST}:${offlinerFolderPath}/offline-repo-builder.sh"
+    util.withKerberos('rhba-prod-keytab') {
+        def relativeOfflinerFolderPath = "${BAMOE_FOLDER_PATH_RELATIVE}/${offlinerFolderName}"
+        sh "rsync -rlp --info=progress2 integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba-prod@${RCM_HOST}:${relativeOfflinerFolderPath}/offline-repo-builder.sh"
     }
-    remoteExec("cd ${BAMOE_FOLDER_PATH}; zip -r ${PRODUCT_NAME}-${milestoneVersion}-offliner.zip ${offlinerFolderName}")
+    remoteExec("zip -r ${BAMOE_FOLDER_PATH}/${PRODUCT_NAME}-${milestoneVersion}-offliner.zip ${BAMOE_FOLDER_PATH}/${offlinerFolderName}")
     remoteExec("rm -rf ${offlinerFolderPath} ${offlinerFile}")
 }
 
@@ -99,7 +103,7 @@ def renameArtifact(artifact) {
 def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "${PRODUCT_NAME}-${getMilestoneVersion(VERSION)}-maven-repository"
-    remoteExec("cd ${BAMOE_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")
+    remoteExec("unzip -t ${BAMOE_FOLDER_PATH}/${mavenRepoFileName}.zip > ${BAMOE_FOLDER_PATH}/${mavenRepoFileName}.text")
 }
 
 def getMilestoneVersion(version) {
@@ -107,7 +111,7 @@ def getMilestoneVersion(version) {
 }
 
 def remoteExec(command) {
-    sshagent(['rcm-publish-server']) {
-        return sh(script: "ssh -o StrictHostKeyChecking=no rhba@${RCM_HOST} '${command}'", returnStdout: true)
+    util.withKerberos('rhba-prod-keytab') {
+        return sh(script: "ssh rhba-prod@${RCM_HOST} '${command}'", returnStdout: true)
     }
 }
