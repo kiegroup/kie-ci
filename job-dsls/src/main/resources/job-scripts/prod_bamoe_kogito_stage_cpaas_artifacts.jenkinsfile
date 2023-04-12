@@ -93,7 +93,7 @@ def createOfflinerZip() {
         def relativeOfflinerFolderPath = "${BAMOE_KOGITO_FOLDER_PATH_RELATIVE}/${offlinerFolderName}"
         sh "rsync -rlp --info=progress2 integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba-prod@${RCM_HOST}:${relativeOfflinerFolderPath}/offline-repo-builder.sh"
     }
-    remoteExec("cd ${BAMOE_KOGITO_FOLDER_PATH}; zip -r ${PRODUCT_NAME}-${VERSION}-offliner.zip ${offlinerFolderName}")
+    remoteExec("zip -r ${BAMOE_KOGITO_FOLDER_PATH}/${PRODUCT_NAME}-${VERSION}-offliner.zip ${BAMOE_KOGITO_FOLDER_PATH}/${offlinerFolderName}")
     remoteExec("rm -rf ${offlinerFolderPath} ${offlinerFile}")
 }
 
@@ -107,7 +107,7 @@ def stageArtifact(artifact) {
 def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "bamoe-${getMilestoneVersion(BAMOE_VERSION)}-kogito-maven-repository"
-    remoteExec("cd ${BAMOE_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")
+    remoteExec("unzip -t ${BAMOE_FOLDER_PATH}/${mavenRepoFileName}.zip > ${BAMOE_FOLDER_PATH}/${mavenRepoFileName}.text")
 }
 
 def getMilestoneVersion(version) {

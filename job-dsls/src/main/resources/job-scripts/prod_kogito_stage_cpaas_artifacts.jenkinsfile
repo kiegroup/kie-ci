@@ -91,7 +91,7 @@ def createOfflinerZip() {
         def relativeOfflinerFolderPath = "${KOGITO_FOLDER_PATH_RELATIVE}/${offlinerFolderName}"
         sh "rsync -rlp --info=progress2 integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba-prod@${RCM_HOST}:${relativeOfflinerFolderPath}/offline-repo-builder.sh"
     }
-    remoteExec("cd ${KOGITO_FOLDER_PATH}; zip -r rhpam-${RHPAM_VERSION}-kogito-offliner.zip ${offlinerFolderName}")
+    remoteExec("zip -r ${KOGITO_FOLDER_PATH}/rhpam-${RHPAM_VERSION}-kogito-offliner.zip ${KOGITO_FOLDER_PATH}/${offlinerFolderName}")
     remoteExec("rm -rf ${offlinerFolderPath} ${offlinerFile}")
 }
 
@@ -105,7 +105,7 @@ def renameArtifact(artifact) {
 def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "rhpam-${RHPAM_VERSION}-kogito-maven-repository"
-    remoteExec("cd ${KOGITO_FOLDER_PATH}; unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text")
+    remoteExec("unzip -t ${KOGITO_FOLDER_PATH}/${mavenRepoFileName}.zip > ${KOGITO_FOLDER_PATH}/${mavenRepoFileName}.text")
 }
 
 def getMilestoneVersion(version) {
