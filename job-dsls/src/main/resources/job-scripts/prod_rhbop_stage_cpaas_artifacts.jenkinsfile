@@ -104,7 +104,13 @@ def createOfflinerZip() {
 def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "${PRODUCT_NAME}-${getMilestoneVersion(VERSION)}-optaplanner-maven-repository"
-    remoteExec("unzip -t ${RHBOP_FOLDER_PATH}/${mavenRepoFileName}.zip > ${RHBOP_FOLDER_PATH}/${mavenRepoFileName}.text")
+
+    def content = remoteExec("unzip -t ${RHBOP_FOLDER_PATH}/${mavenRepoFileName}.zip")
+    sh "echo '${content}' > ${mavenRepoFileName}.text"
+
+    util.withKerberos('rhba-prod-keytab') {
+        sh "rsync -rlp --info=progress2 ${mavenRepoFileName}.text rhba-prod@${RCM_HOST}:${RHBOP_FOLDER_PATH_RELATIVE}/${mavenRepoFileName}.text"
+    }
 }
 
 def getMilestoneVersion(version) {

@@ -21,6 +21,7 @@ pipeline {
         RHBA_FOLDER_PATH = "${STAGING_BASE_PATH}/rhba/rhba-${VERSION}"
         RHBA_FOLDER_PATH_RELATIVE = "staging/rhba/rhba-${VERSION}"
         TARGET_FOLDER_PATH = "${STAGING_BASE_PATH}/${PRODUCT_NAME_LOWER_CASE}/${PRODUCT_NAME}-${VERSION}"
+        TARGET_FOLDER_PATH_RELATIVE = "staging/${PRODUCT_NAME_LOWER_CASE}/${PRODUCT_NAME}-${VERSION}"
     }
 
     stages {
@@ -104,7 +105,13 @@ def stageArtifact(artifact) {
 def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-maven-repository"
-    remoteExec("unzip -t ${TARGET_FOLDER_PATH}/${mavenRepoFileName}.zip > ${TARGET_FOLDER_PATH}/${mavenRepoFileName}.text")
+
+    def content = remoteExec("unzip -t ${TARGET_FOLDER_PATH}/${mavenRepoFileName}.zip")
+    sh "echo '${content}' > ${mavenRepoFileName}.text"
+
+    util.withKerberos('rhba-prod-keytab') {
+        sh "rsync -rlp --info=progress2 ${mavenRepoFileName}.text rhba-prod@${RCM_HOST}:${TARGET_FOLDER_PATH_RELATIVE}/${mavenRepoFileName}.text"
+    }
 }
 
 def getMilestoneVersion(version) {

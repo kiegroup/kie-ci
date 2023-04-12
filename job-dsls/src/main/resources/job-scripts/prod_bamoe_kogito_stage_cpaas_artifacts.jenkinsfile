@@ -22,6 +22,7 @@ pipeline {
         BAMOE_KOGITO_FOLDER_PATH = "${STAGING_BASE_PATH}/bamoe/${PRODUCT_NAME}-${VERSION}"
         BAMOE_KOGITO_FOLDER_PATH_RELATIVE = "staging/bamoe/${PRODUCT_NAME}-${VERSION}"
         BAMOE_FOLDER_PATH = "${STAGING_BASE_PATH}/bamoe/bamoe-${BAMOE_VERSION}"
+        BAMOE_FOLDER_PATH_RELATIVE = "staging/bamoe/bamoe-${BAMOE_VERSION}"
     }
 
     stages {
@@ -107,7 +108,13 @@ def stageArtifact(artifact) {
 def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "bamoe-${getMilestoneVersion(BAMOE_VERSION)}-kogito-maven-repository"
-    remoteExec("unzip -t ${BAMOE_FOLDER_PATH}/${mavenRepoFileName}.zip > ${BAMOE_FOLDER_PATH}/${mavenRepoFileName}.text")
+
+    def content = remoteExec("unzip -t ${BAMOE_FOLDER_PATH}/${mavenRepoFileName}.zip")
+    sh "echo '${content}' > ${mavenRepoFileName}.text"
+
+    util.withKerberos('rhba-prod-keytab') {
+        sh "rsync -rlp --info=progress2 ${mavenRepoFileName}.text rhba-prod@${RCM_HOST}:${BAMOE_FOLDER_PATH_RELATIVE}/${mavenRepoFileName}.text"
+    }
 }
 
 def getMilestoneVersion(version) {
