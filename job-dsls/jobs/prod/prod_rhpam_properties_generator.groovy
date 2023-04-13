@@ -82,7 +82,7 @@ pipelineJob("${folderPath}/rhpam-properties-generator") {
         stringParam("TIME_STAMP", "", "This is just for non-prod files")
         stringParam("BOM_VERSION", "\${PRODUCT_VERSION_LONG}", "This is just for prod files")
         stringParam("KIE_VERSION", "7.48.0.Final-redhat-00003", "This is just for prod files")
-        stringParam("MVEL_VERSION")
+        stringParam("MVEL_VERSION", "2.4.15.Final-redhat-00001")
         stringParam("IZPACK_VERSION")
         stringParam("INSTALLER_COMMONS_VERSION")
         stringParam("JAVAPARSER_VERSION", "", "This is just for prod files")

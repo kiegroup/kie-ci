@@ -82,7 +82,7 @@ pipelineJob("${folderPath}/bamoe-properties-generator") {
         stringParam("TIME_STAMP", "", "This is just for non-prod files")
         stringParam("BOM_VERSION", "\${PRODUCT_VERSION_LONG}", "This is just for prod files")
         stringParam("KIE_VERSION", "7.67.2.Final-redhat-00001", "This is just for prod files")
-        stringParam("MVEL_VERSION", "2.4.12.Final-redhat-00001")
+        stringParam("MVEL_VERSION", "2.4.15.Final-redhat-00001")
         stringParam("IZPACK_VERSION", "4.5.4.rhba-redhat-00017")
         stringParam("INSTALLER_COMMONS_VERSION", "2.4.0.rhba-redhat-00018")
         stringParam("JAVAPARSER_VERSION", "3.13.10", "This is just for prod files")
