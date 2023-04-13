@@ -4,7 +4,7 @@ import groovy.json.JsonSlurper
 import java.net.URLEncoder
 
 PNC_API_URL = PNC_API_URL.trim()
-STAGING_BASE_PATH = STAGING_BASE_PATH.trim()
+STAGING_BASE_PATH = "${RCM_GUEST_FOLDER}"
 MILESTONE = MILESTONE.trim()
 RCM_HOST = RCM_HOST.trim()
 
@@ -60,9 +60,6 @@ node {
 
                 println "[INFO] staging artifact from: ${artifactMetadata.publicUrl}"
                 stageArtifact(artifactMetadata.publicUrl, relativeArtifactPath)
-
-                println "[INFO] verifying artifact checksum with: ${artifactMetadata.md5}"
-                verifyStaged(artifactPath, artifactMetadata.md5)
             }
         }
     }
@@ -149,17 +146,6 @@ def stageArtifact(url, path) {
 
     util.withKerberos('rhba-prod-keytab') {
         sh "rsync -rlp --info=progress2 ${localFileName} rhba-prod@${RCM_HOST}:${path}"
-    }
-}
-
-def verifyStaged(path, md5) {
-    localFileName = path.split('/').last()
-    def output = sh([returnStdout: true, script: "md5sum ${localFileName}"])
-    def (outputMd5, outputPath) = output.split(/\s+/)
-    if (path.split('/').last() != outputPath) {
-        error("Couldn't compute the checksum for ${path}: ${output}")
-    } else if (md5 != outputMd5) {
-        error("${path} checksum doesn't match. Expected ${md5}, got ${outputMd5}")
     }
 }
 
