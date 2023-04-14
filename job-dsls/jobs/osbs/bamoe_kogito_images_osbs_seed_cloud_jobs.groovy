@@ -122,7 +122,19 @@ prodComponent.each { Component ->
                                 }    
                             }
                             
+                            stage('Prepare kogito-examples') {
+                                when { expression {env.PROD_COMPONENT != 'bamoe-kogito-builder-rhel8' }}
+                                steps {
+                                    script {
+                                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                                            sh "make clone-repos"
+                                        }
+                                    }
+                                }    
+                            }
+                            
                             stage('execute behave tests') {
+                                when { expression {env.PROD_COMPONENT != 'bamoe-kogito-builder-rhel8' }}
                                 steps {
                                     script {
                                         // pull from brew registry
