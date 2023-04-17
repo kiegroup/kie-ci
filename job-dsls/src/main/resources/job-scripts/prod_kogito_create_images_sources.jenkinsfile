@@ -39,13 +39,12 @@ pipeline {
         }
 
         stage('Upload artifacts') {
+            when {
+                expression { return params.UPLOAD_ARTIFACTS }
+            }
             steps {
                 script {
-                    if (Boolean.valueOf(UPLOAD_ARTIFACTS)) {
-                        uploadArtifacts()
-                    } else {
-                        println 'Skipping artifacts upload'
-                    }
+                    uploadArtifacts()
                 }
             }
         }
