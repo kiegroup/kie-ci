@@ -12,9 +12,11 @@ pipelineJob("${folderPath}/kogito-create-images-sources") {
 
     parameters {
         stringParam('VERSION', '', ' The milestone version, i.e. 1.13.1')
+        stringParam("PRODUCT_MILESTONE", "CR1")
         stringParam('BUILDS', '', 'List of Brew builds separated by comma')
         stringParam('OVERRIDING_FILES', 'rhpam-kogito-runtime-jvm-rhel8-overrides.yaml,rhpam-kogito-builder-rhel8-overrides.yaml', 'Comma separated list of the overriding files that will be fetched from the images repositories')
         stringParam('GITHUB_REFERENCE', '', 'Override the GitHub reference for all cloned repositories')
+        booleanParam('UPLOAD_ARTIFACTS', true, 'If the generated artifacts should be uploaded to rcm-host')
     }
 
     logRotator {
