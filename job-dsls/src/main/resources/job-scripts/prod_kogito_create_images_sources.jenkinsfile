@@ -1,3 +1,5 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
 pipeline {
     agent {
         label 'kie-rhel7 && !built-in'
@@ -35,6 +37,17 @@ pipeline {
                 }
             }
         }
+
+        stage('Upload artifacts') {
+            when {
+                expression { return params.UPLOAD_ARTIFACTS }
+            }
+            steps {
+                script {
+                    uploadArtifacts()
+                }
+            }
+        }
     }
 
     post {
@@ -42,5 +55,12 @@ pipeline {
             archiveArtifacts artifacts: 'bxms-tooling/release_scripts/*.zip', fingerprint: true
             cleanWs()
         }
+    }
+}
+
+def uploadArtifacts() {
+    println 'Uploading artifacts'
+    util.withKerberos('rhba-prod-keytab') {
+        sh "rsync -rlp --info=progress2 bxms-tooling/release_scripts/*.zip rhba-prod@${RCM_HOST}:staging/kogito/kogito-${VERSION}.${PRODUCT_MILESTONE}"
     }
 }
