@@ -1,8 +1,10 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
 import groovy.json.JsonSlurper
 import java.net.URLEncoder
 
 PNC_API_URL = PNC_API_URL.trim()
-STAGING_BASE_PATH = STAGING_BASE_PATH.trim()
+STAGING_BASE_PATH = "${RCM_GUEST_FOLDER}"
 MILESTONE = MILESTONE.trim()
 RCM_HOST = RCM_HOST.trim()
 
@@ -49,17 +51,15 @@ node {
                 println "[INFO] staging artifact: ${identifier}"
 
                 def artifactMetadata = getArtifactMetadata(identifier)
-                def artifactPath = stagingPath(artifact)
+                def artifactPath = "${STAGING_BASE_PATH}/${stagingPath(artifact)}"
+                def relativeArtifactPath = "staging/${stagingPath(artifact)}"
                 def artifactDirectoryPath = artifactPath - ~/\/[^\/]+$/
 
                 println "[INFO] (re)creating staging target path in: ${artifactPath}"
                 createStagingPath(artifactDirectoryPath)
 
                 println "[INFO] staging artifact from: ${artifactMetadata.publicUrl}"
-                stageArtifact(artifactMetadata.publicUrl, artifactPath)
-
-                println "[INFO] verifying artifact checksum with: ${artifactMetadata.md5}"
-                verifyStaged(artifactPath, artifactMetadata.md5)
+                stageArtifact(artifactMetadata.publicUrl, relativeArtifactPath)
             }
         }
     }
@@ -125,7 +125,7 @@ def identifier(artifact, version) {
  */
 def stagingPath(artifact) {
     def productStagingCode = [artifact.product.toUpperCase(), MILESTONE].join("-")
-    def productStagingPath = "${STAGING_BASE_PATH}/${artifact.product}/${productStagingCode}"
+    def productStagingPath = "${artifact.product}/${productStagingCode}"
     def version = MILESTONE - ~/\.[^\.]+$/
     def artifactName = [artifact.name, version, artifact.classifier].findAll({ it != null }).join("-")
     return "${productStagingPath}/${artifactName}.${artifact.package}"
@@ -133,25 +133,19 @@ def stagingPath(artifact) {
 
 def createStagingPath(path) {
     remoteExec("mkdir -m 775 -p ${path}")
-    remoteExec("chgrp jboss-prod ${path}")
 }
 
 def stageArtifact(url, path) {
     // need to use indy-admin here as there's a caching bug which can make some downloads fail
     def indyAdmin = url.replace("indy", "indy-admin")
     println "[INFO] staging ${indyAdmin} to ${path}"
-    remoteExec("curl -s ${indyAdmin} -o ${path}")
-    remoteExec("chmod 664 ${path}")
-    remoteExec("chgrp jboss-prod ${path}")
-}
 
-def verifyStaged(path, md5) {
-    def output = remoteExec("md5sum ${path}")
-    def (outputMd5, outputPath) = output.split(/\s+/)
-    if (path != outputPath) {
-        error("Couldn't compute the checksum for ${path}: ${output}")
-    } else if (md5 != outputMd5) {
-        error("${path} checksum doesn't match. Expected ${md5}, got ${outputMd5}")
+    def localFileName = path.split('/').last()
+    sh "curl -s ${indyAdmin} -o ${localFileName}"
+    sh "chmod 664 ${localFileName}"
+
+    util.withKerberos('rhba-prod-keytab') {
+        sh "rsync -rlp --info=progress2 ${localFileName} rhba-prod@${RCM_HOST}:${path}"
     }
 }
 

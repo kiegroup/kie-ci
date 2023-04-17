@@ -19,7 +19,6 @@ pipelineJob("${folderPath}/bamoe-staging") {
 
     parameters {
         stringParam("PNC_API_URL", "\${ORCH_PSI_URL}/pnc-rest/v2", "PNC Rest API endpoint. See: \${DOCS_ENGINEERING_URL}/display/JP/User%27s+guide")
-        stringParam("STAGING_BASE_PATH", "\${RCM_GUEST_FOLDER}", "Staging path where artifacts will be deployed into the host: rcm-host")
         stringParam("MILESTONE", "", "Release version including milestone, e.g. 7.10.0.CR2")
         stringParam("RCM_HOST", "\${RCM_HOST}", "rcm-host hostname")
     }

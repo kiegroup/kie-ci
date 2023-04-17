@@ -105,7 +105,13 @@ def renameArtifact(artifact) {
 def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "rhpam-${RHPAM_VERSION}-kogito-maven-repository"
-    remoteExec("unzip -t ${KOGITO_FOLDER_PATH}/${mavenRepoFileName}.zip > ${KOGITO_FOLDER_PATH}/${mavenRepoFileName}.text")
+
+    def content = remoteExec("unzip -t ${KOGITO_FOLDER_PATH}/${mavenRepoFileName}.zip")
+    sh "echo '${content}' > ${mavenRepoFileName}.text"
+
+    util.withKerberos('rhba-prod-keytab') {
+        sh "rsync -rlp --info=progress2 ${mavenRepoFileName}.text rhba-prod@${RCM_HOST}:${KOGITO_FOLDER_PATH_RELATIVE}/${mavenRepoFileName}.text"
+    }
 }
 
 def getMilestoneVersion(version) {
