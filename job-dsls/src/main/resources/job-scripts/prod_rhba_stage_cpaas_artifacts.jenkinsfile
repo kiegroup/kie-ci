@@ -82,17 +82,22 @@ pipeline {
 
 def createOfflinerZip() {
     println 'Creating offliner zip'
-    def offlinerFolderName = "${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-offliner"
-    def offlinerFolderPath = "${RHBA_FOLDER_PATH}/${offlinerFolderName}"
+    def milestoneVersion = getMilestoneVersion(VERSION)
+    def offlinerFolderName = "${PRODUCT_NAME_LOWER_CASE}-${milestoneVersion}-offliner"
 
-    remoteExec("mkdir -p ${offlinerFolderPath}")
-    remoteExec("cp ${RHBA_FOLDER_PATH}/offliner.txt ${offlinerFolderPath}")
+    def localOfflinerFolderPath = "${offlinerFolderName}"
+    sh "mkdir -p ${localOfflinerFolderPath}"
+
     util.withKerberos('rhba-prod-keytab') {
-        def relativeOfflinerFolderPath = "${RHBA_FOLDER_PATH_RELATIVE}/${offlinerFolderName}"
-        sh "rsync -rlp --info=progress2 integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba-prod@${RCM_HOST}:${relativeOfflinerFolderPath}/offline-repo-builder.sh"
+        sh "rsync -rlp --info=progress2 rhba-prod@${RCM_HOST}:${RHBA_FOLDER_PATH_RELATIVE}/offliner.txt ${localOfflinerFolderPath}/offliner.txt"
     }
-    remoteExec("zip -r ${RHBA_FOLDER_PATH}/rhba-${VERSION}-offliner.zip ${RHBA_FOLDER_PATH}/${offlinerFolderName}")
-    remoteExec("rm -rf ${offlinerFolderPath}")
+
+    sh "cp integration-platform-tooling/scripts/rhba/build-offline-repo.sh ${localOfflinerFolderPath}/offline-repo-builder.sh"
+    sh "zip -r rhba-${VERSION}-offliner.zip ${localOfflinerFolderPath}"
+
+    util.withKerberos('rhba-prod-keytab') {
+        sh "rsync -rlp --info=progress2 rhba-${VERSION}-offliner.zip rhba-prod@${RCM_HOST}:${RHBA_FOLDER_PATH_RELATIVE}"
+    }
 }
 
 def stageArtifact(artifact) {
@@ -105,12 +110,18 @@ def stageArtifact(artifact) {
 def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "${PRODUCT_NAME_LOWER_CASE}-${getMilestoneVersion(VERSION)}-maven-repository"
+    def relativeTargetMavenRepoFileName = "${TARGET_FOLDER_PATH_RELATIVE}/${mavenRepoFileName}"
 
-    def content = remoteExec("unzip -t ${TARGET_FOLDER_PATH}/${mavenRepoFileName}.zip")
-    sh "echo '${content}' > ${mavenRepoFileName}.text"
-
+    // download maven repo zip
     util.withKerberos('rhba-prod-keytab') {
-        sh "rsync -rlp --info=progress2 ${mavenRepoFileName}.text rhba-prod@${RCM_HOST}:${TARGET_FOLDER_PATH_RELATIVE}/${mavenRepoFileName}.text"
+        sh "rsync -rlp --info=progress2 rhba-prod@${RCM_HOST}:${relativeTargetMavenRepoFileName}.zip ${mavenRepoFileName}.zip"
+    }
+
+    sh "unzip -t ${mavenRepoFileName}.zip > ${mavenRepoFileName}.text"
+
+    // push maven repo extraction
+    util.withKerberos('rhba-prod-keytab') {
+        sh "rsync -rlp --info=progress2 ${mavenRepoFileName}.text rhba-prod@${RCM_HOST}:${relativeTargetMavenRepoFileName}.text"
     }
 }
 
