@@ -109,12 +109,7 @@ def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "bamoe-${getMilestoneVersion(BAMOE_VERSION)}-kogito-maven-repository"
 
-    def content = remoteExec("unzip -t ${BAMOE_FOLDER_PATH}/${mavenRepoFileName}.zip")
-    sh "echo '${content}' > ${mavenRepoFileName}.text"
-
-    util.withKerberos('rhba-prod-keytab') {
-        sh "rsync -rlp --info=progress2 ${mavenRepoFileName}.text rhba-prod@${RCM_HOST}:${BAMOE_FOLDER_PATH_RELATIVE}/${mavenRepoFileName}.text"
-    }
+    remoteExec("zip -C ${BAMOE_FOLDER_PATH_RELATIVE} -t ${mavenRepoFileName}.text ${mavenRepoFileName}.zip")
 }
 
 def getMilestoneVersion(version) {
