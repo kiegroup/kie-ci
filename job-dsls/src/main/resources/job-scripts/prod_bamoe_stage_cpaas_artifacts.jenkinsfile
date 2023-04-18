@@ -89,7 +89,7 @@ def createOfflinerZip() {
         def relativeOfflinerFolderPath = "${BAMOE_FOLDER_PATH_RELATIVE}/${offlinerFolderName}"
         sh "rsync -rlp --info=progress2 integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba-prod@${RCM_HOST}:${relativeOfflinerFolderPath}/offline-repo-builder.sh"
     }
-    remoteExec("zip -r ${BAMOE_FOLDER_PATH}/${PRODUCT_NAME}-${milestoneVersion}-offliner.zip ${BAMOE_FOLDER_PATH}/${offlinerFolderName}")
+    remoteExec("zip -C ${BAMOE_FOLDER_PATH_RELATIVE} -r ${PRODUCT_NAME}-${milestoneVersion}-offliner.zip ${offlinerFolderName}")
     remoteExec("rm -rf ${offlinerFolderPath} ${offlinerFile}")
 }
 

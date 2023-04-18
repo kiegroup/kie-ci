@@ -91,7 +91,7 @@ def createOfflinerZip() {
         def relativeOfflinerFolderPath = "${KOGITO_FOLDER_PATH_RELATIVE}/${offlinerFolderName}"
         sh "rsync -rlp --info=progress2 integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba-prod@${RCM_HOST}:${relativeOfflinerFolderPath}/offline-repo-builder.sh"
     }
-    remoteExec("zip -r ${KOGITO_FOLDER_PATH}/rhpam-${RHPAM_VERSION}-kogito-offliner.zip ${KOGITO_FOLDER_PATH}/${offlinerFolderName}")
+    remoteExec("zip -C ${KOGITO_FOLDER_PATH_RELATIVE} -r rhpam-${RHPAM_VERSION}-kogito-offliner.zip ${offlinerFolderName}")
     remoteExec("rm -rf ${offlinerFolderPath} ${offlinerFile}")
 }
 

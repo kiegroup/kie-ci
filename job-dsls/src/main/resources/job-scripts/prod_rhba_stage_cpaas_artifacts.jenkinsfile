@@ -91,7 +91,7 @@ def createOfflinerZip() {
         def relativeOfflinerFolderPath = "${RHBA_FOLDER_PATH_RELATIVE}/${offlinerFolderName}"
         sh "rsync -rlp --info=progress2 integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba-prod@${RCM_HOST}:${relativeOfflinerFolderPath}/offline-repo-builder.sh"
     }
-    remoteExec("zip -r ${RHBA_FOLDER_PATH}/rhba-${VERSION}-offliner.zip ${RHBA_FOLDER_PATH}/${offlinerFolderName}")
+    remoteExec("zip -C ${RHBA_FOLDER_PATH_RELATIVE} -r rhba-${VERSION}-offliner.zip ${offlinerFolderName}")
     remoteExec("rm -rf ${offlinerFolderPath}")
 }
 
