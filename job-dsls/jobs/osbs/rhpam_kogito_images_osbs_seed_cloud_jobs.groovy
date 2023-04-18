@@ -120,36 +120,9 @@ prodComponent.each { Component ->
                                     echo "Persisting the ${env.BUILT_IMAGE} to a file..."
                                     writeFile file: "${PROD_COMPONENT}-image-location.txt", text: "${env.BUILT_IMAGE}"
                                 }    
-                            }
-                            
-                            stage('Prepare kogito-examples') {
-                                steps {
-                                    script {
-                                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                                            sh "make clone-repos"
-                                        }
-                                    }
-                                }    
-                            }
-                            
-                            stage('execute behave tests') {
-                                steps {
-                                    script {
-                                        // pull from brew registry
-                                        echo "Pulling the ${env.BUILT_IMAGE} image..."
-                                        sh "docker pull ${env.BUILT_IMAGE}"
-                                        
-                                        // tag to the expected image name
-                                        def tagTo = "rhpam-7/${env.PROD_COMPONENT}:${env.PROD_VERSION}"
-                                        sh "docker tag ${env.BUILT_IMAGE} ${tagTo}"
-                                        // set IMAGE_VERSION with rc on it to avoid the image tag.
-                                        catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                                            sh "source ~/virtenvs/cekit/bin/activate && make build-image image_name=${env.PROD_COMPONENT} ignore_build=true ignore_test=false IMAGE_VERSION=0.0.0-rc"
-                                        }
-                                    }    
-                                }    
-                            }                             
-                        }    
+                            }                            
+                        }  
+                          
                         post {
                             always {
                                 archiveArtifacts artifacts: "${PROD_COMPONENT}-image-location.txt", onlyIfSuccessful: true
@@ -160,8 +133,7 @@ prodComponent.each { Component ->
                         }                      
                     }
                     
-                    
-                    
+                     
                     // Auxiliary Functions
                     private void validateParameters(required, optionals){
                         // Check if all required params are supplied
