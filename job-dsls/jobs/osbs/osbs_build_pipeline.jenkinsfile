@@ -154,7 +154,7 @@ pipeline {
  * @return Message Body for UMB send job
  */
 def getMessageBody(Map<String, String> imageBuildReferences) {
-    String toReturn
+    String toReturn = ""
     imageBuildReferences.each() { key, value ->
         toReturn += "$key: $value\n"
     }
