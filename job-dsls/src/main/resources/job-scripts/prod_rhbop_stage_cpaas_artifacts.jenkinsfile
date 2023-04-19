@@ -97,7 +97,7 @@ def createOfflinerZip() {
         def relativeOfflinerFolderPath = "${RHBOP_FOLDER_PATH_RELATIVE}/${offlinerFolderName}"
         sh "rsync -rlp --info=progress2 integration-platform-tooling/scripts/rhba/build-offline-repo.sh rhba-prod@${RCM_HOST}:${relativeOfflinerFolderPath}/offline-repo-builder.sh"
     }
-    remoteExec("zip -r ${RHBOP_FOLDER_PATH}/rhbop-${milestoneVersion}-optaplanner-offliner.zip ${RHBOP_FOLDER_PATH}/${offlinerFolderName}")
+    remoteExec("zip -C ${RHBOP_FOLDER_PATH_RELATIVE} -r rhbop-${milestoneVersion}-optaplanner-offliner.zip ${offlinerFolderName}")
     remoteExec("rm -rf ${offlinerFolderPath} ${offlinerFile}")
 }
 
@@ -105,12 +105,7 @@ def generateMavenRepositoryText() {
     println 'Generating maven repository text file'
     def mavenRepoFileName = "${PRODUCT_NAME}-${getMilestoneVersion(VERSION)}-optaplanner-maven-repository"
 
-    def content = remoteExec("unzip -t ${RHBOP_FOLDER_PATH}/${mavenRepoFileName}.zip")
-    sh "echo '${content}' > ${mavenRepoFileName}.text"
-
-    util.withKerberos('rhba-prod-keytab') {
-        sh "rsync -rlp --info=progress2 ${mavenRepoFileName}.text rhba-prod@${RCM_HOST}:${RHBOP_FOLDER_PATH_RELATIVE}/${mavenRepoFileName}.text"
-    }
+    remoteExec("zip -C ${RHBOP_FOLDER_PATH_RELATIVE} -t ${mavenRepoFileName}.text ${mavenRepoFileName}.zip")
 }
 
 def getMilestoneVersion(version) {
