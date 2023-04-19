@@ -25,7 +25,7 @@ pipeline {
 
         stage('Clone the repository') {
             steps {
-                sh "git clone ${BXMS_TOOLING_REPOSITORY} bxms-tooling"
+                sh "git clone --branch bamoe-src ${BXMS_TOOLING_REPOSITORY} bxms-tooling"
             }
         }
 
@@ -34,7 +34,7 @@ pipeline {
                 script {
                     dir('bxms-tooling/release_scripts') {
                         def OPTIONAL_PARAMS = GITHUB_REFERENCE != "" ? "--cref ${GITHUB_REFERENCE}" : ''
-                        sh "source ~/virtenvs/rhba-prod/bin/activate && python3 GenerateOpenshiftSrc.py --product kogito --builds ${BUILDS} --version ${VERSION} --of ${OVERRIDING_FILES} ${OPTIONAL_PARAMS}"
+                        sh "source ~/virtenvs/rhba-prod/bin/activate && python3 GenerateOpenshiftSrc.py --product rhpam --builds ${BUILDS} --version ${VERSION} --of ${OVERRIDING_FILES} ${OPTIONAL_PARAMS}"
                     }
                 }
             }
@@ -63,6 +63,6 @@ pipeline {
 def uploadArtifacts() {
     println 'Uploading artifacts'
     util.withKerberos('rhba-prod-keytab') {
-        sh "rsync -rlp --info=progress2 bxms-tooling/release_scripts/*.zip rhba-prod@${RCM_HOST}:staging/kogito/kogito-${VERSION}.${PRODUCT_MILESTONE}"
+        sh "rsync -rlp --info=progress2 bxms-tooling/release_scripts/*.zip rhba-prod@${RCM_HOST}:staging/bamoe/bamoe-${VERSION}.${PRODUCT_MILESTONE}"
     }
 }
