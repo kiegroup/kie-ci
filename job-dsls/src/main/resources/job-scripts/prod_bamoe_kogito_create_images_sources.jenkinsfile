@@ -16,6 +16,7 @@ pipeline {
             steps {
                 println "[INFO] VERSION: ${VERSION}"
                 println "[INFO] PRODUCT_MILESTONE: ${PRODUCT_MILESTONE}"
+                println "[INFO] BAMOE_VERSION: ${BAMOE_VERSION}"
                 println "[INFO] BUILDS: ${BUILDS}"
                 println "[INFO] OVERRIDING_FILES: ${OVERRIDING_FILES}"
                 println "[INFO] GITHUB_REFERENCE: ${GITHUB_REFERENCE}"
@@ -25,7 +26,7 @@ pipeline {
 
         stage('Clone the repository') {
             steps {
-                sh "git clone ${BXMS_TOOLING_REPOSITORY} bxms-tooling"
+                sh "git clone --branch kogito-bamoe-src ${BXMS_TOOLING_REPOSITORY} bxms-tooling"
             }
         }
 
@@ -63,6 +64,6 @@ pipeline {
 def uploadArtifacts() {
     println 'Uploading artifacts'
     util.withKerberos('rhba-prod-keytab') {
-        sh "rsync -rlp --info=progress2 bxms-tooling/release_scripts/*.zip rhba-prod@${RCM_HOST}:staging/kogito/kogito-${VERSION}.${PRODUCT_MILESTONE}"
+        sh "rsync -rlp --info=progress2 bxms-tooling/release_scripts/*.zip rhba-prod@${RCM_HOST}:staging/bamoe/bamoe-${BAMOE_VERSION}.${PRODUCT_MILESTONE}"
     }
 }
