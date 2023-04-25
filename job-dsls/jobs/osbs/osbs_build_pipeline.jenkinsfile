@@ -156,7 +156,7 @@ pipeline {
 def getMessageBody(Map<String, String> imageBuildReferences) {
     String toReturn = ""
     imageBuildReferences.each() { key, value ->
-        toReturn += "$key: $value\n"
+        toReturn += "$key=$value\n"
     }
     return toReturn
 }
