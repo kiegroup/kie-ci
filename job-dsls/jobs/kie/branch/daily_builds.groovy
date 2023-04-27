@@ -158,7 +158,7 @@ for (dailyConfig in DAILY_CONFIGS) {
             kieVersion = KIE_VERSION,
             jdkVersion = JDK_VERSION,
             mvnTool =  MVN_TOOL,
-            downloadUrl = "\${EAP_DOWNLOAD_URL}7/7.4.8/jboss-eap-7.4.8.zip",
+            downloadUrl = "\${EAP_DOWNLOAD_URL}7/7.4.10/jboss-eap-7.4.10'.zip",
             nexusUrl = "\${BXMS_QE_NEXUS}${URL_EXTENDED_PATH}",
             settingsXml = SETTINGS_XML)
 }
