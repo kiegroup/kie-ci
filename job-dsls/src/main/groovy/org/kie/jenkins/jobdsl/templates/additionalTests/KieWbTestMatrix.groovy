@@ -128,7 +128,7 @@ class KieWbTestMatrix {
                     properties("maven.test.failure.ignore": true)
                     properties("deployment.timeout.millis": "240000")
                     properties("container.startstop.timeout.millis": "240000")
-                    properties("webdriver.firefox.bin": "/opt/tools/firefox-60esr/firefox-bin")
+                    properties("webdriver.firefox.bin": "/opt/tools/firefox-91esr/firefox-bin")
                     mavenOpts("-Xms1024m -Xmx1536m")
                     providedSettings("${settingsXml}")
                 }
