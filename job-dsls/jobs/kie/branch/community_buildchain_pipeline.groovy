@@ -153,6 +153,6 @@ KieServerMatrix.addDeployConfiguration(jobDefinition4,
         kieVersion = KIE_VERSION,
         jdkVersion = JAVADK,
         mvnTool =  MVN_TOOL,
-        downloadUrl = "\${EAP_DOWNLOAD_URL}7/7.4.8/jboss-eap-7.4.8.zip",
+        downloadUrl = "\${EAP_DOWNLOAD_URL}7/7.4.10/jboss-eap-7.4.10.zip",
         nexusUrl = "\${KIE_GROUP_REPO_URL}",
         settingsXml = SETTINGS_XML)
