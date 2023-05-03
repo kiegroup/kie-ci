@@ -19,12 +19,13 @@ pipeline {
     stages {
         stage('Print variables') {
             steps {
-                println "[INFO] PNC_API_URL: ${PNC_API_URL}"
+                println "[INFO] PRODUCT_ID: ${productId}"
+                println "[INFO] MILESTONE: ${MILESTONE}"
                 println "[INFO] QUARKUS_PLATFORM_VERSION: ${QUARKUS_PLATFORM_VERSION}"
                 println "[INFO] QUARKUS_VERSION: ${QUARKUS_VERSION}"
-                println "[INFO] PROJECTS: ${projects}"
-                println "[INFO] PRODUCT_ID: ${productId}"
+                println "[INFO] PNC_API_URL: ${PNC_API_URL}"
                 println "[INFO] DATA_INDEX_EPHEMERAL_BREW: ${DATA_INDEX_EPHEMERAL_BREW}"
+                println "[INFO] PROJECTS: ${projects}"
             }
         }
         stage('Fetch current milestone') {
