@@ -3,8 +3,8 @@
 import groovy.json.JsonSlurper
 import java.net.URLEncoder
 
-def projects = ["kiegroup/drools", "kiegroup/kogito-runtimes"] // Projects to find the productized version in a milestone
-def productId = "${env.PRODUCT_ID.trim() ?: '155'}"  // ID of OpenShift-Serverless-Logic product
+def projects = ["kiegroup/kogito-runtimes"] // Projects to find the productized version in a milestone. Projects should be part of OSL build group in PNC
+def productId = "${env.PRODUCT_ID.trim() ?: '155'}"  // ID of OSL product in PNC
 
 def projectsAndVersions = [:]
 def imagesTags = [:]
@@ -19,12 +19,14 @@ pipeline {
     stages {
         stage('Print variables') {
             steps {
-                println "[INFO] PNC_API_URL: ${PNC_API_URL}"
+                println "[INFO] PRODUCT_ID: ${productId}"
+                println "[INFO] MILESTONE: ${MILESTONE}"
+                println "[INFO] DROOLS_VERSION: ${DROOLS_VERSION}"
                 println "[INFO] QUARKUS_PLATFORM_VERSION: ${QUARKUS_PLATFORM_VERSION}"
                 println "[INFO] QUARKUS_VERSION: ${QUARKUS_VERSION}"
-                println "[INFO] PROJECTS: ${projects}"
-                println "[INFO] PRODUCT_ID: ${productId}"
+                println "[INFO] PNC_API_URL: ${PNC_API_URL}"
                 println "[INFO] DATA_INDEX_EPHEMERAL_BREW: ${DATA_INDEX_EPHEMERAL_BREW}"
+                println "[INFO] PROJECTS: ${projects}"
             }
         }
         stage('Fetch current milestone') {
@@ -115,7 +117,7 @@ def getMessageBody(milestone, projectsAndVersions, imagesTags) {
 {
     "maven_repository_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-maven-repository.zip",
     "sources_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-src.zip",
-    "version": {"serverlesslogic-rhba":"${milestone}","serverlesslogic":"${projectsAndVersions["kiegroup/kogito-runtimes"]}","drools":"${projectsAndVersions["kiegroup/drools"]}","platform.quarkus.bom":"${QUARKUS_PLATFORM_VERSION}", "quarkus.bom":"${QUARKUS_VERSION}"},
+    "version": {"serverlesslogic-rhba":"${milestone}","serverlesslogic":"${projectsAndVersions["kiegroup/kogito-runtimes"]}","drools":"${DROOLS_VERSION}","platform.quarkus.bom":"${QUARKUS_PLATFORM_VERSION}", "quarkus.bom":"${QUARKUS_VERSION}"},
     "image": {"data-index-ephemeral": ${imagesTags["data-index-ephemeral"]}}
 }"""
 }
