@@ -21,6 +21,7 @@ def final DEFAULTS = [
 def final REPO_CONFIGS = [
         "droolsjbpm-knowledge"  : [],
         "drools"                : [],
+        "kie-jpmml-integration" : [],
         "optaplanner"           : []
 ]
 

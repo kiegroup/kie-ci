@@ -34,6 +34,10 @@ def final REPO_CONFIGS = [
                 label: "kie-rhel7 && kie-mem4g && !built-in",
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
         ],
+        "kie-jpmml-integration"     : [
+                label: "kie-rhel7 && kie-mem4g && !built-in",
+                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
+        ],
         "optaplanner"               : [
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'build/.*', 'ide-configuration/.*']
         ]

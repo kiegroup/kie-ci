@@ -38,6 +38,7 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["optaplanner-7.x", "/KIE/main/deployedRepo/jbpm"],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
+        "kie-jpmml-integration"     : [],
         "optaplanner"               : [
                 downstreamRepos     : ["/KIE/main/deployedRepo/droolsjbpm-integration", "optaweb-employee-rostering-7.x"],
                 mvnGoals: "-e -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
