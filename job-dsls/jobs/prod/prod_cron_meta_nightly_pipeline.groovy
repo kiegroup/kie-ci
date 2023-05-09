@@ -57,10 +57,10 @@ def RHBOP_NEXT_PRODUCT_CONFIG_BRANCH='master'
 def DAI_NEXT_PRODUCT_BRANCH='main'
 def DAI_NEXT_PRODUCT_CONFIG_BRANCH='master'
 
-def DAI_CURRENT_PRODUCT_VERSION='1.0.0'
+//def DAI_CURRENT_PRODUCT_VERSION='1.0.0' // took from project pom
 def DAI_CURRENT_PRODUCT_BRANCH='1.0.x'
 def DAI_CURRENT_PRODUCT_CONFIG_BRANCH='drools-ansible-integration/1.0.x'
-def DAI_CURRENT_DROOLS_VERSION='8.36.0'
+//def DAI_CURRENT_DROOLS_VERSION='8.36.0' // took from project pom
 
 def metaJob="""
 pipeline{
@@ -92,7 +92,7 @@ pipeline{
 
         // Drools Ansible Integration
         ${droolsAnsibleIntegrationNightlyStage(DAI_NEXT_PRODUCT_BRANCH, DAI_NEXT_PRODUCT_CONFIG_BRANCH)}
-        ${droolsAnsibleIntegrationNightlyStage(DAI_CURRENT_PRODUCT_BRANCH, DAI_CURRENT_PRODUCT_CONFIG_BRANCH, DAI_CURRENT_PRODUCT_VERSION, DAI_CURRENT_DROOLS_VERSION, DAI_CURRENT_PRODUCT_BRANCH)}
+        ${droolsAnsibleIntegrationNightlyStage(DAI_CURRENT_PRODUCT_BRANCH, DAI_CURRENT_PRODUCT_CONFIG_BRANCH, DAI_CURRENT_PRODUCT_BRANCH)}
     }
 }
 """
@@ -231,7 +231,7 @@ String rhbopNightlyStage(String branch, String configBranch, String version = ''
     """
 }
 
-String droolsAnsibleIntegrationNightlyStage(String branch, String configBranch, String version = '', String droolsVersion = '', String definitionFileBranch = 'main') {
+String droolsAnsibleIntegrationNightlyStage(String branch, String configBranch, String definitionFileBranch = 'main', String version = '', String droolsVersion = '') {
     // when version or droolsVersion are empty, the Jenkins job will get them from the main branch pom
     return """
         stage('trigger Drools Ansible Integration nightly job ${branch}') {
