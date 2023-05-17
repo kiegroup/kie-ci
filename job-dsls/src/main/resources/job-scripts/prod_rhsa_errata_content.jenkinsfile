@@ -1,6 +1,6 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
-node {
+node('kie-rhel7-pipeline && !built-in') {
     stage('Print variables') {
         println "[INFO] PRODUCT_NAME: ${PRODUCT_NAME}"
         println "[INFO] PRODUCT_VERSION: ${PRODUCT_VERSION}"

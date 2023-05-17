@@ -7,7 +7,7 @@ import org.kie.jenkins.jobdsl.Constants
 def metaJob="""
 pipeline {
     agent {
-        node {
+        node('kie-rhel7-pipeline && !built-in') {
             label '${Constants.LABEL_KIE_RHEL}'
         }
     }
