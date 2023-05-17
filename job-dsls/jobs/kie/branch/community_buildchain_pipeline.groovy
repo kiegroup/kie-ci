@@ -6,7 +6,7 @@ def BASE_BRANCH=Constants.BRANCH
 def RELEASE_BRANCH="r" + Constants.KIE_PREFIX + ".Final"
 def M2DIR = Constants.LOCAL_MVN_REP
 def MAVEN_OPTS="-Xms1g -Xmx3g"
-def COMMIT_MSG="Upgraded_version_to_"
+def COMMIT_MSG="Bumped_up_to_version_"
 def JAVADK=Constants.JDK_TOOL
 def MVN_TOOL=Constants.MAVEN_TOOL
 // number of build that has stored the binaries (*tar.gz) that are wanted to upload
