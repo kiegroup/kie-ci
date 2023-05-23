@@ -30,6 +30,7 @@ node('${Constants.LABEL_KIE_RHEL}') {
             "KOGITO_VERSION"                    : KOGITO_VERSION,
             "OPTAPLANNER_PRODUCT_VERSION"       : OPTAPLANNER_PRODUCT_VERSION,
             "OPTAWEB_PRODUCT_VERSION"           : OPTAWEB_PRODUCT_VERSION,
+            "QUARKUS_BOM_VERSION"               : QUARKUS_BOM_VERSION,
             "PLATFORM_QUARKUS_BOM_VERSION"      : PLATFORM_QUARKUS_BOM_VERSION,
             "GIT_INFORMATION_HASHES"            : GIT_INFORMATION_HASHES
     ])
@@ -82,7 +83,8 @@ pipelineJob("${folderPath}/kogito-properties-generator") {
         stringParam("KOGITO_VERSION", "1.13.0.redhat-00001")
         stringParam("OPTAPLANNER_PRODUCT_VERSION", "8.13.0.Final-redhat-00001")
         stringParam("OPTAWEB_PRODUCT_VERSION", "8.13.0.Final-redhat-00001")
-        stringParam("PLATFORM_QUARKUS_BOM_VERSION", "2.7.6.Final-redhat-00006")
+        stringParam("QUARKUS_BOM_VERSION", "2.13.7.Final-redhat-00003")
+        stringParam("PLATFORM_QUARKUS_BOM_VERSION", "2.13.7.SP2-redhat-00002")
         stringParam("RCM_GUEST_FOLDER", "\${RCM_GUEST_FOLDER}")
         stringParam("RCM_HOST", "\${RCM_HOST}")
         stringParam("NIGHTLY_FILE_ID", "kogito-nightly-properties-template")
