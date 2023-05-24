@@ -18,6 +18,7 @@ node('${Constants.LABEL_KIE_RHEL}') {
             "BAMOE_PRODUCT_VERSION"             : BAMOE_PRODUCT_VERSION,
             "PRODUCT_MILESTONE"                 : PRODUCT_MILESTONE,
             "KOGITO_VERSION"                    : KOGITO_VERSION,
+            "QUARKUS_BOM_VERSION"               : QUARKUS_BOM_VERSION,
             "PLATFORM_QUARKUS_BOM_VERSION"      : PLATFORM_QUARKUS_BOM_VERSION
     ])
 
@@ -51,7 +52,8 @@ pipelineJob("${folderPath}/bamoe-kogito-properties-generator") {
         stringParam("BAMOE_PRODUCT_VERSION", "8.0.0")
         stringParam("PRODUCT_MILESTONE", "CR1")
         stringParam("KOGITO_VERSION", "1.13.2.redhat-00001")
-        stringParam("PLATFORM_QUARKUS_BOM_VERSION", "2.7.6.Final-redhat-00006")
+        stringParam("QUARKUS_BOM_VERSION", "2.13.7.Final-redhat-00003")
+        stringParam("PLATFORM_QUARKUS_BOM_VERSION", "2.13.7.SP2-redhat-00002")
         stringParam("RCM_GUEST_FOLDER", "\${RCM_GUEST_FOLDER}")
         stringParam("RCM_HOST", "\${RCM_HOST}")
         stringParam("RELEASE_STAGING_FILE_ID", "kogito-blue-prod-properties-template")
