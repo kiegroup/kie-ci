@@ -6,8 +6,15 @@ import java.net.URLEncoder
 def projects = ["kiegroup/kogito-runtimes"] // Projects to find the productized version in a milestone. Projects should be part of OSL build group in PNC
 def productId = "${env.PRODUCT_ID.trim() ?: '155'}"  // ID of OSL product in PNC
 
+def images = [ // Images to find the tag in Brew
+    'data-index-ephemeral': [brewBuildID: "${env.DATA_INDEX_EPHEMERAL_BREW}", brewPackageName: 'openshift-serverless-1-logic-data-index-ephemeral-rhel8-container', imageTag: ''],
+    'swf-builder': [brewBuildID: "${env.SWF_BUILDER_BREW}", brewPackageName: 'openshift-serverless-1-logic-swf-builder-rhel8-container', imageTag: ''],
+    'swf-devmode': [brewBuildID: "${env.SWF_DEVMODE_BREW}", brewPackageName: 'openshift-serverless-1-logic-swf-devmode-rhel8-container', imageTag: ''],
+    'operator': [brewBuildID: "${env.OPERATOR_BREW}", brewPackageName: 'openshift-serverless-1-logic-rhel8-operator-container', imageTag: ''],
+    'operator-bundle': [brewBuildID: "${env.OPERATOR_BUNDLE_BREW}", brewPackageName: 'openshift-serverless-1-logic-rhel8-operator-bundle-container', imageTag: '']
+]
+
 def projectsAndVersions = [:]
-def imagesTags = [:]
 def milestoneId = ""
 def milestone = ""
 
@@ -26,7 +33,10 @@ pipeline {
                 println "[INFO] QUARKUS_VERSION: ${QUARKUS_VERSION}"
                 println "[INFO] PNC_API_URL: ${PNC_API_URL}"
                 println "[INFO] DATA_INDEX_EPHEMERAL_BREW: ${DATA_INDEX_EPHEMERAL_BREW}"
-                println "[INFO] PROJECTS: ${projects}"
+                println "[INFO] SWF_BUILDER_BREW: ${SWF_BUILDER_BREW}"
+                println "[INFO] SWF_DEVMODE_BREW: ${SWF_DEVMODE_BREW}"
+                println "[INFO] OPERATOR_BREW: ${OPERATOR_BREW}"
+                println "[INFO] OPERATOR_BUNDLE_BREW: ${OPERATOR_BUNDLE_BREW}"
             }
         }
         stage('Fetch current milestone') {
@@ -63,24 +73,26 @@ pipeline {
         stage('Fetch images tags') {
             steps {
                 script {
-                    def brewBuild
-                    if (env.DATA_INDEX_EPHEMERAL_BREW) {
-                        println '[INFO] Data-index-ephemeral brew build id defined as part of the job parameters'
-                        brewBuild = env.DATA_INDEX_EPHEMERAL_BREW.trim()
-                    } else {
-                        println '[INFO] Data-index-ephemeral brew build not provided. Getting the latest one from brew.'
-                        brewBuild = getLatestImageBuild("openshift-serverless-${getMinorProductVersion(milestone)}-rhel-8-container-candidate", "openshift-serverless-1-logic-data-index-ephemeral-rhel8-container").trim()
+                    def brewTag = "openshift-serverless-${getMinorProductVersion(milestone)}-rhel-8-container-candidate"
+                    images.each { k, v ->
+                        def brewBuild
+                        if (v.brewBuildID) {
+                            println "[INFO] ${k} brew build id defined as part of the job parameters"
+                            brewBuild = v.brewBuildID.trim()
+                        } else {
+                            println "[INFO] ${k} brew build not provided. Getting the latest one from brew"
+                            brewBuild = getLatestImageBuild(brewTag, v.brewPackageName).trim()
+                        }
+                        println "[INFO] BREW BUILD: ${brewBuild}"
+                        v.imageTag = getImageTag(brewBuild).trim()
                     }
-
-                    println "[INFO] BREW BUILD: ${brewBuild}"
-                    imagesTags["data-index-ephemeral"] = getImageTag(brewBuild).trim()
                 }
             }
         }
         stage('Send UMB Message to QE') {
             steps {
                 script {
-                    def messageBody = getMessageBody(milestone, projectsAndVersions, imagesTags)
+                    def messageBody = getMessageBody(milestone, projectsAndVersions, images)
                     triggerUMBMessageJob(messageBody, milestone)
                 }
             }
@@ -112,13 +124,13 @@ def getMinorProductVersion(milestone) {
     return "${splits[0]}.${splits[1]}"
 }
 
-def getMessageBody(milestone, projectsAndVersions, imagesTags) {
+def getMessageBody(milestone, projectsAndVersions, images) {
     return """
 {
     "maven_repository_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-maven-repository.zip",
     "sources_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-src.zip",
     "version": {"serverlesslogic-rhba":"${milestone}","serverlesslogic":"${projectsAndVersions["kiegroup/kogito-runtimes"]}","drools":"${DROOLS_VERSION}","platform.quarkus.bom":"${QUARKUS_PLATFORM_VERSION}", "quarkus.bom":"${QUARKUS_VERSION}"},
-    "image": {"data-index-ephemeral": ${imagesTags["data-index-ephemeral"]}}
+    "image": {"data-index-ephemeral":${images["data-index-ephemeral"].imageTag},"swf-builder":${images["swf-builder"].imageTag},"swf-devmode":${images["swf-devmode"].imageTag},"operator":${images["operator"].imageTag},"operator-bundle":${images["operator-bundle"].imageTag}}
 }"""
 }
 

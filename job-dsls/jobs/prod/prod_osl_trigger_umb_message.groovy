@@ -17,7 +17,11 @@ pipelineJob("${folderPath}/osl-trigger-umb-message") {
         stringParam('QUARKUS_PLATFORM_VERSION', '2.13.7.Final-redhat-00003', 'The productized version of Quarkus Platform used for building Openshift Serverless Logic currect milestone.')
         stringParam('QUARKUS_VERSION', '2.13.7.Final-redhat-00003', 'The productized version of Quarkus used for building Openshift Serverless Logic currect milestone.')
         stringParam('PNC_API_URL', "\${ORCH_PSI_URL}/pnc-rest/v2", "PNC Rest API endpoint. See: \${DOCS_ENGINEERING_URL}/display/JP/User%27s+guide")
-        stringParam('DATA_INDEX_EPHEMERAL_BREW', '', 'The openshift-serverless-1-logic-data-index-ephemeral-rhel8-container brew build id, i.e. 2195547. This parameter is optional and in case it is not defined, the latest built image is used.')
+        stringParam('DATA_INDEX_EPHEMERAL_BREW', '', 'The openshift-serverless-1-logic-data-index-ephemeral-rhel8-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
+        stringParam('SWF_BUILDER_BREW', '', 'The openshift-serverless-1-logic-swf-builder-rhel8-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
+        stringParam('SWF_DEVMODE_BREW', '', 'The openshift-serverless-1-logic-swf-devmode-rhel8-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
+        stringParam('OPERATOR_BREW', '', 'The openshift-serverless-1-logic-rhel8-operator-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
+        stringParam('OPERATOR_BUNDLE_BREW', '', 'The openshift-serverless-1-logic-rhel8-operator-bundle-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
     }
 
     logRotator {
