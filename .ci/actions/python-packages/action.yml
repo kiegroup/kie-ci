@@ -1,0 +1,14 @@
+name: 'Python packages'
+description: 'Install Python packages via pip'
+inputs:
+  packages:
+    description: "comma separated list of packages to install"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Python needed packages
+      shell: bash
+      run: |
+        pip install $(echo ${{ inputs.packages }} | tr "," " ")
