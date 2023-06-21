@@ -139,7 +139,7 @@ prodComponent.each { Component ->
                                         \'\'\')
                                         
                                         catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                                            sh "source ~/virtenvs/cekit/bin/activate && cd rhba-repo/${get_dir.trim()} && cekit --verbose --redhat test --overrides-file branch-overrides.yaml behave"
+                                            util.runWithPythonVirtualEnv("cd rhba-repo/${get_dir.trim()} && cekit --verbose --redhat test --overrides-file branch-overrides.yaml behave", 'cekit')
                                         }
                                     }    
                                 }    
@@ -255,7 +255,7 @@ prodComponent.each { Component ->
 
                         // Run the build script
                         dir(component_path) {
-                            sh "source ~/virtenvs/cekit/bin/activate && $build_command | tee output.txt"
+                            util.runWithPythonVirtualEnv("$build_command | tee output.txt", 'cekit')
                         }
 
                         // post processing
