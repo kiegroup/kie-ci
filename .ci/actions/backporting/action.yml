@@ -85,8 +85,6 @@ runs:
       id: prepare-reviewers
       shell: bash
       run: |
-        env
-
         # starts from request reviewers or empty array
         reviewers="$(echo ${REQUESTED_REVIEWERS:-[]} | jq -c 'map(.login)' | jq -cr '[. |= . + ["${{ inputs.author }}", "${{ env.MERGED_BY }}"] | .[] | select(length > 0)] | unique')"
 
@@ -98,15 +96,15 @@ runs:
 
         echo "reviewers = ${reviewers}"
         echo "BACKPORT_REVIEWERS=${reviewers}" >> $GITHUB_ENV
-    - name: Perform cherry pick
-      id: cherry-pick
-      uses: carloscastrojumo/github-cherry-pick-action@v1.0.9
+    - name: Perform pull request backporting
+      id: pr-backporting
+      uses: kiegroup/git-backporting@v4.2.0
       with:
-        branch: "${{ inputs.target-branch }}"
+        pull-request: ${{ inputs.original-pr-url }}
+        target-branch: "${{ inputs.target-branch }}"
+        auth: "${{ env.GITHUB_TOKEN }}"
         title: "[${{ inputs.target-branch }}] ${{ inputs.title }}"
-        body: "**Backport:** ${{ inputs.original-pr-url }}\r\n\r\n${{ inputs.body }}"
-        labels: |
-          cherry-pick :cherries:
-        inherit_labels: false
-        cherry-pick-branch: "${{ inputs.target-branch }}_${{ inputs.original-pr-branch }}"
+        labels: "cherry-pick :cherries:"
+        inherit-labels: false
+        bp-branch-name: "${{ inputs.target-branch }}_${{ inputs.original-pr-branch }}"
         reviewers: ${{ env.BACKPORT_REVIEWERS }}
