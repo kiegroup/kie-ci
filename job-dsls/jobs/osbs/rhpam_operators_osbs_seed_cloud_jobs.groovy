@@ -226,7 +226,7 @@ prodComponent.each { Component ->
                         checkout(githubscm.resolveRepository(operator_repo_name, GITHUB_ORG_UNIT, operator_branch, false))
                         // Run the build script that should be into the operator hack folder
                         dir('hack') {
-                          sh "source ~/virtenvs/cekit/bin/activate && ./${build_command} | tee ../output.txt"
+                            util.runWithPythonVirtualEnv("./${build_command} | tee ../output.txt", 'cekit')
                         }
 
                         // query the built image from osbs using brew cli

@@ -197,7 +197,7 @@ prodComponent.each { Component ->
                          
                         // Run the build script that should be into the operator hack folder
                         dir('scripts') {
-                            sh "source ~/virtenvs/cekit/bin/activate && ./${build_command} | tee ../output.txt"
+                            util.runWithPythonVirtualEnv("./${build_command} | tee ../output.txt", 'cekit')
                         }
 
                         // post processing

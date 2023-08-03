@@ -35,7 +35,7 @@ pipeline {
                 script {
                     dir('bxms-tooling/release_scripts') {
                         def OPTIONAL_PARAMS = GITHUB_REFERENCE != "" ? "--cref ${GITHUB_REFERENCE}" : ''
-                        sh "source ~/virtenvs/rhba-prod/bin/activate && python3 GenerateOpenshiftSrc.py --product kogito --builds ${BUILDS} --version ${VERSION} --of ${OVERRIDING_FILES} ${OPTIONAL_PARAMS}"
+                        util.runWithPythonVirtualEnv("python3 GenerateOpenshiftSrc.py --product kogito --builds ${BUILDS} --version ${VERSION} --of ${OVERRIDING_FILES} ${OPTIONAL_PARAMS}", 'rhba-prod')
                     }
                 }
             }
