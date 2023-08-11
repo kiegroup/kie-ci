@@ -27,9 +27,11 @@ pipeline {
 
         stage('Create the release tracker tickets') {
             steps {
-                withCredentials([string(credentialsId: 'jira-token', variable: 'JIRA_TOKEN')]) {
-                    dir('integration-platform-tooling') {
-                        util.runWithPythonVirtualEnv("python3 release-generator.py --headless --authtoken ${JIRA_TOKEN} ${VERSION} ${TEMPLATE}.yaml", 'rhba-prod')
+                script {
+                    withCredentials([string(credentialsId: 'jira-token', variable: 'JIRA_TOKEN')]) {
+                        dir('integration-platform-tooling') {
+                            util.runWithPythonVirtualEnv("python3 release-generator.py --headless --authtoken ${JIRA_TOKEN} ${VERSION} ${TEMPLATE}.yaml", 'rhba-prod')
+                        }
                     }
                 }
             }
