@@ -1,3 +1,5 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
 pipeline {
     agent {
         label 'kie-rhel7 && !built-in'
