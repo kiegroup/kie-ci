@@ -5,7 +5,7 @@
 import org.kie.jenkins.jobdsl.Constants
 
 def repo = "kie-tools"
-def labelName = "kie-rhel7 && kie-mem8g"
+def labelName = "kie-rhel7 && kie-mem8g && !built-in"
 def javadk = Constants.JDK_TOOL
 def regexpFilterRegexValue = '([0-9]+)\\.([0-9]+)\\.([0-9]+)-prerelease'
 
@@ -77,7 +77,7 @@ job(jobName) {
                 print kieToolsBranch
                 print kieToolsVersion
                 print kieToolsUmbVersion
-           
+
                 def result = ["KIE_TOOLS_BRANCH":  kieToolsBranch, 
                               "KIE_TOOLS_VERSION": kieToolsVersion,
                               "KIE_TOOLS_UMB_VERSION": kieToolsUmbVersion]
