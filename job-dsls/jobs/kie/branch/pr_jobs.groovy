@@ -55,10 +55,6 @@ def final REPO_CONFIGS = [
                 timeoutMins: 150,
                 excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt', 'docsimg/.*']
         ],
-        "kie-jpmml-integration"     : [
-                label: "kie-rhel7 && kie-mem4g && !built-in",
-                excludedRegions: ['LICENSE.*', '\\.gitignore', '.*\\.md', '.*\\.adoc', '.*\\.txt']
-        ],
         "droolsjbpm-integration"    : [
                 timeoutMins: 300,
                 label: "kie-rhel7 && kie-mem24g && !built-in",

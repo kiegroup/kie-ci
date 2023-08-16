@@ -66,7 +66,6 @@ def final REPO_CONFIGS = [
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Dcontainer.profile=wildfly",
                 downstreamRepos        : ["kie-jpmml-integration","droolsjbpm-integration"]
         ],
-        "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [
                 timeoutMins            : 240,
                 downstreamRepos        : ["openshift-drools-hacep","kie-wb-playground","jbpm-work-items","process-migration-service"]

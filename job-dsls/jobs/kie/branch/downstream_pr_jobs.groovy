@@ -30,7 +30,6 @@ def final REPO_CONFIGS = [
         "kie-soup"                  : [],
         "appformer"                 : [],
         "jbpm"                      : [],
-        "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [
                 executionNumber : 20
         ],

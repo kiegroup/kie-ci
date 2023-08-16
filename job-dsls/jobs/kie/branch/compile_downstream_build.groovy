@@ -28,7 +28,6 @@ def final REPO_CONFIGS = [
         "kie-soup"                  : [],
         "appformer"                 : [],
         "jbpm"                      : [],
-        "kie-jpmml-integration"     : [],
         "droolsjbpm-integration"    : [],
         "kie-uberfire-extensions"   : [],
         "kie-wb-playground"         : [],
