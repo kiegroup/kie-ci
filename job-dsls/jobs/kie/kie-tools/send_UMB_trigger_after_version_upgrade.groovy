@@ -7,7 +7,7 @@ def VERSION_ORG_KIE = "7.46.0-SNAPSHOT"
 def sendUMB="""
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem4g'
+        label 'kie-rhel7 && kie-mem4g && !built-in'
     }
     tools {
         maven 'kie-maven-3.8.1'
@@ -28,10 +28,10 @@ label=rhba-ci''', messageType: 'Custom', overrides: [topic: 'VirtualTopic.qe.ci.
     }
     post {
         always {
-            cleanWs()             
+            cleanWs()
         }
-    }         
-}                     
+    }
+}
 """
 // creates folder if is not existing
 folder("KIE")
