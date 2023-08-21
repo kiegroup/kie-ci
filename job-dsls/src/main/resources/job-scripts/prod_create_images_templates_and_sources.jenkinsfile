@@ -16,6 +16,7 @@ pipeline {
             steps {
                 println "[INFO] VERSION: ${VERSION}"
                 println "[INFO] PRODUCT_MILESTONE: ${PRODUCT_MILESTONE}"
+                println "[INFO] BRANCH: ${BRANCH}"
                 println "[INFO] BUILDS: ${BUILDS}"
                 println "[INFO] OVERRIDING_FILES: ${OVERRIDING_FILES}"
                 println "[INFO] GITHUB_REFERENCE: ${GITHUB_REFERENCE}"
@@ -34,7 +35,7 @@ pipeline {
                 script {
                     dir('bxms-tooling/release_scripts') {
                         def OPTIONAL_PARAMS = GITHUB_REFERENCE != "" ? "--cref ${GITHUB_REFERENCE}" : ''
-                        util.runWithPythonVirtualEnv("python3 GenerateOpenshiftSrc.py --product rhpam --builds ${BUILDS} --version ${VERSION} --of ${OVERRIDING_FILES} ${OPTIONAL_PARAMS}", 'rhba-prod')
+                        util.runWithPythonVirtualEnv("python3 GenerateOpenshiftSrc.py --product rhpam --builds ${BUILDS} --version ${VERSION} --branch ${BRANCH} --of ${OVERRIDING_FILES} ${OPTIONAL_PARAMS}", 'rhba-prod')
                     }
                 }
             }
