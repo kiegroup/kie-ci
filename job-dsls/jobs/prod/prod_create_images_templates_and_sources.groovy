@@ -11,9 +11,9 @@ pipelineJob("${folderPath}/create-images-templates-and-sources") {
     description('This job creates the Openshift images templates and sources for RHPAM.')
 
     parameters {
-        stringParam('VERSION', '', ' The milestone version, i.e. 7.12.1')
+        stringParam('VERSION', '', 'The milestone version, i.e. 7.12.1')
         stringParam("PRODUCT_MILESTONE", "CR1")
-        stringParam('BRANCH', '7.13.x', ' The OpenShift images branch used to build the images')
+        stringParam('BRANCH', '7.13.x', 'The OpenShift images branch used to build the images')
         stringParam('BUILDS', '', 'List of Brew builds IDs separated by comma. Required images are: Business Central, Business Central Monitoring, KIE Server, Controller and Smart Router')
         stringParam('OVERRIDING_FILES', 'branch-overrides.yaml', 'Comma separated list of the overriding files that will be fetched from the images repositories')
         stringParam('GITHUB_REFERENCE', '', 'Override the GitHub reference for all cloned repositories')
