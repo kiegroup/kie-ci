@@ -38,7 +38,7 @@ class KieServerMatrix {
                                         \n echo "KIE version $kieVersion"
                                         \n echo "Nexus URL:  $nexusUrl"
                                         \n # wget the tar.gz sources
-                                        \n wget -q $nexusUrl/org/drools/droolsjbpm-integration/$kieVersion/droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+                                        \n wget --retry-connrefused --waitretry=1 --read-timeout=300 $nexusUrl/org/drools/droolsjbpm-integration/$kieVersion/droolsjbpm-integration-$kieVersion-project-sources.tar.gz -O sources.tar.gz
                                         \n tar xzf sources.tar.gz
                                         \n rm sources.tar.gz
                                         \n mv droolsjbpm-integration-$kieVersion/* .
