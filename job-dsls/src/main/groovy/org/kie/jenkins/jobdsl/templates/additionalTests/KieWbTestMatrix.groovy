@@ -37,13 +37,13 @@ class KieWbTestMatrix {
                                    \n echo "KIE version $kieVersion"
                                    \n echo "Nexus URL:  $nexusUrl"
                                    \n echo "KIE version $kieVersion - kie-wb-distributions"
-                                   \n wget -q $nexusUrl/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+                                   \n wget --retry-connrefused --waitretry=1 --read-timeout=300 $nexusUrl/org/kie/kie-wb-distributions/$kieVersion/kie-wb-distributions-$kieVersion-project-sources.tar.gz -O sources.tar.gz
                                    \n tar xzf sources.tar.gz
                                    \n rm sources.tar.gz
                                    \n mv kie-wb-distributions-$kieVersion/* .
                                    \n rm -rf kie-wb-distributions-$kieVersion
                                    \n echo "KIE version $kieVersion - kie-wb-common"
-                                   \n wget -q $nexusUrl/org/kie/workbench/kie-wb-common/$kieVersion/kie-wb-common-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+                                   \n wget --retry-connrefused --waitretry=1 --read-timeout=300 $nexusUrl/org/kie/workbench/kie-wb-common/$kieVersion/kie-wb-common-$kieVersion-project-sources.tar.gz -O sources.tar.gz
                                    \n tar xzf sources.tar.gz
                                    \n rm sources.tar.gz
                                    \n mv kie-wb-common-$kieVersion/* .

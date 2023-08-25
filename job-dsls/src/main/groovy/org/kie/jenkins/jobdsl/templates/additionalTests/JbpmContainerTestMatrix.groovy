@@ -36,7 +36,7 @@ class JbpmContainerTestMatrix {
             def jbpmContainerTest = '''#!/bin/bash -e
                                             \n echo "KIE version $kieVersion"
                                             \n echo "Nexus URL:  $nexusUrl"
-                                            \n wget -q $nexusUrl/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
+                                            \n wget --retry-connrefused --waitretry=1 --read-timeout=300 $nexusUrl/org/jbpm/jbpm/$kieVersion/jbpm-$kieVersion-project-sources.tar.gz -O sources.tar.gz
                                             \n tar xzf sources.tar.gz
                                             \n rm sources.tar.gz
                                             \n mv jbpm-$kieVersion/* .
