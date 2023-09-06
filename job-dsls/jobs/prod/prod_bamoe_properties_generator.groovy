@@ -37,7 +37,7 @@ node('${Constants.LABEL_KIE_RHEL}') {
             "JAVAPARSER_VERSION"         : JAVAPARSER_VERSION
     ])
     if(Boolean.valueOf(IS_RELEASE)) {
-        def folder = "bamoe/BAMOE-\${PRODUCT_VERSION}.\${PRODUCT_MILESTONE}"
+        def folder = "bamoe/bamoe-\${PRODUCT_VERSION}.\${PRODUCT_MILESTONE}"
 
         build job: env.PROPERTIES_GENERATOR_PATH, parameters: [
             [\$class: 'StringParameterValue', name: 'FILE_ID', value: "\${RELEASE_STAGING_FILE_ID}"],
