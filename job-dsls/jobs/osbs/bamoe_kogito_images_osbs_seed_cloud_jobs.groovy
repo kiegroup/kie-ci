@@ -70,7 +70,7 @@ prodComponent.each { Component ->
                         }
                         
                         agent {
-                            label 'osbs-builder && docker && rhel8'
+                            label 'osbs-builder && podman && rhel8'
                         }
 
                         environment {
