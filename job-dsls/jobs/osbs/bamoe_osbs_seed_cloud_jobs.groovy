@@ -128,11 +128,11 @@ prodComponent.each { Component ->
                                     script {
                                         // pull from brew registry
                                         echo "Pulling the ${env.BUILT_IMAGE} image..."
-                                        sh "docker pull ${env.BUILT_IMAGE}"
+                                        sh "podman pull ${env.BUILT_IMAGE}"
                                         
                                         // tag to the expected image name
                                         def tagTo = "ibm-bamoe/${env.PROD_COMPONENT}-rhel8:${env.PROD_VERSION}"
-                                        sh "docker tag ${env.BUILT_IMAGE} ${tagTo}"
+                                        sh "podman tag ${env.BUILT_IMAGE} ${tagTo}"
                                         
                                         def get_dir = sh(returnStdout: true, script: \'\'\'
                                             #!/bin/bash
