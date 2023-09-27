@@ -1,0 +1,254 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+
+   agent {
+        label 'kie-rhel7 && !built-in'
+    }
+
+    tools {
+        maven 'kie-maven-3.8.7'
+        jdk 'kie-jdk11'
+        nodejs 'nodejs-16.2.0'
+    }
+
+    environment {
+        ENV_AFFECTED_COMPONENTS = ''
+        ENV_REPO_DIR_NAME = ''
+        GERRIT_CREDENTIALS = credentials('gerrit-user')
+    }
+
+   parameters {
+        string(description: 'The repo where the patch needs to be applied to.', name: 'PROJECT_REPO', defaultValue: 'git://git.host.prod.eng.bos.redhat.com/kiegroup/drools.git')
+        string(description: 'The tag corresponding to the product version for which the patch needs to be created', name: 'PRODUCT_TAG', defaultValue: '7.67.0.Final-redhat-00022')
+        string(description: 'The JIRA ID of the one-off patch.', name: 'PATCH_JIRA_ID', defaultValue: 'RHPAM-5678')
+        string(description: 'The upstream repo where is the patch tag.', name: 'UPSTREAM_REPO', defaultValue: 'https://github.com/kiegroup/drools.git')
+        string(description: 'The one-off patch branch on upstream.', name: 'BRANCH_PATCH', defaultValue: '7.67.x')
+        string(description: 'The patch commit hash to backport.', name: 'COMMIT_HASH_TO_BACKPORT', defaultValue: 'bc54b76e4706f0af272b9e29891e1255c48b8bee')
+        string(description: 'The Gerrit repo where the patch will be pushed.', name: 'GERRIT_REPO_TARGET', defaultValue: 'kiegroup/drools.git')
+        string(description: 'The definitions file to be used on Build Chain.', name: 'BUILD_CHAIN_DEFINITIONS_FILE', defaultValue: 'https://code.engineering.redhat.com/gerrit/gitweb?p=rguimara/pnc-test.git;a=blob_plain;f=definitions-file.yaml;h=87e631fccc00ce74ce791c7eb8a49187e349a638;hb=80b133edf32b94793b8f44aa56997ce755f3477d')
+    }
+
+    stages {
+       stage('Install build-chain tool') {
+             steps {
+                 script {
+                     try {
+                         sh "npm install -g @kie/build-chain-action"
+                     } catch(e) {
+                         println "[WARNING] Error installing @kie/build-chain-action. Did you check the version is already published at https://www.npmjs.com/package/@kie/build-chain-action ? In case it is you should wait few minutes for ${NPM_REGISTRY_URL} to be synched up. Otherwise check latest 'Publish' action at https://github.com/kiegroup/github-action-build-chain/actions or contact kiegroup/github-action-build-chain responsible."
+                     }
+                 }
+             }
+         }
+
+         stage('Build projects with build-chain branch flow') {
+             steps {
+                 script {
+                     withCredentials([string(credentialsId: 'kie-ci2-token', variable: '${GERRIT_CREDENTIALS}')]) {
+                        def currentRepoDir = getGroupAndProjectRepositoryDirectory()
+                        sh "build-chain build branch --token=${GERRIT_CREDENTIALS} -f '${params.BUILD_CHAIN_DEFINITIONS_FILE}' -p ${currentRepoDir} -b main -o build_chain"
+                     }
+                 }
+             }
+         }
+
+         stage('Cd to directory, get tags & cherry-pick') {
+               steps {
+                   script {
+                      ENV_REPO_DIR_NAME = getNewDirectoryName()
+
+                       dir ("build_chain/${ENV_REPO_DIR_NAME}"){
+                            println "[INFO] Fetching origin tags..."
+                            sh "git fetch origin --tags"
+
+                           println "[INFO] Checkout to PRODUCT_TAG..."
+                           sh "git checkout ${params.PRODUCT_TAG}"
+
+                           println "[INFO] Create new branch and checkout..."
+                           sh "git checkout -b ${params.PATCH_JIRA_ID}"
+
+                           println "[INFO] Adding upstream..."
+                           sh "git remote add upstream ${params.UPSTREAM_REPO}"
+
+                           println "[INFO] Fetching tags..."
+                           sh "git fetch upstream ${params.BRANCH_PATCH}"
+
+                           println "[INFO] Cherry-picking..."
+                           sh "git cherry-pick ${params.COMMIT_HASH_TO_BACKPORT}"
+                       }
+                   }
+               }
+          }
+
+          stage('Running PME tool') {
+               steps {
+                   script {
+
+                       dir("build_chain/${ENV_REPO_DIR_NAME}"){
+                           println "[INFO] Running PME..."
+                           script {
+                             AFFECTED_COMPONENTS = sh (
+                               script: 'git show --name-only ${COMMIT_HASH_TO_BACKPORT}',
+                               returnStdout: true
+                             ).trim()
+                           }
+                           ENV_AFFECTED_COMPONENTS = getComponentsDirectories( AFFECTED_COMPONENTS )
+                           ENV_AFFECTED_COMPONENTS.tokenize(",").each {
+                               println "[INFO] cd into ${it}"
+                               dir("${it}"){
+                                   def currentVersion = readMavenPom().getParent().getVersion()
+                                   println "Changing version to ${currentVersion}-${params.PATCH_JIRA_ID}"
+                                   sh "java -jar ${env.PME_CLI_PATH} -DversionOverride=${currentVersion}-${params.PATCH_JIRA_ID}"
+                               }
+                           }
+                       }
+                   }
+               }
+           }
+
+           stage('Build project skipping checkout ') {
+               steps {
+                   script {
+                       withCredentials([string(credentialsId: 'kie-ci2-token', variable: '${GERRIT_CREDENTIALS}')]) {
+                          def currentRepoDir = getGroupAndProjectRepositoryDirectory()
+                          sh "build-chain build branch --token=${GERRIT_CREDENTIALS} -f '${params.BUILD_CHAIN_DEFINITIONS_FILE}' -p ${currentRepoDir} -b main -o build_chain --skipCheckout"
+                       }
+                   }
+               }
+           }
+
+
+            stage('Generate the JAR files') {
+              steps {
+                script {
+                    dir("build_chain/${ENV_REPO_DIR_NAME}"){
+                        def SETTINGS_XML_ID = '5d9884a1-178a-4d67-a3ac-9735d2df2cef'
+                        configFileProvider([configFile(fileId: "${SETTINGS_XML_ID}", variable: 'PME_MAVEN_SETTINGS_XML')]) {
+                            ENV_AFFECTED_COMPONENTS.tokenize(",").each {
+                                println "[INFO] cd into ${it}"
+                                dir("${it}"){
+                                    sh "pwd"
+                                    sh "mvn -s ${PME_MAVEN_SETTINGS_XML} clean package -DskipTests"
+                                    archiveArtifacts artifacts: 'target/*.tar.gz', fingerprint: true
+                                }
+                            }
+                        }
+                    }
+                }
+              }
+            }
+
+
+               stage('Push new branch to target repo') {
+                steps {
+                    script {
+                        dir("build_chain/${ENV_REPO_DIR_NAME}"){
+                            println "[INFO] Pushing new branch to target repo..."
+                            githubscm.addRemote('code.engineering', "${env.PRODUCTIZATION_REPOSITORY_BASE_URL}/${params.GERRIT_REPO_TARGET}")
+                            if (githubscm.isThereAnyChanges()) {
+                                githubscm.commitChanges("One-off patch ${params.PATCH_JIRA_ID}")
+                                println "[INFO] Changed files:"
+                                sh "git diff --name-only HEAD~1"
+
+                                // Remove comment when in prod.
+                                println "[INFO] Pushing to code.engineering..."
+                                //githubscm.pushObject('code.engineering', params.PATCH_JIRA_ID)
+
+                            } else {
+                                echo "No changes to push."
+                            }
+                        }
+                    }
+                }
+            }
+
+          stage('Create README file') {
+            steps {
+                script {
+                   sh "curl -L https://gist.githubusercontent.com/bacciotti/89651fdc1dc2f411bc52a6d80f712215/raw/c2b437a103c2428bad1ae752e8c556442fe605e9/README.txt > README.txt"
+                   sh "less README.txt"
+                }
+            }
+        }
+
+
+
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+
+/**
+ * Get repository directory name to cd into
+ * Needed to remove the slashes, the ".git" part etc.
+ *
+ * return String - the directory name
+ *
+ */
+String getCurrentRepositoryDirectory() {
+    String projectRepoUrl = params.PROJECT_REPO;
+    String[] projectDirectories;
+    projectDirectories = projectRepoUrl.split('/');
+    projectDirectory = projectDirectories[projectDirectories.size() - 1];
+
+    return projectDirectory.substring(0, projectDirectory.length() - 4 )
+}
+
+/**
+ * Create a set of the affected components repositories directories
+ *
+ * return List - a list of directories to pipeline iterate
+ *
+ */
+String getComponentsDirectories(String affectedComponents ) {
+    println "[INFO] Getting affected components directories..."
+    def dirList = []
+
+    affectedComponents.readLines().each {
+        if (it) {
+            if (it.contains("/")) {
+                String projectRepoDirectory = it;
+                String[] currentComponent;
+                currentComponent = projectRepoDirectory.split('/');
+                dirList.add(currentComponent[0])
+            }
+        }
+    }
+
+    return dirList.join(',')
+}
+
+/**
+ * Get repository directory name to use in build chain (With group/project format)
+ * Needed to add the slashes, and remove the ".git" part etc.
+ *
+ * return String - the directory name
+ *
+ */
+String getGroupAndProjectRepositoryDirectory() {
+    String projectRepoUrl = params.PROJECT_REPO;
+    String[] projectDirectories;
+    projectDirectories = projectRepoUrl.split('/');
+    projectDirectory = projectDirectories[projectDirectories.size() - 2] + "/" + projectDirectories[projectDirectories.size() - 1]
+
+    return projectDirectory.substring(0, projectDirectory.length() - 4 )
+}
+
+/**
+ * Prepare new directory name replacing strings changed by build-chain
+ *
+ * return String - the new directory name
+ *
+ */
+String getNewDirectoryName() {
+    String projectRepoUrl = params.PROJECT_REPO;
+    String[] projectDirectories;
+    projectDirectories = projectRepoUrl.split('/');
+    def newDirectory = projectDirectories[projectDirectories.size() - 2] + "_" + projectDirectories[projectDirectories.size() - 1]
+
+    return (newDirectory.substring(0, newDirectory.length() - 4 ))
+}
