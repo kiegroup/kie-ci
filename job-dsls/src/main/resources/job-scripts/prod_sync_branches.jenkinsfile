@@ -1,0 +1,62 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        label 'kie-rhel8 && !built-in'
+    }
+
+    stages {
+        stage('Clean workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Print variables') {
+            steps {
+                println "[INFO] REPOSITORIES: ${REPOSITORIES}"
+                println "[INFO] BRANCH: ${BRANCH}"
+                println "[INFO] SOURCE_ORGANIZATION: ${SOURCE_ORGANIZATION}"
+                println "[INFO] TARGET_ORGANIZATION: ${TARGET_ORGANIZATION}"
+            }
+        }
+
+        stage('Sync branch') {
+            steps {
+                script {
+                    def repositoriesList = REPOSITORIES.split(',').collect{it as String}
+                    for (repository in repositoriesList) {
+                        cloneSourceRepository(repository)
+                        addTargetAsRemote(repository)
+                        pushBranch(repository)
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+
+def cloneSourceRepository(String repositoryName) {
+    def repository = !SOURCE_ORGANIZATION.equals("apache") ? repositoryName : "incubator-kie-${repositoryName}" // remove when incubator is removed from the repos name
+    def repositoryUrl = "https://github.com/${SOURCE_ORGANIZATION}/${repository}.git"
+    sh "git clone --branch ${BRANCH} ${repositoryUrl} ${repositoryName}"
+}
+
+def addTargetAsRemote(String repositoryName) {
+    dir (repositoryName) {
+        def remoteUrl = "https://github.com/${TARGET_ORGANIZATION}/${repositoryName}.git"
+        githubscm.addRemote(TARGET_ORGANIZATION, remoteUrl)
+    }
+}
+
+def pushBranch(String repositoryName) {
+    dir (repositoryName) {
+        githubscm.pushObject(TARGET_ORGANIZATION, BRANCH, "kie-ci3")
+    }
+}
