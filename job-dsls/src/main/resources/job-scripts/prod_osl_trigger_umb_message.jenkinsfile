@@ -9,7 +9,9 @@ def productId = "${env.PRODUCT_ID.trim() ?: '155'}"  // ID of OSL product in PNC
 def images = [ // Images to find the tag in Brew
     'data-index-ephemeral': [brewBuildID: "${env.DATA_INDEX_EPHEMERAL_BREW}", brewPackageName: 'openshift-serverless-1-logic-data-index-ephemeral-rhel8-container', imageTag: ''],
     'swf-builder': [brewBuildID: "${env.SWF_BUILDER_BREW}", brewPackageName: 'openshift-serverless-1-logic-swf-builder-rhel8-container', imageTag: ''],
-    'swf-devmode': [brewBuildID: "${env.SWF_DEVMODE_BREW}", brewPackageName: 'openshift-serverless-1-logic-swf-devmode-rhel8-container', imageTag: '']
+    'swf-devmode': [brewBuildID: "${env.SWF_DEVMODE_BREW}", brewPackageName: 'openshift-serverless-1-logic-swf-devmode-rhel8-container', imageTag: ''],
+    'operator': [brewBuildID: "${env.OPERATOR_BREW}", brewPackageName: 'openshift-serverless-1-logic-rhel8-operator-container', imageTag: ''],
+    'operator-bundle': [brewBuildID: "${env.OPERATOR_BUNDLE_BREW}", brewPackageName: 'openshift-serverless-1-logic-rhel8-operator-bundle-container', imageTag: '']
 ]
 
 def projectsAndVersions = [:]
@@ -33,6 +35,8 @@ pipeline {
                 println "[INFO] DATA_INDEX_EPHEMERAL_BREW: ${DATA_INDEX_EPHEMERAL_BREW}"
                 println "[INFO] SWF_BUILDER_BREW: ${SWF_BUILDER_BREW}"
                 println "[INFO] SWF_DEVMODE_BREW: ${SWF_DEVMODE_BREW}"
+                println "[INFO] OPERATOR_BREW: ${OPERATOR_BREW}"
+                println "[INFO] OPERATOR_BUNDLE_BREW: ${OPERATOR_BUNDLE_BREW}"
             }
         }
         stage('Fetch current milestone') {
@@ -126,7 +130,7 @@ def getMessageBody(milestone, projectsAndVersions, images) {
     "maven_repository_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-maven-repository.zip",
     "sources_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-src.zip",
     "version": {"serverlesslogic-rhba":"${milestone}","serverlesslogic":"${projectsAndVersions["kiegroup/kogito-runtimes"]}","drools":"${DROOLS_VERSION}","platform.quarkus.bom":"${QUARKUS_PLATFORM_VERSION}", "quarkus.bom":"${QUARKUS_VERSION}"},
-    "image": {"data-index-ephemeral":${images["data-index-ephemeral"].imageTag},"swf-builder":${images["swf-builder"].imageTag},"swf-devmode":${images["swf-devmode"].imageTag}}
+    "image": {"data-index-ephemeral":${images["data-index-ephemeral"].imageTag},"swf-builder":${images["swf-builder"].imageTag},"swf-devmode":${images["swf-devmode"].imageTag},"operator":${images["operator"].imageTag},"operator-bundle":${images["operator-bundle"].imageTag}}
 }"""
 }
 
