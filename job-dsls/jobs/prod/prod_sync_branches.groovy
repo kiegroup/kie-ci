@@ -12,10 +12,11 @@ pipelineJob("${folderPath}/sync-branches") {
     description('This job sync branches of a repository from different GitHub organizations.')
 
     parameters {
-        stringParam('REPOSITORIES', '', 'List of repositories separated by comma, i.e. kogito-runtimes,kogito-apps')
-        stringParam('BRANCH', '', 'The branch that is going to be synced, i.e. 8.45.x')
+        stringParam('REPOSITORIES', '', 'List of repositories to be synced separated by comma, i.e. kogito-runtimes,kogito-apps')
         stringParam('SOURCE_ORGANIZATION', 'apache', 'The GitHub organization where the original branch is')
+        stringParam('SOURCE_BRANCH', '', 'The source branch that is going to be synced, i.e. main')
         stringParam('TARGET_ORGANIZATION', 'kiegroup', 'The GitHub organization where the branch will be pushed')
+        stringParam('TARGET_BRANCH', '\${SOURCE_BRANCH}', 'The name of the branch that will be generated on target repository, i.e. main-apache')
     }
 
     logRotator {
