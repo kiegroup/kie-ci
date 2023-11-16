@@ -35,19 +35,10 @@ def final REPO_CONFIGS = [
                 downstreamRepos        : ["drools-7.x"]
         ],
         "drools"                    : [
-                downstreamRepos        : ["optaplanner-7.x", "/KIE/main/deployedRepo/jbpm"],
+                downstreamRepos        : [],
                 artifactsToArchive     : ["**/target/testStatusListener*"]
         ],
-        "kie-jpmml-integration"     : [],
-        "optaplanner"               : [
-                downstreamRepos     : ["/KIE/main/deployedRepo/droolsjbpm-integration", "optaweb-employee-rostering-7.x"],
-                mvnGoals: "-e -fae -B clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
-                mvnProps: [
-                        "full"                     : "true",
-                        "integration-tests"        : "true",
-                        "maven.test.failure.ignore": "true"
-                ]
-        ]
+        "kie-jpmml-integration"     : []       
 ]
 
 for (repoConfig in REPO_CONFIGS) {
