@@ -52,7 +52,7 @@ pipeline {
             steps {
                 script {
                     dir(ghPagesRepoFolder) {
-                        sh "build-chain-status-report --jenkinsUrl ${env.JENKINS_MASTER_URL} --jobUrl /job/PROD/job/rhba.nightly /job/PROD/job/kogito.nightly /job/PROD/job/rhbop.nightly /job/PROD/job/drools-ansible-integration.nightly -t \"Productization Jobs\" -st \"Business Automation Productization Jobs\" --certFilePath ${env[certFileGlobalVariableName]} --outputFolderPath ./data/ --skipZero -cb \"Jenkins Job\" -cu \"${env.BUILD_URL}\" -jf '^((?!7\\.59\\.x|1\\.11\\.x|1\\.24\\.x|1\\.27\\.x|1\\.30\\.x|1\\.32\\.x|1\\.35\\.x|1\\.38\\.x|1\\.40\\.x|8\\.29\\.x|8\\.33\\.x).)*\$'"
+                        sh "build-chain-status-report --jenkinsUrl ${env.JENKINS_MASTER_URL} --jobUrl /job/PROD/job/rhba.nightly /job/PROD/job/kogito.nightly /job/PROD/job/rhbop.nightly /job/PROD/job/drools-ansible-integration.nightly -t \"Productization Jobs\" -st \"Business Automation Productization Jobs\" --certFilePath ${env[certFileGlobalVariableName]} --outputFolderPath ./data/ --skipZero -cb \"Jenkins Job\" -cu \"${env.BUILD_URL}\" -jf '^((?!7\\.59\\.x|1\\.11\\.x|1\\.24\\.x|1\\.27\\.x|1\\.30\\.x|1\\.32\\.x|1\\.35\\.x|1\\.38\\.x|1\\.40\\.x|1\\.44\\.2\\.x\\-prod|8\\.29\\.x|8\\.33\\.x).)*\$'"
                     }
                 }
             }
