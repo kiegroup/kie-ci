@@ -84,7 +84,11 @@ pipeline {
                             brewBuild = getLatestImageBuild(brewTag, v.brewPackageName).trim()
                         }
                         println "[INFO] BREW BUILD: ${brewBuild}"
-                        v.imageTag = getImageTag(brewBuild).trim()
+                        if (!brewBuild.contains(getMinorProductVersion(milestone))) {
+                            println "[INFO] ${k} brew build not found in ${brewTag} tag"
+                        } else {
+                            v.imageTag = getImageTag(brewBuild).trim()
+                        }
                     }
                 }
             }
@@ -113,7 +117,7 @@ def getLatestImageBuild(tag, pkg) {
 
 def getImageTag(brewBuild) {
     return sh (
-        script: "brew buildinfo \"${brewBuild}\" | awk -F'Extra: ' '{print \$2}' | tr \\\' \\\" | sed 's|False|\"false\"|g' | sed 's|True|\"true\"|g' | sed 's|None|\"\"|g' | jq -e '.image.index.pull[0]'",
+        script: "brew buildinfo \"${brewBuild}\" | awk -F'Extra: ' '{print \$2}' | tr \\\' \\\" | sed 's|False|\"false\"|g' | sed 's|True|\"true\"|g' | sed 's|None|\"\"|g' | jq -e -r '.image.index.pull[0]'",
         returnStdout: true
     )
 }
@@ -130,7 +134,7 @@ def getMessageBody(milestone, projectsAndVersions, images) {
     "maven_repository_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-maven-repository.zip",
     "sources_file_url": "${env.STAGING_SERVER_URL}/rhoss/rhoss-logic-${milestone}/openshift-serverless-logic-${milestone}-src.zip",
     "version": {"serverlesslogic-rhba":"${milestone}","serverlesslogic":"${projectsAndVersions["kiegroup/kogito-runtimes"]}","drools":"${DROOLS_VERSION}","platform.quarkus.bom":"${QUARKUS_PLATFORM_VERSION}", "quarkus.bom":"${QUARKUS_VERSION}"},
-    "image": {"data-index-ephemeral":${images["data-index-ephemeral"].imageTag},"swf-builder":${images["swf-builder"].imageTag},"swf-devmode":${images["swf-devmode"].imageTag},"operator":${images["operator"].imageTag},"operator-bundle":${images["operator-bundle"].imageTag}}
+    "image": {"data-index-ephemeral":"${images["data-index-ephemeral"].imageTag}","swf-builder":"${images["swf-builder"].imageTag}","swf-devmode":"${images["swf-devmode"].imageTag}","operator":"${images["operator"].imageTag}","operator-bundle":"${images["operator-bundle"].imageTag}"}
 }"""
 }
 
