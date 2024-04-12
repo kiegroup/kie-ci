@@ -1,0 +1,47 @@
+name: Sync main-apache branch with upstream/main
+
+inputs:
+  username:
+    description: 'Git username'
+    required: true
+  useremail:
+    description: 'Git user email'
+    required: true
+  upstream_remote:
+    description: 'URL of the upstream remote repository'
+    required: true
+  github_token:
+    description: 'GitHub token for authentication'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.github_token }}
+
+    - name: Setup git environment
+      run: |
+        git config --global user.name "${{ inputs.username }}"
+        git config --global user.email "${{ inputs.useremail }}"
+        git remote add upstream ${{ inputs.upstream_remote }}
+
+    - name: Fetch all
+      run: git fetch --all --tags
+
+    - name: Checkout main-apache branch
+      run: git checkout --track origin/main-apache
+
+    - name: Pull main-apache branch
+      run: git pull
+
+    - name: Merge upstream/main branch
+      run: git merge --no-edit upstream/main
+
+    - name: Push changes
+      run: git push
+
+    - name: Push last tag
+      run: git push origin $(git tag --sort=creatordate | tail -n 1)
