@@ -20,6 +20,11 @@ inputs:
   main_sync_workflow_pr_reviewers:
     description: 'Reviewers for the PR'
     required: false
+    default: ''
+  dry_run:
+    description: 'Whether to perform a dry run (skip push and create PR steps)'
+    required: false
+    default: false
 
 runs:
   using: 'composite'
@@ -77,11 +82,11 @@ runs:
         fi
 
     - name: Push changes
-      if: steps.check_changes.outputs.is_changed == 'true'
+      if: steps.check_changes.outputs.is_changed == 'true' && inputs.dry_run == 'false'
       run: git push origin sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}
 
     - name: Create the PR
-      if: steps.check_changes.outputs.is_changed == 'true'
+      if: steps.check_changes.outputs.is_changed == 'true' && inputs.dry_run == 'false'
       run: |
         set -x
         runUrl="${{github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
