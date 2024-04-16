@@ -61,7 +61,7 @@ runs:
         set -x
         git merge --no-commit origin/main-apache || true
         if [ -n "${{ inputs.main_sync_workflow_exclude_paths }}" ]; then
-          git reset origin/main "${{ inputs.main_sync_workflow_exclude_paths }}"
+          git reset origin/main ${{ inputs.main_sync_workflow_exclude_paths }}
         fi
         if git diff --cached --quiet; then
           echo "No changes staged for commit."
