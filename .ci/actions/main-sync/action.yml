@@ -27,6 +27,7 @@ inputs:
     default: false
 
 runs:
+  if: github.repository_owner == 'kiegroup'
   using: 'composite'
   steps:
     - name: Generate PR ID
