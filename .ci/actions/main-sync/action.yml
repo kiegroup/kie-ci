@@ -27,7 +27,8 @@ inputs:
     default: false
 
 runs:
-  if: github.repository_owner == 'kiegroup'
+  # TODO: uncomment this
+  # if: github.repository_owner == 'kiegroup'
   using: 'composite'
   steps:
     - name: Generate PR ID
@@ -84,7 +85,7 @@ runs:
 
     - name: Push changes
       if: steps.check_changes.outputs.is_changed == 'true'
-      run: git push origin sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}{{ if inputs.dry_run == 'true' }} --dry-run{{ endif }}
+      run: git push origin sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}{{ if inputs.dry_run == 'true' }} --dry-run {{ endif }}
 
     - name: Create the PR
       if: steps.check_changes.outputs.is_changed == 'true' && inputs.dry_run == 'false'
