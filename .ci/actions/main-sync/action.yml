@@ -87,7 +87,7 @@ runs:
       if: steps.check_changes.outputs.is_changed == 'true'
       run: |
         set -x
-        git push origin sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}${{ inputs.dry_run == 'true' && '--dry-run' || '' }}
+        git push origin sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}${{ inputs.dry_run == 'true' && ' --dry-run' || '' }}
 
     - name: Create the PR
       if: steps.check_changes.outputs.is_changed == 'true' && inputs.dry_run == 'false'
