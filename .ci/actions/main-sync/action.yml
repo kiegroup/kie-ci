@@ -33,6 +33,7 @@ runs:
   steps:
     - name: Generate PR ID
       id: generate_pr_id
+      shell: bash
       run: echo "pr_id=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
     - name: Checkout repository
@@ -43,21 +44,26 @@ runs:
         fetch-depth: '0'
 
     - name: Setup git environment
+      shell: bash
       run: |
         git config --global user.name "${{ inputs.username }}"
         git config --global user.email "${{ inputs.useremail }}"
 
     - name: Fetch all
+      shell: bash
       run: git fetch --all
 
     - name: Checkout main branch
+      shell: bash
       run: git checkout main
 
     - name: Create the PR branch
+      shell: bash
       run: git checkout -b sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}
 
     - name: Merge main-apache branch excluding white-listed paths
       id: merge
+      shell: bash
       run: |
         set -x
         git merge --no-commit origin/main-apache || true
@@ -73,6 +79,7 @@ runs:
 
     - name: Check for changes
       id: check_changes
+      shell: bash
       run: |
         set -x
         if git diff --quiet origin/main; then
@@ -85,12 +92,14 @@ runs:
 
     - name: Push changes
       if: steps.check_changes.outputs.is_changed == 'true'
+      shell: bash
       run: |
         set -x
         git push origin sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}${{ inputs.dry_run == 'true' && ' --dry-run' || '' }}
 
     - name: Create the PR
       if: steps.check_changes.outputs.is_changed == 'true' && inputs.dry_run == 'false'
+      shell: bash
       run: |
         set -x
         runUrl="${{github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
