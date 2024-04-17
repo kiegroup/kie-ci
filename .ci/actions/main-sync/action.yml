@@ -26,6 +26,9 @@ inputs:
     required: false
     default: false
 
+env:
+  GITHUB_TOKEN: ${{ inputs.github_token }}
+
 runs:
   # TODO: uncomment this
   # if: github.repository_owner == 'kiegroup'
