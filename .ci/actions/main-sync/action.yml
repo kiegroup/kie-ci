@@ -10,9 +10,6 @@ inputs:
     description: 'User email for git'
     required: false
     default: kie-ci0@redhat.com
-  github_token:
-    description: 'GitHub token for authentication'
-    required: true
   main_sync_workflow_exclude_paths:
     description: 'Paths to be excluded during merge'
     required: false
@@ -25,9 +22,6 @@ inputs:
     description: 'Whether to perform a dry run (skip push and create PR steps)'
     required: false
     default: false
-
-env:
-  GITHUB_TOKEN: ${{ inputs.github_token }}
 
 runs:
   # TODO: uncomment this
