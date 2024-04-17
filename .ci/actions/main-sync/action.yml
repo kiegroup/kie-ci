@@ -19,7 +19,7 @@ inputs:
     required: false
     default: ''
   dry_run:
-    description: 'Whether to perform a dry run (skip push and create PR steps)'
+    description: 'True to perform a dry run (dry run git push and skip create PR step)'
     required: false
     default: false
 
