@@ -13,7 +13,7 @@ inputs:
   main_sync_workflow_exclude_paths:
     description: 'Paths to be excluded during merge'
     required: false
-    default: .ci .github
+    default: .ci .github .asf.yaml
   main_sync_workflow_pr_reviewers:
     description: 'Reviewers for the PR'
     required: false
