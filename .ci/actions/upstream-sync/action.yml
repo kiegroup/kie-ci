@@ -27,6 +27,7 @@ runs:
       uses: actions/checkout@v4
       with:
         token: $GITHUB_TOKEN
+        ref: main
 
     - name: Setup git environment
       shell: bash
