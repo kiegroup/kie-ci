@@ -32,7 +32,7 @@ runs:
     - name: Setup git environment
       shell: bash
       run: |
-	set -x
+	    set -x
         git config --global user.name "${{ inputs.username }}"
         git config --global user.email "${{ inputs.useremail }}"
         git remote add upstream ${{ inputs.upstream_remote }}
