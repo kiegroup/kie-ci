@@ -129,7 +129,7 @@ pipelineJob("${folderPath}/cron-meta-nightly-pipeline") {
         pipelineTriggers {
             triggers {
                 cron{
-                    spec("H 15 * * *")
+                    spec("H 15 * * 2")
                 }
             }
         }
