@@ -19,8 +19,7 @@ inputs:
     default: false
 
 runs:
-  # TODO: uncomment
-  # if: github.repository_owner == 'kiegroup'
+  if: github.repository_owner == 'kiegroup'
   using: 'composite'
   steps:
     - name: Checkout repository
