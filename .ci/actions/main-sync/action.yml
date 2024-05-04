@@ -27,7 +27,7 @@ runs:
   using: 'composite'
   steps:
     - name: Terminate if the repository owner is not kiegroup
-      if: github.repository_owner != 'fantonangeli'
+      if: github.repository_owner != 'kiegroup'
       shell: bash
       run: |
         echo "Teminating the workflow: repository owner is not kiegroup"
