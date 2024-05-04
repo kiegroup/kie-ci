@@ -24,7 +24,9 @@ runs:
     - name: Terminate if the repository owner is not kiegroup
       if: github.repository_owner != 'kiegroup'
       shell: bash
-      run: exit 1
+      run: |
+        echo "Teminating the workflow: repository owner is not kiegroup"
+        exit 1
 
     - name: Checkout repository
       uses: actions/checkout@v4
