@@ -24,9 +24,15 @@ inputs:
     default: false
 
 runs:
-  if: github.repository_owner == 'kiegroup'
   using: 'composite'
   steps:
+    - name: Terminate if the repository owner is not kiegroup
+      if: github.repository_owner != 'fantonangeli'
+      shell: bash
+      run: |
+        echo "Teminating the workflow: repository owner is not kiegroup"
+        exit 1
+
     - name: Generate PR ID
       id: generate_pr_id
       shell: bash
