@@ -25,7 +25,7 @@ runs:
       if: github.repository_owner != 'kiegroup'
       shell: bash
       run: |
-        echo "Teminating the workflow: repository owner is not kiegroup"
+        echo "Terminating the workflow: repository owner is not kiegroup"
         exit 1
 
     - name: Checkout repository
