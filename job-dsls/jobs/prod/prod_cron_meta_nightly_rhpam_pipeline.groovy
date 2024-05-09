@@ -63,7 +63,7 @@ pipeline{
 def folderPath="PROD"
 folder(folderPath)
 
-pipelineJob("${folderPath}/cron-meta-nightly-pipeline") {
+pipelineJob("${folderPath}/cron-meta-nightly-pipeline-rhpam") {
 
     description("This job is a workaround for the nightly-meta-pipeline (which was disabled) and will be removed once the UMB messages are sent again<br>\n" +
             "Instead UMB message a simple CRON job is applied.")
