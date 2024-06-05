@@ -13,6 +13,7 @@ pipelineJob("${folderPath}/rhsa-errata-content") {
     parameters {
         stringParam('PRODUCT_NAME', 'RHPAM', 'Product name')
         stringParam('PRODUCT_VERSION', '7.12.0.GA', 'Product target version')
+        stringParam('ADDITIONAL_JIRAS', '', 'Comma separated list of extra Jiras not part of current product name/version')
     }
 
     logRotator {
