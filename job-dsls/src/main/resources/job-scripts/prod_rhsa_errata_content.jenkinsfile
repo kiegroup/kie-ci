@@ -4,6 +4,7 @@ node('kie-rhel7-pipeline && !built-in') {
     stage('Print variables') {
         println "[INFO] PRODUCT_NAME: ${PRODUCT_NAME}"
         println "[INFO] PRODUCT_VERSION: ${PRODUCT_VERSION}"
+        println "[INFO] ADDITIONAL_JIRAS: ${ADDITIONAL_JIRAS}"
         println "[INFO] JIRA_SEARCH_URL: ${JIRA_SEARCH_URL}"
         println "[INFO] BUGZILLA_URL: ${BUGZILLA_URL}"
         println "[INFO] CVE_CLASSIFICATION_URL: ${CVE_CLASSIFICATION_URL}"
@@ -11,7 +12,7 @@ node('kie-rhel7-pipeline && !built-in') {
 
     stage('Print RHSA Errata content') {
         withCredentials([string(credentialsId: 'jira-token', variable: 'JIRA_TOKEN')]) {
-            def inputStream = jira.getCVEsFromRelease(PRODUCT_NAME, PRODUCT_VERSION, JIRA_SEARCH_URL, JIRA_TOKEN)
+            def inputStream = jira.getCVEsFromRelease(PRODUCT_NAME, PRODUCT_VERSION, JIRA_SEARCH_URL, JIRA_TOKEN, ADDITIONAL_JIRAS)
             def cveList = rhsaErrata.getCVEList(inputStream.text, BUGZILLA_URL)
             if (cveList.isEmpty()) {
                 println 'No security Jira was found for the given product and version.'
