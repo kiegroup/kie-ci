@@ -117,7 +117,7 @@ for (repoConfig in REPO_CONFIGS) {
 
             maven { // run tests with code coverage measurement enabled
                     mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
-                    mavenOpts("-Xms1g -Xmx3g)
+                    mavenOpts("-Xms1g -Xmx3g")
                     goals(get('mvnGoals'))
                     properties(get("mvnProps"))
                     providedSettings('771ff52a-a8b4-40e6-9b22-d54c7314aa1e')
@@ -125,7 +125,7 @@ for (repoConfig in REPO_CONFIGS) {
 
             maven {
                 mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
-                mavenOpts("-Xms1g -Xmx3g)
+                mavenOpts("-Xms1g -Xmx3g")
                 goals("-B -e -nsu -fae generate-resources -Psonarcloud-analysis")
                 providedSettings('771ff52a-a8b4-40e6-9b22-d54c7314aa1e')
             }
