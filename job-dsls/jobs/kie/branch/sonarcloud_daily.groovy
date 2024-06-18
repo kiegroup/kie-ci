@@ -93,7 +93,7 @@ for (repoConfig in REPO_CONFIGS) {
         }
         concurrentBuild()
 
-        jdk("kie-jdk17")
+        jdk("kie-jdk11")
 
         label(get("label"))
 
@@ -124,6 +124,7 @@ for (repoConfig in REPO_CONFIGS) {
             }
 
             maven {
+                jdk("kie-jdk17")
                 mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                 mavenOpts("-Xms1g -Xmx3g")
                 goals("-B -e -nsu -fae generate-resources -Psonarcloud-analysis")
