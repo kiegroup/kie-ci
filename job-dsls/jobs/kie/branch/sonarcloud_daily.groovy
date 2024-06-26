@@ -124,7 +124,6 @@ for (repoConfig in REPO_CONFIGS) {
             }
 
             maven {
-                jdk("kie-jdk17")
                 mavenInstallation("kie-maven-${Constants.MAVEN_VERSION}")
                 mavenOpts("-Xms1g -Xmx3g")
                 goals("-B -e -nsu -fae generate-resources -Psonarcloud-analysis")
