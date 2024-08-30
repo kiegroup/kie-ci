@@ -1,7 +1,7 @@
 def newShared = '''
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem4g'
+        label 'kie-rhel8 && kie-mem4g'
     }
     tools {
         maven 'kie-maven-3.8.1'
