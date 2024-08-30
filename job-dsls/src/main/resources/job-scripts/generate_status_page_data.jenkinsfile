@@ -1,6 +1,6 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
-agentLabel = "${env.ADDITIONAL_LABEL?.trim() ? ADDITIONAL_LABEL : 'kie-rhel7-pipeline'} && !built-in"
+agentLabel = "${env.ADDITIONAL_LABEL?.trim() ? ADDITIONAL_LABEL : 'kie-rhel8-pipeline'} && !built-in"
 additionalTimeout = "${env.ADDITIONAL_TIMEOUT?.trim() ?: 10}"
 certFileGlobalVariableName = "${env.CERT_FILE_GLOBAL_VARIABLE_NAME?.trim() ?: 'JENKINS_CERT_FILE_PATH'}"
 githubCredentialsId = "${env.GITHUB_CREDENTIALS_ID?.trim() ?: 'kie-ci'}"

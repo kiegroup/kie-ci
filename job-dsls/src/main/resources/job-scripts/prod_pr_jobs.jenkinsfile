@@ -5,7 +5,7 @@ localNexusRepositoryId = "${env.LOCAL_NEXUS_REPOSITORY_ID?.trim() ? LOCAL_NEXUS_
 
 pipeline {
     agent {
-        label 'kie-rhel7 && !built-in'
+        label 'kie-rhel8 && !built-in'
     }
 
     tools {

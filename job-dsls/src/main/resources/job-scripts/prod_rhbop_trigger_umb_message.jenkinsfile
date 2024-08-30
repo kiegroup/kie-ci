@@ -14,7 +14,7 @@ def milestone = ""
 
 pipeline {
     agent{
-        label 'kie-rhel7 && !master'
+        label 'kie-rhel8 && !built-in'
     }
     stages{
         stage('Print variables') {

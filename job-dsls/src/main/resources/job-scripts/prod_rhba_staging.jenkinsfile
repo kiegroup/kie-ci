@@ -8,7 +8,7 @@ STAGING_BASE_PATH = "${RCM_GUEST_FOLDER}"
 MILESTONE = MILESTONE.trim()
 RCM_HOST = RCM_HOST.trim()
 
-node('kie-rhel7-pipeline && !built-in') {
+node('kie-rhel8-pipeline && !built-in') {
     def projects = [
         [
             name: "kiegroup/rhba",
