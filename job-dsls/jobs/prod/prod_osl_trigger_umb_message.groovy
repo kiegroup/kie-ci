@@ -23,6 +23,7 @@ pipelineJob("${folderPath}/osl-trigger-umb-message") {
         stringParam('JOBS_SERVICE_POSTGRESQL_BREW', '', 'The openshift-serverless-1-logic-jobs-service-postgresql-rhel8-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
         stringParam('SWF_BUILDER_BREW', '', 'The openshift-serverless-1-logic-swf-builder-rhel8-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
         stringParam('SWF_DEVMODE_BREW', '', 'The openshift-serverless-1-logic-swf-devmode-rhel8-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
+        stringParam('MANAGEMENT_CONSOLE_BREW', '', 'The openshift-serverless-1-logic-management-console-rhel8-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
         stringParam('OPERATOR_BREW', '', 'The openshift-serverless-1-logic-rhel8-operator-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
         stringParam('OPERATOR_BUNDLE_BREW', '', 'The openshift-serverless-1-logic-rhel8-operator-bundle-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
     }
