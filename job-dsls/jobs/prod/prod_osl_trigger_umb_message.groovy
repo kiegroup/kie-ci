@@ -26,6 +26,7 @@ pipelineJob("${folderPath}/osl-trigger-umb-message") {
         stringParam('MANAGEMENT_CONSOLE_BREW', '', 'The openshift-serverless-1-logic-management-console-rhel8-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
         stringParam('OPERATOR_BREW', '', 'The openshift-serverless-1-logic-rhel8-operator-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
         stringParam('OPERATOR_BUNDLE_BREW', '', 'The openshift-serverless-1-logic-rhel8-operator-bundle-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
+        stringParam('KN_WORKFLOW_CLI_ARTIFACTS_BREW', '', 'The openshift-serverless-1-logic-kn-workflow-cli-artifacts-rhel8-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
     }
 
     logRotator {
