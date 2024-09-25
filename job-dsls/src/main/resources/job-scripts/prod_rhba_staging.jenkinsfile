@@ -136,12 +136,10 @@ def createStagingPath(path) {
 }
 
 def stageArtifact(url, path) {
-    // need to use indy-admin here as there's a caching bug which can make some downloads fail
-    def indyAdmin = url.replace("indy", "indy-admin")
-    println "[INFO] staging ${indyAdmin} to ${path}"
+    println "[INFO] staging ${url} to ${path}"
 
     def localFileName = path.split('/').last()
-    sh "curl -s ${indyAdmin} -o ${localFileName}"
+    sh "curl -s ${url} -o ${localFileName}"
     sh "chmod 664 ${localFileName}"
 
     util.withKerberos('rhba-prod-keytab') {
