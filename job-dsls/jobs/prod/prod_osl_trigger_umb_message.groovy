@@ -17,6 +17,7 @@ pipelineJob("${folderPath}/osl-trigger-umb-message") {
         stringParam('QUARKUS_PLATFORM_VERSION', '2.13.7.Final-redhat-00003', 'The productized version of Quarkus Platform used for building Openshift Serverless Logic currect milestone.')
         stringParam('QUARKUS_VERSION', '2.13.7.Final-redhat-00003', 'The productized version of Quarkus used for building Openshift Serverless Logic currect milestone.')
         stringParam('PNC_API_URL', "\${ORCH_PSI_URL}/pnc-rest/v2", "PNC Rest API endpoint. See: \${DOCS_ENGINEERING_URL}/display/JP/User%27s+guide")
+        stringParam('KN_WORKFLOW_BINARY_BASE_URL', '\${ETERA_SERVER_URL}/kn-workflow-plugin/1/1.34/1.34.0-1/signed/', 'The base URL for the Kn Workflow Plugin binary')
         stringParam('DATA_INDEX_EPHEMERAL_BREW', '', 'The openshift-serverless-1-logic-data-index-ephemeral-rhel8-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
         stringParam('DATA_INDEX_POSTGRESQL_BREW', '', 'The openshift-serverless-1-logic-data-index-postgresql-rhel8-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
         stringParam('JOBS_SERVICE_EPHEMERAL_BREW', '', 'The openshift-serverless-1-logic-jobs-service-ephemeral-rhel8-container Brew build ID. This parameter is optional and in case it is not defined, the latest built image is used.')
