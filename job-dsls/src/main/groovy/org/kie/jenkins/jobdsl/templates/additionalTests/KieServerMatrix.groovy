@@ -53,10 +53,10 @@ class KieServerMatrix {
                 stringParam("settingsXml","${settingsXml}","settings.xml for this job depending of daily builds or release")
             }
 
-            label('kie-rhel7 && !built-in')
+            label('kie-rhel8 && !built-in')
 
             axes {
-                labelExpression("label-exp","kie-rhel7 && !built-in")
+                labelExpression("label-exp","kie-rhel8 && !built-in")
                 jdk("${jdkVersion}")
                 text("container", "wildfly", "eap7", "tomcat9")
             }

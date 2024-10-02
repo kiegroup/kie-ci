@@ -18,7 +18,7 @@ import org.kie.jenkins.jobdsl.templates.ErraiDeployJob
 
 // Job parameters values
 projectName = "errai"
-labelName = "kie-rhel7&&kie-mem16g"
+labelName = "kie-rhel8&&kie-mem16g"
 timeoutValue = 180
 mavenGoals = "-B -e -fae -Dmaven.test.failure.ignore=true -Pintegration-test clean deploy -Derrai.codegen.details=true"
 branchName = Constants.BRANCH

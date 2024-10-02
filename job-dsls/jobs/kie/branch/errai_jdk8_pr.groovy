@@ -19,7 +19,7 @@ def ghAuthTokenId = "kie-ci-token"
 def javadk="kie-jdk1.8"
 def mvnToolEnv=Constants.MAVEN_TOOL
 def mvnGoals = "-B -e -fae -Dmaven.test.failure.ignore=true -Pintegration-test clean install -Derrai.codegen.details=true -Dapt-generators"
-def labelName = "kie-rhel7 && kie-mem16g"
+def labelName = "kie-rhel8 && kie-mem16g"
 
 
 // Creation of folders where jobs are stored
