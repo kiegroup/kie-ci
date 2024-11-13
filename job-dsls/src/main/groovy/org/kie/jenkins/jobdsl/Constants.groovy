@@ -70,6 +70,7 @@ class Constants {
     static final String CREDENTIALS_ID_TOKEN = 'kie-ci'
     static final String RHPAM_KOGITO_OPERTOR_BRANCH = '1.13.x-next'
     static final String RHPAM_KOGITO_IMAGE_BRANCH = '1.13.x-next'
+    static final String BAMOE_BA_OPERTOR_BRANCH = 'release-v7.13.x-blue-next'
     static final String RHPAM_BA_OPERTOR_CEKIT_OSBS_SUBDIR = '/home/jenkins/.cekit/osbs/containers/rhpam-7-operator'
     static final String BAMOE_BA_OPERTOR_CEKIT_OSBS_SUBDIR = '/home/jenkins/.cekit/osbs/containers/ibm-bamoe-operator'
 
