@@ -1,6 +1,7 @@
 /**
 * Create the OpenShift images sources
 */
+/** COMMENTING TO EFFECTIVELY REMOVE THIS job
 def scriptTemplate = this.getClass().getResource("job-scripts/prod_kogito_create_images_sources.jenkinsfile").text
 def parsedScript = scriptTemplate.replaceAll(/<%=\s*(\w+)\s*%>/) { config[it[1]] ?: '' }
 
@@ -32,3 +33,4 @@ pipelineJob("${folderPath}/kogito-create-images-sources") {
     }
 
 }
+*/

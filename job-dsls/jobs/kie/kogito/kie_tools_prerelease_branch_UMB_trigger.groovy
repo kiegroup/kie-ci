@@ -1,7 +1,6 @@
 /**
  * Creates job that triggers when a new `<MAJOR>-<MINOR>-<PATCH>-prerelease` branch is
  pushed to kie-tools repository and notifies QE of this by sending and UMB message.
- */
 import org.kie.jenkins.jobdsl.Constants
 
 def repo = "kie-tools"
@@ -118,3 +117,4 @@ job(jobName) {
         }
     }
 }
+*/

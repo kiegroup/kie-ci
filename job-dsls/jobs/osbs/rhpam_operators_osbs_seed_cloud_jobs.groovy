@@ -6,11 +6,11 @@ def folderPath = 'OSBS/rhpam-operators'
 folder('OSBS')
 folder('OSBS/rhpam-operators')
 // Job Description
-String jobDescription = 'Job responsible for seed jobs to building rhpam and kogito operator images'
+String jobDescription = 'Job responsible for seed jobs to building rhpam images'
 
 //Define Variables
 def prodComponent = [
-        'rhpam-ba-operator', 'rhpam-kogito-operator']
+        'rhpam-ba-operator']
 
 def buildDate = Constants.BUILD_DATE
 def prodVersion = Constants.NEXT_PROD_VERSION
@@ -52,7 +52,6 @@ prodComponent.each { Component ->
             stringParam('CEKIT_CACHE_LOCAL', "${cekitCacheLocal}")
             stringParam('VERBOSE', "${verbose}")
             stringParam('GITHUB_ORG_UNIT', "${githubOrgUnit}")
-            stringParam('RHPAM_KOGITO_OPERTOR_BRANCH', "${rhpamKogitoOperatorBranch}")
             stringParam('CEKIT_OSBS_SUBDIR', "${rhpamBAOperatorCekitOSBSSubdir}")
         }
 
@@ -151,8 +150,6 @@ prodComponent.each { Component ->
                         switch(prodComponent){
                           case { it.endsWith('ba-operator') }:
                               return 'kie-cloud-operator'
-                          case { it.endsWith('kogito-operator') }:
-                              return 'kogito-operator'
                           default:
                              error "${prodComponent} not supported."
                         }
@@ -164,8 +161,6 @@ prodComponent.each { Component ->
                         switch(prodComponent){
                           case { it.startsWith('rhpam-ba') }:
                               return 'main'
-                          case { it.startsWith('rhpam-kogito') }:
-                              return RHPAM_KOGITO_OPERTOR_BRANCH
                           default:
                              error "${prodComponent} not supported."
                         }
