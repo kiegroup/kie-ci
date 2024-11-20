@@ -1,3 +1,6 @@
+/**
+COMMENTING THIS TO DISABLE/REMOVE THIS JOB for RHPAM
+
 package osbs
 
 import org.kie.jenkins.jobdsl.Constants
@@ -219,3 +222,4 @@ prodComponent.each { Component ->
         }
     }
 }
+*/

@@ -6,11 +6,11 @@ def folderPath = 'OSBS/bamoe-operators'
 folder('OSBS')
 folder('OSBS/bamoe-operators')
 // Job Description
-String jobDescription = 'Job responsible for seed jobs to building bamoe ba and kogito operator images'
+String jobDescription = 'Job responsible for seed jobs to building bamoe ba'
 
 //Define Variables
 def prodComponent = [
-        'bamoe-ba-operator', 'bamoe-kogito-operator']
+        'bamoe-ba-operator']
 
 def buildDate = Constants.BUILD_DATE
 def prodVersion = Constants.BAMOE_NEXT_PROD_VERSION
@@ -29,7 +29,6 @@ def cekitCacheLocal = Constants.CEKIT_CACHE_LOCAL
 def verbose = Constants.VERBOSE
 def githubOrgUnit = Constants.GITHUB_ORG_UNIT
 def bamoeBAOperatorBranch = Constants.BAMOE_BA_OPERTOR_BRANCH
-def bamoeKogitoOperatorBranch = Constants.BAMOE_KOGITO_OPERTOR_BRANCH
 def bamoeBAOperatorCekitOSBSSubdir = Constants.BAMOE_BA_OPERTOR_CEKIT_OSBS_SUBDIR
 
 
@@ -56,7 +55,6 @@ prodComponent.each { Component ->
             stringParam('VERBOSE', "${verbose}")
             stringParam('GITHUB_ORG_UNIT', "${githubOrgUnit}")
             stringParam('BAMOE_BA_OPERTOR_BRANCH', "${bamoeBAOperatorBranch}")
-            stringParam('BAMOE_KOGITO_OPERTOR_BRANCH', "${bamoeKogitoOperatorBranch}")
             stringParam('CEKIT_OSBS_SUBDIR', "${bamoeBAOperatorCekitOSBSSubdir}")
         }
 
@@ -156,8 +154,6 @@ prodComponent.each { Component ->
                         switch(prodComponent){
                             case { it.endsWith('ba-operator') }:
                                 return 'kie-cloud-operator'
-                            case { it.endsWith('kogito-operator') }:
-                                return 'kogito-operator'
                             default:
                                error "${prodComponent} not supported."
                         }
@@ -169,8 +165,6 @@ prodComponent.each { Component ->
                         switch(prodComponent){
                             case { it.startsWith('bamoe-ba') }:
                                 return BAMOE_BA_OPERTOR_BRANCH
-                            case { it.startsWith('bamoe-kogito') }:
-                                return BAMOE_KOGITO_OPERTOR_BRANCH
                             default:
                                error "${prodComponent} not supported."
                         }

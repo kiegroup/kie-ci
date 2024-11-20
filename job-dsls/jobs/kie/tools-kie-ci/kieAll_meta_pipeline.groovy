@@ -42,8 +42,8 @@ pipeline{
 """
 // creates folder if is not existing
 folder("KIE")
-folder("KIE/kie-tools")
-def folderPath="KIE/kie-tools"
+folder("KIE/tools-kie-ci")
+def folderPath="KIE/tools-kie-ci"
 
 pipelineJob("${folderPath}/kieAll_meta_pipeline") {
     
