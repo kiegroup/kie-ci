@@ -12,12 +12,12 @@ def javadk=Constants.JDK_TOOL
 // creation of folder where this seed job should run
 folder("KIE")
 folder("KIE/kogito")
-folder("KIE/kogito/kie-tools")
-def folderPath="KIE/kogito/kie-tools"
+folder("KIE/kogito-tools")
+def folderPath="KIE/kogito-tools"
 
-job("${folderPath}/a-seed-job-kie-tools") {
+job("${folderPath}/a-seed-job-kogito-tools") {
 
-    description("this job creates needed Jenkins job for kie-tools in kogito folder")
+    description("this job creates needed Jenkins job for kogito-tools in kogito folder")
 
     label("kie-rhel8 && kie-mem8g && !built-in")
 
