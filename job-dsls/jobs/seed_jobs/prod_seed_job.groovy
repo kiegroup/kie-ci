@@ -47,6 +47,7 @@ job("${folderPath}/a-seed-job-prod") {
     steps {
         jobDsl {
             targets("job-dsls/jobs/prod/*.groovy\n" +
+                    "job-dsls/jobs/tools/*.groovy\n" +
                     "job-dsls/jobs/seed_jobs/prod_seed_job.groovy")
             useScriptText(false)
             sandbox(false)
