@@ -109,6 +109,7 @@ pipeline {
                 script {
                     def messageBody = getMessageBody(milestone, projectsAndVersions, images)
                     triggerUMBMessageJob(messageBody, milestone)
+                    printImagesRegistries(images)
                 }
             }
         }
@@ -148,6 +149,22 @@ def getMessageBody(milestone, projectsAndVersions, images) {
     "version": {"serverlesslogic-rhba":"${milestone}","serverlesslogic":"${projectsAndVersions["kiegroup/kogito-runtimes"]}","drools":"${DROOLS_VERSION}","platform.quarkus.bom":"${QUARKUS_PLATFORM_VERSION}", "quarkus.bom":"${QUARKUS_VERSION}"},
     "image": {"data-index-ephemeral":"${images["data-index-ephemeral"].imageTag}","data-index-postgresql":"${images["data-index-postgresql"].imageTag}","jobs-service-ephemeral":"${images["jobs-service-ephemeral"].imageTag}","jobs-service-postgresql":"${images["jobs-service-postgresql"].imageTag}","swf-builder":"${images["swf-builder"].imageTag}","swf-devmode":"${images["swf-devmode"].imageTag}","management-console":"${images["management-console"].imageTag}","operator":"${images["operator"].imageTag}","operator-bundle":"${images["operator-bundle"].imageTag}","kn-workflow-cli-artifacts":"${images["kn-workflow-cli-artifacts"].imageTag}"}
 }"""
+}
+
+def printImagesRegistries(images) {
+    def imagesRegistries = """\
+        data-index-ephemeral: ${images["data-index-ephemeral"].imageTag}
+        data-index-postgresql: ${images["data-index-postgresql"].imageTag}
+        jobs-service-ephemeral: ${images["jobs-service-ephemeral"].imageTag}
+        jobs-service-postgresql: ${images["jobs-service-postgresql"].imageTag}
+        swf-builder: ${images["swf-builder"].imageTag}
+        swf-devmode: ${images["swf-devmode"].imageTag}
+        management-console: ${images["management-console"].imageTag}
+        operator: ${images["operator"].imageTag}
+        operator-bundle: ${images["operator-bundle"].imageTag}
+        kn-workflow-cli-artifacts: ${images["kn-workflow-cli-artifacts"].imageTag}
+        """.stripIndent()
+    println "[Images Registries]\n${imagesRegistries}"
 }
 
 def triggerUMBMessageJob(messageBody, milestone) {
