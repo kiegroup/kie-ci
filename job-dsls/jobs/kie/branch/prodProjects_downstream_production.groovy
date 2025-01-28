@@ -8,7 +8,7 @@ def final DEFAULTS = [
         ghOrgUnit              : "",
         branch                 : Constants.BRANCH,
         timeoutMins            : 650,
-        label                  : "kie-rhel7 && kie-mem24g && !built-in",
+        label                  : "kie-rhel8 && kie-mem24g && !built-in",
         ghAuthTokenId          : "kie-ci-token",
         ghJenkinsfilePwd       : "kie-ci-user-key",
         artifactsToArchive     : []
