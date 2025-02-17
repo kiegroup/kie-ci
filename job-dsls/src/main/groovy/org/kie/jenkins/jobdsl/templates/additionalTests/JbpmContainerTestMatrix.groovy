@@ -51,10 +51,10 @@ class JbpmContainerTestMatrix {
                 stringParam("settingsXml","${settingsXml}","settings.xml for this job depending of daily builds or release")
             }
 
-            label('kie-rhel7 && !built-in')
+            label('rhos-d-kie-rhel7 && !built-in')
 
             axes {
-                labelExpression("label-exp","kie-rhel7 && !built-in")
+                labelExpression("label-exp","rhos-d-kie-rhel7 && !built-in")
                 jdk("${jdkVersion}")
                 text("container", "tomcat9", "wildfly")
             }

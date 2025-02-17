@@ -9,7 +9,7 @@ def organization=Constants.GITHUB_ORG_UNIT
 def javadk=Constants.JDK_TOOL
 def repo="kie-ci"
 def ghAuthTokenId="kie-ci-token"
-def labelName="kie-rhel7 && kie-mem4g && !built-in"
+def labelName="rhos-d-kie-rhel7 && kie-mem4g && !built-in"
 
 // +++++++++++++++++++++++++++++++++++++++++++ create a seed job ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
