@@ -10,7 +10,7 @@ def final DEFAULTS = [
         ghAuthKey              : "kie-ci-user-key",
         timeoutMins            : 90,
         buildHistory           : 3,
-        label                  : "kie-rhel7 && kie-mem8g && !built-in",
+        label                  : "rhos-d-kie-rhel7 && kie-mem8g && !built-in",
         mvnGoals               : "-e -fae -B -Pwildfly clean deploy com.github.spotbugs:spotbugs-maven-plugin:spotbugs",
         mvnProps: [
                 "full"                     : "true",
@@ -33,11 +33,11 @@ def final DEFAULTS = [
 def final REPO_CONFIGS = [
         "droolsjbpm-build-bootstrap": [
                 timeoutMins            : 30,
-                label                  : "kie-rhel7 && kie-mem4g",
+                label                  : "rhos-d-kie-rhel7 && kie-mem4g",
                 downstreamRepos        : ["kie-soup"]
         ],
         "kie-soup"                  : [
-                label                  : "kie-rhel7 && kie-mem4g",
+                label                  : "rhos-d-kie-rhel7 && kie-mem4g",
                 downstreamRepos        : ["appformer", "droolsjbpm-knowledge"]
         ],
         "droolsjbpm-knowledge"      : [
@@ -50,16 +50,16 @@ def final REPO_CONFIGS = [
         ],
         "lienzo-core"                  : [
                 timeoutMins            : 20,
-                label                  : "kie-rhel7 && kie-mem4g",
+                label                  : "rhos-d-kie-rhel7 && kie-mem4g",
                 downstreamRepos        : ["lienzo-tests"]
         ],
         "lienzo-tests"              : [
                 timeoutMins            : 20,
-                label                  : "kie-rhel7 && kie-mem4g",
+                label                  : "rhos-d-kie-rhel7 && kie-mem4g",
                 downstreamRepos        : ["appformer"]
         ],
         "appformer"                 : [
-                label                  : "kie-rhel7 && kie-mem16g",
+                label                  : "rhos-d-kie-rhel7 && kie-mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "2"
                 ],
@@ -84,20 +84,20 @@ def final REPO_CONFIGS = [
         ],
         "kie-wb-common"             : [
                 timeoutMins            : 180,
-                label                  : "kie-rhel7 && kie-mem16g",
+                label                  : "rhos-d-kie-rhel7 && kie-mem16g",
                 downstreamRepos        : ["drools-wb"]
         ],
         "drools-wb"                 : [
-                label                  : "kie-rhel7 && kie-mem16g",
+                label                  : "rhos-d-kie-rhel7 && kie-mem16g",
                 downstreamRepos        : ["jbpm-wb"]
         ],
         "jbpm-work-items"           : [
-                label      : "kie-rhel7 && kie-mem4g",
+                label      : "rhos-d-kie-rhel7 && kie-mem4g",
                 timeoutMins: 30,
                 downstreamRepos        : ["jbpm-wb"]
         ],
         "jbpm-wb"                   : [
-                label                  : "kie-rhel7 && kie-mem16g",
+                label                  : "rhos-d-kie-rhel7 && kie-mem16g",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1"
                 ],
@@ -105,7 +105,7 @@ def final REPO_CONFIGS = [
         ],
         "kie-wb-distributions"      : [
                 timeoutMins            : 120,
-                label                  : "kie-rhel7 && kie-mem16g",
+                label                  : "rhos-d-kie-rhel7 && kie-mem16g",
                 mvnGoals               : DEFAULTS["mvnGoals"] + " -Pbusiness-central",
                 mvnProps               : DEFAULTS["mvnProps"] + [
                         "gwt.compiler.localWorkers": "1",
