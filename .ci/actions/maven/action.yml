@@ -39,7 +39,7 @@ runs:
       with:
         maven-version: ${{ inputs.maven-version }}
     - name: Cache Maven packages
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path:  ~/.m2
         key: ${{ inputs.cache-key-prefix }}-m2-${{ hashFiles('**/pom.xml') }}
