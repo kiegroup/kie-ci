@@ -29,24 +29,24 @@ runs:
   using: "composite"
   steps:
     - name: Setup Jdk
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: ${{ inputs.java-version }}
         check-latest: true
     - name: Set up Maven
-      uses: stCarolas/setup-maven@v4.2
+      uses: stCarolas/setup-maven@v5
       with:
         maven-version: ${{ inputs.maven-version }}
     - name: Cache Maven packages
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path:  ~/.m2
         key: ${{ inputs.cache-key-prefix }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys:  ${{ inputs.cache-key-prefix }}-m2
     - name: Setup Maven Settings
       if: ${{ inputs.setup-maven-settings == 'true' }}
-      uses: whelk-io/maven-settings-xml-action@v21
+      uses: whelk-io/maven-settings-xml-action@v22
       with:
         repositories: >
           [
