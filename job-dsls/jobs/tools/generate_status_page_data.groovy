@@ -18,7 +18,7 @@ pipelineJob("${folderPath}/rhba.generate-status-page-data") {
         pipelineTriggers {
             triggers {
                 cron{
-                    spec("H */2 * * *")
+                    spec("H */6 * * *")
                 }
             }
         }
