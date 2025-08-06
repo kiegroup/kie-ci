@@ -1,27 +1,40 @@
 name: 'Sync main branch'
-description: 'Create a PR to sync main branch with main-apache excluding '
+description: 'Create a PR to sync main branch with upstream/main '
 
 inputs:
   username:
     description: 'Username for git'
     required: false
+    type: string
     default: kie-ci
   useremail:
     description: 'User email for git'
     required: false
+    type: string
     default: kie-ci0@redhat.com
+  upstream_remote:
+    description: 'URL of the upstream remote repository'
+    type: string
+    required: true
   main_sync_workflow_exclude_paths:
     description: 'Paths to be excluded during merge'
     required: false
-    default: .ci .github .asf.yaml
+    type: string
+    default: .asf.yaml
   main_sync_workflow_pr_reviewers:
     description: 'Reviewers for the PR'
     required: false
-    default: ''
+    type: string
+    default: 'mareknovotny,ricardozanini,saumya1singh'
   dry_run:
     description: 'True to perform a dry run (dry run git push and skip create PR step)'
     required: false
+    type: boolean
     default: false
+  github_token:
+    description: "The github token"
+    type: string
+    required: true
 
 runs:
   using: 'composite'
@@ -34,9 +47,16 @@ runs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
+        token: ${{ inputs.github_token }}
         ref: main
         # By default, checkout@v4 fetches only a single commit unless you specify "fetch-depth: 0". Without this "git merge" throwns an "unrelated histories".
         fetch-depth: '0'
+
+    - name: Fetch Upstream Remote
+      shell: bash
+      run: |
+        git remote add upstream ${{ inputs.upstream_remote }}
+        git fetch --unshallow upstream main
 
     - name: Setup git environment
       shell: bash
@@ -44,39 +64,41 @@ runs:
         git config --global user.name "${{ inputs.username }}"
         git config --global user.email "${{ inputs.useremail }}"
 
-    - name: Fetch all
-      shell: bash
-      run: git fetch --all
-
-    - name: Checkout main branch
-      shell: bash
-      run: git checkout main
-
     - name: Create the PR branch
       shell: bash
       run: git checkout -b sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}
 
-    - name: Merge main-apache branch excluding white-listed paths
-      id: merge
+    - name: Merge upstream/main branch
       shell: bash
       run: |
-        set -x
-        git merge --no-commit origin/main-apache || true
+        git merge --no-commit upstream/main || true
+
+    - name: Reset white-listed paths to use our versions
+      shell: bash
+      run: |
         if [ -n "${{ inputs.main_sync_workflow_exclude_paths }}" ]; then
           git reset origin/main ${{ inputs.main_sync_workflow_exclude_paths }}
         fi
+
+    - name: Commit the merge
+      shell: bash
+      run: |
         if git diff --cached --quiet; then
           echo "No changes staged for commit."
         else
-          git commit -m "Merge main-apache and exclude white-listed changes from the merge"
+          git commit -m "Merge upstream/main and exclude white-listed changes from the merge"
         fi
+
+    - name: Get the excluded files
+      id: check_excluded_files
+      shell: bash
+      run: |
         echo "excluded_files=$(git ls-files -mo | sed -z 's/\n/<br \/>/g')" >> $GITHUB_OUTPUT
 
     - name: Check for changes
       id: check_changes
       shell: bash
       run: |
-        set -x
         if git diff --quiet origin/main; then
           echo "No changes detected."
           echo "is_changed=false" >> $GITHUB_OUTPUT
@@ -89,25 +111,21 @@ runs:
       if: steps.check_changes.outputs.is_changed == 'true'
       shell: bash
       run: |
-        set -x
         git push origin sync-main-pr-${{ steps.generate_pr_id.outputs.pr_id }}${{ inputs.dry_run == 'true' && ' --dry-run' || '' }}
 
     - name: Create the PR
       if: steps.check_changes.outputs.is_changed == 'true' && inputs.dry_run == 'false'
       shell: bash
+      env:
+        RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       run: |
-        set -x
-        runUrl="${{github.server_url}}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        if [[ -n "${{ steps.merge.outputs.excluded_files }}" ]]; then
-          excludedFiles="${{ steps.merge.outputs.excluded_files }}"
+        if [[ -n "${{ steps.check_excluded_files.outputs.excluded_files }}" ]]; then
+          EXCLUDED_FILES="${{ steps.check_excluded_files.outputs.excluded_files }}"
         else
-          excludedFiles="No files have been excluded<br />"
+          EXCLUDED_FILES="No files have been excluded<br />"
         fi
-        prTitle="Automatic PR: Sync main with main-apache (${{steps.generate_pr_id.outputs.pr_id}})"
-        prBody="This pull request has been created by a GitHub workflow to synchronize the main branch with main-apache branch.<br /><br />\
-            <b>:warning:Important:warning:</b><br />Please don't merge using squash, not to lose the git history.<br /><br />\
-            <b>Excluded files:</b><br />${excludedFiles}<br />\
-            [View Action](${runUrl})"
+        prTitle="[${{steps.generate_pr_id.outputs.pr_id}}] 🤖 Sync main with upstream"
+        prBody=$(envsubst < .ci/supporting-files/ci/templates/osl_sync_pr_template.md)
         if [[ -n "${{ inputs.main_sync_workflow_pr_reviewers }}" ]]; then
           reviewersOption="--reviewer ${{inputs.main_sync_workflow_pr_reviewers}}"
         fi
