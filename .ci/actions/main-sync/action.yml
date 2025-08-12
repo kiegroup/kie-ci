@@ -35,6 +35,11 @@ inputs:
     description: "The github token"
     type: string
     required: true
+  branch_to_sync:
+    description: 'Branch to sync. To be used for dev porposes'
+    required: false
+    type: string
+    default: main
 
 runs:
   using: 'composite'
@@ -48,7 +53,7 @@ runs:
       uses: actions/checkout@v4
       with:
         token: ${{ inputs.github_token }}
-        ref: main
+        ref: ${{ inputs.branch_to_sync }}
         # By default, checkout@v4 fetches only a single commit unless you specify "fetch-depth: 0". Without this "git merge" throwns an "unrelated histories".
         fetch-depth: '0'
 
@@ -56,7 +61,7 @@ runs:
       shell: bash
       run: |
         git remote add upstream ${{ inputs.upstream_remote }}
-        git fetch --unshallow upstream main
+        git fetch upstream main
 
     - name: Setup git environment
       shell: bash
@@ -71,13 +76,13 @@ runs:
     - name: Merge upstream/main branch
       shell: bash
       run: |
-        git merge --no-commit upstream/main || true
+        git merge upstream/main -X theirs --no-edit || true
 
     - name: Reset white-listed paths to use our versions
       shell: bash
       run: |
         if [ -n "${{ inputs.main_sync_workflow_exclude_paths }}" ]; then
-          git reset origin/main ${{ inputs.main_sync_workflow_exclude_paths }}
+          git reset origin/${{ inputs.branch_to_sync }} ${{ inputs.main_sync_workflow_exclude_paths }}
         fi
 
     - name: Commit the merge
@@ -99,7 +104,7 @@ runs:
       id: check_changes
       shell: bash
       run: |
-        if git diff --quiet origin/main; then
+        if git diff --quiet origin/${{ inputs.branch_to_sync }} then
           echo "No changes detected."
           echo "is_changed=false" >> $GITHUB_OUTPUT
         else
@@ -124,9 +129,9 @@ runs:
         else
           EXCLUDED_FILES="No files have been excluded<br />"
         fi
-        prTitle="[${{steps.generate_pr_id.outputs.pr_id}}] 🤖 Sync main with upstream"
+        prTitle="[${{steps.generate_pr_id.outputs.pr_id}}] 🤖 Sync ${{ inputs.branch_to_sync }} with upstream"
         prBody=$(envsubst < .ci/supporting-files/ci/templates/osl_sync_pr_template.md)
         if [[ -n "${{ inputs.main_sync_workflow_pr_reviewers }}" ]]; then
           reviewersOption="--reviewer ${{inputs.main_sync_workflow_pr_reviewers}}"
         fi
-        gh pr create --title "${prTitle}" --body "${prBody}" --base main $reviewersOption
+        gh pr create --title "${prTitle}" --body "${prBody}" --base ${{ inputs.branch_to_sync }} $reviewersOption
