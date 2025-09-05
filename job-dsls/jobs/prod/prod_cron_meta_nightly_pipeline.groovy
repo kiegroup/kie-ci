@@ -125,7 +125,7 @@ String droolsAnsibleIntegrationNightlyStage(String branch, String configBranch, 
         stage('trigger Drools Ansible Integration nightly job ${branch}') {
             steps {
                 build job: 'drools-ansible-integration.nightly/${branch}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'NEXUS_DEPLOYMENT_REPO_URL', value: 'https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/service/local/repositories/scratch-release-drools-ansible-integration-${getNexusFromVersion(version)}/content-compressed'],
+                        [\$class: 'StringParameterValue', name: 'NEXUS_DEPLOYMENT_REPO_URL', value: '\${env.BXMS_QE_NEXUS}/nexus/service/local/repositories/scratch-release-drools-ansible-integration-${getNexusFromVersion(version)}/content-compressed'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${version}"],
                         [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "${configBranch}"],
