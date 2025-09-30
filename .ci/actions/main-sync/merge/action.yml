@@ -1,0 +1,92 @@
+name: 'Merge upstream main'
+description: 'Merge main branch with upstream/main locally'
+
+inputs:
+  username:
+    description: 'Username for git'
+    required: false
+    type: string
+    default: kie-ci
+  useremail:
+    description: 'User email for git'
+    required: false
+    type: string
+    default: kie-ci0@redhat.com
+  upstream_remote:
+    description: 'URL of the upstream remote repository'
+    type: string
+    required: true
+  exclude_paths:
+    description: 'Paths to be excluded during merge'
+    required: false
+    type: string
+    default: .asf.yaml
+  github_token:
+    description: "The github token"
+    type: string
+    required: true
+  branch_to_sync:
+    description: 'Branch to sync. Useful for dev purposes'
+    required: false
+    type: string
+    default: main
+
+outputs:
+  sync_branch:
+    description: 'The created working branch for the PR'
+    value: ${{ steps.generate_sync_branch_name.outputs.sync_branch }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Generate PR ID
+      id: generate_sync_branch_name
+      shell: bash
+      run: |
+        echo "sync_branch=main-sync-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.github_token }}
+        ref: ${{ inputs.branch_to_sync }}
+        # By default, checkout@v4 fetches only a single commit unless you specify "fetch-depth: 0". Without this "git merge" throwns an "unrelated histories".
+        fetch-depth: '0'
+
+    - name: Fetch Upstream Remote
+      shell: bash
+      run: |
+        echo "::group::Fetch Upstream Remote"
+        git remote add upstream ${{ inputs.upstream_remote }}
+        git fetch upstream main
+        echo "::endgroup::"
+
+    - name: Setup git environment
+      shell: bash
+      run: |
+        git config --global user.name "${{ inputs.username }}"
+        git config --global user.email "${{ inputs.useremail }}"
+
+    - name: Create the PR branch
+      shell: bash
+      env:
+        PR_BRANCH: "${{ steps.generate_sync_branch_name.outputs.sync_branch }}"
+      run: |
+        echo "::group::Create the PR branch"
+        git checkout -b "$PR_BRANCH"
+        echo "::endgroup::"
+
+    - name: Merge upstream/main branch
+      shell: bash
+      run: |
+        echo "::group::Merge upstream/main branch"
+        git merge upstream/main -X theirs --no-edit || true
+        echo "::endgroup::"
+
+    - name: Reset excluded paths to use our versions
+      if: ${{ inputs.exclude_paths != '' }}
+      shell: bash
+      run: |
+        echo "::group::Reset white-listed paths to use our versions"
+        git reset origin/${{ inputs.branch_to_sync }} -- ${{ inputs.exclude_paths }}
+        echo "::endgroup::"
