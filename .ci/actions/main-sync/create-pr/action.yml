@@ -74,7 +74,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.github_token }}
         RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        TEMPLATE: "${{ github.action_path }}/../../supporting-files/ci/templates/osl_sync_pr_template.md"
+        TEMPLATE: "${{ github.action_path }}/../../../supporting-files/ci/templates/osl_sync_pr_template.md"
       run: |
         echo "::group::Create the PR"
         if [[ -n "${{ steps.check_excluded_files.outputs.excluded_files }}" ]]; then
