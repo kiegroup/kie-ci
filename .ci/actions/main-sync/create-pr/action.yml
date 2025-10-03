@@ -74,6 +74,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.github_token }}
         RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        TEMPLATE: "${{ github.action_path }}/../../supporting-files/ci/templates/osl_sync_pr_template.md"
       run: |
         echo "::group::Create the PR"
         if [[ -n "${{ steps.check_excluded_files.outputs.excluded_files }}" ]]; then
@@ -83,7 +84,7 @@ runs:
         fi
 
         prTitle="[${{ inputs.sync_branch }}] 🤖 Sync ${{ inputs.branch_to_sync }} with upstream"
-        prBody=$(envsubst < .ci/supporting-files/ci/templates/osl_sync_pr_template.md)
+        prBody=$(envsubst < "$TEMPLATE")
 
         if [[ -n "${{ inputs.pr_reviewers }}" ]]; then
           reviewersOption="--reviewer ${{ inputs.pr_reviewers }}"
