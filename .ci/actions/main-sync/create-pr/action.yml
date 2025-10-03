@@ -50,11 +50,14 @@ runs:
       id: check_changes
       shell: bash
       run: |
-        if git diff --quiet "origin/${{ inputs.branch_to_sync }}"; then
-          echo "No changes detected."
+        BASE_SHA=$(git rev-parse origin/${{ inputs.branch_to_sync }})
+        HEAD_SHA=$(git rev-parse HEAD)
+
+        if [ "$BASE_SHA" = "$HEAD_SHA" ]; then
+          echo "No new commits skipping PR creation."
           echo "is_changed=false" >> "$GITHUB_OUTPUT"
         else
-          echo "Changes detected."
+          echo "Branch has new commits."
           echo "is_changed=true" >> "$GITHUB_OUTPUT"
         fi
 
