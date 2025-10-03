@@ -80,13 +80,13 @@ runs:
       shell: bash
       run: |
         echo "::group::Merge upstream/main branch"
-        git merge upstream/main -X theirs --no-edit || true
+        git merge upstream/main -X theirs --no-commit || true
         echo "::endgroup::"
 
     - name: Reset excluded paths to use our versions
       if: ${{ inputs.exclude_paths != '' }}
       shell: bash
       run: |
-        echo "::group::Reset white-listed paths to use our versions"
+        echo "::group::Reset excluded paths to use our versions"
         git reset origin/${{ inputs.branch_to_sync }} -- ${{ inputs.exclude_paths }}
         echo "::endgroup::"

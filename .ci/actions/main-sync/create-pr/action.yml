@@ -77,9 +77,9 @@ runs:
       run: |
         echo "::group::Create the PR"
         if [[ -n "${{ steps.check_excluded_files.outputs.excluded_files }}" ]]; then
-          EXCLUDED_FILES="${{ steps.check_excluded_files.outputs.excluded_files }}"
+          export EXCLUDED_FILES="${{ steps.check_excluded_files.outputs.excluded_files }}"
         else
-          EXCLUDED_FILES="No files have been excluded<br />"
+          export EXCLUDED_FILES="No files have been excluded<br />"
         fi
 
         prTitle="[${{ inputs.sync_branch }}] 🤖 Sync ${{ inputs.branch_to_sync }} with upstream"
