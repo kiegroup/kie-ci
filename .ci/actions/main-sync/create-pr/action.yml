@@ -6,7 +6,7 @@ inputs:
     description: 'Reviewers for the PR'
     required: false
     type: string
-    default: 'mareknovotny,ricardozanini,saumya1singh'
+    default: 'mareknovotny,ricardozanini,saumya1singh,domhanak'
   dry_run:
     description: 'True to perform a dry run (dry run git push and skip create PR step)'
     required: false
