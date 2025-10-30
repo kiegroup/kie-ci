@@ -1,0 +1,97 @@
+name: 'Create Sync PR'
+description: 'Create a PR to sync main branch'
+
+inputs:
+  pr_reviewers:
+    description: 'Reviewers for the PR'
+    required: false
+    type: string
+    default: 'mareknovotny,ricardozanini,saumya1singh,domhanak'
+  dry_run:
+    description: 'True to perform a dry run (dry run git push and skip create PR step)'
+    required: false
+    type: boolean
+    default: false
+  branch_to_sync:
+    description: 'Branch to sync. Useful for dev purposes'
+    required: false
+    type: string
+    default: main
+  sync_branch:
+    description: 'Branch name created earlier'
+    required: true
+    type: string
+  github_token:
+    description: "The github token"
+    required: true
+    type: string
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Commit the merge
+      shell: bash
+      run: |
+        echo "::group::Commit the merge"
+        if git diff --cached --quiet; then
+          echo "No changes staged for commit."
+        else
+          git commit -m "Merge upstream/main and preserve excluded paths"
+        fi
+        echo "::endgroup::"
+
+    - name: Get the excluded files
+      id: check_excluded_files
+      shell: bash
+      run: |
+        echo "excluded_files=$(git ls-files -m | sed -z 's/\n/<br \/>/g')" >> "$GITHUB_OUTPUT"
+
+    - name: Check for changes
+      id: check_changes
+      shell: bash
+      run: |
+        BASE_SHA=$(git rev-parse origin/${{ inputs.branch_to_sync }})
+        HEAD_SHA=$(git rev-parse HEAD)
+
+        if [ "$BASE_SHA" = "$HEAD_SHA" ]; then
+          echo "No new commits skipping PR creation."
+          echo "is_changed=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "Branch has new commits."
+          echo "is_changed=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Push changes
+      if: steps.check_changes.outputs.is_changed == 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+      run: |
+        echo "::group::Push changes"
+        git push -u origin ${{ inputs.sync_branch }}${{ inputs.dry_run == 'true' && ' --dry-run' || '' }}
+        echo "::endgroup::"
+
+    - name: Create the PR
+      if: steps.check_changes.outputs.is_changed == 'true' && inputs.dry_run == 'false'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+        RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        TEMPLATE: "${{ github.action_path }}/../../../supporting-files/ci/templates/osl_sync_pr_template.md"
+      run: |
+        echo "::group::Create the PR"
+        if [[ -n "${{ steps.check_excluded_files.outputs.excluded_files }}" ]]; then
+          export EXCLUDED_FILES="${{ steps.check_excluded_files.outputs.excluded_files }}"
+        else
+          export EXCLUDED_FILES="No files have been excluded<br />"
+        fi
+
+        prTitle="[${{ inputs.sync_branch }}] 🤖 Sync ${{ inputs.branch_to_sync }} with upstream"
+        prBody=$(envsubst < "$TEMPLATE")
+
+        if [[ -n "${{ inputs.pr_reviewers }}" ]]; then
+          reviewersOption="--reviewer ${{ inputs.pr_reviewers }}"
+        fi
+
+        gh pr create --repo "$GITHUB_REPOSITORY" --title "${prTitle}" --body "${prBody}" --base ${{ inputs.branch_to_sync }} $reviewersOption
+        echo "::endgroup::"
