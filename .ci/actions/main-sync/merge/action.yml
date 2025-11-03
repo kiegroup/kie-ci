@@ -43,7 +43,7 @@ runs:
       id: generate_sync_branch_name
       shell: bash
       run: |
-        echo "sync_branch=main-sync-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+        echo "sync_branch=main-sync-$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
 
     - name: Checkout repository
       uses: actions/checkout@v4
