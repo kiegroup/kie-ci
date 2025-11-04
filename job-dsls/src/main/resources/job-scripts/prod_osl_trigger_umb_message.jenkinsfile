@@ -7,17 +7,17 @@ def projects = ["kiegroup/kogito-runtimes"] // Projects to find the productized 
 def productId = "${env.PRODUCT_ID.trim() ?: '155'}"  // ID of OSL product in PNC
 
 def images = [ // Images to find the tag in Brew
-    'data-index-ephemeral': [brewBuildID: "${env.DATA_INDEX_EPHEMERAL_BREW}", brewPackageName: 'openshift-serverless-1-logic-data-index-ephemeral-rhel8-container', imageTag: ''],
-    'data-index-postgresql': [brewBuildID: "${env.DATA_INDEX_POSTGRESQL_BREW}", brewPackageName: 'openshift-serverless-1-logic-data-index-postgresql-rhel8-container', imageTag: ''],
-    'jobs-service-ephemeral': [brewBuildID: "${env.JOBS_SERVICE_EPHEMERAL_BREW}", brewPackageName: 'openshift-serverless-1-logic-jobs-service-ephemeral-rhel8-container', imageTag: ''],
-    'jobs-service-postgresql': [brewBuildID: "${env.JOBS_SERVICE_POSTGRESQL_BREW}", brewPackageName: 'openshift-serverless-1-logic-jobs-service-postgresql-rhel8-container', imageTag: ''],
-    'swf-builder': [brewBuildID: "${env.SWF_BUILDER_BREW}", brewPackageName: 'openshift-serverless-1-logic-swf-builder-rhel8-container', imageTag: ''],
-    'swf-devmode': [brewBuildID: "${env.SWF_DEVMODE_BREW}", brewPackageName: 'openshift-serverless-1-logic-swf-devmode-rhel8-container', imageTag: ''],
-    'management-console': [brewBuildID: "${env.MANAGEMENT_CONSOLE_BREW}", brewPackageName: 'openshift-serverless-1-logic-management-console-rhel8-container', imageTag: ''],
-    'db-migrator-tool': [brewBuildID: "${env.DB_MIGRATOR_TOOL_BREW}", brewPackageName: 'openshift-serverless-1-logic-db-migrator-tool-rhel8-container', imageTag: ''],
-    'operator': [brewBuildID: "${env.OPERATOR_BREW}", brewPackageName: 'openshift-serverless-1-logic-rhel8-operator-container', imageTag: ''],
-    'operator-bundle': [brewBuildID: "${env.OPERATOR_BUNDLE_BREW}", brewPackageName: 'openshift-serverless-1-logic-rhel8-operator-bundle-container', imageTag: ''],
-    'kn-workflow-cli-artifacts': [brewBuildID: "${env.KN_WORKFLOW_CLI_ARTIFACTS_BREW}", brewPackageName: 'openshift-serverless-1-logic-kn-workflow-cli-artifacts-rhel8-container', imageTag: '']
+    'data-index-ephemeral': [brewBuildID: "${env.DATA_INDEX_EPHEMERAL_BREW}", brewPackageName: 'openshift-serverless-1-logic-data-index-ephemeral-rhel9-container', imageTag: ''],
+    'data-index-postgresql': [brewBuildID: "${env.DATA_INDEX_POSTGRESQL_BREW}", brewPackageName: 'openshift-serverless-1-logic-data-index-postgresql-rhel9-container', imageTag: ''],
+    'jobs-service-ephemeral': [brewBuildID: "${env.JOBS_SERVICE_EPHEMERAL_BREW}", brewPackageName: 'openshift-serverless-1-logic-jobs-service-ephemeral-rhel9-container', imageTag: ''],
+    'jobs-service-postgresql': [brewBuildID: "${env.JOBS_SERVICE_POSTGRESQL_BREW}", brewPackageName: 'openshift-serverless-1-logic-jobs-service-postgresql-rhel9-container', imageTag: ''],
+    'swf-builder': [brewBuildID: "${env.SWF_BUILDER_BREW}", brewPackageName: 'openshift-serverless-1-logic-swf-builder-rhel9-container', imageTag: ''],
+    'swf-devmode': [brewBuildID: "${env.SWF_DEVMODE_BREW}", brewPackageName: 'openshift-serverless-1-logic-swf-devmode-rhel9-container', imageTag: ''],
+    'management-console': [brewBuildID: "${env.MANAGEMENT_CONSOLE_BREW}", brewPackageName: 'openshift-serverless-1-logic-management-console-rhel9-container', imageTag: ''],
+    'db-migrator-tool': [brewBuildID: "${env.DB_MIGRATOR_TOOL_BREW}", brewPackageName: 'openshift-serverless-1-logic-db-migrator-tool-rhel9-container', imageTag: ''],
+    'operator': [brewBuildID: "${env.OPERATOR_BREW}", brewPackageName: 'openshift-serverless-1-logic-rhel9-operator-container', imageTag: ''],
+    'operator-bundle': [brewBuildID: "${env.OPERATOR_BUNDLE_BREW}", brewPackageName: 'openshift-serverless-1-logic-rhel9-operator-bundle-container', imageTag: ''],
+    'kn-workflow-cli-artifacts': [brewBuildID: "${env.KN_WORKFLOW_CLI_ARTIFACTS_BREW}", brewPackageName: 'openshift-serverless-1-logic-kn-workflow-cli-artifacts-rhel9-container', imageTag: '']
 ]
 
 def projectsAndVersions = [:]
@@ -86,7 +86,7 @@ pipeline {
         stage('Fetch images tags') {
             steps {
                 script {
-                    def brewTag = "openshift-serverless-${getMinorProductVersion(milestone)}-rhel-8-container-candidate"
+                    def brewTag = "openshift-serverless-${getMinorProductVersion(milestone)}-rhel-9-container-candidate"
                     images.each { k, v ->
                         def brewBuild
                         if (v.brewBuildID) {
