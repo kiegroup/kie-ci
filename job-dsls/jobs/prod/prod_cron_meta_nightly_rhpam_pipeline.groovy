@@ -143,10 +143,10 @@ String kogitoWithSpecDroolsNightlyStage(String kogitoVersion, String kogitoBranc
         stage('trigger KOGITO nightly job ${kogitoVersion}') {
             steps {
                 build job: 'kogito.nightly/${kogitoBranch}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/nexus/content/repositories/rhba-${getNexusFromVersion(rhbaVersion)}-nightly-with-upstream"],
+                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/content/repositories/rhba-${getNexusFromVersion(rhbaVersion)}-nightly-with-upstream"],
                         [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '${rhbaVersionPrefix}'],
                         [\$class: 'StringParameterValue', name: 'RHBA_RELEASE_VERSION', value: '${getNexusFromVersion(rhbaVersion)}'],
-                        [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/nexus/service/local/repositories/scratch-release-kogito-${getNexusFromVersion(kogitoVersion)}/content-compressed"],
+                        [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/service/local/repositories/scratch-release-kogito-${getNexusFromVersion(kogitoVersion)}/content-compressed"],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(kogitoVersion)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${kogitoVersion}'],
                         [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
@@ -165,7 +165,7 @@ String rhbopNightlyStage(String branch, String configBranch, String version = ''
         stage('trigger RHBOP nightly job ${branch}') {
             steps {
                 build job: 'rhbop.nightly/${branch}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/nexus/service/local/repositories/scratch-release-rhbop-${getNexusFromVersion(version)}/content-compressed"],
+                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/service/local/repositories/scratch-release-rhbop-${getNexusFromVersion(version)}/content-compressed"],
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(version)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${version}"],
                         [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
