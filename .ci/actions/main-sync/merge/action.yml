@@ -17,10 +17,12 @@ inputs:
     type: string
     required: true
   exclude_paths:
-    description: 'Paths to be excluded during merge'
+    description: >
+      Space-separated list of file/directory paths to exclude from the merge
+      Example: ".asf.yaml .github .ci"
     required: false
     type: string
-    default: .asf.yaml
+    default: .asf.yaml .github .ci
   github_token:
     description: "The github token"
     type: string
