@@ -49,7 +49,7 @@ runs:
   using: 'composite'
   steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
     - name: Setup default values
@@ -98,7 +98,7 @@ runs:
         echo "BACKPORT_REVIEWERS=${reviewers}" >> $GITHUB_ENV
     - name: Perform pull request backporting
       id: pr-backporting
-      uses: kiegroup/git-backporting@v4.3.0
+      uses: kiegroup/git-backporting@v4.9.0
       with:
         pull-request: ${{ inputs.original-pr-url }}
         target-branch: "${{ inputs.target-branch }}"
