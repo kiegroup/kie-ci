@@ -19,7 +19,7 @@ runs:
   using: "composite"
   steps:
     - name: Check out configs repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         repository: ${{ inputs.repository }}
         ref: ${{ inputs.branch }}
