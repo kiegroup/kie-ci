@@ -10,7 +10,7 @@ runs:
   using: "composite"
   steps: 
     - name: Check Surefire Report
-      uses: ScaCap/action-surefire-report@v2
+      uses: ScalableCapital/action-surefire-report@v2
       with:
         fail_on_test_failures: true
         fail_if_no_tests: false
