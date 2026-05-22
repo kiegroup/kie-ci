@@ -35,7 +35,7 @@ runs:
         java-version: ${{ inputs.java-version }}
         check-latest: true
     - name: Set up Maven
-      uses: stCarolas/setup-maven@v5
+      uses: stCarolas/setup-maven@v5.1
       with:
         maven-version: ${{ inputs.maven-version }}
     - name: Cache Maven packages
@@ -46,7 +46,7 @@ runs:
         restore-keys:  ${{ inputs.cache-key-prefix }}-m2
     - name: Setup Maven Settings
       if: ${{ inputs.setup-maven-settings == 'true' }}
-      uses: whelk-io/maven-settings-xml-action@v22
+      uses: s4u/maven-settings-action@v4.0.0
       with:
         repositories: >
           [
@@ -76,40 +76,12 @@ runs:
                 "updatePolicy": "never"
               }
             }
-          ]
-        plugin_repositories: >
-          [
-            {
-              "id": "jboss-public-repository-group",
-              "name": "JBoss Public Repository Group",
-              "url": "https://repository.jboss.org/nexus/content/groups/public",
-              "releases": {
-                "enabled": "true",
-                "updatePolicy": "never"
-              },
-              "snapshots": {
-                "enabled": "${{ inputs.allow-snapshots }}",
-                "updatePolicy": "never"
-              }
-            },
-            {
-              "id": "kogito-staging-repository-group",
-              "name": "Kogito Staging Repositories",
-              "url": "https://repository.jboss.org/nexus/content/groups/kogito-public",
-              "releases": {
-                "enabled": "true",
-                "updatePolicy": "never"
-              },
-              "snapshots": {
-                "enabled": "${{ inputs.allow-snapshots }}",
-                "updatePolicy": "never"
-              }
-            }
-          ]
-        plugin_groups: >
-          [
-            "org.zanata"
-          ]
+          ]        
+    - name: Add plugin groups
+      shell: bash
+      run: |
+        sed -i '/<\/settings>/i\  <pluginGroups>\n    <pluginGroup>org.zanata</pluginGroup>\n  </pluginGroups>' ~/.m2/settings.xml
+        
     - name: Debug settings.xml
       if: ${{ inputs.debug }}
       shell: bash
