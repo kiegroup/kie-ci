@@ -28,13 +28,6 @@ def final REPO_CONFIGS = [
             scrPath : '.ci/jenkins/Jenkinsfile.prod.nightly',
             jobId : '00242'
         ],
-        "rhbop.nightly" : [
-           prodJobName : 'rhbop.nightly',
-           scrPath : '.ci/jenkins/Jenkinsfile.prod.nightly',
-           repo : 'optaplanner',
-           repUrl : 'https://github.com/kiegroup/optaplanner',
-           jobId : '00484'
-        ],
         "drools-ansible-integration.nightly" : [
            prodJobName : 'drools-ansible-integration.nightly',
            scrPath : '.ci/jenkins/Jenkinsfile.prod.nightly',

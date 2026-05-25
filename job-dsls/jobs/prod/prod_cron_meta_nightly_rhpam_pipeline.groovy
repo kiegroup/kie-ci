@@ -30,11 +30,6 @@ def NEXT_BLUE_RHBA_VERSION_PREFIX='7.67.2.redhat-'
 //def KOGITO_BLUE_NEXT_PRODUCT_BRANCH='1.13.x-blue'
 //def KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH="kogito/1.13.x-blue"
 
-def RHBOP_CURRENT_PRODUCT_VERSION='8.38.0'
-def RHBOP_CURRENT_PRODUCT_BRANCH='8.38.x-prod'
-def RHBOP_CURRENT_PRODUCT_CONFIG_BRANCH='rhbop/8.38.x'
-def RHBOP_CURRENT_DROOLS_VERSION='8.29.0'
-
 def metaJob="""
 pipeline{
     agent {
@@ -50,11 +45,7 @@ pipeline{
         //{kogitoNightlyStage(KOGITO_NEXT_PRODUCT_VERSION, KOGITO_NEXT_PRODUCT_BRANCH, OPTAPLANNER_NEXT_PRODUCT_VERSION, NEXT_PRODUCT_VERSION, NEXT_RHBA_VERSION_PREFIX, KOGITO_NEXT_PRODUCT_CONFIG_BRANCH)}
     
         // blue
-        ${rhbaNightlyStage(NEXT_BLUE_PRODUCT_VERSION, NEXT_BLUE_PRODUCT_BRANCH, NEXT_BLUE_PRODUCT_CONFIG_BRANCH)}       
-
-        // RHBOP
-        //{rhbopNightlyStage(RHBOP_NEXT_PRODUCT_BRANCH, RHBOP_NEXT_PRODUCT_CONFIG_BRANCH)}
-        //${rhbopNightlyStage(RHBOP_CURRENT_PRODUCT_BRANCH, RHBOP_CURRENT_PRODUCT_CONFIG_BRANCH, RHBOP_CURRENT_PRODUCT_VERSION, RHBOP_CURRENT_DROOLS_VERSION)}
+        ${rhbaNightlyStage(NEXT_BLUE_PRODUCT_VERSION, NEXT_BLUE_PRODUCT_BRANCH, NEXT_BLUE_PRODUCT_CONFIG_BRANCH)}
     }
 }
 """
@@ -159,23 +150,6 @@ String kogitoWithSpecDroolsNightlyStage(String kogitoVersion, String kogitoBranc
     """
 }
 
-String rhbopNightlyStage(String branch, String configBranch, String version = '', String droolsVersion = '') {
-    // when version or droolsVersion are empty, the Jenkins job will get them from the main branch pom
-    return """
-        stage('trigger RHBOP nightly job ${branch}') {
-            steps {
-                build job: 'rhbop.nightly/${branch}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/service/local/repositories/scratch-release-rhbop-${getNexusFromVersion(version)}/content-compressed"],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(version)}'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${version}"],
-                        [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
-                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "${configBranch}"],
-                ]
-            }
-        }
-    """
-}
-
 String getUMBFromVersion(def version) {
     // if empty return main branch too
     if (isMainBranchVersion(version) || version == '') {
@@ -199,5 +173,5 @@ String getBlueSuffix(String version, String separator) {
 }
 
 boolean isMainBranchVersion(String version) {
-    return [Constants.MAIN_BRANCH_PROD_VERSION, Constants.KOGITO_MAIN_BRANCH_PROD_VERSION, Constants.RHBOP_MAIN_BRANCH_PROD_VERSION].contains(version)
+    return [Constants.MAIN_BRANCH_PROD_VERSION, Constants.KOGITO_MAIN_BRANCH_PROD_VERSION].contains(version)
 }

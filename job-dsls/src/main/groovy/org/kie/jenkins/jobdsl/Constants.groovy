@@ -40,7 +40,6 @@ class Constants {
     static final String BUILD_DATE = ''
     static final String MAIN_BRANCH_PROD_VERSION = '7.14.0'
     static final String KOGITO_MAIN_BRANCH_PROD_VERSION = '999.0.0'
-    static final String RHBOP_MAIN_BRANCH_PROD_VERSION = '8.30.0'
     static final String NEXT_PROD_VERSION = '7.13.5'
     static final String BAMOE_NEXT_PROD_VERSION = '8.0.4'
     static final String OSBS_BUILD_TARGET = 'rhba-7-rhel-8-nightly-containers-candidate'
