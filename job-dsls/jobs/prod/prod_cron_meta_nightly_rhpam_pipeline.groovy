@@ -8,27 +8,18 @@ import org.kie.jenkins.jobdsl.Constants
 def javadk=Constants.JDK_TOOL
 def AGENT_LABEL="kie-rhel8 && kie-mem4g"
 
+// is not used as we removed RHBA RHPAM builds from here
 def NEXT_PRODUCT_VERSION=Constants.NEXT_PROD_VERSION
 def NEXT_PRODUCT_BRANCH='7.67.x'
 def NEXT_PRODUCT_CONFIG_BRANCH="rhba/${NEXT_PRODUCT_BRANCH}"
-// Use again after nightly builds from main branch again
-// def NEXT_RHBA_VERSION_PREFIX=Constants.RHBA_VERSION_PREFIX
 def NEXT_RHBA_VERSION_PREFIX='7.67.1.redhat-'
-
-//def KOGITO_NEXT_PRODUCT_VERSION='1.13.0'
-//def KOGITO_NEXT_PRODUCT_BRANCH='1.13.x'
-//def KOGITO_NEXT_PRODUCT_CONFIG_BRANCH="kogito/${KOGITO_NEXT_PRODUCT_BRANCH}"
-
 def OPTAPLANNER_NEXT_PRODUCT_VERSION='8.13.0'
 
+// BAMOE nightly only on 7.67.x-blue branches
 def NEXT_BLUE_PRODUCT_VERSION=Constants.BAMOE_NEXT_PROD_VERSION
 def NEXT_BLUE_PRODUCT_BRANCH='7.67.x-blue'
 def NEXT_BLUE_PRODUCT_CONFIG_BRANCH="bamoe/7.67.x-blue"
 def NEXT_BLUE_RHBA_VERSION_PREFIX='7.67.2.redhat-'
-
-//def KOGITO_BLUE_NEXT_PRODUCT_VERSION='1.13.2.blue'
-//def KOGITO_BLUE_NEXT_PRODUCT_BRANCH='1.13.x-blue'
-//def KOGITO_BLUE_NEXT_PRODUCT_CONFIG_BRANCH="kogito/1.13.x-blue"
 
 def metaJob="""
 pipeline{
@@ -39,12 +30,8 @@ pipeline{
         jdk "$javadk"        
     }   
     // IMPORTANT: In case you trigger a new branch here, please create the same branch on build-configuration project
-    
     stages {
-        //{rhbaNightlyStage(NEXT_PRODUCT_VERSION, NEXT_PRODUCT_BRANCH, NEXT_PRODUCT_CONFIG_BRANCH)}
-        //{kogitoNightlyStage(KOGITO_NEXT_PRODUCT_VERSION, KOGITO_NEXT_PRODUCT_BRANCH, OPTAPLANNER_NEXT_PRODUCT_VERSION, NEXT_PRODUCT_VERSION, NEXT_RHBA_VERSION_PREFIX, KOGITO_NEXT_PRODUCT_CONFIG_BRANCH)}
-    
-        // blue
+        // BAMOE blue branches
         ${rhbaNightlyStage(NEXT_BLUE_PRODUCT_VERSION, NEXT_BLUE_PRODUCT_BRANCH, NEXT_BLUE_PRODUCT_CONFIG_BRANCH)}
     }
 }
@@ -102,47 +89,6 @@ String rhbaNightlyStage(String version, String branch, String configBranch) {
                         [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(version)}'],
                         [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: "${version}"],
                         [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: "${configBranch}"],
-                        [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
-                ]
-            }
-        }
-    """
-}
-
-String kogitoNightlyStage(String kogitoVersion, String kogitoBranch, String optaplannerVersion, String rhbaVersion, String rhbaVersionPrefix, String configBranch) {
-    return """
-        stage('trigger KOGITO nightly job ${kogitoVersion}') {
-            steps {
-                build job: 'kogito.nightly/${kogitoBranch}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/content/repositories/rhba-${getNexusFromVersion(rhbaVersion)}-nightly-with-upstream"],
-                        [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '${rhbaVersionPrefix}'],
-                        [\$class: 'StringParameterValue', name: 'RHBA_RELEASE_VERSION', value: '${getNexusFromVersion(rhbaVersion)}'],
-                        [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/service/local/repositories/scratch-release-kogito-${getNexusFromVersion(kogitoVersion)}/content-compressed"],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(kogitoVersion)}'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${kogitoVersion}'],${optaplannerVersion ? """
-                        [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${optaplannerVersion}'],""" : ''}
-                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${configBranch}'],
-                        [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
-                ]
-            }
-        }
-    """
-}
-
-String kogitoWithSpecDroolsNightlyStage(String kogitoVersion, String kogitoBranch, String droolsVersion, String optaplannerVersion, String rhbaVersion, String rhbaVersionPrefix, String configBranch) {
-    return """
-        stage('trigger KOGITO nightly job ${kogitoVersion}') {
-            steps {
-                build job: 'kogito.nightly/${kogitoBranch}', propagate: false, wait: true, parameters: [
-                        [\$class: 'StringParameterValue', name: 'RHBA_MAVEN_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/content/repositories/rhba-${getNexusFromVersion(rhbaVersion)}-nightly-with-upstream"],
-                        [\$class: 'StringParameterValue', name: 'RHBA_VERSION_PREFIX', value: '${rhbaVersionPrefix}'],
-                        [\$class: 'StringParameterValue', name: 'RHBA_RELEASE_VERSION', value: '${getNexusFromVersion(rhbaVersion)}'],
-                        [\$class: 'StringParameterValue', name: 'KOGITO_DEPLOYMENT_REPO_URL', value: "\${env.BXMS_QE_NEXUS}/service/local/repositories/scratch-release-kogito-${getNexusFromVersion(kogitoVersion)}/content-compressed"],
-                        [\$class: 'StringParameterValue', name: 'UMB_VERSION', value: '${getUMBFromVersion(kogitoVersion)}'],
-                        [\$class: 'StringParameterValue', name: 'PRODUCT_VERSION', value: '${kogitoVersion}'],
-                        [\$class: 'StringParameterValue', name: 'DROOLS_PRODUCT_VERSION', value: '${droolsVersion}'],
-                        [\$class: 'StringParameterValue', name: 'OPTAPLANNER_PRODUCT_VERSION', value: '${optaplannerVersion}'],
-                        [\$class: 'StringParameterValue', name: 'CONFIG_BRANCH', value: '${configBranch}'],
                         [\$class: 'BooleanParameterValue', name: 'SKIP_TESTS', value: true]
                 ]
             }
