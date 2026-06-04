@@ -20,7 +20,7 @@ job("${folderPath}/a-seed-job-${baseBranch}") {
     label("kie-rhel8 && kie-mem8g && !built-in")
 
     logRotator {
-        numToKeep(10)
+        numToKeep(5)
     }
 
     jdk("${javadk}")

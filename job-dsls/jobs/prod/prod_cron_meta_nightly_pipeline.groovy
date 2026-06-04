@@ -22,20 +22,14 @@ def SERVERLESS_LOGIC_DROOLS_CURRENT_PRODUCT_VERSION='9.105.0'
 def SERVERLESS_LOGIC_CURRENT_PRODUCT_BRANCH='9.105.x-prod'
 def SERVERLESS_LOGIC_CURRENT_PRODUCT_CONFIG_BRANCH="openshift-serverless-logic/9.105.x"
 
-// Should be uncommented and used with kogitoWithSpecDroolsNightlyStage once Next is set for RHPAM 7.14.0 (or main)
-// def DROOLS_NEXT_PRODUCT_VERSION='8.13.0'
-
-// Should be uncommented and used with kogitoWithSpecDroolsNightlyStage once Current is set for RHPAM 7.14.0
-// def DROOLS_CURRENT_PRODUCT_VERSION= OPTAPLANNER_CURRENT_PRODUCT_VERSION
-
 // Drools Ansible Integration
 def DAI_NEXT_PRODUCT_VERSION='' // took from project pom
 def DAI_NEXT_DROOLS_VERSION='999.0.0'
 def DAI_NEXT_PRODUCT_BRANCH='main'
 def DAI_NEXT_PRODUCT_CONFIG_BRANCH='master'
 
-def DAI_CURRENT_PRODUCT_BRANCH='1.0.x'
-def DAI_CURRENT_PRODUCT_CONFIG_BRANCH='drools-ansible-integration/1.0.x'
+def DAI_CURRENT_PRODUCT_BRANCH='2.0.x'
+def DAI_CURRENT_PRODUCT_CONFIG_BRANCH='drools-ansible-integration/2.0.x'
 
 def metaJob="""
 pipeline{

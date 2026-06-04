@@ -2,7 +2,6 @@
  * Creates jobs for multibranch-pipelines
  * - nightly
  * - kogito.nightly
- * - kogito-tooling.nightly (will be dropped soon)
  */
 import org.kie.jenkins.jobdsl.Constants
 
