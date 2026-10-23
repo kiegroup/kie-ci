@@ -75,8 +75,21 @@ runs:
                 "enabled": "${{ inputs.allow-snapshots }}",
                 "updatePolicy": "never"
               }
+            },
+            {
+              "id": "redhat-ga-repository",
+              "name": "Red Hat GA Repository",
+              "url": "https://maven.repository.redhat.com/ga",
+              "releases": {
+                "enabled": "true",
+                "updatePolicy": "never"
+              },
+              "snapshots": {
+                "enabled": "false",
+                "updatePolicy": "never"
+              }
             }
-          ]        
+          ]
     - name: Add plugin groups
       shell: bash
       run: |
